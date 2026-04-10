@@ -4,7 +4,8 @@ import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/reset_password_screen.dart';
 import '../features/auth/presentation/screens/retailer_signup_screen.dart';
-import '../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
+import '../features/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
 class AppRouter {
@@ -30,13 +31,18 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: '/dashboard',
-        builder: (context, state) => const DashboardScreen(),
-      ),
-      GoRoute(
         path: '/complete-supplier-profile',
         builder: (context, state) => const CompleteSupplierProfileScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-dashboard',
+        builder: (context, state) => const SupplierDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-dashboard',
+        builder: (context, state) => const RetailerDashboardScreen(),
       ),
     ],
   );
 }
+

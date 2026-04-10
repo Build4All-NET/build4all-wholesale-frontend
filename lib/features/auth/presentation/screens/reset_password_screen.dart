@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -82,13 +84,20 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
+          final l10n = context.l10n;
 
           return Scaffold(
             backgroundColor: AppThemeTokens.background,
             appBar: AppBar(
-              title: const Text('Reset Password'),
+              title: Text(l10n.resetPassword),
               backgroundColor: AppThemeTokens.background,
               elevation: 0,
+              actions: const [
+                Padding(
+                  padding: EdgeInsetsDirectional.only(end: 8),
+                  child: LanguageSelector(),
+                ),
+              ],
             ),
             body: SafeArea(
               child: Center(
@@ -118,26 +127,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               const SizedBox(height: 12),
-                              const Icon(
+                              Icon(
                                 Icons.lock_reset,
                                 size: 60,
-                                color: AppThemeTokens.primary,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                               const SizedBox(height: 18),
-                              const Text(
-                                'Reset Password',
+                              Text(
+                                l10n.resetPassword,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
                                   color: AppThemeTokens.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Enter your reset token and choose a new password',
+                              Text(
+                                l10n.enterResetTokenAndPassword,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   color: AppThemeTokens.textSecondary,
                                 ),
@@ -146,11 +155,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                               PrimaryTextField(
                                 controller: _tokenController,
-                                hintText: 'Paste your reset token',
+                                hintText: l10n.pasteResetToken,
                                 prefixIcon: const Icon(Icons.vpn_key_outlined),
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Reset token',
+                                  fieldName: l10n.resetToken,
                                 ),
                               ),
 
@@ -161,7 +170,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 obscureText: _obscureNewPassword,
                                 validator: Validators.password,
                                 decoration: InputDecoration(
-                                  hintText: 'New password',
+                                  hintText: l10n.newPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
                                   suffixIcon: IconButton(
                                     onPressed: () {
@@ -189,7 +198,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   _newPasswordController.text.trim(),
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: 'Confirm new password',
+                                  hintText: l10n.confirmNewPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
                                   suffixIcon: IconButton(
                                     onPressed: () {
@@ -210,7 +219,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               const SizedBox(height: 24),
 
                               PrimaryButton(
-                                text: 'Reset Password',
+                                text: l10n.resetPassword,
                                 isLoading: state.isLoading,
                                 onPressed: () => _submit(cubit),
                               ),

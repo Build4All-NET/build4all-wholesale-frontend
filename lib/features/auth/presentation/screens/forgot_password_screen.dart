@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -72,13 +74,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
+          final l10n = context.l10n;
 
           return Scaffold(
             backgroundColor: AppThemeTokens.background,
             appBar: AppBar(
-              title: const Text('Forgot Password'),
+              title: Text(l10n.forgotPassword),
               backgroundColor: AppThemeTokens.background,
               elevation: 0,
+              actions: const [
+                Padding(
+                  padding: EdgeInsetsDirectional.only(end: 8),
+                  child: LanguageSelector(),
+                ),
+              ],
             ),
             body: SafeArea(
               child: Center(
@@ -108,32 +117,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               const SizedBox(height: 12),
-                              const Icon(
+                              Icon(
                                 Icons.lock_reset,
                                 size: 60,
-                                color: AppThemeTokens.primary,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                               const SizedBox(height: 18),
-                              const Text(
-                                'Forgot Password',
+                              Text(
+                                l10n.forgotPassword,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
                                   color: AppThemeTokens.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Enter your email to generate a reset token',
+                              Text(
+                                l10n.enterEmailToGenerateResetToken,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   color: AppThemeTokens.textSecondary,
                                 ),
                               ),
                               const SizedBox(height: 28),
-
                               PrimaryTextField(
                                 controller: _emailController,
                                 hintText: 'your.email@example.com',
@@ -141,11 +149,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 keyboardType: TextInputType.emailAddress,
                                 validator: Validators.email,
                               ),
-
                               const SizedBox(height: 20),
-
                               PrimaryButton(
-                                text: 'Continue',
+                                text: l10n.continueLabel,
                                 isLoading: state.isLoading,
                                 onPressed: () => _submit(cubit),
                               ),
@@ -164,4 +170,3 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 }
-

@@ -2,14 +2,19 @@ import 'package:get_it/get_it.dart';
 
 import 'core/network/api_client.dart';
 import 'core/storage/auth_storage.dart';
+import 'core/storage/theme_storage.dart';
+import 'core/storage/locale_storage.dart';
+
+import 'core/theme/theme_cubit.dart';
+import 'core/theme/locale_cubit.dart';
 
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/services/auth_service.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
-import 'features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
-import 'features/auth/domain/usecases/reset_password_usecase.dart';
 import 'features/auth/domain/usecases/retailer_signup_usecase.dart';
+import 'features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'features/auth/domain/usecases/reset_password_usecase.dart';
 import 'features/auth/presentation/bloc/auth_cubit.dart';
 
 import 'features/supplier_profile/data/repositories/supplier_profile_repository_impl.dart';
@@ -21,14 +26,45 @@ import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart'
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // =========================
+  // CORE / STORAGE
+  // =========================
   sl.registerLazySingleton<AuthStorage>(() => AuthStorage());
-  sl.registerLazySingleton<ApiClient>(() => ApiClient(sl<AuthStorage>()));
+  sl.registerLazySingleton<ThemeStorage>(() => ThemeStorage());
+  sl.registerLazySingleton<LocaleStorage>(() => LocaleStorage());
 
-  sl.registerLazySingleton<AuthService>(() => AuthService(sl<ApiClient>()));
+  // =========================
+  // CORE / NETWORK
+  // =========================
+  sl.registerLazySingleton<ApiClient>(
+    () => ApiClient(sl<AuthStorage>()),
+  );
+
+  // =========================
+  // THEME / LOCALE
+  // =========================
+  sl.registerLazySingleton<ThemeCubit>(
+    () => ThemeCubit(sl<ThemeStorage>()),
+  );
+
+  sl.registerLazySingleton<LocaleCubit>(
+    () => LocaleCubit(sl<LocaleStorage>()),
+  );
+
+  // =========================
+  // SERVICES
+  // =========================
+  sl.registerLazySingleton<AuthService>(
+    () => AuthService(sl<ApiClient>()),
+  );
+
   sl.registerLazySingleton<SupplierProfileService>(
     () => SupplierProfileService(sl<ApiClient>()),
   );
 
+  // =========================
+  // REPOSITORIES
+  // =========================
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       authService: sl<AuthService>(),
@@ -42,6 +78,9 @@ Future<void> init() async {
     ),
   );
 
+  // =========================
+  // USE CASES
+  // =========================
   sl.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(sl<AuthRepository>()),
   );
@@ -62,6 +101,9 @@ Future<void> init() async {
     () => CreateSupplierProfileUseCase(sl<SupplierProfileRepository>()),
   );
 
+  // =========================
+  // CUBITS
+  // =========================
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
       loginUseCase: sl<LoginUseCase>(),
@@ -77,3 +119,4 @@ Future<void> init() async {
     ),
   );
 }
+

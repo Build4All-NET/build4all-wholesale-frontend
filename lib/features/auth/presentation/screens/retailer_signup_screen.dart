@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
+import '../../../../core/extensions/select_option_l10n_extension.dart';
+import '../../../../core/models/select_option.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -36,27 +40,26 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  final List<String> _cities = const [
-  'Beirut',
-  'Tripoli',
-  'Sidon',
-  'Tyre',
-  'Zahle',
-  'Jounieh',
-  'Nabatieh',
-  'Byblos',
-  'Aley',
-  'Baalbek',
-];
+  final List<SelectOption> _cities = const [
+    SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
+    SelectOption(value: 'Tripoli', labelKey: 'cityTripoli'),
+    SelectOption(value: 'Sidon', labelKey: 'citySidon'),
+    SelectOption(value: 'Tyre', labelKey: 'cityTyre'),
+    SelectOption(value: 'Zahle', labelKey: 'cityZahle'),
+    SelectOption(value: 'Jounieh', labelKey: 'cityJounieh'),
+    SelectOption(value: 'Nabatieh', labelKey: 'cityNabatieh'),
+    SelectOption(value: 'Byblos', labelKey: 'cityByblos'),
+    SelectOption(value: 'Aley', labelKey: 'cityAley'),
+    SelectOption(value: 'Baalbek', labelKey: 'cityBaalbek'),
+  ];
 
-
-  final List<String> _businessTypes = const [
-    'Mini Market',
-    'Supermarket',
-    'Pharmacy',
-    'Restaurant',
-    'Cafe',
-    'Retail Shop',
+  final List<SelectOption> _businessTypes = const [
+    SelectOption(value: 'Mini Market', labelKey: 'businessMiniMarket'),
+    SelectOption(value: 'Supermarket', labelKey: 'businessSupermarket'),
+    SelectOption(value: 'Pharmacy', labelKey: 'businessPharmacy'),
+    SelectOption(value: 'Restaurant', labelKey: 'businessRestaurant'),
+    SelectOption(value: 'Cafe', labelKey: 'businessCafe'),
+    SelectOption(value: 'Retail Shop', labelKey: 'businessRetailShop'),
   ];
 
   @override
@@ -99,6 +102,24 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
     );
   }
 
+  String? _validateLebanesePhone(String? value) {
+    final l10n = context.l10n;
+
+    if (value == null || value.trim().isEmpty) {
+      return '${l10n.phoneNumber} is required';
+    }
+
+    final cleaned = value.replaceAll(' ', '');
+    final lebanesePhoneRegex =
+        RegExp(r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$');
+
+    if (!lebanesePhoneRegex.hasMatch(cleaned)) {
+      return l10n.enterValidLebanesePhone;
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -122,12 +143,19 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
+          final l10n = context.l10n;
 
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Back to Login'),
+              title: Text(l10n.login),
               backgroundColor: AppThemeTokens.background,
               elevation: 0,
+              actions: const [
+                Padding(
+                  padding: EdgeInsetsDirectional.only(end: 8),
+                  child: LanguageSelector(),
+                ),
+              ],
             ),
             body: SafeArea(
               child: SingleChildScrollView(
@@ -157,67 +185,53 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               const SizedBox(height: 8),
-                              const AuthHeader(
+                              AuthHeader(
                                 icon: Icons.shopping_cart_checkout_outlined,
-                                iconBackgroundColor: Color(0xFFDBEAFE),
-                                iconColor: Color(0xFF2563EB),
-                                title: 'Create Retailer Account',
-                                subtitle: 'Join our wholesale marketplace',
+                                iconBackgroundColor: const Color(0xFFDBEAFE),
+                                iconColor: const Color(0xFF2563EB),
+                                title: l10n.createRetailerAccount,
+                                subtitle: l10n.joinMarketplace,
                               ),
                               const SizedBox(height: 28),
 
-                              const Text('Full Name *'),
+                              Text(l10n.fullName),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _fullNameController,
                                 hintText: 'John Doe',
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Full name',
+                                  fieldName: l10n.fullName,
                                 ),
                               ),
 
                               const SizedBox(height: 16),
 
-                              const Text('Store Name *'),
+                              Text(l10n.storeName),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _storeNameController,
                                 hintText: 'ABC Store',
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Store name',
+                                  fieldName: l10n.storeName,
                                 ),
                               ),
 
                               const SizedBox(height: 16),
 
-                              const Text('Phone Number *'),
+                              Text(l10n.phoneNumber),
                               const SizedBox(height: 8),
                               PrimaryTextField(
-                                  controller: _phoneNumberController,
-                                  hintText: '+961 70 123 456',
-                                  keyboardType: TextInputType.phone,
-                                  validator: (value) {
-                                 if (value == null || value.trim().isEmpty) {
-                                               return 'Phone number is required';
-                                             }
-
-                                 final cleaned = value.replaceAll(' ', '');
-                                 final lebanesePhoneRegex = RegExp(r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$');
-
-                                 if (!lebanesePhoneRegex.hasMatch(cleaned)) {
-                                 return 'Enter a valid Lebanese phone number';
-                                 }
-
-                                return null;
-                                },
-                               ),
-
+                                controller: _phoneNumberController,
+                                hintText: '+961 70 123 456',
+                                keyboardType: TextInputType.phone,
+                                validator: _validateLebanesePhone,
+                              ),
 
                               const SizedBox(height: 16),
 
-                              const Text('Email *'),
+                              Text(l10n.email),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _emailController,
@@ -228,7 +242,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
                               const SizedBox(height: 16),
 
-                              const Text('Password *'),
+                              Text(l10n.password),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: _passwordController,
@@ -253,7 +267,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
                               const SizedBox(height: 16),
 
-                              const Text('Confirm Password *'),
+                              Text(l10n.confirmPassword),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: _confirmPasswordController,
@@ -282,29 +296,31 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
                               const SizedBox(height: 16),
 
-                              const Text('Store Address *'),
+                              Text(l10n.storeAddress),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _storeAddressController,
                                 hintText: '123 Main Street',
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Store address',
+                                  fieldName: l10n.storeAddress,
                                 ),
                               ),
 
                               const SizedBox(height: 16),
 
-                              const Text('City *'),
+                              Text(l10n.city),
                               const SizedBox(height: 8),
                               PrimaryDropdownField<String>(
                                 value: _selectedCity,
-                                hintText: 'Select city',
+                                hintText: l10n.selectCity,
                                 items: _cities
                                     .map(
                                       (city) => DropdownMenuItem(
-                                        value: city,
-                                        child: Text(city),
+                                        value: city.value,
+                                        child: Text(
+                                          context.trOption(city.labelKey),
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -315,7 +331,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'City is required';
+                                    return '${l10n.city} is required';
                                   }
                                   return null;
                                 },
@@ -323,16 +339,18 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
                               const SizedBox(height: 16),
 
-                              const Text('Business Type *'),
+                              Text(l10n.businessType),
                               const SizedBox(height: 8),
                               PrimaryDropdownField<String>(
                                 value: _selectedBusinessType,
-                                hintText: 'Select type',
+                                hintText: l10n.selectBusinessType,
                                 items: _businessTypes
                                     .map(
                                       (type) => DropdownMenuItem(
-                                        value: type,
-                                        child: Text(type),
+                                        value: type.value,
+                                        child: Text(
+                                          context.trOption(type.labelKey),
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -343,7 +361,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Business type is required';
+                                    return '${l10n.businessType} is required';
                                   }
                                   return null;
                                 },
@@ -352,23 +370,26 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                               const SizedBox(height: 24),
 
                               PrimaryButton(
-                                text: 'Create Account',
+                                text: l10n.createAccount,
                                 isLoading: state.isLoading,
                                 onPressed: () => _submit(cubit),
                               ),
 
                               const SizedBox(height: 18),
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
-                                  const Text('Already have an account? '),
+                                  Text('${l10n.alreadyHaveAccount} '),
                                   GestureDetector(
                                     onTap: () => context.pop(),
-                                    child: const Text(
-                                      'Login',
+                                    child: Text(
+                                      l10n.login,
                                       style: TextStyle(
-                                        color: AppThemeTokens.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -392,4 +413,3 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
     );
   }
 }
-

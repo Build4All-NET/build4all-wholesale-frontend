@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
+import '../../../../core/extensions/select_option_l10n_extension.dart';
+import '../../../../core/models/select_option.dart';
 import '../../../../core/storage/auth_storage.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
@@ -33,28 +37,52 @@ class _CompleteSupplierProfileScreenState
   String? _selectedCity;
   String? _selectedBusinessType;
 
-  final List<String> _cities = const [
-    'Beirut',
-    'Tripoli',
-    'Sidon',
-    'Tyre',
-    'Zahle',
-    'Jounieh',
-    'Nabatieh',
-    'Byblos',
-    'Aley',
-    'Baalbek',
+  final List<SelectOption> _cities = const [
+    SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
+    SelectOption(value: 'Tripoli', labelKey: 'cityTripoli'),
+    SelectOption(value: 'Sidon', labelKey: 'citySidon'),
+    SelectOption(value: 'Tyre', labelKey: 'cityTyre'),
+    SelectOption(value: 'Zahle', labelKey: 'cityZahle'),
+    SelectOption(value: 'Jounieh', labelKey: 'cityJounieh'),
+    SelectOption(value: 'Nabatieh', labelKey: 'cityNabatieh'),
+    SelectOption(value: 'Byblos', labelKey: 'cityByblos'),
+    SelectOption(value: 'Aley', labelKey: 'cityAley'),
+    SelectOption(value: 'Baalbek', labelKey: 'cityBaalbek'),
   ];
 
-  final List<String> _businessTypes = const [
-    'Building Materials',
-    'Electrical Supplies',
-    'Plumbing',
-    'Tools & Hardware',
-    'Industrial Equipment',
-    'Home Improvement',
-    'Wholesale Distribution',
-    'Other',
+  final List<SelectOption> _businessTypes = const [
+    SelectOption(
+      value: 'Building Materials',
+      labelKey: 'businessBuildingMaterials',
+    ),
+    SelectOption(
+      value: 'Electrical Supplies',
+      labelKey: 'businessElectricalSupplies',
+    ),
+    SelectOption(
+      value: 'Plumbing',
+      labelKey: 'businessPlumbing',
+    ),
+    SelectOption(
+      value: 'Tools & Hardware',
+      labelKey: 'businessToolsHardware',
+    ),
+    SelectOption(
+      value: 'Industrial Equipment',
+      labelKey: 'businessIndustrialEquipment',
+    ),
+    SelectOption(
+      value: 'Home Improvement',
+      labelKey: 'businessHomeImprovement',
+    ),
+    SelectOption(
+      value: 'Wholesale Distribution',
+      labelKey: 'businessWholesaleDistribution',
+    ),
+    SelectOption(
+      value: 'Other',
+      labelKey: 'businessOther',
+    ),
   ];
 
   @override
@@ -77,34 +105,11 @@ class _CompleteSupplierProfileScreenState
     super.dispose();
   }
 
-  Future<void> _submit(SupplierProfileCubit cubit) async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final userId = await sl<AuthStorage>().getUserId();
-
-    if (userId == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User session not found. Please login again.')),
-      );
-      return;
-    }
-
-    await cubit.createSupplierProfile(
-      userId: userId,
-      companyName: _companyNameController.text.trim(),
-      companyAddress: _companyAddressController.text.trim(),
-      phoneNumber: _phoneNumberController.text.trim(),
-      city: _selectedCity!,
-      businessType: _selectedBusinessType!,
-      description: _descriptionController.text.trim(),
-      logoUrl: _logoUrlController.text.trim(),
-    );
-  }
-
   String? _validateLebanesePhone(String? value) {
+    final l10n = context.l10n;
+
     if (value == null || value.trim().isEmpty) {
-      return 'Phone number is required';
+      return '${l10n.phoneNumber} is required';
     }
 
     final cleaned = value.replaceAll(' ', '');
@@ -112,14 +117,45 @@ class _CompleteSupplierProfileScreenState
         RegExp(r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$');
 
     if (!lebanesePhoneRegex.hasMatch(cleaned)) {
-      return 'Enter a valid Lebanese phone number';
+      return l10n.enterValidLebanesePhone;
     }
 
     return null;
   }
 
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final userId = await sl<AuthStorage>().getUserId();
+
+    if (userId == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.userSessionNotFound),
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+
+    context.read<SupplierProfileCubit>().createSupplierProfile(
+          userId: userId,
+          companyName: _companyNameController.text.trim(),
+          companyAddress: _companyAddressController.text.trim(),
+          phoneNumber: _phoneNumberController.text.trim(),
+          city: _selectedCity!,
+          businessType: _selectedBusinessType!,
+          description: _descriptionController.text.trim(),
+          logoUrl: _logoUrlController.text.trim(),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocProvider(
       create: (_) => sl<SupplierProfileCubit>(),
       child: BlocConsumer<SupplierProfileCubit, SupplierProfileState>(
@@ -133,21 +169,27 @@ class _CompleteSupplierProfileScreenState
 
           if (state.success && state.profile != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Supplier profile completed successfully')),
+              SnackBar(
+                content: Text(l10n.supplierProfileSavedSuccessfully),
+              ),
             );
             context.read<SupplierProfileCubit>().clearMessages();
-            context.go('/dashboard');
+            context.go('/supplier-dashboard');
           }
         },
         builder: (context, state) {
-          final cubit = context.read<SupplierProfileCubit>();
-
           return Scaffold(
             backgroundColor: AppThemeTokens.background,
             appBar: AppBar(
-              title: const Text('Supplier Manager'),
+              title: Text(l10n.completeSupplierProfile),
               backgroundColor: AppThemeTokens.background,
               elevation: 0,
+              actions: const [
+                Padding(
+                  padding: EdgeInsetsDirectional.only(end: 8),
+                  child: LanguageSelector(),
+                ),
+              ],
             ),
             body: SafeArea(
               child: SingleChildScrollView(
@@ -165,7 +207,9 @@ class _CompleteSupplierProfileScreenState
                         borderRadius: BorderRadius.circular(
                           AppThemeTokens.radiusLarge,
                         ),
-                        side: const BorderSide(color: AppThemeTokens.border),
+                        side: const BorderSide(
+                          color: AppThemeTokens.border,
+                        ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(20),
@@ -175,38 +219,30 @@ class _CompleteSupplierProfileScreenState
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                child: Container(
-                                  width: 82,
-                                  height: 82,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFDCFCE7),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.business_outlined,
-                                    size: 38,
-                                    color: AppThemeTokens.primary,
-                                  ),
+                                child: Icon(
+                                  Icons.business_outlined,
+                                  size: 60,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                              const SizedBox(height: 18),
-                              const Center(
+                              const SizedBox(height: 16),
+                              Center(
                                 child: Text(
-                                  'Complete Supplier Profile',
+                                  l10n.completeSupplierProfileTitle,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 28,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.bold,
                                     color: AppThemeTokens.textPrimary,
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              const Center(
+                              Center(
                                 child: Text(
-                                  'Complete your profile to start managing your business',
+                                  l10n.provideBusinessInfoToContinue,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     color: AppThemeTokens.textSecondary,
                                   ),
@@ -214,42 +250,33 @@ class _CompleteSupplierProfileScreenState
                               ),
                               const SizedBox(height: 28),
 
-                              const Text(
-                                'Company Information',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 18),
-
-                              const Text('Company Name *'),
+                              Text(l10n.companyName),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _companyNameController,
-                                hintText: 'Your Company Name',
+                                hintText: l10n.enterCompanyName,
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Company name',
+                                  fieldName: l10n.companyName,
                                 ),
                               ),
 
                               const SizedBox(height: 16),
 
-                              const Text('Company Address *'),
+                              Text(l10n.companyAddress),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _companyAddressController,
-                                hintText: 'Your business address',
+                                hintText: l10n.enterCompanyAddress,
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Company address',
+                                  fieldName: l10n.companyAddress,
                                 ),
                               ),
 
                               const SizedBox(height: 16),
 
-                              const Text('Phone Number *'),
+                              Text(l10n.phoneNumber),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _phoneNumberController,
@@ -260,16 +287,18 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              const Text('City *'),
+                              Text(l10n.city),
                               const SizedBox(height: 8),
                               PrimaryDropdownField<String>(
                                 value: _selectedCity,
-                                hintText: 'Select your city',
+                                hintText: l10n.selectCity,
                                 items: _cities
                                     .map(
                                       (city) => DropdownMenuItem(
-                                        value: city,
-                                        child: Text(city),
+                                        value: city.value,
+                                        child: Text(
+                                          context.trOption(city.labelKey),
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -280,7 +309,7 @@ class _CompleteSupplierProfileScreenState
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'City is required';
+                                    return '${l10n.city} is required';
                                   }
                                   return null;
                                 },
@@ -288,16 +317,18 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              const Text('Business Type *'),
+                              Text(l10n.businessType),
                               const SizedBox(height: 8),
                               PrimaryDropdownField<String>(
                                 value: _selectedBusinessType,
-                                hintText: 'Select your business type',
+                                hintText: l10n.selectBusinessType,
                                 items: _businessTypes
                                     .map(
                                       (type) => DropdownMenuItem(
-                                        value: type,
-                                        child: Text(type),
+                                        value: type.value,
+                                        child: Text(
+                                          context.trOption(type.labelKey),
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -308,52 +339,42 @@ class _CompleteSupplierProfileScreenState
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Business type is required';
+                                    return '${l10n.businessType} is required';
                                   }
                                   return null;
                                 },
                               ),
 
-                              const SizedBox(height: 24),
+                              const SizedBox(height: 16),
 
-                              const Text(
-                                'Business Details',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 18),
-
-                              const Text('Business Description *'),
+                              Text(l10n.description),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _descriptionController,
-                                hintText: 'Tell us about your business and what you offer',
-                                maxLines: 5,
+                                hintText: l10n.tellAboutBusiness,
+                                maxLines: 4,
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'Business description',
+                                  fieldName: l10n.description,
                                 ),
                               ),
 
                               const SizedBox(height: 16),
 
-                              const Text('Logo URL'),
+                              Text(l10n.logoUrl),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _logoUrlController,
                                 hintText: 'https://example.com/logo.png',
                                 keyboardType: TextInputType.url,
-                                validator: (_) => null,
                               ),
 
                               const SizedBox(height: 28),
 
                               PrimaryButton(
-                                text: 'Complete Profile',
+                                text: l10n.saveAndContinue,
                                 isLoading: state.isLoading,
-                                onPressed: () => _submit(cubit),
+                                onPressed: _submit,
                               ),
                             ],
                           ),
