@@ -1,3 +1,5 @@
+import '../../../../core/config/app_config.dart';
+
 class LoginRequestModel {
   final String email;
   final String password;
@@ -11,6 +13,8 @@ class LoginRequestModel {
     return {
       'email': email,
       'password': password,
+      'ownerProjectLinkId': AppConfig.ownerProjectLinkId,
+      'appType': AppConfig.appType,
     };
   }
 }

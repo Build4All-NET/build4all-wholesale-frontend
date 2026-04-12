@@ -1,0 +1,10 @@
+{
+  "API_BASE_URL": "http://10.0.2.2:8082/api",
+  "APP_NAME": "B2B Wholesale App",
+  "APP_TYPE": "WHOLESALE",
+  "OWNER_PROJECT_LINK_ID": "1",
+  "PROJECT_ID": "1",
+  "CURRENCY_ID": "1",
+  "DEFAULT_LANGUAGE": "en"
+}
+

@@ -123,16 +123,25 @@ class _CompleteSupplierProfileScreenState
     return null;
   }
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> _submit(BuildContext providerContext) async {
+    FocusScope.of(providerContext).unfocus();
+
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(providerContext).showSnackBar(
+        const SnackBar(
+          content: Text('Please complete all required fields correctly.'),
+        ),
+      );
+      return;
+    }
 
     final userId = await sl<AuthStorage>().getUserId();
 
     if (userId == null) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(providerContext).showSnackBar(
         SnackBar(
-          content: Text(context.l10n.userSessionNotFound),
+          content: Text(providerContext.l10n.userSessionNotFound),
         ),
       );
       return;
@@ -140,7 +149,7 @@ class _CompleteSupplierProfileScreenState
 
     if (!mounted) return;
 
-    context.read<SupplierProfileCubit>().createSupplierProfile(
+    providerContext.read<SupplierProfileCubit>().createSupplierProfile(
           userId: userId,
           companyName: _companyNameController.text.trim(),
           companyAddress: _companyAddressController.text.trim(),
@@ -215,6 +224,8 @@ class _CompleteSupplierProfileScreenState
                         padding: const EdgeInsets.all(20),
                         child: Form(
                           key: _formKey,
+                          autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -294,7 +305,7 @@ class _CompleteSupplierProfileScreenState
                                 hintText: l10n.selectCity,
                                 items: _cities
                                     .map(
-                                      (city) => DropdownMenuItem(
+                                      (city) => DropdownMenuItem<String>(
                                         value: city.value,
                                         child: Text(
                                           context.trOption(city.labelKey),
@@ -324,7 +335,7 @@ class _CompleteSupplierProfileScreenState
                                 hintText: l10n.selectBusinessType,
                                 items: _businessTypes
                                     .map(
-                                      (type) => DropdownMenuItem(
+                                      (type) => DropdownMenuItem<String>(
                                         value: type.value,
                                         child: Text(
                                           context.trOption(type.labelKey),
@@ -374,7 +385,7 @@ class _CompleteSupplierProfileScreenState
                               PrimaryButton(
                                 text: l10n.saveAndContinue,
                                 isLoading: state.isLoading,
-                                onPressed: _submit,
+                                onPressed: () => _submit(context),
                               ),
                             ],
                           ),

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
@@ -16,15 +17,23 @@ class SupplierProfileService {
     required SupplierProfileRequestModel request,
   }) async {
     try {
+      debugPrint('SUPPLIER PROFILE URL: ${ApiConfig.baseUrl}${ApiConfig.supplierProfile}');
+      debugPrint('SUPPLIER PROFILE BODY: ${request.toJson()}');
+
       final response = await apiClient.dio.post(
-        ApiConfig.supplierProfile(userId),
+        ApiConfig.supplierProfile,
         data: request.toJson(),
       );
 
+      debugPrint('SUPPLIER PROFILE RESPONSE: ${response.data}');
       return SupplierProfileResponseModel.fromJson(response.data);
     } on DioException catch (e) {
+      debugPrint('SUPPLIER PROFILE ERROR TYPE: ${e.type}');
+      debugPrint('SUPPLIER PROFILE ERROR MESSAGE: ${e.message}');
+      debugPrint('SUPPLIER PROFILE ERROR RESPONSE: ${e.response?.data}');
       throw AppException(_extractMessage(e));
-    } catch (_) {
+    } catch (e) {
+      debugPrint('SUPPLIER PROFILE UNKNOWN ERROR: $e');
       throw AppException('Failed to complete supplier profile');
     }
   }
@@ -36,8 +45,11 @@ class SupplierProfileService {
       if (data['message'] != null) {
         return data['message'].toString();
       }
+      if (data['error'] != null) {
+        return data['error'].toString();
+      }
     }
 
-    return 'Something went wrong';
+    return e.message ?? 'Something went wrong';
   }
 }
