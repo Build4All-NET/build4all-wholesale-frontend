@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
@@ -15,6 +14,7 @@ import '../../../../injection_container.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/auth_header.dart';
+import 'package:flutter/services.dart';
 
 class RetailerSignupScreen extends StatefulWidget {
   const RetailerSignupScreen({super.key});
@@ -110,8 +110,9 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
     }
 
     final cleaned = value.replaceAll(' ', '');
-    final lebanesePhoneRegex =
-        RegExp(r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$');
+    final lebanesePhoneRegex = RegExp(
+      r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$',
+    );
 
     if (!lebanesePhoneRegex.hasMatch(cleaned)) {
       return l10n.enterValidLebanesePhone;
@@ -127,9 +128,9 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             context.read<AuthCubit>().clearMessages();
           }
 
@@ -173,9 +174,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                         borderRadius: BorderRadius.circular(
                           AppThemeTokens.radiusLarge,
                         ),
-                        side: const BorderSide(
-                          color: AppThemeTokens.border,
-                        ),
+                        side: const BorderSide(color: AppThemeTokens.border),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(18),
@@ -248,8 +247,11 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 validator: Validators.password,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
                                 decoration: InputDecoration(
-                                  hintText: '••••••••',
+                                  hintText: '******',
                                   suffixIcon: IconButton(
                                     onPressed: () {
                                       setState(() {
@@ -264,7 +266,6 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 16),
 
                               Text(l10n.confirmPassword),
@@ -272,12 +273,16 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                               TextFormField(
                                 controller: _confirmPasswordController,
                                 obscureText: _obscureConfirmPassword,
-                                validator: (value) => Validators.confirmPassword(
-                                  value,
-                                  _passwordController.text.trim(),
-                                ),
+                                validator: (value) =>
+                                    Validators.confirmPassword(
+                                      value,
+                                      _passwordController.text.trim(),
+                                    ),
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
                                 decoration: InputDecoration(
-                                  hintText: '••••••••',
+                                  hintText: '******',
                                   suffixIcon: IconButton(
                                     onPressed: () {
                                       setState(() {
@@ -293,7 +298,6 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 16),
 
                               Text(l10n.storeAddress),
@@ -387,9 +391,9 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                     child: Text(
                                       l10n.login,
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),

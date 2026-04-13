@@ -59,14 +59,8 @@ class _CompleteSupplierProfileScreenState
       value: 'Electrical Supplies',
       labelKey: 'businessElectricalSupplies',
     ),
-    SelectOption(
-      value: 'Plumbing',
-      labelKey: 'businessPlumbing',
-    ),
-    SelectOption(
-      value: 'Tools & Hardware',
-      labelKey: 'businessToolsHardware',
-    ),
+    SelectOption(value: 'Plumbing', labelKey: 'businessPlumbing'),
+    SelectOption(value: 'Tools & Hardware', labelKey: 'businessToolsHardware'),
     SelectOption(
       value: 'Industrial Equipment',
       labelKey: 'businessIndustrialEquipment',
@@ -79,10 +73,7 @@ class _CompleteSupplierProfileScreenState
       value: 'Wholesale Distribution',
       labelKey: 'businessWholesaleDistribution',
     ),
-    SelectOption(
-      value: 'Other',
-      labelKey: 'businessOther',
-    ),
+    SelectOption(value: 'Other', labelKey: 'businessOther'),
   ];
 
   @override
@@ -113,8 +104,9 @@ class _CompleteSupplierProfileScreenState
     }
 
     final cleaned = value.replaceAll(' ', '');
-    final lebanesePhoneRegex =
-        RegExp(r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$');
+    final lebanesePhoneRegex = RegExp(
+      r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$',
+    );
 
     if (!lebanesePhoneRegex.hasMatch(cleaned)) {
       return l10n.enterValidLebanesePhone;
@@ -140,9 +132,7 @@ class _CompleteSupplierProfileScreenState
     if (userId == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(providerContext).showSnackBar(
-        SnackBar(
-          content: Text(providerContext.l10n.userSessionNotFound),
-        ),
+        SnackBar(content: Text(providerContext.l10n.userSessionNotFound)),
       );
       return;
     }
@@ -150,15 +140,15 @@ class _CompleteSupplierProfileScreenState
     if (!mounted) return;
 
     providerContext.read<SupplierProfileCubit>().createSupplierProfile(
-          userId: userId,
-          companyName: _companyNameController.text.trim(),
-          companyAddress: _companyAddressController.text.trim(),
-          phoneNumber: _phoneNumberController.text.trim(),
-          city: _selectedCity!,
-          businessType: _selectedBusinessType!,
-          description: _descriptionController.text.trim(),
-          logoUrl: _logoUrlController.text.trim(),
-        );
+      userId: userId,
+      companyName: _companyNameController.text.trim(),
+      companyAddress: _companyAddressController.text.trim(),
+      phoneNumber: _phoneNumberController.text.trim(),
+      city: _selectedCity!,
+      businessType: _selectedBusinessType!,
+      description: _descriptionController.text.trim(),
+      logoUrl: _logoUrlController.text.trim(),
+    );
   }
 
   @override
@@ -170,17 +160,15 @@ class _CompleteSupplierProfileScreenState
       child: BlocConsumer<SupplierProfileCubit, SupplierProfileState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             context.read<SupplierProfileCubit>().clearMessages();
           }
 
           if (state.success && state.profile != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.supplierProfileSavedSuccessfully),
-              ),
+              SnackBar(content: Text(l10n.supplierProfileSavedSuccessfully)),
             );
             context.read<SupplierProfileCubit>().clearMessages();
             context.go('/supplier-dashboard');
@@ -216,16 +204,13 @@ class _CompleteSupplierProfileScreenState
                         borderRadius: BorderRadius.circular(
                           AppThemeTokens.radiusLarge,
                         ),
-                        side: const BorderSide(
-                          color: AppThemeTokens.border,
-                        ),
+                        side: const BorderSide(color: AppThemeTokens.border),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(20),
                         child: Form(
                           key: _formKey,
-                          autovalidateMode:
-                              AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
