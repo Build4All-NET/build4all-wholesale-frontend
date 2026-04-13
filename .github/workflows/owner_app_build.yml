@@ -1,0 +1,125 @@
+name: Wholesale App Build Basic
+
+on:
+  repository_dispatch:
+    types: [owner_app_build]
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    env:
+      CI_CALLBACK_TOKEN: ${{ secrets.CI_CALLBACK_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract payload
+        run: |
+          python3 - <<'PY'
+          import json, os
+          payload = json.loads(r'''${{ toJson(github.event.client_payload) }}''') or {}
+          cfg = payload.get("CONFIG") or {}
+
+          build_id = str(payload.get("BUILD_ID") or payload.get("buildId") or "").strip()
+          link_id = str(
+              cfg.get("OWNER_PROJECT_LINK_ID")
+              or payload.get("OWNER_PROJECT_LINK_ID")
+              or payload.get("ownerProjectLinkId")
+              or ""
+          ).strip()
+          api_base = str(cfg.get("API_BASE_URL") or payload.get("API_BASE_URL") or "").strip().rstrip("/")
+
+          if not link_id:
+              raise SystemExit("Missing OWNER_PROJECT_LINK_ID")
+          if not api_base:
+              raise SystemExit("Missing API_BASE_URL")
+
+          env = {
+              "BUILD_ID": build_id,
+              "LINK_ID": link_id,
+              "API_BASE": api_base,
+          }
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              for k, v in env.items():
+                  f.write(f"{k}={v}\n")
+          PY
+
+      - name: Mark build RUNNING
+        if: always()
+        run: |
+          curl -sS -X PUT "${API_BASE}/api/ci/build-jobs/running" \
+            -H "Content-Type: application/json" \
+            -H "X-Auth-Token: ${CI_CALLBACK_TOKEN}" \
+            -d "{\"buildId\":\"${BUILD_ID}\",\"linkId\":\"${LINK_ID}\",\"platform\":\"ANDROID\"}" || true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.0"
+          channel: stable
+
+      - name: Create ci_env.json
+        run: |
+          mkdir -p lib/env
+          cat > lib/env/ci_env.json <<EOF
+          {
+            "API_BASE_URL": "${API_BASE}",
+            "OWNER_PROJECT_LINK_ID": "${LINK_ID}",
+            "APP_TYPE": "WHOLESALE"
+          }
+          EOF
+          cat lib/env/ci_env.json
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release --dart-define-from-file=lib/env/ci_env.json
+
+      - name: Save APK URL
+        if: success()
+        run: |
+          APK_NAME="wholesale-app-${LINK_ID}.apk"
+          cp build/app/outputs/flutter-apk/app-release.apk "build/app/outputs/flutter-apk/${APK_NAME}"
+
+          TAG="wholesale-build-${LINK_ID}-${{ github.run_number }}"
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --title "$TAG" --notes "Wholesale CI build"
+
+          gh release upload "$TAG" "build/app/outputs/flutter-apk/${APK_NAME}" --clobber
+
+          APK_URL="https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/releases/download/${TAG}/${APK_NAME}"
+
+          curl -sS -X PUT "${API_BASE}/api/ci/owner-project-links/${LINK_ID}/apk-url" \
+            -H "Content-Type: application/json" \
+            -H "X-Auth-Token: ${CI_CALLBACK_TOKEN}" \
+            -d "{\"apkUrl\":\"${APK_URL}\",\"buildId\":\"${BUILD_ID}\"}" || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Report final status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            curl -sS -X PUT "${API_BASE}/api/ci/build-jobs/succeeded" \
+              -H "Content-Type: application/json" \
+              -H "X-Auth-Token: ${CI_CALLBACK_TOKEN}" \
+              -d "{\"buildId\":\"${BUILD_ID}\",\"linkId\":\"${LINK_ID}\",\"platform\":\"ANDROID\"}" || true
+          else
+            curl -sS -X PUT "${API_BASE}/api/ci/build-jobs/failed" \
+              -H "Content-Type: application/json" \
+              -H "X-Auth-Token: ${CI_CALLBACK_TOKEN}" \
+              -d "{\"buildId\":\"${BUILD_ID}\",\"linkId\":\"${LINK_ID}\",\"platform\":\"ANDROID\",\"error\":\"Wholesale build failed\"}" || true
+          fi
