@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
@@ -58,9 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             context.read<AuthCubit>().clearMessages();
           }
 
@@ -99,9 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(
                           AppThemeTokens.radiusLarge,
                         ),
-                        side: const BorderSide(
-                          color: AppThemeTokens.border,
-                        ),
+                        side: const BorderSide(color: AppThemeTokens.border),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(18),
@@ -118,8 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               AuthHeader(
                                 icon: Icons.storefront_outlined,
                                 iconBackgroundColor: const Color(0xFFDCFCE7),
-                                iconColor:
-                                    Theme.of(context).colorScheme.primary,
+                                iconColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
                                 title: l10n.supplierManager,
                                 subtitle: l10n.loginSubtitle,
                               ),
@@ -155,8 +155,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 validator: Validators.password,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
                                 decoration: InputDecoration(
-                                  hintText: '********',
+                                  hintText: '******',
                                   prefixIcon: const Icon(Icons.lock_outline),
                                   suffixIcon: IconButton(
                                     onPressed: () {
@@ -229,12 +232,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 52,
                                 child: OutlinedButton.icon(
                                   onPressed: null,
-                                  icon:
-                                      const Icon(Icons.g_mobiledata, size: 26),
+                                  icon: const Icon(
+                                    Icons.g_mobiledata,
+                                    size: 26,
+                                  ),
                                   label: Text(l10n.loginWithGoogle),
                                   style: OutlinedButton.styleFrom(
-                                    foregroundColor:
-                                        AppThemeTokens.textPrimary,
+                                    foregroundColor: AppThemeTokens.textPrimary,
                                     side: const BorderSide(
                                       color: AppThemeTokens.border,
                                     ),
@@ -250,23 +254,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(height: 20),
 
                               Wrap(
-  alignment: WrapAlignment.center,
-  crossAxisAlignment: WrapCrossAlignment.center,
-  children: [
-    Text('${l10n.dontHaveAccount} '),
-    GestureDetector(
-      onTap: () => context.push('/signup'),
-      child: Text(
-        l10n.signUp,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    ),
-  ],
-),
-
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Text('${l10n.dontHaveAccount} '),
+                                  GestureDetector(
+                                    onTap: () => context.push('/signup'),
+                                    child: Text(
+                                      l10n.signUp,
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),

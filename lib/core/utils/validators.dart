@@ -1,5 +1,5 @@
 class Validators {
-  static String? requiredField(String? value, {String fieldName = 'This field'}) {
+  static String? requiredField(String? value, {required String fieldName}) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
     }
@@ -11,7 +11,10 @@ class Validators {
       return 'Email is required';
     }
 
-    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+    final emailRegex = RegExp(
+      r'^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$',
+    );
+
     if (!emailRegex.hasMatch(value.trim())) {
       return 'Enter a valid email';
     }
@@ -24,23 +27,26 @@ class Validators {
       return 'Password is required';
     }
 
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters';
+    if (value.trim().length != 6) {
+      return 'Password must be exactly 6 characters';
     }
 
     return null;
   }
 
-  static String? confirmPassword(String? value, String originalPassword) {
+  static String? confirmPassword(String? value, String password) {
     if (value == null || value.trim().isEmpty) {
       return 'Confirm password is required';
     }
 
-    if (value != originalPassword) {
-      return 'Password and confirm password do not match';
+    if (value.trim().length != 6) {
+      return 'Password must be exactly 6 characters';
+    }
+
+    if (value.trim() != password.trim()) {
+      return 'Passwords do not match';
     }
 
     return null;
   }
 }
-

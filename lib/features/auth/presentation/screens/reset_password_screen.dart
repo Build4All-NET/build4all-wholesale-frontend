@@ -11,14 +11,12 @@ import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
+import 'package:flutter/services.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String? initialToken;
 
-  const ResetPasswordScreen({
-    super.key,
-    this.initialToken,
-  });
+  const ResetPasswordScreen({super.key, this.initialToken});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -67,9 +65,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             context.read<AuthCubit>().clearMessages();
           }
 
@@ -115,9 +113,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         borderRadius: BorderRadius.circular(
                           AppThemeTokens.radiusLarge,
                         ),
-                        side: const BorderSide(
-                          color: AppThemeTokens.border,
-                        ),
+                        side: const BorderSide(color: AppThemeTokens.border),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(18),
@@ -169,6 +165,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 controller: _newPasswordController,
                                 obscureText: _obscureNewPassword,
                                 validator: Validators.password,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
                                 decoration: InputDecoration(
                                   hintText: l10n.newPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
@@ -187,16 +186,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 16),
-
                               TextFormField(
                                 controller: _confirmPasswordController,
                                 obscureText: _obscureConfirmPassword,
-                                validator: (value) => Validators.confirmPassword(
-                                  value,
-                                  _newPasswordController.text.trim(),
-                                ),
+                                validator: (value) =>
+                                    Validators.confirmPassword(
+                                      value,
+                                      _newPasswordController.text.trim(),
+                                    ),
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
                                 decoration: InputDecoration(
                                   hintText: l10n.confirmNewPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
@@ -215,7 +216,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 24),
 
                               PrimaryButton(
