@@ -1,8 +1,20 @@
 import '../config/app_config.dart';
 
 class ApiConfig {
-  static String get baseUrl => AppConfig.baseUrl;
+  /// Central Build4All base URL
+  static String get apiBaseUrl => AppConfig.apiBaseUrl;
 
+  /// Wholesale project backend base URL
+  static String get projectApiBaseUrl => AppConfig.projectApiBaseUrl;
+
+  /// ----------------------------
+  /// Build4All central endpoints
+  /// ----------------------------
+  static const String adminLoginFront = '/auth/admin/login/front';
+
+  /// ----------------------------
+  /// Wholesale project endpoints
+  /// ----------------------------
   static const String login = '/auth/login';
   static const String retailerSignup = '/auth/signup/retailer';
   static const String forgotPassword = '/auth/forgot-password';
@@ -14,3 +26,4 @@ class ApiConfig {
   static const String supplierProfile = '/supplier-profile';
   static String retailerProfile(int userId) => '/retailer-profile/$userId';
 }
+

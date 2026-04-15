@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import 'core/config/app_config.dart';
 import 'core/network/api_client.dart';
 import 'core/storage/auth_storage.dart';
 import 'core/storage/theme_storage.dart';
@@ -22,6 +23,8 @@ import 'features/supplier_profile/data/services/supplier_profile_service.dart';
 import 'features/supplier_profile/domain/repositories/supplier_profile_repository.dart';
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
+import 'core/theme/runtime_theme_service.dart';
+
 
 final sl = GetIt.instance;
 
@@ -32,12 +35,24 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthStorage>(() => AuthStorage());
   sl.registerLazySingleton<ThemeStorage>(() => ThemeStorage());
   sl.registerLazySingleton<LocaleStorage>(() => LocaleStorage());
-
+  
   // =========================
   // CORE / NETWORK
   // =========================
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(sl<AuthStorage>()),
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.apiBaseUrl,
+    ),
+    instanceName: 'centralApiClient',
+  );
+
+  sl.registerLazySingleton<ApiClient>(
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.projectApiBaseUrl,
+    ),
+    instanceName: 'projectApiClient',
   );
 
   // =========================
@@ -55,11 +70,16 @@ Future<void> init() async {
   // SERVICES
   // =========================
   sl.registerLazySingleton<AuthService>(
-    () => AuthService(sl<ApiClient>()),
+    () => AuthService(
+      centralApiClient: sl<ApiClient>(instanceName: 'centralApiClient'),
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<SupplierProfileService>(
-    () => SupplierProfileService(sl<ApiClient>()),
+    () => SupplierProfileService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   // =========================
@@ -100,6 +120,11 @@ Future<void> init() async {
   sl.registerLazySingleton<CreateSupplierProfileUseCase>(
     () => CreateSupplierProfileUseCase(sl<SupplierProfileRepository>()),
   );
+  sl.registerLazySingleton<RuntimeThemeService>(
+  () => RuntimeThemeService(),
+);
+
+
 
   // =========================
   // CUBITS
@@ -119,4 +144,3 @@ Future<void> init() async {
     ),
   );
 }
-

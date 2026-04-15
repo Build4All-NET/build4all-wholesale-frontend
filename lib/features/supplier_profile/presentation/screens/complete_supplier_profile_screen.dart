@@ -115,11 +115,11 @@ class _CompleteSupplierProfileScreenState
     return null;
   }
 
-  Future<void> _submit(BuildContext providerContext) async {
-    FocusScope.of(providerContext).unfocus();
+  Future<void> _submit(BuildContext context) async {
+    FocusScope.of(context).unfocus();
 
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(providerContext).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please complete all required fields correctly.'),
         ),
@@ -129,17 +129,16 @@ class _CompleteSupplierProfileScreenState
 
     final userId = await sl<AuthStorage>().getUserId();
 
+    if (!mounted) return;
+
     if (userId == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(providerContext).showSnackBar(
-        SnackBar(content: Text(providerContext.l10n.userSessionNotFound)),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.userSessionNotFound)),
       );
       return;
     }
 
-    if (!mounted) return;
-
-    providerContext.read<SupplierProfileCubit>().createSupplierProfile(
+    context.read<SupplierProfileCubit>().createSupplierProfile(
       userId: userId,
       companyName: _companyNameController.text.trim(),
       companyAddress: _companyAddressController.text.trim(),

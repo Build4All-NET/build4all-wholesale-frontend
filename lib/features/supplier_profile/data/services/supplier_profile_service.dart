@@ -17,7 +17,7 @@ class SupplierProfileService {
     required SupplierProfileRequestModel request,
   }) async {
     try {
-      debugPrint('SUPPLIER PROFILE URL: ${ApiConfig.baseUrl}${ApiConfig.supplierProfile}');
+      debugPrint('SUPPLIER PROFILE URL: ${ApiConfig.projectApiBaseUrl}${ApiConfig.supplierProfile}');
       debugPrint('SUPPLIER PROFILE BODY: ${request.toJson()}');
 
       final response = await apiClient.dio.post(

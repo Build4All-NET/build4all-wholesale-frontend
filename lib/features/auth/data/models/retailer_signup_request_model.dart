@@ -1,5 +1,3 @@
-import '../../../../core/config/app_config.dart';
-
 class RetailerSignupRequestModel {
   final String fullName;
   final String storeName;
@@ -34,8 +32,6 @@ class RetailerSignupRequestModel {
       'storeAddress': storeAddress,
       'city': city,
       'businessType': businessType,
-      'ownerProjectLinkId': AppConfig.ownerProjectLinkId,
-      'appType': AppConfig.appType,
     };
   }
 }
