@@ -21,7 +21,6 @@ class AppConfig {
     defaultValue: 'WHOLESALE',
   );
 
-  /// This is the app / tenant link id coming from Build4All app creation context
   static const String ownerProjectLinkId = String.fromEnvironment(
     'OWNER_PROJECT_LINK_ID',
     defaultValue: '',
@@ -41,4 +40,12 @@ class AppConfig {
     'DEFAULT_LANGUAGE',
     defaultValue: 'en',
   );
+
+  /// Optional:
+  /// only needed if /runtime-config/by-link requires X-Auth-Token
+  static const String runtimeConfigToken = String.fromEnvironment(
+    'RUNTIME_CONFIG_TOKEN',
+    defaultValue: '',
+  );
 }
+
