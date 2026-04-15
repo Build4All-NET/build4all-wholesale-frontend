@@ -1,15 +1,17 @@
 import 'package:dio/dio.dart';
+
 import '../storage/auth_storage.dart';
-import 'api_config.dart';
 
 class ApiClient {
   final Dio dio;
   final AuthStorage authStorage;
 
-  ApiClient(this.authStorage)
-      : dio = Dio(
+  ApiClient(
+    this.authStorage, {
+    required String baseUrl,
+  }) : dio = Dio(
           BaseOptions(
-            baseUrl: ApiConfig.baseUrl,
+            baseUrl: baseUrl,
             connectTimeout: const Duration(seconds: 8),
             receiveTimeout: const Duration(seconds: 8),
             headers: {
@@ -20,10 +22,24 @@ class ApiClient {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = await authStorage.getToken();
+          final path = options.path;
 
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
+          final isPublicAuthEndpoint =
+              path == '/auth/login' ||
+              path == '/auth/signup/retailer' ||
+              path == '/auth/forgot-password' ||
+              path == '/auth/reset-password' ||
+              path == '/auth/build4all/supplier-sync' ||
+              path == '/auth/admin/login/front';
+
+          if (!isPublicAuthEndpoint) {
+            final token = await authStorage.getToken();
+
+            if (token != null && token.isNotEmpty) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          } else {
+            options.headers.remove('Authorization');
           }
 
           handler.next(options);

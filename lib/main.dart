@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+
 import 'app/app.dart';
+import 'core/config/app_config.dart';
 import 'core/theme/locale_cubit.dart';
 import 'core/theme/theme_cubit.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
-import 'core/config/app_config.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await di.init();
   await sl<ThemeCubit>().loadSavedTheme();
   await sl<LocaleCubit>().loadSavedLocale();
+
   debugPrint('APP_NAME: ${AppConfig.appName}');
-  debugPrint('API_BASE_URL: ${AppConfig.baseUrl}');
+  debugPrint('API_BASE_URL (Build4All): ${AppConfig.apiBaseUrl}');
+  debugPrint(
+    'PROJECT_API_BASE_URL (Wholesale): ${AppConfig.projectApiBaseUrl}',
+  );
   debugPrint('APP_TYPE: ${AppConfig.appType}');
   debugPrint('OWNER_PROJECT_LINK_ID: ${AppConfig.ownerProjectLinkId}');
   debugPrint('PROJECT_ID: ${AppConfig.projectId}');

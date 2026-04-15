@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import 'core/config/app_config.dart';
 import 'core/network/api_client.dart';
 import 'core/storage/auth_storage.dart';
 import 'core/storage/theme_storage.dart';
@@ -37,7 +38,19 @@ Future<void> init() async {
   // CORE / NETWORK
   // =========================
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(sl<AuthStorage>()),
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.apiBaseUrl,
+    ),
+    instanceName: 'centralApiClient',
+  );
+
+  sl.registerLazySingleton<ApiClient>(
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.projectApiBaseUrl,
+    ),
+    instanceName: 'projectApiClient',
   );
 
   // =========================
@@ -55,11 +68,16 @@ Future<void> init() async {
   // SERVICES
   // =========================
   sl.registerLazySingleton<AuthService>(
-    () => AuthService(sl<ApiClient>()),
+    () => AuthService(
+      centralApiClient: sl<ApiClient>(instanceName: 'centralApiClient'),
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<SupplierProfileService>(
-    () => SupplierProfileService(sl<ApiClient>()),
+    () => SupplierProfileService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   // =========================
@@ -119,4 +137,3 @@ Future<void> init() async {
     ),
   );
 }
-
