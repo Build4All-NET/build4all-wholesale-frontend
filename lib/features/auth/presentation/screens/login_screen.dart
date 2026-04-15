@@ -155,9 +155,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 validator: Validators.password,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(6),
-                                ],
                                 decoration: InputDecoration(
                                   hintText: '******',
                                   prefixIcon: const Icon(Icons.lock_outline),

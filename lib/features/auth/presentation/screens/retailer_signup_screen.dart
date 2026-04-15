@@ -247,9 +247,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 validator: Validators.password,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(6),
-                                ],
+
                                 decoration: InputDecoration(
                                   hintText: '******',
                                   suffixIcon: IconButton(
@@ -278,9 +276,6 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                                       value,
                                       _passwordController.text.trim(),
                                     ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(6),
-                                ],
                                 decoration: InputDecoration(
                                   hintText: '******',
                                   suffixIcon: IconButton(

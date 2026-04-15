@@ -165,9 +165,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 controller: _newPasswordController,
                                 obscureText: _obscureNewPassword,
                                 validator: Validators.password,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(6),
-                                ],
+
                                 decoration: InputDecoration(
                                   hintText: l10n.newPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
@@ -195,9 +193,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       value,
                                       _newPasswordController.text.trim(),
                                     ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(6),
-                                ],
+
                                 decoration: InputDecoration(
                                   hintText: l10n.confirmNewPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
