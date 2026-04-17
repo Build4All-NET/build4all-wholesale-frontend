@@ -116,39 +116,39 @@ class _CompleteSupplierProfileScreenState
   }
 
   Future<void> _submit(BuildContext context) async {
-    FocusScope.of(context).unfocus();
+  FocusScope.of(context).unfocus();
 
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please complete all required fields correctly.'),
-        ),
-      );
-      return;
-    }
-
-    final userId = await sl<AuthStorage>().getUserId();
-
-    if (!mounted) return;
-
-    if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.userSessionNotFound)),
-      );
-      return;
-    }
-
-    context.read<SupplierProfileCubit>().createSupplierProfile(
-      userId: userId,
-      companyName: _companyNameController.text.trim(),
-      companyAddress: _companyAddressController.text.trim(),
-      phoneNumber: _phoneNumberController.text.trim(),
-      city: _selectedCity!,
-      businessType: _selectedBusinessType!,
-      description: _descriptionController.text.trim(),
-      logoUrl: _logoUrlController.text.trim(),
+  if (!_formKey.currentState!.validate()) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please complete all required fields correctly.'),
+      ),
     );
+    return;
   }
+
+  final userId = await sl<AuthStorage>().getUserId();
+
+  if (!mounted) return;
+
+  if (userId == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.userSessionNotFound)),
+    );
+    return;
+  }
+
+  context.read<SupplierProfileCubit>().createSupplierProfile(
+    userId: userId,
+    companyName: _companyNameController.text.trim(),
+    companyAddress: _companyAddressController.text.trim(),
+    phoneNumber: _phoneNumberController.text.trim(),
+    city: _selectedCity!,
+    businessType: _selectedBusinessType!,
+    description: _descriptionController.text.trim(),
+    logoUrl: _logoUrlController.text.trim(),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

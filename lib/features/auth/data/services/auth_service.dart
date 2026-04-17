@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
+import '../../../../core/config/app_config.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
@@ -24,90 +24,188 @@ class AuthService {
     required this.projectApiClient,
   });
 
-  /// ----------------------------
-  /// Build4All central admin/owner login
-  /// ----------------------------
   Future<AdminLoginResponseModel> adminLoginFront(
     AdminLoginRequestModel request,
   ) async {
     try {
-      debugPrint(
-        'ADMIN LOGIN URL: ${ApiConfig.apiBaseUrl}${ApiConfig.adminLoginFront}',
-      );
-      debugPrint('ADMIN LOGIN BODY: ${request.toJson()}');
-
       final response = await centralApiClient.dio.post(
         ApiConfig.adminLoginFront,
         data: request.toJson(),
       );
 
-      debugPrint('ADMIN LOGIN RESPONSE: ${response.data}');
       return AdminLoginResponseModel.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('ADMIN LOGIN ERROR TYPE: ${e.type}');
-      debugPrint('ADMIN LOGIN ERROR MESSAGE: ${e.message}');
-      debugPrint('ADMIN LOGIN ERROR RESPONSE: ${e.response?.data}');
       throw AppException(_extractMessage(e));
-    } catch (e) {
-      debugPrint('ADMIN LOGIN UNKNOWN ERROR: $e');
+    } catch (_) {
       throw AppException('Admin login failed');
     }
   }
 
-  /// ----------------------------
-  /// Wholesale local supplier sync from Build4All
-  /// ----------------------------
+  Future<Map<String, dynamic>> build4AllUserLogin({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await centralApiClient.dio.post(
+        ApiConfig.userLogin,
+        data: {
+          'email': email,
+          'password': password,
+          'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
+        },
+      );
+
+      return Map<String, dynamic>.from(response.data);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (_) {
+      throw AppException('Build4All user login failed');
+    }
+  }
+
+  Future<void> sendBuild4AllVerification({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await centralApiClient.dio.post(
+        ApiConfig.sendVerification,
+        data: {
+          'email': email,
+          'password': password,
+          'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
+        },
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (_) {
+      throw AppException('Failed to send verification code');
+    }
+  }
+
+  Future<int> verifyBuild4AllEmailCode({
+    required String email,
+    required String code,
+  }) async {
+    try {
+      final response = await centralApiClient.dio.post(
+        ApiConfig.verifyEmailCode,
+        data: {
+          'email': email,
+          'code': code,
+        },
+      );
+
+      final data = Map<String, dynamic>.from(response.data);
+      final user = Map<String, dynamic>.from(data['user'] as Map);
+      final id = user['id'];
+      if (id is int) return id;
+      return int.parse(id.toString());
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (_) {
+      throw AppException('Failed to verify code');
+    }
+  }
+
+  Future<Map<String, dynamic>> completeBuild4AllProfile({
+    required int pendingId,
+    required String username,
+    required String firstName,
+    required String lastName,
+    required bool isPublicProfile,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'pendingId': pendingId,
+        'username': username,
+        'firstName': firstName,
+        'lastName': lastName,
+        'isPublicProfile': isPublicProfile.toString(),
+        'ownerProjectLinkId': AppConfig.ownerProjectLinkId,
+      });
+
+      final response = await centralApiClient.dio.post(
+        ApiConfig.completeProfile,
+        data: formData,
+      );
+
+      return Map<String, dynamic>.from(response.data);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (_) {
+      throw AppException('Failed to complete profile');
+    }
+  }
+
   Future<ApiResponseModel> syncSupplierFromBuild4All(
     Build4AllSupplierSyncRequestModel request,
   ) async {
     try {
-      debugPrint(
-        'SUPPLIER SYNC URL: ${ApiConfig.projectApiBaseUrl}${ApiConfig.supplierSync}',
-      );
-      debugPrint('SUPPLIER SYNC BODY: ${request.toJson()}');
-
       final response = await projectApiClient.dio.post(
         ApiConfig.supplierSync,
         data: request.toJson(),
       );
 
-      debugPrint('SUPPLIER SYNC RESPONSE: ${response.data}');
       return ApiResponseModel.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('SUPPLIER SYNC ERROR TYPE: ${e.type}');
-      debugPrint('SUPPLIER SYNC ERROR MESSAGE: ${e.message}');
-      debugPrint('SUPPLIER SYNC ERROR RESPONSE: ${e.response?.data}');
       throw AppException(_extractMessage(e));
-    } catch (e) {
-      debugPrint('SUPPLIER SYNC UNKNOWN ERROR: $e');
+    } catch (_) {
       throw AppException('Supplier sync failed');
     }
   }
 
-  /// ----------------------------
-  /// Wholesale local login
-  /// ----------------------------
+  Future<ApiResponseModel> syncRetailerFromBuild4All({
+    required int build4allUserId,
+    required String username,
+    required String firstName,
+    required String lastName,
+    required String email,
+    String? phoneNumber,
+    required String password,
+    String? storeName,
+    String? storeAddress,
+    String? city,
+    String? businessType,
+  }) async {
+    try {
+      final response = await projectApiClient.dio.post(
+        ApiConfig.retailerSync,
+        data: {
+          'build4allUserId': build4allUserId,
+          'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
+          'username': username,
+          'firstName': firstName,
+          'lastName': lastName,
+          'email': email,
+          'phoneNumber': phoneNumber,
+          'password': password,
+          'storeName': storeName,
+          'storeAddress': storeAddress,
+          'city': city,
+          'businessType': businessType,
+        },
+      );
+
+      return ApiResponseModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (_) {
+      throw AppException('Retailer sync failed');
+    }
+  }
+
   Future<AuthResponseModel> login(LoginRequestModel request) async {
     try {
-      debugPrint(
-        'LOGIN URL: ${ApiConfig.projectApiBaseUrl}${ApiConfig.login}',
-      );
-      debugPrint('LOGIN BODY: ${request.toJson()}');
-
       final response = await projectApiClient.dio.post(
         ApiConfig.login,
         data: request.toJson(),
       );
 
-      debugPrint('LOGIN RESPONSE: ${response.data}');
       return AuthResponseModel.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('LOGIN ERROR TYPE: ${e.type}');
-      debugPrint('LOGIN ERROR MESSAGE: ${e.message}');
-      debugPrint('LOGIN ERROR RESPONSE: ${e.response?.data}');
       throw AppException(_extractMessage(e));
-    } catch (e) {
-      debugPrint('LOGIN UNKNOWN ERROR: $e');
+    } catch (_) {
       throw AppException('Login failed');
     }
   }
@@ -133,25 +231,15 @@ class AuthService {
     RetailerSignupRequestModel request,
   ) async {
     try {
-      debugPrint(
-        'SIGNUP URL: ${ApiConfig.projectApiBaseUrl}${ApiConfig.retailerSignup}',
-      );
-      debugPrint('SIGNUP BODY: ${request.toJson()}');
-
       final response = await projectApiClient.dio.post(
         ApiConfig.retailerSignup,
         data: request.toJson(),
       );
 
-      debugPrint('SIGNUP RESPONSE: ${response.data}');
       return ApiResponseModel.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint('SIGNUP ERROR TYPE: ${e.type}');
-      debugPrint('SIGNUP ERROR MESSAGE: ${e.message}');
-      debugPrint('SIGNUP ERROR RESPONSE: ${e.response?.data}');
       throw AppException(_extractMessage(e));
-    } catch (e) {
-      debugPrint('SIGNUP UNKNOWN ERROR: $e');
+    } catch (_) {
       throw AppException('Retailer signup failed');
     }
   }
@@ -159,7 +247,6 @@ class AuthService {
   Future<AuthResponseModel> getCurrentUser() async {
     try {
       final response = await projectApiClient.dio.get(ApiConfig.currentUser);
-
       return AuthResponseModel.fromJson(response.data);
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
@@ -189,11 +276,10 @@ class AuthService {
     final data = e.response?.data;
 
     if (data is Map<String, dynamic>) {
-      if (data['message'] != null) {
-        return data['message'].toString();
-      }
-      if (data['error'] != null) {
-        return data['error'].toString();
+      if (data['message'] != null) return data['message'].toString();
+      if (data['error'] != null) return data['error'].toString();
+      if (data['code'] != null && data['message'] != null) {
+        return '${data['code']}: ${data['message']}';
       }
     }
 

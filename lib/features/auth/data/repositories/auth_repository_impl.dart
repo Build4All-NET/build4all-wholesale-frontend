@@ -22,11 +22,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.authStorage,
   });
 
-  /// Unified login flow:
-  /// 1) Try Build4All admin/owner login first
-  /// 2) If OWNER -> sync to wholesale backend
-  /// 3) Then local wholesale login to get project JWT
-  /// 4) If central admin login fails -> fallback to local retailer login
   @override
   Future<AuthUserEntity> login({
     required String email,
@@ -34,6 +29,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     final ownerProjectId = int.tryParse(AppConfig.ownerProjectLinkId);
 
+    // 1) try OWNER / SUPPLIER through Build4All admin login
     try {
       final adminLoginResponse = await authService.adminLoginFront(
         AdminLoginRequestModel(
@@ -47,39 +43,43 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (role == 'OWNER') {
         final admin = adminLoginResponse.admin ?? {};
-
-        final firstName = admin['firstName']?.toString().trim() ?? '';
-        final lastName = admin['lastName']?.toString().trim() ?? '';
-        final fullName = '$firstName $lastName'.trim().isEmpty
-            ? email
-            : '$firstName $lastName'.trim();
+        final firstName = admin['firstName']?.toString() ?? '';
+        final lastName = admin['lastName']?.toString() ?? '';
+        final username = admin['username']?.toString() ?? email;
+        final adminEmail = admin['email']?.toString() ?? email;
 
         await authService.syncSupplierFromBuild4All(
           Build4AllSupplierSyncRequestModel(
-            fullName: fullName,
-            email: admin['email']?.toString() ?? email,
+            build4allUserId: admin['id'] is int
+                ? admin['id'] as int
+                : int.tryParse(admin['id']?.toString() ?? ''),
+            ownerProjectLinkId: ownerProjectId,
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            fullName: ('$firstName $lastName').trim(),
+            email: adminEmail,
             password: password,
           ),
         );
 
-        final projectLoginResponse = await authService.login(
+        final localLogin = await authService.login(
           LoginRequestModel(
-            email: admin['email']?.toString() ?? email,
+            email: adminEmail,
             password: password,
           ),
         );
 
-        if (projectLoginResponse.token != null &&
-            projectLoginResponse.token!.isNotEmpty) {
+        if (localLogin.token != null && localLogin.token!.isNotEmpty) {
           await authStorage.saveSession(
-            token: projectLoginResponse.token!,
-            userId: projectLoginResponse.userId,
-            role: projectLoginResponse.role,
-            profileCompleted: projectLoginResponse.profileCompleted,
+            token: localLogin.token!,
+            userId: localLogin.userId,
+            role: localLogin.role,
+            profileCompleted: localLogin.profileCompleted,
           );
         }
 
-        return projectLoginResponse;
+        return localLogin;
       }
 
       if (role == 'SUPER_ADMIN') {
@@ -87,26 +87,57 @@ class AuthRepositoryImpl implements AuthRepository {
           'SUPER_ADMIN login is not supported inside the wholesale mobile app.',
         );
       }
-
-      throw AppException('Access denied for this role');
     } catch (_) {
-      final response = await authService.login(
+      // ignore and continue to retailer flow
+    }
+
+    // 2) try Build4All retailer/user login
+    try {
+      final userLogin = await authService.build4AllUserLogin(
+        email: email,
+        password: password,
+      );
+
+      final user = Map<String, dynamic>.from(userLogin['user'] as Map);
+      final build4allUserId = user['id'] is int
+          ? user['id'] as int
+          : int.parse(user['id'].toString());
+
+      final username = user['username']?.toString() ?? email;
+      final firstName = user['firstName']?.toString() ?? '';
+      final lastName = user['lastName']?.toString() ?? '';
+      final userEmail = user['email']?.toString() ?? email;
+
+      await authService.syncRetailerFromBuild4All(
+        build4allUserId: build4allUserId,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        email: userEmail,
+        password: password,
+      );
+
+      final localLogin = await authService.login(
         LoginRequestModel(
-          email: email,
+          email: userEmail,
           password: password,
         ),
       );
 
-      if (response.token != null && response.token!.isNotEmpty) {
+      if (localLogin.token != null && localLogin.token!.isNotEmpty) {
         await authStorage.saveSession(
-          token: response.token!,
-          userId: response.userId,
-          role: response.role,
-          profileCompleted: response.profileCompleted,
+          token: localLogin.token!,
+          userId: localLogin.userId,
+          role: localLogin.role,
+          profileCompleted: localLogin.profileCompleted,
         );
       }
 
-      return response;
+      return localLogin;
+    } catch (e) {
+      throw AppException(
+        e is AppException ? e.message : 'Login failed. Check your credentials.',
+      );
     }
   }
 
