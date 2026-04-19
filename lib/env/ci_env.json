@@ -1,5 +1,5 @@
 {
-  "API_BASE_URL": "https://attemptable-venial-chace.ngrok-free.dev",
+  "API_BASE_URL": "http://3.96.140.126:8080/api",
   "PROJECT_API_BASE_URL": "http://10.0.2.2:8082/api",
   "APP_NAME": "B2B Wholesale App",
   "APP_TYPE": "WHOLESALE",

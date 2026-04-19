@@ -10,10 +10,14 @@ import '../features/supplier_profile/presentation/screens/complete_supplier_prof
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/login',
     routes: [
       GoRoute(
         path: '/',
+        redirect: (context, state) => '/login',
+      ),
+      GoRoute(
+        path: '/login',
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
@@ -45,4 +49,3 @@ class AppRouter {
     ],
   );
 }
-

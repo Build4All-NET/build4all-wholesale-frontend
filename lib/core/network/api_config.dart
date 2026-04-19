@@ -24,7 +24,6 @@ class ApiConfig {
   static const String currentUser = '/auth/me';
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
-
   static const String supplierProfile = '/supplier-profile';
   static String retailerProfile(int userId) => '/retailer-profile/$userId';
 }

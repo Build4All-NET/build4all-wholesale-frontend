@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context.read<AuthCubit>().clearMessages();
           }
 
-          if (state.loginSuccess && state.user != null) {
+        if (state.loginSuccess && state.user != null) {
             final user = state.user!;
 
             if (user.isSupplier) {
@@ -74,10 +74,19 @@ class _LoginScreenState extends State<LoginScreen> {
               } else {
                 context.go('/supplier-dashboard');
               }
-            } else if (user.isRetailer) {
-              context.go('/retailer-dashboard');
+              return;
             }
-          }
+
+            if (user.isRetailer) {
+              context.go('/retailer-dashboard');
+              return;
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Unknown user role returned from backend')),
+            );
+        }
+
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();

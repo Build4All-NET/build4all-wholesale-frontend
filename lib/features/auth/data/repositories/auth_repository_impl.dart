@@ -6,6 +6,7 @@ import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/entities/forgot_password_response_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/admin_login_request_model.dart';
+import '../models/admin_login_response_model.dart';
 import '../models/build4all_supplier_sync_request_model.dart';
 import '../models/forgot_password_request_model.dart';
 import '../models/login_request_model.dart';
@@ -22,6 +23,20 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.authStorage,
   });
 
+  bool _isAuthFailureMessage(String message) {
+    final m = message.toLowerCase();
+    return m.contains('invalid email or password') ||
+        m.contains('invalid credentials') ||
+        m.contains('access denied') ||
+        m.contains('not a manager') ||
+        m.contains('not a super admin') ||
+        m.contains('access denied for this role') ||
+        m.contains('owner has no adminuserproject link') ||
+        m.contains('owner project link missing') ||
+        m.contains('invalid ownerprojectid') ||
+        m.contains('invalid owner project');
+  }
+
   @override
   Future<AuthUserEntity> login({
     required String email,
@@ -29,24 +44,37 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     final ownerProjectId = int.tryParse(AppConfig.ownerProjectLinkId);
 
-    // 1) try OWNER / SUPPLIER through Build4All admin login
+    AdminLoginResponseModel? adminLoginResponse;
+
+    // 1) Try OWNER / SUPPLIER through Build4All
     try {
-      final adminLoginResponse = await authService.adminLoginFront(
+      adminLoginResponse = await authService.adminLoginFront(
         AdminLoginRequestModel(
-          usernameOrEmail: email,
+          usernameOrEmail: email.trim(),
           password: password,
           ownerProjectId: ownerProjectId,
         ),
       );
+    } on AppException catch (e) {
+      // Only fallback to retailer if it is a REAL auth/role failure,
+      // not a technical/backend/endpoint failure.
+      if (!_isAuthFailureMessage(e.message)) {
+        throw AppException(e.message);
+      }
+      adminLoginResponse = null;
+    } catch (e) {
+      throw AppException('Login failed: $e');
+    }
 
+    if (adminLoginResponse != null) {
       final role = adminLoginResponse.role.toUpperCase();
 
       if (role == 'OWNER') {
         final admin = adminLoginResponse.admin ?? {};
         final firstName = admin['firstName']?.toString() ?? '';
         final lastName = admin['lastName']?.toString() ?? '';
-        final username = admin['username']?.toString() ?? email;
-        final adminEmail = admin['email']?.toString() ?? email;
+        final username = admin['username']?.toString() ?? email.trim();
+        final adminEmail = admin['email']?.toString() ?? email.trim();
 
         await authService.syncSupplierFromBuild4All(
           Build4AllSupplierSyncRequestModel(
@@ -87,14 +115,14 @@ class AuthRepositoryImpl implements AuthRepository {
           'SUPER_ADMIN login is not supported inside the wholesale mobile app.',
         );
       }
-    } catch (_) {
-      // ignore and continue to retailer flow
+
+      throw AppException('Unsupported admin role: $role');
     }
 
-    // 2) try Build4All retailer/user login
+    // 2) Try retailer/user login through Build4All
     try {
       final userLogin = await authService.build4AllUserLogin(
-        email: email,
+        email: email.trim(),
         password: password,
       );
 
@@ -103,10 +131,10 @@ class AuthRepositoryImpl implements AuthRepository {
           ? user['id'] as int
           : int.parse(user['id'].toString());
 
-      final username = user['username']?.toString() ?? email;
+      final username = user['username']?.toString() ?? email.trim();
       final firstName = user['firstName']?.toString() ?? '';
       final lastName = user['lastName']?.toString() ?? '';
-      final userEmail = user['email']?.toString() ?? email;
+      final userEmail = user['email']?.toString() ?? email.trim();
 
       await authService.syncRetailerFromBuild4All(
         build4allUserId: build4allUserId,
@@ -134,10 +162,10 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       return localLogin;
+    } on AppException catch (e) {
+      throw AppException(e.message);
     } catch (e) {
-      throw AppException(
-        e is AppException ? e.message : 'Login failed. Check your credentials.',
-      );
+      throw AppException('Login failed. Check your credentials.');
     }
   }
 
