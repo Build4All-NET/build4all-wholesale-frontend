@@ -30,11 +30,13 @@ class AuthService {
     required Dio dio,
     required String path,
     Object? body,
+    Map<String, dynamic>? queryParameters,
   }) {
     debugPrint('================ AUTH REQUEST ================');
     debugPrint('$label BASE URL: ${dio.options.baseUrl}');
     debugPrint('$label PATH: $path');
     debugPrint('$label FULL URL: ${dio.options.baseUrl}$path');
+    debugPrint('$label QUERY: $queryParameters');
     debugPrint('$label BODY: $body');
     debugPrint('=============================================');
   }
@@ -101,22 +103,25 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final body = {
+      final queryParameters = <String, dynamic>{
         'email': email.trim(),
-        'password': password,
-        'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
+        'password': password.trim(),
+        'ownerProjectLinkId': AppConfig.ownerProjectLinkId,
       };
 
       _logRequest(
         label: 'SEND_BUILD4ALL_VERIFICATION',
         dio: centralApiClient.dio,
         path: ApiConfig.sendVerification,
-        body: body,
+        queryParameters: queryParameters,
       );
 
       await centralApiClient.dio.post(
         ApiConfig.sendVerification,
-        data: body,
+        queryParameters: queryParameters,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
     } on DioException catch (e) {
       debugPrint('SEND_VERIFICATION STATUS: ${e.response?.statusCode}');
