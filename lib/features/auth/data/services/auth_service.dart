@@ -96,7 +96,7 @@ class AuthService {
     }
   }
 
-    Future<void> sendBuild4AllVerification({
+  Future<void> sendBuild4AllVerification({
     required String email,
     required String password,
   }) async {
@@ -169,9 +169,10 @@ class AuthService {
     required String firstName,
     required String lastName,
     required bool isPublicProfile,
+    String? profileImagePath,
   }) async {
     try {
-      final body = {
+      final map = <String, dynamic>{
         'pendingId': pendingId,
         'username': username.trim(),
         'firstName': firstName.trim(),
@@ -180,18 +181,20 @@ class AuthService {
         'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
       };
 
+      if (profileImagePath != null && profileImagePath.trim().isNotEmpty) {
+        map['profileImage'] = await MultipartFile.fromFile(profileImagePath);
+      }
+
       _logRequest(
         label: 'COMPLETE_BUILD4ALL_PROFILE',
         dio: centralApiClient.dio,
         path: ApiConfig.completeProfile,
-        body: body,
+        body: map,
       );
-
-      final formData = FormData.fromMap(body);
 
       final response = await centralApiClient.dio.post(
         ApiConfig.completeProfile,
-        data: formData,
+        data: FormData.fromMap(map),
       );
 
       return Map<String, dynamic>.from(response.data as Map);
@@ -375,6 +378,67 @@ class AuthService {
     }
   }
 
+  Future<Map<String, dynamic>> getRetailerProfile({
+    required int userId,
+  }) async {
+    try {
+      final path = ApiConfig.retailerProfile(userId);
+
+      _logRequest(
+        label: 'GET_RETAILER_PROFILE',
+        dio: projectApiClient.dio,
+        path: path,
+      );
+
+      final response = await projectApiClient.dio.get(path);
+      return Map<String, dynamic>.from(response.data as Map);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (e) {
+      throw AppException('Failed to load retailer profile: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateRetailerProfile({
+    required int userId,
+    required String fullName,
+    required String storeName,
+    required String phoneNumber,
+    required String storeAddress,
+    required String city,
+    required String businessType,
+  }) async {
+    try {
+      final path = ApiConfig.retailerProfile(userId);
+      final body = {
+        'fullName': fullName.trim(),
+        'storeName': storeName.trim(),
+        'phoneNumber': phoneNumber.trim(),
+        'storeAddress': storeAddress.trim(),
+        'city': city.trim(),
+        'businessType': businessType.trim(),
+      };
+
+      _logRequest(
+        label: 'UPDATE_RETAILER_PROFILE',
+        dio: projectApiClient.dio,
+        path: path,
+        body: body,
+      );
+
+      final response = await projectApiClient.dio.put(
+        path,
+        data: body,
+      );
+
+      return Map<String, dynamic>.from(response.data as Map);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    } catch (e) {
+      throw AppException('Failed to update retailer profile: $e');
+    }
+  }
+
   Future<ApiResponseModel> resetPassword(
     ResetPasswordRequestModel request,
   ) async {
@@ -411,13 +475,7 @@ class AuthService {
       final message = map['message']?.toString().trim();
       final error = map['error']?.toString().trim();
       final code = map['code']?.toString().trim();
-
-      final details = map['details'];
-      String? requestId;
-
-      if (details is Map) {
-        requestId = details['requestId']?.toString();
-      }
+      final requestId = map['requestId']?.toString().trim();
 
       if (message != null && message.isNotEmpty) return message;
       if (error != null && error.isNotEmpty) return error;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
@@ -65,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context.read<AuthCubit>().clearMessages();
           }
 
-        if (state.loginSuccess && state.user != null) {
+          if (state.loginSuccess && state.user != null) {
             final user = state.user!;
 
             if (user.isSupplier) {
@@ -78,15 +77,20 @@ class _LoginScreenState extends State<LoginScreen> {
             }
 
             if (user.isRetailer) {
-              context.go('/retailer-dashboard');
+              if (user.profileCompleted == false) {
+                context.go('/complete-retailer-profile');
+              } else {
+                context.go('/retailer-dashboard');
+              }
               return;
             }
 
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Unknown user role returned from backend')),
+              const SnackBar(
+                content: Text('Unknown user role returned from backend'),
+              ),
             );
-        }
-
+          }
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
@@ -133,7 +137,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 subtitle: l10n.loginSubtitle,
                               ),
                               const SizedBox(height: 28),
-
                               Text(
                                 l10n.email,
                                 style: const TextStyle(
@@ -149,9 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.emailAddress,
                                 validator: Validators.email,
                               ),
-
                               const SizedBox(height: 18),
-
                               Text(
                                 l10n.password,
                                 style: const TextStyle(
@@ -181,9 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 10),
-
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: TextButton(
@@ -204,16 +203,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 10),
                               PrimaryButton(
                                 text: l10n.login,
                                 isLoading: state.isLoading,
                                 onPressed: () => _submit(cubit),
                               ),
-
                               const SizedBox(height: 22),
-
                               Row(
                                 children: [
                                   const Expanded(child: Divider()),
@@ -231,9 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const Expanded(child: Divider()),
                                 ],
                               ),
-
                               const SizedBox(height: 20),
-
                               SizedBox(
                                 height: 52,
                                 child: OutlinedButton.icon(
@@ -256,9 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 20),
-
                               Wrap(
                                 alignment: WrapAlignment.center,
                                 crossAxisAlignment: WrapCrossAlignment.center,
