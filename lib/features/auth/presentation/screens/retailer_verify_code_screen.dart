@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
+import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../../data/services/auth_service.dart';
+import 'retailer_complete_profile_screen.dart';
 
 class RetailerVerifyCodeScreen extends StatefulWidget {
   final String email;
@@ -22,101 +24,41 @@ class RetailerVerifyCodeScreen extends StatefulWidget {
 }
 
 class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
-  final int _codeLength = 6;
-  late final List<TextEditingController> _controllers;
-  late final List<FocusNode> _focusNodes;
-
-  bool _isVerifying = false;
-  bool _isResending = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(_codeLength, (_) => TextEditingController());
-    _focusNodes = List.generate(_codeLength, (_) => FocusNode());
-  }
+  final _codeController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    for (final c in _controllers) {
-      c.dispose();
-    }
-    for (final f in _focusNodes) {
-      f.dispose();
-    }
+    _codeController.dispose();
     super.dispose();
   }
 
-  String _getCode() {
-    final buffer = StringBuffer();
-    for (final c in _controllers) {
-      buffer.write(c.text);
-    }
-    return buffer.toString().trim();
-  }
-
-  void _onBoxChanged(String value, int index) {
-    if (value.length == 1 && index < _codeLength - 1) {
-      _focusNodes[index + 1].requestFocus();
-    } else if (value.isEmpty && index > 0) {
-      _focusNodes[index - 1].requestFocus();
-    }
-  }
-
-  Future<void> _resendCode() async {
-    setState(() => _isResending = true);
-
-    try {
-      await sl<AuthService>().sendBuild4AllVerification(
-        email: widget.email,
-        password: widget.password,
-      );
-
-      if (!mounted) return;
-
+  Future<void> _verifyCode() async {
+    if (_codeController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Verification code sent again')),
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isResending = false);
-      }
-    }
-  }
-
-  Future<void> _verify() async {
-    final code = _getCode();
-
-    if (code.length != _codeLength) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the 6-digit code')),
+        const SnackBar(content: Text('Please enter the verification code')),
       );
       return;
     }
 
-    setState(() => _isVerifying = true);
+    setState(() => _isLoading = true);
 
     try {
       final pendingId = await sl<AuthService>().verifyBuild4AllEmailCode(
         email: widget.email,
-        code: code,
+        code: _codeController.text.trim(),
       );
 
       if (!mounted) return;
 
-      context.push(
-        '/signup/complete-profile',
-        extra: {
-          'pendingId': pendingId,
-          'email': widget.email,
-          'password': widget.password,
-        },
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => RetailerCompleteProfileScreen(
+            pendingId: pendingId,
+            email: widget.email,
+            password: widget.password,
+          ),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -126,7 +68,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
       );
     } finally {
       if (mounted) {
-        setState(() => _isVerifying = false);
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -135,12 +77,23 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
+      appBar: AppBar(
+        title: const Text('Verify Code'),
+        backgroundColor: AppThemeTokens.background,
+        elevation: 0,
+        actions: const [
+          Padding(
+            padding: EdgeInsetsDirectional.only(end: 8),
+            child: LanguageSelector(),
+          ),
+        ],
+      ),
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
+              constraints: const BoxConstraints(maxWidth: 520),
               child: Card(
                 color: Colors.white,
                 elevation: 0,
@@ -153,81 +106,42 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 72,
-                        height: 72,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFF8E8F0),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.lock_outline,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 34,
+                      const Center(
+                        child: Text(
+                          'Verify Your Email',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppThemeTokens.textPrimary,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 18),
-                      const Text(
-                        'Enter verification code',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: AppThemeTokens.textPrimary,
+                      const SizedBox(height: 8),
+                      Center(
+                        child: Text(
+                          'Enter the code sent to ${widget.email}',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: AppThemeTokens.textSecondary,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'We sent a code to your email.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppThemeTokens.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        widget.email,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(_codeLength, (index) {
-                          return SizedBox(
-                            width: 46,
-                            child: TextField(
-                              controller: _controllers[index],
-                              focusNode: _focusNodes[index],
-                              textAlign: TextAlign.center,
-                              maxLength: 1,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                counterText: '',
-                              ),
-                              onChanged: (value) => _onBoxChanged(value, index),
-                            ),
-                          );
-                        }),
+                      const SizedBox(height: 28),
+                      const Text('Verification Code'),
+                      const SizedBox(height: 8),
+                      PrimaryTextField(
+                        controller: _codeController,
+                        hintText: 'Enter code',
+                        keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(
-                        text: 'Verify',
-                        isLoading: _isVerifying,
-                        onPressed: _verify,
-                      ),
-                      const SizedBox(height: 12),
-                      TextButton(
-                        onPressed: _isResending ? null : _resendCode,
-                        child: Text(
-                          _isResending ? 'Resending...' : 'Resend code',
-                        ),
+                        text: 'Verify and Continue',
+                        isLoading: _isLoading,
+                        onPressed: _verifyCode,
                       ),
                     ],
                   ),

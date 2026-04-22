@@ -38,6 +38,7 @@ class AuthService {
     try {
       final body = {
         'usernameOrEmail': email.trim(),
+
         'password': password,
         'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
       };
