@@ -7,20 +7,13 @@ import '../../domain/entities/forgot_password_response_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/admin_login_request_model.dart';
 import '../models/build4all_supplier_sync_request_model.dart';
-import '../models/forgot_password_request_model.dart';
-import '../models/login_request_model.dart';
-import '../models/reset_password_request_model.dart';
-import '../models/retailer_signup_request_model.dart';
 import '../services/auth_service.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService authService;
   final AuthStorage authStorage;
 
-  AuthRepositoryImpl({
-    required this.authService,
-    required this.authStorage,
-  });
+  AuthRepositoryImpl({required this.authService, required this.authStorage});
 
   @override
   Future<AuthUserEntity> login({
@@ -29,96 +22,146 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     final ownerProjectId = int.tryParse(AppConfig.ownerProjectLinkId);
 
-    // 1) Try local wholesale login first
-    try {
-      final localLogin = await authService.login(
-        LoginRequestModel(
-          email: email,
-          password: password,
-        ),
-      );
-
-      if (localLogin.token != null && localLogin.token!.isNotEmpty) {
-        await authStorage.saveSession(
-          token: localLogin.token!,
-          userId: localLogin.userId,
-          role: localLogin.role,
-          profileCompleted: localLogin.profileCompleted,
-        );
-      }
-
-      return localLogin;
-    } on AppException {
-      // continue to Build4All supplier flow
-    } catch (_) {
-      // continue to Build4All supplier flow
+    if (ownerProjectId == null) {
+      throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
     }
 
-    // 2) If local login fails, try OWNER/SUPPLIER through Build4All admin login
+    // Retailer login
     try {
-      final adminLoginResponse = await authService.adminLoginFront(
-        AdminLoginRequestModel(
-          usernameOrEmail: email,
-          password: password,
-          ownerProjectId: ownerProjectId,
-        ),
+      final userLoginResponse = await authService.build4AllUserLogin(
+        email: email,
+        password: password,
       );
 
-      final role = adminLoginResponse.role.toUpperCase();
+      final token = userLoginResponse['token']?.toString() ?? '';
+      final user = Map<String, dynamic>.from(userLoginResponse['user'] as Map);
 
-      if (role == 'OWNER') {
-        final admin = adminLoginResponse.admin ?? {};
-        final firstName = admin['firstName']?.toString() ?? '';
-        final lastName = admin['lastName']?.toString() ?? '';
-        final username = admin['username']?.toString() ?? email;
-        final adminEmail = admin['email']?.toString() ?? email;
+      final build4allUserId = user['id'] is int
+          ? user['id'] as int
+          : int.parse(user['id'].toString());
 
-        await authService.syncSupplierFromBuild4All(
-          Build4AllSupplierSyncRequestModel(
-            build4allUserId: admin['id'] is int
-                ? admin['id'] as int
-                : int.tryParse(admin['id']?.toString() ?? ''),
-            ownerProjectLinkId: ownerProjectId,
-            username: username,
-            firstName: firstName,
-            lastName: lastName,
-            fullName: ('$firstName $lastName').trim(),
-            email: adminEmail,
-            password: password,
-          ),
-        );
+      final username = user['username']?.toString() ?? email;
+      final firstName = user['firstName']?.toString() ?? '';
+      final lastName = user['lastName']?.toString() ?? '';
+      final userEmail = user['email']?.toString() ?? email;
+      final fullName = ('$firstName $lastName').trim();
 
-        final localLogin = await authService.login(
-          LoginRequestModel(
-            email: adminEmail,
-            password: password,
-          ),
-        );
+      await authStorage.saveSession(
+        token: token,
+        build4allUserId: build4allUserId,
+        ownerProjectLinkId: ownerProjectId,
+        role: 'RETAILER',
+        profileCompleted: false,
+        email: userEmail,
+        fullName: fullName,
+      );
 
-        if (localLogin.token != null && localLogin.token!.isNotEmpty) {
-          await authStorage.saveSession(
-            token: localLogin.token!,
-            userId: localLogin.userId,
-            role: localLogin.role,
-            profileCompleted: localLogin.profileCompleted,
-          );
-        }
+      await authService.syncRetailerFromBuild4All(
+        build4allUserId: build4allUserId,
+        ownerProjectLinkId: ownerProjectId,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        email: userEmail,
+      );
 
-        return localLogin;
-      }
+      final me = await authService.getWholesaleMe();
 
-      if (role == 'SUPER_ADMIN') {
-        throw AppException(
-          'SUPER_ADMIN login is not supported inside the wholesale mobile app.',
-        );
-      }
+      await authStorage.saveSession(
+        token: token,
+        build4allUserId: build4allUserId,
+        ownerProjectLinkId: ownerProjectId,
+        role: 'RETAILER',
+        profileCompleted: me.profileCompleted,
+        email: userEmail,
+        fullName: fullName,
+      );
 
-      throw AppException('This account is not allowed in the wholesale app.');
-    } on AppException catch (e) {
-      throw AppException(e.message);
+      return AuthUserEntity(
+        userId: build4allUserId,
+        fullName: fullName,
+        email: userEmail,
+        role: 'RETAILER',
+        provider: 'BUILD4ALL',
+        profileCompleted: me.profileCompleted,
+        token: token,
+        message: 'Login successful',
+      );
     } catch (_) {
-      throw AppException('Login failed. Check your credentials.');
+      // continue to owner flow
     }
+
+    // Supplier/Owner login
+    final adminLoginResponse = await authService.adminLoginFront(
+      AdminLoginRequestModel(
+        usernameOrEmail: email,
+        password: password,
+        ownerProjectId: ownerProjectId,
+      ),
+    );
+
+    final role = adminLoginResponse.role.toUpperCase();
+    if (role != 'OWNER') {
+      throw AppException('Only OWNER can use Supplier Manager.');
+    }
+
+    final admin = adminLoginResponse.admin ?? {};
+    final build4allUserId = admin['id'] is int
+        ? admin['id'] as int
+        : int.parse(admin['id'].toString());
+
+    final firstName = admin['firstName']?.toString() ?? '';
+    final lastName = admin['lastName']?.toString() ?? '';
+    final username = admin['username']?.toString() ?? email;
+    final adminEmail = admin['email']?.toString() ?? email;
+    final fullName = ('$firstName $lastName').trim();
+    final token = adminLoginResponse.token;
+
+    await authStorage.saveSession(
+      token: token,
+      build4allUserId: build4allUserId,
+      ownerProjectLinkId: ownerProjectId,
+      role: 'SUPPLIER',
+      profileCompleted: false,
+      email: adminEmail,
+      fullName: fullName,
+    );
+
+    await authService.syncSupplierFromBuild4All(
+      Build4AllSupplierSyncRequestModel(
+        build4allUserId: build4allUserId,
+        ownerProjectLinkId: ownerProjectId,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        fullName: fullName,
+        email: adminEmail,
+        password: '',
+      ),
+    );
+
+    final me = await authService.getWholesaleMe();
+
+    await authStorage.saveSession(
+      token: token,
+      build4allUserId: build4allUserId,
+      ownerProjectLinkId: ownerProjectId,
+      role: 'SUPPLIER',
+      profileCompleted: me.profileCompleted,
+      email: adminEmail,
+      fullName: fullName,
+    );
+
+    return AuthUserEntity(
+      userId: build4allUserId,
+      fullName: fullName,
+      email: adminEmail,
+      role: 'SUPPLIER',
+      provider: 'BUILD4ALL',
+      profileCompleted: me.profileCompleted,
+      token: token,
+      message: 'Login successful',
+    );
   }
 
   @override
@@ -132,38 +175,34 @@ class AuthRepositoryImpl implements AuthRepository {
     required String storeAddress,
     required String city,
     required String businessType,
-  }) async {
-    final response = await authService.retailerSignup(
-      RetailerSignupRequestModel(
-        fullName: fullName,
-        storeName: storeName,
-        phoneNumber: phoneNumber,
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-        storeAddress: storeAddress,
-        city: city,
-        businessType: businessType,
-      ),
+  }) {
+    throw AppException(
+      'Retailer signup must use the Build4All verification flow only.',
     );
-
-    return response;
   }
 
   @override
   Future<AuthUserEntity> getCurrentUser() async {
-    return await authService.getCurrentUser();
+    final me = await authService.getWholesaleMe();
+    final id = await authStorage.getBuild4allUserId() ?? 0;
+    final email = await authStorage.getEmail() ?? '';
+    final fullName = await authStorage.getFullName() ?? '';
+
+    return AuthUserEntity(
+      userId: id,
+      fullName: fullName,
+      email: email,
+      role: me.role,
+      provider: 'BUILD4ALL',
+      profileCompleted: me.profileCompleted,
+      token: null,
+      message: me.message,
+    );
   }
 
   @override
-  Future<ForgotPasswordResponseEntity> forgotPassword({
-    required String email,
-  }) async {
-    final response = await authService.forgotPassword(
-      ForgotPasswordRequestModel(email: email),
-    );
-
-    return response;
+  Future<ForgotPasswordResponseEntity> forgotPassword({required String email}) {
+    throw AppException('Use Build4All forgot password flow only.');
   }
 
   @override
@@ -171,15 +210,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String resetToken,
     required String newPassword,
     required String confirmPassword,
-  }) async {
-    final response = await authService.resetPassword(
-      ResetPasswordRequestModel(
-        resetToken: resetToken,
-        newPassword: newPassword,
-        confirmPassword: confirmPassword,
-      ),
-    );
-
-    return response;
+  }) {
+    throw AppException('Use Build4All reset password flow only.');
   }
 }

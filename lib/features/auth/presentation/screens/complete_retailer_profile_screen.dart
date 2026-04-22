@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
+import '../../../../core/extensions/select_option_l10n_extension.dart';
 import '../../../../core/models/select_option.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
@@ -22,95 +25,98 @@ class _CompleteRetailerProfileScreenState
     extends State<CompleteRetailerProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  late final TextEditingController _fullNameController;
   late final TextEditingController _storeNameController;
   late final TextEditingController _phoneNumberController;
   late final TextEditingController _storeAddressController;
-  late final TextEditingController _fullNameController;
 
   String? _selectedCity;
   String? _selectedBusinessType;
-
   bool _isLoading = false;
-  int? _userId;
 
   final List<SelectOption> _cities = const [
-    SelectOption(value: 'Beirut', labelKey: 'Beirut'),
-    SelectOption(value: 'Tripoli', labelKey: 'Tripoli'),
-    SelectOption(value: 'Sidon', labelKey: 'Sidon'),
-    SelectOption(value: 'Tyre', labelKey: 'Tyre'),
-    SelectOption(value: 'Zahle', labelKey: 'Zahle'),
-    SelectOption(value: 'Jounieh', labelKey: 'Jounieh'),
-    SelectOption(value: 'Nabatieh', labelKey: 'Nabatieh'),
-    SelectOption(value: 'Byblos', labelKey: 'Byblos'),
-    SelectOption(value: 'Aley', labelKey: 'Aley'),
-    SelectOption(value: 'Baalbek', labelKey: 'Baalbek'),
+    SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
+    SelectOption(value: 'Tripoli', labelKey: 'cityTripoli'),
+    SelectOption(value: 'Sidon', labelKey: 'citySidon'),
+    SelectOption(value: 'Tyre', labelKey: 'cityTyre'),
+    SelectOption(value: 'Zahle', labelKey: 'cityZahle'),
+    SelectOption(value: 'Jounieh', labelKey: 'cityJounieh'),
+    SelectOption(value: 'Nabatieh', labelKey: 'cityNabatieh'),
+    SelectOption(value: 'Byblos', labelKey: 'cityByblos'),
+    SelectOption(value: 'Aley', labelKey: 'cityAley'),
+    SelectOption(value: 'Baalbek', labelKey: 'cityBaalbek'),
   ];
 
   final List<SelectOption> _businessTypes = const [
-    SelectOption(value: 'Mini Market', labelKey: 'Mini Market'),
-    SelectOption(value: 'Supermarket', labelKey: 'Supermarket'),
-    SelectOption(value: 'Pharmacy', labelKey: 'Pharmacy'),
-    SelectOption(value: 'Restaurant', labelKey: 'Restaurant'),
-    SelectOption(value: 'Cafe', labelKey: 'Cafe'),
-    SelectOption(value: 'Retail Shop', labelKey: 'Retail Shop'),
-    SelectOption(value: 'Other', labelKey: 'Other'),
+    SelectOption(
+      value: 'Building Materials',
+      labelKey: 'businessBuildingMaterials',
+    ),
+    SelectOption(
+      value: 'Electrical Supplies',
+      labelKey: 'businessElectricalSupplies',
+    ),
+    SelectOption(value: 'Plumbing', labelKey: 'businessPlumbing'),
+    SelectOption(value: 'Tools & Hardware', labelKey: 'businessToolsHardware'),
+    SelectOption(
+      value: 'Industrial Equipment',
+      labelKey: 'businessIndustrialEquipment',
+    ),
+    SelectOption(
+      value: 'Home Improvement',
+      labelKey: 'businessHomeImprovement',
+    ),
+    SelectOption(
+      value: 'Wholesale Distribution',
+      labelKey: 'businessWholesaleDistribution',
+    ),
+    SelectOption(value: 'Other', labelKey: 'businessOther'),
   ];
 
   @override
   void initState() {
     super.initState();
+    _fullNameController = TextEditingController();
     _storeNameController = TextEditingController();
     _phoneNumberController = TextEditingController();
     _storeAddressController = TextEditingController();
-    _fullNameController = TextEditingController();
-    _loadCurrentUser();
   }
 
   @override
   void dispose() {
+    _fullNameController.dispose();
     _storeNameController.dispose();
     _phoneNumberController.dispose();
     _storeAddressController.dispose();
-    _fullNameController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadCurrentUser() async {
-    try {
-      final current = await sl<AuthService>().getCurrentUser();
-      _userId = current.userId;
-      _fullNameController.text = current.fullName.isEmpty
-          ? ''
-          : current.fullName;
-    } catch (_) {}
+  String? _validateLebanesePhone(String? value) {
+    final l10n = context.l10n;
+
+    if (value == null || value.trim().isEmpty) {
+      return '${l10n.phoneNumber} is required';
+    }
+
+    final cleaned = value.replaceAll(' ', '');
+    final lebanesePhoneRegex = RegExp(
+      r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$',
+    );
+
+    if (!lebanesePhoneRegex.hasMatch(cleaned)) {
+      return l10n.enterValidLebanesePhone;
+    }
+
+    return null;
   }
 
-  Future<void> _save() async {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-
-    if (_selectedCity == null || _selectedBusinessType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select city and business type'),
-        ),
-      );
-      return;
-    }
-
-    if (_userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not load current user'),
-        ),
-      );
-      return;
-    }
 
     setState(() => _isLoading = true);
 
     try {
       await sl<AuthService>().updateRetailerProfile(
-        userId: _userId!,
         fullName: _fullNameController.text.trim(),
         storeName: _storeNameController.text.trim(),
         phoneNumber: _phoneNumberController.text.trim(),
@@ -122,7 +128,7 @@ class _CompleteRetailerProfileScreenState
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Retailer profile completed successfully')),
+        const SnackBar(content: Text('Retailer profile saved successfully')),
       );
 
       context.go('/retailer-dashboard');
@@ -139,52 +145,32 @@ class _CompleteRetailerProfileScreenState
     }
   }
 
-  String? _validatePhone(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Phone number is required';
-    }
-
-    final cleaned = value.replaceAll(' ', '');
-    final lebanesePhoneRegex = RegExp(
-      r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$',
-    );
-
-    if (!lebanesePhoneRegex.hasMatch(cleaned)) {
-      return 'Enter a valid Lebanese phone number';
-    }
-
-    return null;
-  }
-
-  Widget _label(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: AppThemeTokens.textSecondary,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
         title: const Text('Complete Retailer Profile'),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
+        actions: const [
+          Padding(
+            padding: EdgeInsetsDirectional.only(end: 8),
+            child: LanguageSelector(),
+          ),
+        ],
       ),
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppThemeTokens.screenHorizontalPadding,
+            vertical: 16,
+          ),
+          child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
+              constraints: const BoxConstraints(maxWidth: 520),
               child: Card(
                 color: Colors.white,
                 elevation: 0,
@@ -198,114 +184,152 @@ class _CompleteRetailerProfileScreenState
                   padding: const EdgeInsets.all(20),
                   child: Form(
                     key: _formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Complete your retailer profile',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: AppThemeTokens.textPrimary,
+                        Center(
+                          child: Icon(
+                            Icons.storefront_outlined,
+                            size: 60,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Center(
+                          child: Text(
+                            'Complete Retailer Profile',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: AppThemeTokens.textPrimary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Add your store information to continue.',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: AppThemeTokens.textSecondary,
+                        const Center(
+                          child: Text(
+                            'Provide your business information to continue.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: AppThemeTokens.textSecondary,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        _label('Full Name'),
+                        const SizedBox(height: 28),
+
+                        const Text('Full Name'),
+                        const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _fullNameController,
-                          hintText: 'Full name',
+                          hintText: 'Enter your full name',
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Full name',
+                            fieldName: 'Full Name',
                           ),
                         ),
+
                         const SizedBox(height: 16),
-                        _label('Store Name'),
+
+                        const Text('Store Name'),
+                        const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _storeNameController,
-                          hintText: 'ABC Store',
+                          hintText: 'Enter store name',
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Store name',
+                            fieldName: 'Store Name',
                           ),
                         ),
+
                         const SizedBox(height: 16),
-                        _label('Phone Number'),
+
+                        Text(l10n.phoneNumber),
+                        const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _phoneNumberController,
                           hintText: '+961 70 123 456',
                           keyboardType: TextInputType.phone,
-                          validator: _validatePhone,
+                          validator: _validateLebanesePhone,
                         ),
+
                         const SizedBox(height: 16),
-                        _label('Store Address'),
+
+                        const Text('Store Address'),
+                        const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _storeAddressController,
-                          hintText: '123 Main Street',
+                          hintText: 'Enter store address',
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Store address',
+                            fieldName: 'Store Address',
                           ),
                         ),
+
                         const SizedBox(height: 16),
-                        _label('City'),
+
+                        Text(l10n.city),
+                        const SizedBox(height: 8),
                         PrimaryDropdownField<String>(
                           value: _selectedCity,
-                          hintText: 'Select city',
+                          hintText: l10n.selectCity,
                           items: _cities
                               .map(
                                 (city) => DropdownMenuItem<String>(
                                   value: city.value,
-                                  child: Text(city.value),
+                                  child: Text(context.trOption(city.labelKey)),
                                 ),
                               )
                               .toList(),
                           onChanged: (value) {
-                            setState(() => _selectedCity = value);
+                            setState(() {
+                              _selectedCity = value;
+                            });
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'City is required';
+                              return '${l10n.city} is required';
                             }
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 16),
-                        _label('Business Type'),
+
+                        Text(l10n.businessType),
+                        const SizedBox(height: 8),
                         PrimaryDropdownField<String>(
                           value: _selectedBusinessType,
-                          hintText: 'Select business type',
+                          hintText: l10n.selectBusinessType,
                           items: _businessTypes
                               .map(
                                 (type) => DropdownMenuItem<String>(
                                   value: type.value,
-                                  child: Text(type.value),
+                                  child: Text(context.trOption(type.labelKey)),
                                 ),
                               )
                               .toList(),
                           onChanged: (value) {
-                            setState(() => _selectedBusinessType = value);
+                            setState(() {
+                              _selectedBusinessType = value;
+                            });
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Business type is required';
+                              return '${l10n.businessType} is required';
                             }
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 28),
+
                         PrimaryButton(
-                          text: 'Save and continue',
+                          text: l10n.saveAndContinue,
                           isLoading: _isLoading,
-                          onPressed: _save,
+                          onPressed: _submit,
                         ),
                       ],
                     ),

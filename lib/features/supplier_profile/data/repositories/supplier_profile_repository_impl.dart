@@ -3,15 +3,10 @@ import '../../domain/repositories/supplier_profile_repository.dart';
 import '../models/supplier_profile_request_model.dart';
 import '../services/supplier_profile_service.dart';
 
-
 class SupplierProfileRepositoryImpl implements SupplierProfileRepository {
   final SupplierProfileService supplierProfileService;
 
-
-  SupplierProfileRepositoryImpl({
-    required this.supplierProfileService,
-  });
-
+  SupplierProfileRepositoryImpl({required this.supplierProfileService});
 
   @override
   Future<SupplierProfileEntity> createSupplierProfile({
@@ -25,7 +20,6 @@ class SupplierProfileRepositoryImpl implements SupplierProfileRepository {
     required String logoUrl,
   }) async {
     final response = await supplierProfileService.createSupplierProfile(
-      userId: userId,
       request: SupplierProfileRequestModel(
         companyName: companyName,
         companyAddress: companyAddress,
@@ -36,7 +30,6 @@ class SupplierProfileRepositoryImpl implements SupplierProfileRepository {
         logoUrl: logoUrl,
       ),
     );
-
 
     return response;
   }

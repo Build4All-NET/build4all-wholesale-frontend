@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/config/app_config.dart';
+import '../../../../core/storage/auth_storage.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -27,57 +30,39 @@ class RetailerCompleteProfileScreen extends StatefulWidget {
 
 class _RetailerCompleteProfileScreenState
     extends State<RetailerCompleteProfileScreen> {
-  final _namesFormKey = GlobalKey<FormState>();
-  final _usernameFormKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
+  late final TextEditingController _usernameController;
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
-  late final TextEditingController _usernameController;
 
-  int _step = 0;
-  bool _isPublicProfile = false;
+  bool _isPublicProfile = true;
   bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
+    _usernameController = TextEditingController();
     _firstNameController = TextEditingController();
     _lastNameController = TextEditingController();
-    _usernameController = TextEditingController();
   }
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _usernameController.dispose();
     super.dispose();
   }
 
-  void _goNext() {
-    if (_step == 0) {
-      if (!_namesFormKey.currentState!.validate()) return;
-      setState(() => _step = 1);
-      return;
-    }
-
-    if (_step == 1) {
-      if (!_usernameFormKey.currentState!.validate()) return;
-      setState(() => _step = 2);
-    }
-  }
-
-  void _goPrevious() {
-    if (_step > 0) {
-      setState(() => _step -= 1);
-    }
-  }
-
   Future<void> _saveProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
     setState(() => _isSaving = true);
 
     try {
       final authService = sl<AuthService>();
+      final authStorage = sl<AuthStorage>();
 
       final completed = await authService.completeBuild4AllProfile(
         pendingId: widget.pendingId,
@@ -92,14 +77,35 @@ class _RetailerCompleteProfileScreenState
           ? user['id'] as int
           : int.parse(user['id'].toString());
 
+      final loginResponse = await authService.build4AllUserLogin(
+        email: widget.email,
+        password: widget.password,
+      );
+
+      final token = loginResponse['token']?.toString() ?? '';
+
+      await authStorage.saveSession(
+        token: token,
+        build4allUserId: build4allUserId,
+        ownerProjectLinkId: int.parse(AppConfig.ownerProjectLinkId),
+        role: 'RETAILER',
+        profileCompleted: false,
+        email: widget.email,
+        fullName:
+            '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}'
+                .trim(),
+      );
+
       await authService.syncRetailerFromBuild4All(
         build4allUserId: build4allUserId,
+        ownerProjectLinkId: int.parse(AppConfig.ownerProjectLinkId),
         username: _usernameController.text.trim(),
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
         email: widget.email,
-        password: widget.password,
       );
+
+      await authStorage.clearSession();
 
       if (!mounted) return;
 
@@ -112,6 +118,7 @@ class _RetailerCompleteProfileScreenState
       context.go('/login');
     } catch (e) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
@@ -122,235 +129,27 @@ class _RetailerCompleteProfileScreenState
     }
   }
 
-  Widget _stepBadge(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Theme.of(context).colorScheme.primary),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNamesStep() {
-    return Form(
-      key: _namesFormKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _stepBadge('1 / 3'),
-          const SizedBox(height: 18),
-          const Text(
-            'Complete Your Profile - Names',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Please provide your first and last name.',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppThemeTokens.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 20),
-          PrimaryTextField(
-            controller: _firstNameController,
-            hintText: 'First name',
-            validator: (value) =>
-                Validators.requiredField(value, fieldName: 'First name'),
-          ),
-          const SizedBox(height: 16),
-          PrimaryTextField(
-            controller: _lastNameController,
-            hintText: 'Last name',
-            validator: (value) =>
-                Validators.requiredField(value, fieldName: 'Last name'),
-          ),
-          const SizedBox(height: 24),
-          PrimaryButton(
-            text: 'Next Step',
-            onPressed: _goNext,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUsernameStep() {
-    return Form(
-      key: _usernameFormKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _stepBadge('2 / 3'),
-          const SizedBox(height: 18),
-          const Text(
-            'Complete Your Profile - Username',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Choose a unique username for your account.',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppThemeTokens.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 20),
-          PrimaryTextField(
-            controller: _usernameController,
-            hintText: 'Username',
-            validator: (value) =>
-                Validators.requiredField(value, fieldName: 'Username'),
-          ),
-          const SizedBox(height: 20),
-          SwitchListTile(
-            value: _isPublicProfile,
-            onChanged: (value) {
-              setState(() {
-                _isPublicProfile = value;
-              });
-            },
-            title: const Text(
-              'Public profile',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: AppThemeTokens.textPrimary,
-              ),
-            ),
-            subtitle: const Text(
-              'If enabled, your profile can be found by other users.',
-            ),
-            contentPadding: EdgeInsets.zero,
-          ),
-          const SizedBox(height: 18),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: _goPrevious,
-                  child: const Text('Previous Step'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: PrimaryButton(
-                  text: 'Next Step',
-                  onPressed: _goNext,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPhotoStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _stepBadge('3 / 3'),
-        const SizedBox(height: 18),
-        const Text(
-          'Complete Your Profile - Photo',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: AppThemeTokens.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Add a profile picture later if you want. This step is optional.',
-          style: TextStyle(
-            fontSize: 16,
-            color: AppThemeTokens.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 28),
-        Center(
-          child: Container(
-            width: 160,
-            height: 160,
-            decoration: const BoxDecoration(
-              color: Color(0xFFF8E8F0),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.person_outline,
-              size: 80,
-              color: Color(0xFF8F0F56),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'Photo upload is optional and can be added later.',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: AppThemeTokens.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: _goPrevious,
-                child: const Text('Previous Step'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: PrimaryButton(
-                text: 'Save profile',
-                isLoading: _isSaving,
-                onPressed: _saveProfile,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget child;
-
-    if (_step == 0) {
-      child = _buildNamesStep();
-    } else if (_step == 1) {
-      child = _buildUsernameStep();
-    } else {
-      child = _buildPhotoStep();
-    }
-
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
+      appBar: AppBar(
+        title: const Text('Complete Profile'),
+        backgroundColor: AppThemeTokens.background,
+        elevation: 0,
+        actions: const [
+          Padding(
+            padding: EdgeInsetsDirectional.only(end: 8),
+            child: LanguageSelector(),
+          ),
+        ],
+      ),
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
+              constraints: const BoxConstraints(maxWidth: 520),
               child: Card(
                 color: Colors.white,
                 elevation: 0,
@@ -362,7 +161,94 @@ class _RetailerCompleteProfileScreenState
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: child,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Center(
+                          child: Text(
+                            'Complete Profile',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: AppThemeTokens.textPrimary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Center(
+                          child: Text(
+                            'Finish your account setup to continue.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+
+                        const Text('Username'),
+                        const SizedBox(height: 8),
+                        PrimaryTextField(
+                          controller: _usernameController,
+                          hintText: 'Enter username',
+                          validator: (value) => Validators.requiredField(
+                            value,
+                            fieldName: 'Username',
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        const Text('First Name'),
+                        const SizedBox(height: 8),
+                        PrimaryTextField(
+                          controller: _firstNameController,
+                          hintText: 'Enter first name',
+                          validator: (value) => Validators.requiredField(
+                            value,
+                            fieldName: 'First Name',
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        const Text('Last Name'),
+                        const SizedBox(height: 8),
+                        PrimaryTextField(
+                          controller: _lastNameController,
+                          hintText: 'Enter last name',
+                          validator: (value) => Validators.requiredField(
+                            value,
+                            fieldName: 'Last Name',
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        SwitchListTile(
+                          value: _isPublicProfile,
+                          onChanged: (value) {
+                            setState(() {
+                              _isPublicProfile = value;
+                            });
+                          },
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text('Public Profile'),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        PrimaryButton(
+                          text: 'Save and Continue',
+                          isLoading: _isSaving,
+                          onPressed: _saveProfile,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
