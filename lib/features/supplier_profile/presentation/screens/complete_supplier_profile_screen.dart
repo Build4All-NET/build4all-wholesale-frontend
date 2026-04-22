@@ -9,7 +9,6 @@ import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/extensions/select_option_l10n_extension.dart';
 import '../../../../core/models/select_option.dart';
-import '../../../../core/storage/auth_storage.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -127,19 +126,8 @@ class _CompleteSupplierProfileScreenState
       return;
     }
 
-    final userId = await sl<AuthStorage>().getUserId();
-
-    if (!mounted) return;
-
-    if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.userSessionNotFound)),
-      );
-      return;
-    }
-
     context.read<SupplierProfileCubit>().createSupplierProfile(
-      userId: userId,
+      userId: 0,
       companyName: _companyNameController.text.trim(),
       companyAddress: _companyAddressController.text.trim(),
       phoneNumber: _phoneNumberController.text.trim(),

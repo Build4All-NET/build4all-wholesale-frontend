@@ -25,6 +25,8 @@ class PrimaryDropdownField<T> extends StatelessWidget {
       items: items,
       onChanged: onChanged,
       validator: validator,
+      isExpanded: true,
+      icon: const Icon(Icons.keyboard_arrow_down_rounded),
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
