@@ -1,235 +1,189 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
-import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
-import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
-import '../bloc/auth_cubit.dart';
-import '../bloc/auth_state.dart';
-
+import '../../domain/repositories/auth_repository.dart';
+import '../../data/services/auth_service.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  final String? initialToken;
+  final String email;
 
-  const ResetPasswordScreen({super.key, this.initialToken});
+  const ResetPasswordScreen({
+    super.key,
+    required this.email,
+  });
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  late final TextEditingController _tokenController;
+  late final TextEditingController _codeController;
   late final TextEditingController _newPasswordController;
   late final TextEditingController _confirmPasswordController;
 
-  bool _obscureNewPassword = true;
-  bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _tokenController = TextEditingController(text: widget.initialToken ?? '');
+    _codeController = TextEditingController();
     _newPasswordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _tokenController.dispose();
+    _codeController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _submit(AuthCubit cubit) {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> _submit() async {
+    if (_codeController.text.trim().isEmpty ||
+        _newPasswordController.text.trim().isEmpty ||
+        _confirmPasswordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('All fields are required')),
+      );
+      return;
+    }
 
-    cubit.resetPassword(
-      resetToken: _tokenController.text.trim(),
-      newPassword: _newPasswordController.text.trim(),
-      confirmPassword: _confirmPasswordController.text.trim(),
-    );
+    if (_newPasswordController.text.trim() !=
+        _confirmPasswordController.text.trim()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await sl<AuthService>().verifyResetCode(
+        email: widget.email,
+        code: _codeController.text.trim(),
+      );
+
+      await sl<AuthRepository>().resetPassword(
+        resetToken: '${widget.email}|||${_codeController.text.trim()}',
+        newPassword: _newPasswordController.text.trim(),
+        confirmPassword: _confirmPasswordController.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password updated successfully')),
+      );
+
+      context.go('/login');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AuthCubit>(),
-      child: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-            context.read<AuthCubit>().clearMessages();
-          }
-
-          if (state.resetPasswordSuccess &&
-              state.resetPasswordResponse != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.resetPasswordResponse!.message)),
-            );
-            context.read<AuthCubit>().clearMessages();
-            context.go('/');
-          }
-        },
-        builder: (context, state) {
-          final cubit = context.read<AuthCubit>();
-          final l10n = context.l10n;
-
-          return Scaffold(
-            backgroundColor: AppThemeTokens.background,
-            appBar: AppBar(
-              title: Text(l10n.resetPassword),
-              backgroundColor: AppThemeTokens.background,
-              elevation: 0,
-              actions: const [
-                Padding(
-                  padding: EdgeInsetsDirectional.only(end: 8),
-                  child: LanguageSelector(),
+    return Scaffold(
+      backgroundColor: AppThemeTokens.background,
+      appBar: AppBar(
+        title: const Text('Reset Password'),
+        backgroundColor: AppThemeTokens.background,
+        elevation: 0,
+        actions: const [
+          Padding(
+            padding: EdgeInsetsDirectional.only(end: 8),
+            child: LanguageSelector(),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: Card(
+                color: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+                  side: const BorderSide(color: AppThemeTokens.border),
                 ),
-              ],
-            ),
-            body: SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppThemeTokens.screenHorizontalPadding,
-                    vertical: 24,
-                  ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 420),
-                    child: Card(
-                      color: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppThemeTokens.radiusLarge,
-                        ),
-                        side: const BorderSide(color: AppThemeTokens.border),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(18),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 12),
-                              Icon(
-                                Icons.lock_reset,
-                                size: 60,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              const SizedBox(height: 18),
-                              Text(
-                                l10n.resetPassword,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppThemeTokens.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                l10n.enterResetTokenAndPassword,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: AppThemeTokens.textSecondary,
-                                ),
-                              ),
-                              const SizedBox(height: 28),
-
-                              PrimaryTextField(
-                                controller: _tokenController,
-                                hintText: l10n.pasteResetToken,
-                                prefixIcon: const Icon(Icons.vpn_key_outlined),
-                                validator: (value) => Validators.requiredField(
-                                  value,
-                                  fieldName: l10n.resetToken,
-                                ),
-                              ),
-
-                              const SizedBox(height: 16),
-
-                              TextFormField(
-                                controller: _newPasswordController,
-                                obscureText: _obscureNewPassword,
-                                validator: Validators.password,
-
-                                decoration: InputDecoration(
-                                  hintText: l10n.newPassword,
-                                  prefixIcon: const Icon(Icons.lock_outline),
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureNewPassword =
-                                            !_obscureNewPassword;
-                                      });
-                                    },
-                                    icon: Icon(
-                                      _obscureNewPassword
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _confirmPasswordController,
-                                obscureText: _obscureConfirmPassword,
-                                validator: (value) =>
-                                    Validators.confirmPassword(
-                                      value,
-                                      _newPasswordController.text.trim(),
-                                    ),
-
-                                decoration: InputDecoration(
-                                  hintText: l10n.confirmNewPassword,
-                                  prefixIcon: const Icon(Icons.lock_outline),
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureConfirmPassword =
-                                            !_obscureConfirmPassword;
-                                      });
-                                    },
-                                    icon: Icon(
-                                      _obscureConfirmPassword
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-
-                              PrimaryButton(
-                                text: l10n.resetPassword,
-                                isLoading: state.isLoading,
-                                onPressed: () => _submit(cubit),
-                              ),
-                            ],
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Center(
+                        child: Text(
+                          'Enter reset code',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppThemeTokens.textPrimary,
                           ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: Text(
+                          'We sent a code to ${widget.email}',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: AppThemeTokens.textSecondary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+                      const Text('Code'),
+                      const SizedBox(height: 8),
+                      PrimaryTextField(
+                        controller: _codeController,
+                        hintText: 'Enter code',
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('New Password'),
+                      const SizedBox(height: 8),
+                      PrimaryTextField(
+                        controller: _newPasswordController,
+                        hintText: 'Enter new password',
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('Confirm Password'),
+                      const SizedBox(height: 8),
+                      PrimaryTextField(
+                        controller: _confirmPasswordController,
+                        hintText: 'Re-enter new password',
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 24),
+                      PrimaryButton(
+                        text: 'Update Password',
+                        isLoading: _isLoading,
+                        onPressed: _submit,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

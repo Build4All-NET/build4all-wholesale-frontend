@@ -49,15 +49,18 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/forgot-password',
-        builder: (context, state) => const ForgotPasswordScreen(),
-      ),
-      GoRoute(
-        path: '/reset-password',
-        builder: (context, state) => ResetPasswordScreen(
-          initialToken: state.extra as String?,
-        ),
-      ),
+  path: '/forgot-password',
+  builder: (context, state) => const ForgotPasswordScreen(),
+),
+GoRoute(
+  path: '/reset-password',
+  builder: (context, state) {
+    final extra = state.extra as Map<String, dynamic>;
+    return ResetPasswordScreen(
+      email: extra['email'] as String,
+    );
+  },
+),
       GoRoute(
         path: '/complete-supplier-profile',
         builder: (context, state) => const CompleteSupplierProfileScreen(),
