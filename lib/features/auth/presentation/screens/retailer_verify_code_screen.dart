@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../common/widgets/language_selector.dart';
@@ -24,13 +25,48 @@ class RetailerVerifyCodeScreen extends StatefulWidget {
 }
 
 class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
-  final _codeController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
+
   bool _isLoading = false;
+  bool _isResending = false;
+
+  int _secondsLeft = 60;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _codeController.dispose();
     super.dispose();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+
+    setState(() {
+      _secondsLeft = 60;
+    });
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+
+      if (_secondsLeft <= 1) {
+        timer.cancel();
+        setState(() {
+          _secondsLeft = 0;
+        });
+      } else {
+        setState(() {
+          _secondsLeft--;
+        });
+      }
+    });
   }
 
   Future<void> _verifyCode() async {
@@ -64,11 +100,46 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(
+          content: Text(e.toString().replaceFirst('Exception: ', '')),
+        ),
       );
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _resendCode() async {
+    if (_secondsLeft > 0 || _isResending) return;
+
+    setState(() => _isResending = true);
+
+    try {
+      await sl<AuthService>().sendBuild4AllVerification(
+        email: widget.email,
+        password: widget.password,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Verification code resent successfully')),
+      );
+
+      _startTimer();
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceFirst('Exception: ', '')),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isResending = false);
       }
     }
   }
@@ -136,6 +207,29 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
                         controller: _codeController,
                         hintText: 'Enter code',
                         keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: _secondsLeft > 0
+                            ? Text(
+                                'Resend code in $_secondsLeft s',
+                                style: const TextStyle(
+                                  color: AppThemeTokens.textSecondary,
+                                  fontSize: 14,
+                                ),
+                              )
+                            : TextButton(
+                                onPressed: _isResending ? null : _resendCode,
+                                child: _isResending
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text('Resend Code'),
+                              ),
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(

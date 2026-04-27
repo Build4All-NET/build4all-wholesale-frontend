@@ -13,7 +13,10 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthService authService;
   final AuthStorage authStorage;
 
-  AuthRepositoryImpl({required this.authService, required this.authStorage});
+  AuthRepositoryImpl({
+    required this.authService,
+    required this.authStorage,
+  });
 
   @override
   Future<AuthUserEntity> login({
@@ -26,7 +29,6 @@ class AuthRepositoryImpl implements AuthRepository {
       throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
     }
 
-    // Retailer login
     try {
       final userLoginResponse = await authService.build4AllUserLogin(
         email: email,
@@ -87,11 +89,8 @@ class AuthRepositoryImpl implements AuthRepository {
         token: token,
         message: 'Login successful',
       );
-    } catch (_) {
-      // continue to owner flow
-    }
+    } catch (_) {}
 
-    // Supplier/Owner login
     final adminLoginResponse = await authService.adminLoginFront(
       AdminLoginRequestModel(
         usernameOrEmail: email,
@@ -201,8 +200,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ForgotPasswordResponseEntity> forgotPassword({required String email}) {
-    throw AppException('Use Build4All forgot password flow only.');
+  Future<ForgotPasswordResponseEntity> forgotPassword({
+    required String email,
+  }) async {
+    return await authService.forgotPassword(
+      email: email,
+    );
   }
 
   @override
@@ -210,7 +213,28 @@ class AuthRepositoryImpl implements AuthRepository {
     required String resetToken,
     required String newPassword,
     required String confirmPassword,
-  }) {
-    throw AppException('Use Build4All reset password flow only.');
+  }) async {
+    if (newPassword.trim() != confirmPassword.trim()) {
+      throw AppException('Passwords do not match.');
+    }
+
+    final parts = resetToken.split('|||');
+    if (parts.length != 2) {
+      throw AppException('Invalid reset session. Please request a new code.');
+    }
+
+    final email = parts[0];
+    final code = parts[1];
+
+    return await authService.resetPassword(
+      email: email,
+      code: code,
+      newPassword: newPassword,
+    );
+  }
+
+  @override
+  Future<void> logout() async {
+    await authStorage.clearSession();
   }
 }
