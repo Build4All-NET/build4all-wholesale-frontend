@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
-import '../../../../core/config/app_config.dart';
-import '../../../../core/storage/auth_storage.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -38,6 +36,7 @@ class _RetailerCompleteProfileScreenState
 
   bool _isPublicProfile = true;
   bool _isSaving = false;
+  bool _completed = false;
 
   @override
   void initState() {
@@ -56,15 +55,13 @@ class _RetailerCompleteProfileScreenState
   }
 
   Future<void> _saveProfile() async {
+    if (_isSaving || _completed) return;
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSaving = true);
 
     try {
-      final authService = sl<AuthService>();
-      final authStorage = sl<AuthStorage>();
-
-      final completed = await authService.completeBuild4AllProfile(
+      await sl<AuthService>().completeBuild4AllProfile(
         pendingId: widget.pendingId,
         username: _usernameController.text.trim(),
         firstName: _firstNameController.text.trim(),
@@ -72,58 +69,39 @@ class _RetailerCompleteProfileScreenState
         isPublicProfile: _isPublicProfile,
       );
 
-      final user = Map<String, dynamic>.from(completed['user'] as Map);
-      final build4allUserId = user['id'] is int
-          ? user['id'] as int
-          : int.parse(user['id'].toString());
-
-      final loginResponse = await authService.build4AllUserLogin(
-        email: widget.email,
-        password: widget.password,
-      );
-
-      final token = loginResponse['token']?.toString() ?? '';
-
-      await authStorage.saveSession(
-        token: token,
-        build4allUserId: build4allUserId,
-        ownerProjectLinkId: int.parse(AppConfig.ownerProjectLinkId),
-        role: 'RETAILER',
-        profileCompleted: false,
-        email: widget.email,
-        fullName:
-            '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}'
-                .trim(),
-      );
-
-      await authService.syncRetailerFromBuild4All(
-        build4allUserId: build4allUserId,
-        ownerProjectLinkId: int.parse(AppConfig.ownerProjectLinkId),
-        username: _usernameController.text.trim(),
-        firstName: _firstNameController.text.trim(),
-        lastName: _lastNameController.text.trim(),
-        email: widget.email,
-      );
-
-      await authStorage.clearSession();
+      _completed = true;
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Account created successfully. Please login.'),
+          content: Text('Retailer account created successfully. Please login.'),
         ),
       );
 
       context.go('/login');
+      return;
     } catch (e) {
       if (!mounted) return;
 
+      final message = e.toString().replaceFirst('Exception: ', '');
+
+      if (message.toLowerCase().contains('username already in use')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account already created. Please login.'),
+          ),
+        );
+
+        context.go('/login');
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(content: Text(message)),
       );
     } finally {
-      if (mounted) {
+      if (mounted && !_completed) {
         setState(() => _isSaving = false);
       }
     }
@@ -154,9 +132,8 @@ class _RetailerCompleteProfileScreenState
                 color: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppThemeTokens.radiusLarge,
-                  ),
+                  borderRadius:
+                      BorderRadius.circular(AppThemeTokens.radiusLarge),
                   side: const BorderSide(color: AppThemeTokens.border),
                 ),
                 child: Padding(
@@ -230,11 +207,11 @@ class _RetailerCompleteProfileScreenState
 
                         SwitchListTile(
                           value: _isPublicProfile,
-                          onChanged: (value) {
-                            setState(() {
-                              _isPublicProfile = value;
-                            });
-                          },
+                          onChanged: _isSaving
+                              ? null
+                              : (value) {
+                                  setState(() => _isPublicProfile = value);
+                                },
                           contentPadding: EdgeInsets.zero,
                           title: const Text('Public Profile'),
                         ),
@@ -244,7 +221,7 @@ class _RetailerCompleteProfileScreenState
                         PrimaryButton(
                           text: 'Save and Continue',
                           isLoading: _isSaving,
-                          onPressed: _saveProfile,
+                          onPressed: _isSaving ? null : _saveProfile,
                         ),
                       ],
                     ),
