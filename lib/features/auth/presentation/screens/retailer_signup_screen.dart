@@ -5,7 +5,6 @@ import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
-import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
 import '../../data/services/auth_service.dart';
 import 'retailer_verify_code_screen.dart';
@@ -97,7 +96,11 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
       if (!mounted) return;
 
+<<<<<<< HEAD
       Navigator.of(context).push(
+=======
+     Navigator.of(context).push(
+>>>>>>> e2f78cffbebec67edee40f11f0fb6a9a01253a72
   MaterialPageRoute(
     builder: (_) => RetailerVerifyCodeScreen(
       email: email,

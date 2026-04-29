@@ -60,6 +60,7 @@ class AppRouter {
       ),
 
       GoRoute(
+<<<<<<< HEAD
         path: '/forgot-password',
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
@@ -75,6 +76,20 @@ class AppRouter {
         },
       ),
 
+=======
+  path: '/forgot-password',
+  builder: (context, state) => const ForgotPasswordScreen(),
+),
+GoRoute(
+  path: '/reset-password',
+  builder: (context, state) {
+    final extra = state.extra as Map<String, dynamic>;
+    return ResetPasswordScreen(
+      email: extra['email'] as String,
+    );
+  },
+),
+>>>>>>> e2f78cffbebec67edee40f11f0fb6a9a01253a72
       GoRoute(
         path: '/complete-supplier-profile',
         builder: (context, state) => const CompleteSupplierProfileScreen(),
