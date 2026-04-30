@@ -475,7 +475,7 @@ if tester_id:
                     for bt in r_em.json().get("data", []):
                         btid = bt["id"]
                         if btid != tester_id:
-                            print(f"   Deleting conflicting betaTester {btid}...")
+                            print(f"   🗑️  Deleting conflicting betaTester {btid}...")
                             rd = requests.delete(f"{BASE}/v1/betaTesters/{btid}", headers=h())
                             print(f"       DELETE HTTP {rd.status_code}")
                 time.sleep(10)
@@ -643,7 +643,7 @@ with open("testflight_status.txt", "w") as f:
 
 print()
 print("="*70)
-print("HYBRID TESTING CONFIGURED!")
+print("🎉 HYBRID TESTING CONFIGURED!")
 if public_testflight_link:
-    print(f"Link: {public_testflight_link}")
+    print(f"🔗 {public_testflight_link}")
 print("="*70)
