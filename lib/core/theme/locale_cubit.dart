@@ -17,6 +17,10 @@ class LocaleCubit extends Cubit<LocaleState> {
   }
 
   Future<void> changeLocale(String languageCode) async {
+    if (languageCode == 'system') {
+      emit(const LocaleState(Locale('en')));
+      return;
+    }
     await localeStorage.saveLocale(languageCode);
     emit(LocaleState(Locale(languageCode)));
   }

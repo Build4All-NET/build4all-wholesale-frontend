@@ -255,4 +255,186 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get businessOther => 'Other';
+
+  @override
+  String get welcomeBack => 'Welcome back';
+
+  @override
+  String get searchProducts => 'Search products...';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get seeAll => 'See All';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get featuredProducts => 'Featured Products';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get topRanking => 'Top Ranking';
+
+  @override
+  String get orders => 'Orders';
+
+  @override
+  String get rfq => 'RFQ';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get couldNotLoadRetailerHome => 'Could not load retailer home';
+
+  @override
+  String get checkConnectionTryAgain =>
+      'Please check your connection and try again.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get cart => 'Cart';
+
+  @override
+  String get cartComingSoon => 'Cart page will be available soon';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationsComingSoon =>
+      'Notifications page will be available soon';
+
+  @override
+  String get promotions => 'Promotions';
+
+  @override
+  String get promotionsComingSoon => 'Promotions will be available soon';
+
+  @override
+  String get topRankingComingSoon =>
+      'Top ranking products will appear here soon';
+
+  @override
+  String get ordersComingSoon => 'Your orders will appear here soon';
+
+  @override
+  String get rfqComingSoon => 'RFQ requests will appear here soon';
+
+  @override
+  String get aiAssistant => 'AI Assistant';
+
+  @override
+  String get aiAssistantComingSoon => 'AI Assistant will be available soon';
+
+  @override
+  String get liveChat => 'Live Chat';
+
+  @override
+  String get liveChatComingSoon => 'Live Chat will be available soon';
+
+  @override
+  String get loyaltyPoints => 'Loyalty Points';
+
+  @override
+  String get loyaltyComingSoon => 'Loyalty points will be available soon';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get basicInformation => 'Basic information';
+
+  @override
+  String get system => 'System';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logoutQuestion => 'Do you want to log out?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get accountInformation => 'Account Information';
+
+  @override
+  String get businessInformation => 'Business Information';
+
+  @override
+  String get changePasswordOptional => 'Change Password (optional)';
+
+  @override
+  String get passwordManagedByBuild4All =>
+      'Password change requires Build4All verification flow and will be added next.';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get phoneLebanon => 'Phone Number (Lebanon)';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+
+  @override
+  String get walletBalance => 'Wallet Balance';
+
+  @override
+  String get creditBalance => 'Credit Balance';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get languageSettings => 'Language Settings';
+
+  @override
+  String get languageSettingsComingSoon =>
+      'Language settings will be available soon';
+
+  @override
+  String get walletComingSoon => 'Wallet details will be available soon';
+
+  @override
+  String get creditComingSoon => 'Credit details will be available soon';
+
+  @override
+  String get chooseLanguage => 'Choose a language';
 }

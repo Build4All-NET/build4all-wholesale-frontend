@@ -250,4 +250,183 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get businessOther => 'أخرى';
+
+  @override
+  String get welcomeBack => 'مرحباً بعودتك';
+
+  @override
+  String get searchProducts => 'ابحث عن المنتجات...';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get quickActions => 'إجراءات سريعة';
+
+  @override
+  String get featuredProducts => 'منتجات مميزة';
+
+  @override
+  String get viewAll => 'عرض الكل';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get topRanking => 'الأعلى تقييماً';
+
+  @override
+  String get orders => 'الطلبات';
+
+  @override
+  String get rfq => 'RFQ';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get couldNotLoadRetailerHome => 'تعذر تحميل الصفحة الرئيسية للتاجر';
+
+  @override
+  String get checkConnectionTryAgain =>
+      'يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get cart => 'السلة';
+
+  @override
+  String get cartComingSoon => 'صفحة السلة ستكون متاحة قريباً';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get notificationsComingSoon => 'صفحة الإشعارات ستكون متاحة قريباً';
+
+  @override
+  String get promotions => 'العروض';
+
+  @override
+  String get promotionsComingSoon => 'العروض ستكون متاحة قريباً';
+
+  @override
+  String get topRankingComingSoon => 'ستظهر المنتجات الأعلى تقييماً هنا قريباً';
+
+  @override
+  String get ordersComingSoon => 'ستظهر طلباتك هنا قريباً';
+
+  @override
+  String get rfqComingSoon => 'ستظهر طلبات RFQ هنا قريباً';
+
+  @override
+  String get aiAssistant => 'المساعد الذكي';
+
+  @override
+  String get aiAssistantComingSoon => 'المساعد الذكي سيكون متاحاً قريباً';
+
+  @override
+  String get liveChat => 'الدردشة المباشرة';
+
+  @override
+  String get liveChatComingSoon => 'الدردشة المباشرة ستكون متاحة قريباً';
+
+  @override
+  String get loyaltyPoints => 'نقاط الولاء';
+
+  @override
+  String get loyaltyComingSoon => 'نقاط الولاء ستكون متاحة قريباً';
+
+  @override
+  String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get basicInformation => 'المعلومات الأساسية';
+
+  @override
+  String get system => 'النظام';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get logoutQuestion => 'هل تريد تسجيل الخروج؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get accountInformation => 'معلومات الحساب';
+
+  @override
+  String get businessInformation => 'معلومات العمل';
+
+  @override
+  String get changePasswordOptional => 'تغيير كلمة المرور (اختياري)';
+
+  @override
+  String get passwordManagedByBuild4All =>
+      'تغيير كلمة المرور يحتاج إلى تحقق من Build4All وسيتم إضافته لاحقاً.';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'اسم العائلة';
+
+  @override
+  String get phoneLebanon => 'رقم الهاتف (لبنان)';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get profileUpdatedSuccessfully => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get walletBalance => 'رصيد المحفظة';
+
+  @override
+  String get creditBalance => 'رصيد الائتمان';
+
+  @override
+  String get comingSoon => 'قريباً';
+
+  @override
+  String get languageSettings => 'إعدادات اللغة';
+
+  @override
+  String get languageSettingsComingSoon => 'إعدادات اللغة ستكون متاحة قريباً';
+
+  @override
+  String get walletComingSoon => 'تفاصيل المحفظة ستكون متاحة قريباً';
+
+  @override
+  String get creditComingSoon => 'تفاصيل الائتمان ستكون متاحة قريباً';
+
+  @override
+  String get chooseLanguage => 'اختر لغة';
 }

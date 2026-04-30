@@ -579,6 +579,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get businessOther;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBack;
+
+  /// No description provided for @searchProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get searchProducts;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get seeAll;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @featuredProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured Products'**
+  String get featuredProducts;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @topRanking.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Ranking'**
+  String get topRanking;
+
+  /// No description provided for @orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get orders;
+
+  /// No description provided for @rfq.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ'**
+  String get rfq;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @couldNotLoadRetailerHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load retailer home'**
+  String get couldNotLoadRetailerHome;
+
+  /// No description provided for @checkConnectionTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your connection and try again.'**
+  String get checkConnectionTryAgain;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Cart'**
+  String get cart;
+
+  /// No description provided for @cartComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Cart page will be available soon'**
+  String get cartComingSoon;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @notificationsComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications page will be available soon'**
+  String get notificationsComingSoon;
+
+  /// No description provided for @promotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions'**
+  String get promotions;
+
+  /// No description provided for @promotionsComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions will be available soon'**
+  String get promotionsComingSoon;
+
+  /// No description provided for @topRankingComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Top ranking products will appear here soon'**
+  String get topRankingComingSoon;
+
+  /// No description provided for @ordersComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Your orders will appear here soon'**
+  String get ordersComingSoon;
+
+  /// No description provided for @rfqComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ requests will appear here soon'**
+  String get rfqComingSoon;
+
+  /// No description provided for @aiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get aiAssistant;
+
+  /// No description provided for @aiAssistantComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant will be available soon'**
+  String get aiAssistantComingSoon;
+
+  /// No description provided for @liveChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Chat'**
+  String get liveChat;
+
+  /// No description provided for @liveChatComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Chat will be available soon'**
+  String get liveChatComingSoon;
+
+  /// No description provided for @loyaltyPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty Points'**
+  String get loyaltyPoints;
+
+  /// No description provided for @loyaltyComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty points will be available soon'**
+  String get loyaltyComingSoon;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @basicInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic information'**
+  String get basicInformation;
+
+  /// No description provided for @system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get system;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @logoutQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to log out?'**
+  String get logoutQuestion;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @accountInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Information'**
+  String get accountInformation;
+
+  /// No description provided for @businessInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Information'**
+  String get businessInformation;
+
+  /// No description provided for @changePasswordOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password (optional)'**
+  String get changePasswordOptional;
+
+  /// No description provided for @passwordManagedByBuild4All.
+  ///
+  /// In en, this message translates to:
+  /// **'Password change requires Build4All verification flow and will be added next.'**
+  String get passwordManagedByBuild4All;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @phoneLebanon.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number (Lebanon)'**
+  String get phoneLebanon;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @walletBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Balance'**
+  String get walletBalance;
+
+  /// No description provided for @creditBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Balance'**
+  String get creditBalance;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @languageSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Language Settings'**
+  String get languageSettings;
+
+  /// No description provided for @languageSettingsComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Language settings will be available soon'**
+  String get languageSettingsComingSoon;
+
+  /// No description provided for @walletComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet details will be available soon'**
+  String get walletComingSoon;
+
+  /// No description provided for @creditComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit details will be available soon'**
+  String get creditComingSoon;
+
+  /// No description provided for @chooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a language'**
+  String get chooseLanguage;
 }
 
 class _AppLocalizationsDelegate
