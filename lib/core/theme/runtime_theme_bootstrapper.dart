@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../storage/branding_storage.dart';
 import 'runtime_theme_service.dart';
 import 'theme_cubit.dart';
 
@@ -27,20 +28,27 @@ class _RuntimeThemeBootstrapperState extends State<RuntimeThemeBootstrapper> {
     if (_loaded) return;
     _loaded = true;
 
-    _loadRuntimeTheme();
+    _loadRuntimeConfig();
   }
 
-  Future<void> _loadRuntimeTheme() async {
+  Future<void> _loadRuntimeConfig() async {
     final service = context.read<RuntimeThemeService>();
     final themeCubit = context.read<ThemeCubit>();
+    final brandingStorage = BrandingStorage();
 
-    final primaryHex = await service.fetchPrimaryColorHex();
+    final config = await service.fetchRuntimeConfig();
 
-    if (!mounted) return;
+    if (!mounted || config == null) return;
 
-    if (primaryHex != null && primaryHex.isNotEmpty) {
-      await themeCubit.applyThemeFromHex(primaryHex);
+    if (config.primaryColorHex != null &&
+        config.primaryColorHex!.trim().isNotEmpty) {
+      await themeCubit.applyThemeFromHex(config.primaryColorHex!);
     }
+
+    await brandingStorage.saveBranding(
+      appName: config.appName ?? 'B2B Wholesale App',
+      logoUrl: config.logoUrl ?? '',
+    );
   }
 
   @override
@@ -48,4 +56,3 @@ class _RuntimeThemeBootstrapperState extends State<RuntimeThemeBootstrapper> {
     return widget.child;
   }
 }
-

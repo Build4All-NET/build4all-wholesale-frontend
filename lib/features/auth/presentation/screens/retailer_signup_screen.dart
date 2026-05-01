@@ -96,11 +96,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
       if (!mounted) return;
 
-<<<<<<< HEAD
-      Navigator.of(context).push(
-=======
      Navigator.of(context).push(
->>>>>>> e2f78cffbebec67edee40f11f0fb6a9a01253a72
   MaterialPageRoute(
     builder: (_) => RetailerVerifyCodeScreen(
       email: email,

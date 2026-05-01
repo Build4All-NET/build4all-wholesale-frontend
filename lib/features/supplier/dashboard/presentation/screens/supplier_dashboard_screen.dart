@@ -205,62 +205,62 @@ class SupplierDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildQuickActions(BuildContext context) {
-  final actions = [
-    SupplierQuickActionCard(
-      title: 'Add Product',
-      icon: Icons.add,
-      onTap: () => context.push('/supplier-products/add'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Create Promotion',
-      icon: Icons.local_offer_outlined,
-      onTap: () => context.go('/supplier-promotions'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Manage Branches',
-      icon: Icons.location_on_outlined,
-      onTap: () => context.go('/supplier-branches'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Shipping Methods',
-      icon: Icons.local_shipping_outlined,
-      onTap: () => context.go('/supplier-shipping'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Configure Taxes',
-      icon: Icons.attach_money,
-      onTap: () => context.go('/supplier-tax'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Import Excel',
-      icon: Icons.upload_outlined,
-      onTap: () => context.go('/supplier-excel-import'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Home Banners',
-      icon: Icons.image_outlined,
-      onTap: () => context.go('/supplier-banners'),
-    ),
-    SupplierQuickActionCard(
-      title: 'Coupons',
-      icon: Icons.sell_outlined,
-      onTap: () => context.go('/supplier-coupons'),
-    ),
-  ];
+    final actions = [
+      SupplierQuickActionCard(
+        title: 'Add Product',
+        icon: Icons.add,
+        onTap: () => context.push('/supplier-products/add'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Create Promotion',
+        icon: Icons.local_offer_outlined,
+        onTap: () => context.go('/supplier-promotions/create'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Manage Branches',
+        icon: Icons.location_on_outlined,
+        onTap: () => context.go('/supplier-branches'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Shipping Methods',
+        icon: Icons.local_shipping_outlined,
+        onTap: () => context.go('/supplier-shipping'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Configure Taxes',
+        icon: Icons.attach_money,
+        onTap: () => context.go('/supplier-tax'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Import Excel',
+        icon: Icons.upload_outlined,
+        onTap: () => context.go('/supplier-excel-import'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Home Banners',
+        icon: Icons.image_outlined,
+        onTap: () => context.go('/supplier-banners'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Coupons',
+        icon: Icons.sell_outlined,
+        onTap: () => context.go('/supplier-coupons'),
+      ),
+    ];
 
-  return GridView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: actions.length,
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      mainAxisSpacing: 14,
-      crossAxisSpacing: 14,
-      childAspectRatio: 1.05,
-    ),
-    itemBuilder: (context, index) => actions[index],
-  );
-}
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: actions.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 14,
+        crossAxisSpacing: 14,
+        childAspectRatio: 1.05,
+      ),
+      itemBuilder: (context, index) => actions[index],
+    );
+  }
 }
 
 class _FinancialItem extends StatelessWidget {

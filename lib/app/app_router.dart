@@ -19,6 +19,9 @@ import '../features/supplier/products/presentation/screens/add_product_screen.da
 import '../features/supplier/products/domain/entities/product_entity.dart';
 import '../features/supplier/promotions/presentation/screens/promotions_screen.dart';
 import '../features/supplier/promotions/presentation/screens/create_promotion_screen.dart';
+
+import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
+
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
@@ -134,9 +137,17 @@ class AppRouter {
         builder: (context, state) => const PromotionsScreen(),
       ),
       GoRoute(
-  path: '/supplier-promotions/create',
-  builder: (context, state) => const CreatePromotionScreen(),
-),
+        path: '/supplier-promotions/create',
+        builder: (context, state) => const CreatePromotionScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-promotions/edit',
+        builder: (context, state) {
+          final promotion = state.extra as PromotionEntity;
+
+          return CreatePromotionScreen(promotion: promotion);
+        },
+      ),
       GoRoute(
         path: '/supplier-coupons',
         builder: (context, state) => const SupplierComingSoonScreen(
