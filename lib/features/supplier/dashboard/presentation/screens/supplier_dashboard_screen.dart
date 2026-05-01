@@ -209,7 +209,7 @@ class SupplierDashboardScreen extends StatelessWidget {
     SupplierQuickActionCard(
       title: 'Add Product',
       icon: Icons.add,
-      onTap: () => context.go('/supplier-products'),
+      onTap: () => context.push('/supplier-products/add'),
     ),
     SupplierQuickActionCard(
       title: 'Create Promotion',

@@ -2,12 +2,13 @@ name: build4all_wholesale_frontend
 description: A new Flutter project.
 publish_to: 'none'
 version: 1.0.0+1
+
 environment:
   sdk: ^3.8.1
+
 dependencies:
   flutter:
     sdk: flutter
-
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
@@ -18,10 +19,22 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   get_it: ^8.2.0
   intl: ^0.20.2
+  image_picker: ^1.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/logo/default_launcher_icon.png
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/default_launcher_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+

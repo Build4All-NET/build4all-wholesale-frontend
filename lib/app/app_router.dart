@@ -14,20 +14,18 @@ import '../features/supplier_profile/presentation/screens/complete_supplier_prof
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
-
+import '../features/supplier/products/presentation/screens/product_management_screen.dart';
+import '../features/supplier/products/presentation/screens/add_product_screen.dart';
+import '../features/supplier/products/domain/entities/product_entity.dart';
+import '../features/supplier/promotions/presentation/screens/promotions_screen.dart';
+import '../features/supplier/promotions/presentation/screens/create_promotion_screen.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(
-        path: '/',
-        redirect: (context, state) => '/login',
-      ),
+      GoRoute(path: '/', redirect: (context, state) => '/login'),
 
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
 
       GoRoute(
         path: '/signup',
@@ -60,36 +58,16 @@ class AppRouter {
       ),
 
       GoRoute(
-<<<<<<< HEAD
         path: '/forgot-password',
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
-
       GoRoute(
         path: '/reset-password',
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
-
-          return ResetPasswordScreen(
-            email: extra['email'] as String,
-          );
+          return ResetPasswordScreen(email: extra['email'] as String);
         },
       ),
-
-=======
-  path: '/forgot-password',
-  builder: (context, state) => const ForgotPasswordScreen(),
-),
-GoRoute(
-  path: '/reset-password',
-  builder: (context, state) {
-    final extra = state.extra as Map<String, dynamic>;
-    return ResetPasswordScreen(
-      email: extra['email'] as String,
-    );
-  },
-),
->>>>>>> e2f78cffbebec67edee40f11f0fb6a9a01253a72
       GoRoute(
         path: '/complete-supplier-profile',
         builder: (context, state) => const CompleteSupplierProfileScreen(),
@@ -103,7 +81,6 @@ GoRoute(
       // =========================
       // SUPPLIER ROUTES
       // =========================
-
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
@@ -111,10 +88,21 @@ GoRoute(
 
       GoRoute(
         path: '/supplier-products',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Product Management',
-          icon: Icons.inventory_2_outlined,
-        ),
+        builder: (context, state) => const ProductManagementScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-products/add',
+        builder: (context, state) => const AddProductScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-products/edit',
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+
+          return AddProductScreen(productToEdit: product);
+        },
       ),
 
       GoRoute(
@@ -143,12 +131,12 @@ GoRoute(
 
       GoRoute(
         path: '/supplier-promotions',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Promotions',
-          icon: Icons.local_offer_outlined,
-        ),
+        builder: (context, state) => const PromotionsScreen(),
       ),
-
+      GoRoute(
+  path: '/supplier-promotions/create',
+  builder: (context, state) => const CreatePromotionScreen(),
+),
       GoRoute(
         path: '/supplier-coupons',
         builder: (context, state) => const SupplierComingSoonScreen(
@@ -200,7 +188,6 @@ GoRoute(
       // =========================
       // RETAILER ROUTES
       // =========================
-
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
