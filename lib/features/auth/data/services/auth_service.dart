@@ -8,12 +8,16 @@ import '../models/admin_login_response_model.dart';
 import '../models/api_response_model.dart';
 import '../models/auth_response_model.dart';
 import '../models/build4all_supplier_sync_request_model.dart';
+import '../models/forgot_password_response_model.dart';
 
 class AuthService {
   final ApiClient centralApiClient;
   final ApiClient projectApiClient;
 
-  AuthService({required this.centralApiClient, required this.projectApiClient});
+  AuthService({
+    required this.centralApiClient,
+    required this.projectApiClient,
+  });
 
   Future<AdminLoginResponseModel> adminLoginFront(
     AdminLoginRequestModel request,
@@ -37,8 +41,7 @@ class AuthService {
   }) async {
     try {
       final body = {
-        'usernameOrEmail': email.trim(),
-
+        'email': email.trim(),
         'password': password,
         'ownerProjectLinkId': int.tryParse(AppConfig.ownerProjectLinkId),
       };
@@ -79,7 +82,10 @@ class AuthService {
     try {
       final response = await centralApiClient.dio.post(
         ApiConfig.verifyEmailCode,
-        data: {'email': email.trim(), 'code': code.trim()},
+        data: {
+          'email': email.trim(),
+          'code': code.trim(),
+        },
       );
 
       final data = Map<String, dynamic>.from(response.data as Map);
@@ -121,6 +127,92 @@ class AuthService {
       );
 
       return Map<String, dynamic>.from(response.data as Map);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<ForgotPasswordResponseModel> forgotPassword({
+    required String email,
+  }) async {
+    try {
+      final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+      if (ownerProjectLinkId == null) {
+        throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
+      }
+
+      final response = await centralApiClient.dio.post(
+        '/users/reset-password',
+        queryParameters: {
+          'ownerProjectLinkId': ownerProjectLinkId,
+        },
+        data: {
+          'email': email.trim(),
+        },
+      );
+
+      final data = Map<String, dynamic>.from(response.data as Map);
+      return ForgotPasswordResponseModel.fromJson(data);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<ApiResponseModel> verifyResetCode({
+    required String email,
+    required String code,
+  }) async {
+    try {
+      final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+      if (ownerProjectLinkId == null) {
+        throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
+      }
+
+      final response = await centralApiClient.dio.post(
+        '/users/verify-reset-code',
+        queryParameters: {
+          'ownerProjectLinkId': ownerProjectLinkId,
+        },
+        data: {
+          'email': email.trim(),
+          'code': code.trim(),
+        },
+      );
+
+      return ApiResponseModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<ApiResponseModel> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+      if (ownerProjectLinkId == null) {
+        throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
+      }
+
+      final response = await centralApiClient.dio.post(
+        '/users/update-password',
+        queryParameters: {
+          'ownerProjectLinkId': ownerProjectLinkId,
+        },
+        data: {
+          'email': email.trim(),
+          'code': code.trim(),
+          'newPassword': newPassword.trim(),
+        },
+      );
+
+      return ApiResponseModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
