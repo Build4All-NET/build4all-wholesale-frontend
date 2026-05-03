@@ -244,7 +244,7 @@ class SupplierDashboardScreen extends StatelessWidget {
       SupplierQuickActionCard(
         title: 'Coupons',
         icon: Icons.sell_outlined,
-        onTap: () => context.go('/supplier-coupons'),
+        onTap: () => context.go('/supplier-coupons/create'),
       ),
     ];
 

@@ -56,7 +56,8 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       text: promotion?.description ?? '',
     );
     _discountController = TextEditingController(
-      text: promotion?.discountLabel.replaceAll('%', '') ?? '',
+      text: promotion?.discountLabel.replaceAll('%', '').replaceAll('\$', '') ??
+          '',
     );
     _startDateController = TextEditingController(
       text: promotion?.startDate == '-' ? '' : promotion?.startDate ?? '',
@@ -65,7 +66,8 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       text: promotion?.endDate == '-' ? '' : promotion?.endDate ?? '',
     );
 
-    _selectedDiscountType = 'Percentage';
+    _selectedDiscountType =
+        promotion?.discountLabel.contains('%') == true ? 'Percentage' : 'Fixed Amount';
     _selectedStatus = promotion?.status ?? 'Draft';
   }
 
@@ -114,8 +116,9 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       id: widget.promotion?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
-      discountLabel:
-          _selectedDiscountType == 'Percentage' ? '$discountValue%' : '\$$discountValue',
+      discountLabel: _selectedDiscountType == 'Percentage'
+          ? '$discountValue%'
+          : '\$$discountValue',
       status: _selectedStatus ?? 'Draft',
       startDate: _startDateController.text.trim(),
       endDate: _endDateController.text.trim(),
@@ -137,7 +140,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       ),
     );
 
-    context.go('/supplier-promotions');
+    context.go('/supplier-dashboard');
   }
 
   @override

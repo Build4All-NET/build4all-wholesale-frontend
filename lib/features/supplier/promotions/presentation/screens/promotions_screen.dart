@@ -50,15 +50,6 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/supplier-promotions/create'),
-        backgroundColor: primary,
-        foregroundColor: Colors.white,
-        label: const Text(
-          'Create Promotion',
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppThemeTokens.screenHorizontalPadding),
@@ -67,6 +58,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
             children: [
               _buildHeaderCard(context),
               const SizedBox(height: 20),
+
               const Text(
                 'Promotion List',
                 style: TextStyle(
@@ -75,7 +67,9 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                   color: AppThemeTokens.textPrimary,
                 ),
               ),
+
               const SizedBox(height: 12),
+
               if (promotions.isEmpty)
                 _buildEmptyCard(context)
               else
@@ -99,6 +93,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                     );
                   },
                 ),
+
               const SizedBox(height: 90),
             ],
           ),
@@ -140,7 +135,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'Create discounts and promotional offers that will later appear to retailers.',
+                  'View, edit, and manage promotional offers created from your supplier dashboard.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -185,7 +180,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Create your first promotion to show it to retailers.',
+            'Create a promotion from the supplier dashboard, then view it here.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

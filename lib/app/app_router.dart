@@ -14,21 +14,32 @@ import '../features/supplier_profile/presentation/screens/complete_supplier_prof
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
+
 import '../features/supplier/products/presentation/screens/product_management_screen.dart';
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
 import '../features/supplier/products/domain/entities/product_entity.dart';
+
 import '../features/supplier/promotions/presentation/screens/promotions_screen.dart';
 import '../features/supplier/promotions/presentation/screens/create_promotion_screen.dart';
-
 import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
+
+import '../features/supplier/coupons/presentation/screens/coupons_screen.dart';
+import '../features/supplier/coupons/presentation/screens/create_coupon_screen.dart';
+import '../features/supplier/coupons/domain/entities/coupon_entity.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(path: '/', redirect: (context, state) => '/login'),
+      GoRoute(
+        path: '/',
+        redirect: (context, state) => '/login',
+      ),
 
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
 
       GoRoute(
         path: '/signup',
@@ -64,13 +75,18 @@ class AppRouter {
         path: '/forgot-password',
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
+
       GoRoute(
         path: '/reset-password',
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
-          return ResetPasswordScreen(email: extra['email'] as String);
+
+          return ResetPasswordScreen(
+            email: extra['email'] as String,
+          );
         },
       ),
+
       GoRoute(
         path: '/complete-supplier-profile',
         builder: (context, state) => const CompleteSupplierProfileScreen(),
@@ -84,6 +100,7 @@ class AppRouter {
       // =========================
       // SUPPLIER ROUTES
       // =========================
+
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
@@ -104,7 +121,9 @@ class AppRouter {
         builder: (context, state) {
           final product = state.extra as ProductEntity;
 
-          return AddProductScreen(productToEdit: product);
+          return AddProductScreen(
+            productToEdit: product,
+          );
         },
       ),
 
@@ -132,28 +151,54 @@ class AppRouter {
         ),
       ),
 
+      // =========================
+      // SUPPLIER PROMOTIONS ROUTES
+      // =========================
+
       GoRoute(
         path: '/supplier-promotions',
         builder: (context, state) => const PromotionsScreen(),
       ),
+
       GoRoute(
         path: '/supplier-promotions/create',
         builder: (context, state) => const CreatePromotionScreen(),
       ),
+
       GoRoute(
         path: '/supplier-promotions/edit',
         builder: (context, state) {
           final promotion = state.extra as PromotionEntity;
 
-          return CreatePromotionScreen(promotion: promotion);
+          return CreatePromotionScreen(
+            promotion: promotion,
+          );
         },
       ),
+
+      // =========================
+      // SUPPLIER COUPONS ROUTES
+      // =========================
+
       GoRoute(
         path: '/supplier-coupons',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Coupons',
-          icon: Icons.sell_outlined,
-        ),
+        builder: (context, state) => const CouponsScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-coupons/create',
+        builder: (context, state) => const CreateCouponScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-coupons/edit',
+        builder: (context, state) {
+          final coupon = state.extra as CouponEntity;
+
+          return CreateCouponScreen(
+            coupon: coupon,
+          );
+        },
       ),
 
       GoRoute(
@@ -199,6 +244,7 @@ class AppRouter {
       // =========================
       // RETAILER ROUTES
       // =========================
+
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
