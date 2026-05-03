@@ -2,117 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../branches/data/branch_mock_store.dart';
-import '../../../branches/domain/entities/branch_entity.dart';
-import '../../data/coupon_mock_store.dart';
-import '../../domain/entities/coupon_entity.dart';
+import '../../data/banner_mock_store.dart';
+import '../../domain/entities/banner_entity.dart';
 
-class CreateCouponScreen extends StatefulWidget {
-  final CouponEntity? coupon;
+class CreateBannerScreen extends StatefulWidget {
+  final BannerEntity? banner;
 
-  const CreateCouponScreen({
+  const CreateBannerScreen({
     super.key,
-    this.coupon,
+    this.banner,
   });
 
   @override
-  State<CreateCouponScreen> createState() => _CreateCouponScreenState();
+  State<CreateBannerScreen> createState() => _CreateBannerScreenState();
 }
 
-class _CreateCouponScreenState extends State<CreateCouponScreen> {
+class _CreateBannerScreenState extends State<CreateBannerScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late final TextEditingController _codeController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _discountValueController;
-  late final TextEditingController _maxUsesController;
-  late final TextEditingController _minOrderAmountController;
-  late final TextEditingController _maxDiscountAmountController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _subtitleController;
+  late final TextEditingController _imageUrlController;
+  late final TextEditingController _targetValueController;
+  late final TextEditingController _displayOrderController;
 
-  CouponDiscountType _discountType = CouponDiscountType.percent;
-  CouponBranchScope _branchScope = CouponBranchScope.allBranches;
+  BannerTargetType _targetType = BannerTargetType.none;
   bool _active = true;
 
   DateTime? _startsAt;
-  DateTime? _expiresAt;
+  DateTime? _endsAt;
   String? _dateError;
-  String? _codeError;
 
-  final List<String> _selectedBranchIds = [];
-  final List<String> _selectedBranchNames = [];
-
-  bool get _isEditMode => widget.coupon != null;
-  bool get _isPercent => _discountType == CouponDiscountType.percent;
-  bool get _isFreeShipping => _discountType == CouponDiscountType.freeShipping;
-
-  List<BranchEntity> get _availableBranches {
-    return BranchMockStore.branches
-        .where((branch) => branch.status == BranchStatus.active)
-        .toList();
-  }
+  bool get _isEditMode => widget.banner != null;
+  bool get _targetValueRequired => _targetType != BannerTargetType.none;
 
   @override
   void initState() {
     super.initState();
 
-    final coupon = widget.coupon;
+    final banner = widget.banner;
 
-    _codeController = TextEditingController(text: coupon?.code ?? '');
-    _descriptionController = TextEditingController(
-      text: coupon?.description ?? '',
+    _titleController = TextEditingController(text: banner?.title ?? '');
+    _subtitleController = TextEditingController(text: banner?.subtitle ?? '');
+    _imageUrlController = TextEditingController(text: banner?.imageUrl ?? '');
+    _targetValueController = TextEditingController(
+      text: banner?.targetValue ?? '',
     );
-    _discountValueController = TextEditingController(
-      text: coupon == null ||
-              coupon.discountType == CouponDiscountType.freeShipping
-          ? ''
-          : coupon.discountValue.toString(),
-    );
-    _maxUsesController = TextEditingController(
-      text: coupon?.maxUses?.toString() ?? '',
-    );
-    _minOrderAmountController = TextEditingController(
-      text: coupon?.minOrderAmount?.toString() ?? '',
-    );
-    _maxDiscountAmountController = TextEditingController(
-      text: coupon?.maxDiscountAmount?.toString() ?? '',
+    _displayOrderController = TextEditingController(
+      text: banner?.displayOrder.toString() ?? '1',
     );
 
-    _discountType = coupon?.discountType ?? CouponDiscountType.percent;
-    _branchScope = coupon?.branchScope ?? CouponBranchScope.allBranches;
-    _active = coupon?.active ?? true;
-    _startsAt = coupon?.startsAt;
-    _expiresAt = coupon?.expiresAt;
-
-    _selectedBranchIds.addAll(coupon?.selectedBranchIds ?? []);
-    _selectedBranchNames.addAll(coupon?.selectedBranchNames ?? []);
-
-    if (!_isPercent) {
-      _maxDiscountAmountController.clear();
-    }
-
-    if (_isFreeShipping) {
-      _discountValueController.clear();
-    }
-
-    _codeController.addListener(() {
-      if (_codeError != null) {
-        setState(() {
-          _codeError = null;
-        });
-      }
-    });
+    _targetType = banner?.targetType ?? BannerTargetType.none;
+    _active = banner?.active ?? true;
+    _startsAt = banner?.startsAt;
+    _endsAt = banner?.endsAt;
 
     _validateDates();
   }
 
   @override
   void dispose() {
-    _codeController.dispose();
-    _descriptionController.dispose();
-    _discountValueController.dispose();
-    _maxUsesController.dispose();
-    _minOrderAmountController.dispose();
-    _maxDiscountAmountController.dispose();
+    _titleController.dispose();
+    _subtitleController.dispose();
+    _imageUrlController.dispose();
+    _targetValueController.dispose();
+    _displayOrderController.dispose();
     super.dispose();
   }
 
@@ -158,25 +112,13 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
   }
 
   bool _validateDates() {
-    if (_startsAt != null &&
-        _expiresAt != null &&
-        _startsAt!.isAfter(_expiresAt!)) {
-      _dateError = 'Valid From must be before Valid To';
+    if (_startsAt != null && _endsAt != null && _startsAt!.isAfter(_endsAt!)) {
+      _dateError = 'Start Date must be before End Date';
       return false;
     }
 
     _dateError = null;
     return true;
-  }
-
-  double? _parseDouble(String value) {
-    if (value.trim().isEmpty) return null;
-    return double.tryParse(value.trim());
-  }
-
-  int? _parseInt(String value) {
-    if (value.trim().isEmpty) return null;
-    return int.tryParse(value.trim());
   }
 
   String? _required(String? value, String fieldName) {
@@ -187,31 +129,24 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
     return null;
   }
 
-  String? _numberValidator(String? value, String fieldName) {
-    if (_isFreeShipping && fieldName == 'Discount Value') {
-      return null;
+  String? _optionalUrl(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final uri = Uri.tryParse(value.trim());
+
+    if (uri == null || !uri.hasScheme) {
+      return 'Image URL must be a valid URL';
     }
 
+    return null;
+  }
+
+  String? _positiveInt(String? value, String fieldName) {
     final requiredError = _required(value, fieldName);
+
     if (requiredError != null) return requiredError;
 
-    final parsed = double.tryParse(value!.trim());
-
-    if (parsed == null || parsed <= 0) {
-      return '$fieldName must be greater than 0';
-    }
-
-    if (_isPercent && fieldName == 'Discount Value' && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
-    }
-
-    return null;
-  }
-
-  String? _optionalPositiveNumber(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) return null;
-
-    final parsed = double.tryParse(value.trim());
+    final parsed = int.tryParse(value!.trim());
 
     if (parsed == null || parsed < 0) {
       return '$fieldName must be a valid number';
@@ -220,37 +155,7 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
     return null;
   }
 
-  String? _optionalPositiveInt(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) return null;
-
-    final parsed = int.tryParse(value.trim());
-
-    if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
-    }
-
-    return null;
-  }
-
-  void _toggleBranch(BranchEntity branch, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        if (!_selectedBranchIds.contains(branch.id)) {
-          _selectedBranchIds.add(branch.id);
-          _selectedBranchNames.add(branch.name);
-        }
-      } else {
-        _selectedBranchIds.remove(branch.id);
-        _selectedBranchNames.remove(branch.name);
-      }
-    });
-  }
-
-  void _saveCoupon() {
-    setState(() {
-      _codeError = null;
-    });
-
+  void _saveBanner() {
     if (!_formKey.currentState!.validate()) return;
 
     if (!_validateDates()) {
@@ -258,72 +163,38 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
       return;
     }
 
-    if (_branchScope == CouponBranchScope.selectedBranches &&
-        _selectedBranchIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one branch')),
-      );
-      return;
-    }
-
-    final normalizedCode = _codeController.text.trim().toUpperCase();
-
-    final duplicateExists = CouponMockStore.codeExists(
-      code: normalizedCode,
-      exceptCouponId: widget.coupon?.id,
-    );
-
-    if (duplicateExists) {
-      setState(() {
-        _codeError = 'Coupon code already exists.';
-      });
-
-      _formKey.currentState!.validate();
-      return;
-    }
-
-    final coupon = CouponEntity(
-      id: widget.coupon?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      ownerProjectId: widget.coupon?.ownerProjectId ?? 0,
-      code: normalizedCode,
-      description: _descriptionController.text.trim().isEmpty
+    final banner = BannerEntity(
+      id: widget.banner?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      ownerProjectId: widget.banner?.ownerProjectId ?? 0,
+      title: _titleController.text.trim(),
+      subtitle: _subtitleController.text.trim().isEmpty
           ? null
-          : _descriptionController.text.trim(),
-      discountType: _discountType,
-      discountValue: _isFreeShipping
-          ? 0
-          : double.parse(_discountValueController.text.trim()),
-      maxUses: _parseInt(_maxUsesController.text),
-      usedCount: widget.coupon?.usedCount ?? 0,
-      minOrderAmount: _parseDouble(_minOrderAmountController.text),
-      maxDiscountAmount: _isPercent
-          ? _parseDouble(_maxDiscountAmountController.text)
-          : null,
+          : _subtitleController.text.trim(),
+      imageUrl: _imageUrlController.text.trim(),
+      targetType: _targetType,
+      targetValue: _targetType == BannerTargetType.none ||
+              _targetValueController.text.trim().isEmpty
+          ? null
+          : _targetValueController.text.trim(),
+      displayOrder: int.parse(_displayOrderController.text.trim()),
       startsAt: _startsAt,
-      expiresAt: _expiresAt,
+      endsAt: _endsAt,
       active: _active,
-      branchScope: _branchScope,
-      selectedBranchIds: _branchScope == CouponBranchScope.allBranches
-          ? []
-          : List.unmodifiable(_selectedBranchIds),
-      selectedBranchNames: _branchScope == CouponBranchScope.allBranches
-          ? []
-          : List.unmodifiable(_selectedBranchNames),
     );
 
     if (_isEditMode) {
-      CouponMockStore.updateCoupon(coupon);
+      BannerMockStore.updateBanner(banner);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Coupon updated successfully')),
+        const SnackBar(content: Text('Banner updated successfully')),
       );
 
-      context.go('/supplier-coupons');
+      context.go('/supplier-banners');
     } else {
-      CouponMockStore.addCoupon(coupon);
+      BannerMockStore.addBanner(banner);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Coupon created successfully')),
+        const SnackBar(content: Text('Banner created successfully')),
       );
 
       context.go('/supplier-dashboard');
@@ -332,7 +203,7 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
 
   void _cancel() {
     if (_isEditMode) {
-      context.go('/supplier-coupons');
+      context.go('/supplier-banners');
     } else {
       context.go('/supplier-dashboard');
     }
@@ -341,7 +212,6 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final branches = _availableBranches;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -354,7 +224,7 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
           onPressed: _cancel,
         ),
         title: Text(
-          _isEditMode ? 'Edit Coupon' : 'Create Coupon',
+          _isEditMode ? 'Edit Banner' : 'Create Banner',
           style: const TextStyle(
             color: AppThemeTokens.textPrimary,
             fontSize: 24,
@@ -399,7 +269,7 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
                 child: SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _saveCoupon,
+                    onPressed: _saveBanner,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primary,
                       foregroundColor: Colors.white,
@@ -409,7 +279,7 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
                       ),
                     ),
                     child: Text(
-                      _isEditMode ? 'Update Coupon' : 'Create Coupon',
+                      _isEditMode ? 'Update Banner' : 'Create Banner',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
@@ -430,184 +300,93 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
             child: Column(
               children: [
                 _SectionCard(
-                  title: 'Coupon Information',
+                  title: 'Banner Information',
                   children: [
-                    _FieldLabel('Coupon Code *'),
+                    _FieldLabel('Banner Title *'),
                     _InputField(
-                      controller: _codeController,
-                      hintText: 'SPRING25',
-                      textCapitalization: TextCapitalization.characters,
-                      validator: (value) {
-                        final error = _required(value, 'Coupon Code');
-
-                        if (error != null) return error;
-
-                        if (_codeError != null) {
-                          return _codeError;
-                        }
-
-                        return null;
-                      },
+                      controller: _titleController,
+                      hintText: 'Wholesale Summer Deals',
+                      validator: (value) => _required(
+                        value,
+                        'Banner Title',
+                      ),
                     ),
                     const _DividerSpace(),
-                    _FieldLabel('Description'),
+
+                    _FieldLabel('Subtitle'),
                     _InputField(
-                      controller: _descriptionController,
-                      hintText: 'Describe this coupon',
+                      controller: _subtitleController,
+                      hintText: 'Promote your supplier campaign',
                       maxLines: 2,
                     ),
                     const _DividerSpace(),
-                    _FieldLabel('Discount Type *'),
-                    _DiscountTypeDropdown(
-                      value: _discountType,
+
+                    _FieldLabel('Image URL'),
+                    _InputField(
+                      controller: _imageUrlController,
+                      hintText: 'https://example.com/banner.png',
+                      validator: _optionalUrl,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 18),
+
+                _SectionCard(
+                  title: 'Target Settings',
+                  children: [
+                    _FieldLabel('Target Type *'),
+                    _TargetTypeDropdown(
+                      value: _targetType,
                       onChanged: (value) {
                         if (value == null) return;
 
                         setState(() {
-                          _discountType = value;
+                          _targetType = value;
 
-                          if (!_isPercent) {
-                            _maxDiscountAmountController.clear();
-                          }
-
-                          if (_isFreeShipping) {
-                            _discountValueController.clear();
+                          if (_targetType == BannerTargetType.none) {
+                            _targetValueController.clear();
                           }
                         });
                       },
                     ),
                     const _DividerSpace(),
+
                     _FieldLabel(
-                      _isPercent ? 'Discount Value (%) *' : 'Discount Value *',
+                      _targetValueRequired ? 'Target Value *' : 'Target Value',
                     ),
                     _InputField(
-                      controller: _discountValueController,
-                      hintText: _isFreeShipping ? 'Not required' : '25',
-                      enabled: !_isFreeShipping,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
+                      controller: _targetValueController,
+                      hintText: _targetValueRequired
+                          ? 'Product ID, Category ID, or URL'
+                          : 'Not required',
+                      enabled: _targetValueRequired,
                       validator: (value) {
-                        return _numberValidator(value, 'Discount Value');
+                        if (!_targetValueRequired) return null;
+                        return _required(value, 'Target Value');
                       },
                     ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Coupon Rules',
-                  children: [
-                    _FieldLabel('Max Uses'),
+                    const _DividerSpace(),
+
+                    _FieldLabel('Display Order *'),
                     _InputField(
-                      controller: _maxUsesController,
-                      hintText: '100',
+                      controller: _displayOrderController,
+                      hintText: '1',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        return _optionalPositiveInt(value, 'Max Uses');
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Min Order Amount'),
-                    _InputField(
-                      controller: _minOrderAmountController,
-                      hintText: '50',
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _optionalPositiveNumber(
-                          value,
-                          'Min Order Amount',
-                        );
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Max Discount Amount'),
-                    _InputField(
-                      controller: _maxDiscountAmountController,
-                      hintText: _isPercent ? '30' : 'Only for percent coupons',
-                      enabled: _isPercent,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _optionalPositiveNumber(
-                          value,
-                          'Max Discount Amount',
-                        );
+                        return _positiveInt(value, 'Display Order');
                       },
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 18),
+
                 _SectionCard(
-                  title: 'Branch Applicability',
-                  children: [
-                    _FieldLabel('Applies To *'),
-                    _BranchScopeDropdown(
-                      value: _branchScope,
-                      onChanged: (value) {
-                        if (value == null) return;
-
-                        setState(() {
-                          _branchScope = value;
-
-                          if (_branchScope == CouponBranchScope.allBranches) {
-                            _selectedBranchIds.clear();
-                            _selectedBranchNames.clear();
-                          }
-                        });
-                      },
-                    ),
-                    if (_branchScope == CouponBranchScope.selectedBranches) ...[
-                      const _DividerSpace(),
-                      _FieldLabel('Select Branches'),
-                      if (branches.isEmpty)
-                        const Text(
-                          'No active branches available. Add branches from Branch Management first.',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppThemeTokens.textSecondary,
-                          ),
-                        )
-                      else
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: branches.map((branch) {
-                            final selected =
-                                _selectedBranchIds.contains(branch.id);
-
-                            return FilterChip(
-                              selected: selected,
-                              label: Text(branch.name),
-                              selectedColor: primary.withOpacity(0.15),
-                              checkmarkColor: primary,
-                              onSelected: (isSelected) {
-                                _toggleBranch(branch, isSelected);
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Selected branches are loaded from Branch Management.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppThemeTokens.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Validity',
+                  title: 'Visibility',
                   children: [
                     _DateTimePickerRow(
-                      label: 'Valid From',
+                      label: 'Start Date',
                       value: _formatDateTime(_startsAt),
                       onPick: () async {
                         final picked = await _pickDateTime(_startsAt);
@@ -626,27 +405,30 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
                         });
                       },
                     ),
+
                     const SizedBox(height: 12),
+
                     _DateTimePickerRow(
-                      label: 'Valid To',
-                      value: _formatDateTime(_expiresAt),
+                      label: 'End Date',
+                      value: _formatDateTime(_endsAt),
                       onPick: () async {
-                        final picked = await _pickDateTime(_expiresAt);
+                        final picked = await _pickDateTime(_endsAt);
 
                         if (picked == null) return;
 
                         setState(() {
-                          _expiresAt = picked;
+                          _endsAt = picked;
                           _validateDates();
                         });
                       },
                       onClear: () {
                         setState(() {
-                          _expiresAt = null;
+                          _endsAt = null;
                           _validateDates();
                         });
                       },
                     ),
+
                     if (_dateError != null) ...[
                       const SizedBox(height: 10),
                       Text(
@@ -657,7 +439,9 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
                         ),
                       ),
                     ],
+
                     const _DividerSpace(),
+
                     Row(
                       children: [
                         const Expanded(
@@ -768,7 +552,6 @@ class _InputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool enabled;
   final int maxLines;
-  final TextCapitalization textCapitalization;
   final String? Function(String?)? validator;
 
   const _InputField({
@@ -777,7 +560,6 @@ class _InputField extends StatelessWidget {
     this.keyboardType,
     this.enabled = true,
     this.maxLines = 1,
-    this.textCapitalization = TextCapitalization.none,
     this.validator,
   });
 
@@ -788,7 +570,6 @@ class _InputField extends StatelessWidget {
       enabled: enabled,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      textCapitalization: textCapitalization,
       validator: validator,
       style: const TextStyle(
         fontSize: 15,
@@ -827,56 +608,24 @@ class _InputField extends StatelessWidget {
   }
 }
 
-class _DiscountTypeDropdown extends StatelessWidget {
-  final CouponDiscountType value;
-  final ValueChanged<CouponDiscountType?> onChanged;
+class _TargetTypeDropdown extends StatelessWidget {
+  final BannerTargetType value;
+  final ValueChanged<BannerTargetType?> onChanged;
 
-  const _DiscountTypeDropdown({
+  const _TargetTypeDropdown({
     required this.value,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<CouponDiscountType>(
+    return DropdownButtonFormField<BannerTargetType>(
       value: value,
-      items: CouponDiscountType.values
+      items: BannerTargetType.values
           .map(
-            (type) => DropdownMenuItem<CouponDiscountType>(
+            (type) => DropdownMenuItem<BannerTargetType>(
               value: type,
               child: Text(type.label),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
-    );
-  }
-}
-
-class _BranchScopeDropdown extends StatelessWidget {
-  final CouponBranchScope value;
-  final ValueChanged<CouponBranchScope?> onChanged;
-
-  const _BranchScopeDropdown({
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<CouponBranchScope>(
-      value: value,
-      items: CouponBranchScope.values
-          .map(
-            (scope) => DropdownMenuItem<CouponBranchScope>(
-              value: scope,
-              child: Text(scope.label),
             ),
           )
           .toList(),

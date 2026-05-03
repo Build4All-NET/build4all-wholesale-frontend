@@ -24,4 +24,18 @@ class CouponMockStore {
   static void deleteCoupon(String id) {
     _coupons.removeWhere((coupon) => coupon.id == id);
   }
+
+  static bool codeExists({
+    required String code,
+    String? exceptCouponId,
+  }) {
+    final normalizedCode = code.trim().toUpperCase();
+
+    return _coupons.any((coupon) {
+      final sameCode = coupon.code.trim().toUpperCase() == normalizedCode;
+      final sameCoupon = coupon.id == exceptCouponId;
+
+      return sameCode && !sameCoupon;
+    });
+  }
 }

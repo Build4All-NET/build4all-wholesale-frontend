@@ -56,6 +56,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-coupons',
                   ),
                   _DrawerItem(
+                    icon: Icons.image_outlined,
+                    title: 'Home Banners',
+                    route: '/supplier-banners',
+                  ),
+                  _DrawerItem(
                     icon: Icons.settings_outlined,
                     title: 'Settings',
                     route: '/supplier-settings',

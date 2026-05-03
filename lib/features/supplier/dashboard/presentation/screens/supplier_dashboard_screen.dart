@@ -239,7 +239,7 @@ class SupplierDashboardScreen extends StatelessWidget {
       SupplierQuickActionCard(
         title: 'Home Banners',
         icon: Icons.image_outlined,
-        onTap: () => context.go('/supplier-banners'),
+        onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
         title: 'Coupons',

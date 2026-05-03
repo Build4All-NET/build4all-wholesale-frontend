@@ -3,28 +3,28 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/coupon_mock_store.dart';
-import '../widgets/coupon_card.dart';
+import '../../data/banner_mock_store.dart';
+import '../widgets/banner_card.dart';
 
-class CouponsScreen extends StatefulWidget {
-  const CouponsScreen({super.key});
+class BannersScreen extends StatefulWidget {
+  const BannersScreen({super.key});
 
   @override
-  State<CouponsScreen> createState() => _CouponsScreenState();
+  State<BannersScreen> createState() => _BannersScreenState();
 }
 
-class _CouponsScreenState extends State<CouponsScreen> {
-  Future<void> _confirmDeleteCoupon(String id, String code) async {
+class _BannersScreenState extends State<BannersScreen> {
+  Future<void> _confirmDeleteBanner(String id, String title) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text(
-            'Delete Coupon',
+            'Delete Banner',
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete coupon "$code"?',
+            'Are you sure you want to delete banner "$title"?',
           ),
           actions: [
             TextButton(
@@ -46,20 +46,20 @@ class _CouponsScreenState extends State<CouponsScreen> {
       },
     );
 
-    if (shouldDelete != true) return;
+    if (!mounted || shouldDelete != true) return;
 
-    CouponMockStore.deleteCoupon(id);
+    BannerMockStore.deleteBanner(id);
     setState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Coupon deleted successfully')),
+      const SnackBar(content: Text('Banner deleted successfully')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final coupons = CouponMockStore.coupons;
+    final banners = BannerMockStore.banners;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -77,7 +77,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
           },
         ),
         title: Text(
-          'Coupons',
+          'Home Banners',
           style: TextStyle(
             color: primary,
             fontSize: 22,
@@ -97,7 +97,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
               const SizedBox(height: 20),
 
               const Text(
-                'Coupon List',
+                'Banner List',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -107,27 +107,30 @@ class _CouponsScreenState extends State<CouponsScreen> {
 
               const SizedBox(height: 12),
 
-              if (coupons.isEmpty)
-                _EmptyCouponsCard(primary: primary)
+              if (banners.isEmpty)
+                _EmptyBannersCard(primary: primary)
               else
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: coupons.length,
+                  itemCount: banners.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
-                    final coupon = coupons[index];
+                    final banner = banners[index];
 
-                    return CouponCard(
-                      coupon: coupon,
+                    return BannerCard(
+                      banner: banner,
                       onEdit: () {
                         context.go(
-                          '/supplier-coupons/edit',
-                          extra: coupon,
+                          '/supplier-banners/edit',
+                          extra: banner,
                         );
                       },
                       onDelete: () {
-                        _confirmDeleteCoupon(coupon.id, coupon.code);
+                        _confirmDeleteBanner(
+                          banner.id,
+                          banner.title,
+                        );
                       },
                     );
                   },
@@ -163,7 +166,7 @@ class _HeaderCard extends StatelessWidget {
             radius: 28,
             backgroundColor: primary.withOpacity(0.12),
             child: Icon(
-              Icons.confirmation_number_outlined,
+              Icons.image_outlined,
               color: primary,
               size: 30,
             ),
@@ -174,7 +177,7 @@ class _HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Coupons',
+                  'Manage Home Banners',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -183,7 +186,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier coupons. These coupon rules follow the same owner coupon structure used in the e-commerce project.',
+                  'Create and manage supplier marketing banners that will later appear on the retailer home page.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -200,10 +203,10 @@ class _HeaderCard extends StatelessWidget {
   }
 }
 
-class _EmptyCouponsCard extends StatelessWidget {
+class _EmptyBannersCard extends StatelessWidget {
   final Color primary;
 
-  const _EmptyCouponsCard({required this.primary});
+  const _EmptyBannersCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -222,14 +225,14 @@ class _EmptyCouponsCard extends StatelessWidget {
             radius: 30,
             backgroundColor: primary.withOpacity(0.12),
             child: Icon(
-              Icons.confirmation_number_outlined,
+              Icons.image_outlined,
               color: primary,
               size: 30,
             ),
           ),
           const SizedBox(height: 14),
           const Text(
-            'No coupons yet',
+            'No banners yet',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -257,7 +260,7 @@ class _EmptyCouponsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create coupons from the supplier dashboard, then view them here.',
+            'Create banners from the supplier dashboard, then view them here.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

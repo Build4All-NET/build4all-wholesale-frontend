@@ -19,6 +19,11 @@ import '../features/supplier/products/presentation/screens/product_management_sc
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
 import '../features/supplier/products/domain/entities/product_entity.dart';
 
+import '../features/supplier/branches/domain/entities/branch_entity.dart';
+import '../features/supplier/branches/presentation/screens/branch_management_screen.dart';
+import '../features/supplier/branches/presentation/screens/add_branch_screen.dart';
+import '../features/supplier/branches/presentation/screens/branch_inventory_screen.dart';
+
 import '../features/supplier/promotions/presentation/screens/promotions_screen.dart';
 import '../features/supplier/promotions/presentation/screens/create_promotion_screen.dart';
 import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
@@ -26,10 +31,10 @@ import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
 import '../features/supplier/coupons/presentation/screens/coupons_screen.dart';
 import '../features/supplier/coupons/presentation/screens/create_coupon_screen.dart';
 import '../features/supplier/coupons/domain/entities/coupon_entity.dart';
-import '../features/supplier/branches/domain/entities/branch_entity.dart';
-import '../features/supplier/branches/presentation/screens/branch_management_screen.dart';
-import '../features/supplier/branches/presentation/screens/branch_inventory_screen.dart';
-import '../features/supplier/branches/presentation/screens/add_branch_screen.dart';
+
+import '../features/supplier/banners/presentation/screens/banners_screen.dart';
+import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
+import '../features/supplier/banners/domain/entities/banner_entity.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -101,10 +106,6 @@ class AppRouter {
         builder: (context, state) => const CompleteRetailerProfileScreen(),
       ),
 
-      // =========================
-      // SUPPLIER ROUTES
-      // =========================
-
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
@@ -146,7 +147,9 @@ class AppRouter {
         builder: (context, state) {
           final branch = state.extra as BranchEntity;
 
-          return AddBranchScreen(branchToEdit: branch);
+          return AddBranchScreen(
+            branchToEdit: branch,
+          );
         },
       ),
 
@@ -155,9 +158,12 @@ class AppRouter {
         builder: (context, state) {
           final branch = state.extra as BranchEntity;
 
-          return BranchInventoryScreen(branch: branch);
+          return BranchInventoryScreen(
+            branch: branch,
+          );
         },
       ),
+
       GoRoute(
         path: '/supplier-inventory',
         builder: (context, state) => const SupplierComingSoonScreen(
@@ -173,10 +179,6 @@ class AppRouter {
           icon: Icons.receipt_long_outlined,
         ),
       ),
-
-      // =========================
-      // SUPPLIER PROMOTIONS ROUTES
-      // =========================
 
       GoRoute(
         path: '/supplier-promotions',
@@ -198,10 +200,6 @@ class AppRouter {
           );
         },
       ),
-
-      // =========================
-      // SUPPLIER COUPONS ROUTES
-      // =========================
 
       GoRoute(
         path: '/supplier-coupons',
@@ -226,10 +224,23 @@ class AppRouter {
 
       GoRoute(
         path: '/supplier-banners',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Home Banners',
-          icon: Icons.image_outlined,
-        ),
+        builder: (context, state) => const BannersScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-banners/create',
+        builder: (context, state) => const CreateBannerScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-banners/edit',
+        builder: (context, state) {
+          final banner = state.extra as BannerEntity;
+
+          return CreateBannerScreen(
+            banner: banner,
+          );
+        },
       ),
 
       GoRoute(
@@ -263,10 +274,6 @@ class AppRouter {
           icon: Icons.upload_outlined,
         ),
       ),
-
-      // =========================
-      // RETAILER ROUTES
-      // =========================
 
       GoRoute(
         path: '/retailer-dashboard',
