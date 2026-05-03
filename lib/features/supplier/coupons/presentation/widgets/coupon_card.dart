@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../domain/entities/promotion_entity.dart';
+import '../../domain/entities/coupon_entity.dart';
 
-class PromotionCard extends StatelessWidget {
-  final PromotionEntity promotion;
+class CouponCard extends StatelessWidget {
+  final CouponEntity coupon;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const PromotionCard({
+  const CouponCard({
     super.key,
-    required this.promotion,
+    required this.coupon,
     required this.onEdit,
     required this.onDelete,
   });
@@ -28,24 +29,24 @@ class PromotionCard extends StatelessWidget {
   }
 
   String _usageText() {
-    if (promotion.maxUses == null) {
-      return '${promotion.usedCount} / ∞';
+    if (coupon.maxUses == null) {
+      return '${coupon.usedCount} / ∞';
     }
 
-    return '${promotion.usedCount} / ${promotion.maxUses}';
+    return '${coupon.usedCount} / ${coupon.maxUses}';
   }
 
   String _remainingText() {
-    if (promotion.remainingUses == null) return 'Unlimited';
-    return promotion.remainingUses.toString();
+    if (coupon.remainingUses == null) return 'Unlimited';
+    return coupon.remainingUses.toString();
   }
 
   String _validityText() {
-    if (promotion.startsAt == null && promotion.endsAt == null) {
+    if (coupon.startsAt == null && coupon.expiresAt == null) {
       return 'Always active';
     }
 
-    return '${_formatDate(promotion.startsAt)} → ${_formatDate(promotion.endsAt)}';
+    return '${_formatDate(coupon.startsAt)} → ${_formatDate(coupon.expiresAt)}';
   }
 
   @override
@@ -72,14 +73,9 @@ class PromotionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: primary.withOpacity(0.12),
-                child: Icon(
-                  Icons.local_offer_outlined,
-                  color: primary,
-                  size: 28,
-                ),
+              _CouponCodeBox(
+                code: coupon.code,
+                primary: primary,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -87,7 +83,7 @@ class PromotionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      promotion.title,
+                      coupon.code,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
@@ -96,7 +92,7 @@ class PromotionCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${promotion.promotionType.label} • ${promotion.discountType.label} • ${promotion.discountLabel}',
+                      '${coupon.discountType.label} • ${coupon.discountLabel}',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
@@ -106,14 +102,14 @@ class PromotionCard extends StatelessWidget {
                   ],
                 ),
               ),
-              _StatusBadge(promotion: promotion),
+              _StatusBadge(coupon: coupon),
             ],
           ),
-          if (promotion.description != null &&
-              promotion.description!.trim().isNotEmpty) ...[
+          if (coupon.description != null &&
+              coupon.description!.trim().isNotEmpty) ...[
             const SizedBox(height: 12),
             Text(
-              promotion.description!,
+              coupon.description!,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -142,23 +138,23 @@ class PromotionCard extends StatelessWidget {
               _InfoChip(label: 'Remaining', value: _remainingText()),
               _InfoChip(
                 label: 'Min order',
-                value: promotion.minOrderAmount == null
+                value: coupon.minOrderAmount == null
                     ? '—'
-                    : promotion.minOrderAmount!.toStringAsFixed(2),
+                    : coupon.minOrderAmount!.toStringAsFixed(2),
               ),
               _InfoChip(
                 label: 'Max discount',
-                value: promotion.maxDiscountAmount == null
+                value: coupon.maxDiscountAmount == null
                     ? '—'
-                    : promotion.maxDiscountAmount!.toStringAsFixed(2),
+                    : coupon.maxDiscountAmount!.toStringAsFixed(2),
               ),
               _InfoChip(
                 label: 'Branches',
-                value: promotion.branchApplicabilityLabel,
+                value: coupon.branchApplicabilityLabel,
               ),
               _InfoChip(
                 label: 'Valid now',
-                value: promotion.currentlyValid ? 'Yes' : 'No',
+                value: coupon.currentlyValid ? 'Yes' : 'No',
               ),
             ],
           ),
@@ -167,6 +163,36 @@ class PromotionCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
+              Expanded(
+                child: SizedBox(
+                  height: 40,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: coupon.code),
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${coupon.code} copied')),
+                      );
+                    },
+                    icon: const Icon(Icons.copy_outlined, size: 17),
+                    label: const Text('Copy'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppThemeTokens.textPrimary,
+                      side: const BorderSide(color: AppThemeTokens.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(11),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: SizedBox(
                   height: 40,
@@ -189,7 +215,7 @@ class PromotionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: SizedBox(
                   height: 40,
@@ -220,10 +246,42 @@ class PromotionCard extends StatelessWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final PromotionEntity promotion;
+class _CouponCodeBox extends StatelessWidget {
+  final String code;
+  final Color primary;
 
-  const _StatusBadge({required this.promotion});
+  const _CouponCodeBox({
+    required this.code,
+    required this.primary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _DashedBorderPainter(color: primary),
+      child: Container(
+        width: 82,
+        height: 52,
+        alignment: Alignment.center,
+        child: Text(
+          code.toUpperCase(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: primary,
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.4,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final CouponEntity coupon;
+
+  const _StatusBadge({required this.coupon});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +290,7 @@ class _StatusBadge extends StatelessWidget {
     final Color backgroundColor;
     final Color textColor;
 
-    switch (promotion.status) {
+    switch (coupon.status) {
       case 'INACTIVE':
         backgroundColor = const Color(0xFFFEE2E2);
         textColor = const Color(0xFFDC2626);
@@ -263,7 +321,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        promotion.statusLabel,
+        coupon.statusLabel,
         style: TextStyle(
           color: textColor,
           fontSize: 11,
@@ -315,5 +373,48 @@ class _InfoChip extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _DashedBorderPainter extends CustomPainter {
+  final Color color;
+
+  const _DashedBorderPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.8
+      ..style = PaintingStyle.stroke;
+
+    const dashWidth = 7.0;
+    const dashGap = 5.0;
+
+    final rect = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      const Radius.circular(13),
+    );
+
+    final path = Path()..addRRect(rect);
+
+    for (final metric in path.computeMetrics()) {
+      double distance = 0;
+
+      while (distance < metric.length) {
+        final segment = metric.extractPath(
+          distance,
+          distance + dashWidth,
+        );
+
+        canvas.drawPath(segment, paint);
+        distance += dashWidth + dashGap;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) {
+    return oldDelegate.color != color;
   }
 }

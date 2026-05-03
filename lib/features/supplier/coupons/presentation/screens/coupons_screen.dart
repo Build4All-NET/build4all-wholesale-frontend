@@ -3,28 +3,28 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/promotion_mock_store.dart';
-import '../widgets/promotion_card.dart';
+import '../../data/coupon_mock_store.dart';
+import '../widgets/coupon_card.dart';
 
-class PromotionsScreen extends StatefulWidget {
-  const PromotionsScreen({super.key});
+class CouponsScreen extends StatefulWidget {
+  const CouponsScreen({super.key});
 
   @override
-  State<PromotionsScreen> createState() => _PromotionsScreenState();
+  State<CouponsScreen> createState() => _CouponsScreenState();
 }
 
-class _PromotionsScreenState extends State<PromotionsScreen> {
-  Future<void> _confirmDeletePromotion(String id, String title) async {
+class _CouponsScreenState extends State<CouponsScreen> {
+  Future<void> _confirmDeleteCoupon(String id, String code) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text(
-            'Delete Promotion',
+            'Delete Coupon',
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete promotion "$title"?',
+            'Are you sure you want to delete coupon "$code"?',
           ),
           actions: [
             TextButton(
@@ -48,18 +48,18 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
 
     if (shouldDelete != true) return;
 
-    PromotionMockStore.deletePromotion(id);
+    CouponMockStore.deleteCoupon(id);
     setState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Promotion deleted successfully')),
+      const SnackBar(content: Text('Coupon deleted successfully')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final promotions = PromotionMockStore.promotions;
+    final coupons = CouponMockStore.coupons;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -77,7 +77,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           },
         ),
         title: Text(
-          'Promotions',
+          'Coupons',
           style: TextStyle(
             color: primary,
             fontSize: 22,
@@ -97,7 +97,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
               const SizedBox(height: 20),
 
               const Text(
-                'Promotion List',
+                'Coupon List',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -107,30 +107,27 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
 
               const SizedBox(height: 12),
 
-              if (promotions.isEmpty)
-                _EmptyPromotionsCard(primary: primary)
+              if (coupons.isEmpty)
+                _EmptyCouponsCard(primary: primary)
               else
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: promotions.length,
+                  itemCount: coupons.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
-                    final promotion = promotions[index];
+                    final coupon = coupons[index];
 
-                    return PromotionCard(
-                      promotion: promotion,
+                    return CouponCard(
+                      coupon: coupon,
                       onEdit: () {
                         context.go(
-                          '/supplier-promotions/edit',
-                          extra: promotion,
+                          '/supplier-coupons/edit',
+                          extra: coupon,
                         );
                       },
                       onDelete: () {
-                        _confirmDeletePromotion(
-                          promotion.id,
-                          promotion.title,
-                        );
+                        _confirmDeleteCoupon(coupon.id, coupon.code);
                       },
                     );
                   },
@@ -166,7 +163,7 @@ class _HeaderCard extends StatelessWidget {
             radius: 28,
             backgroundColor: primary.withOpacity(0.12),
             child: Icon(
-              Icons.local_offer_outlined,
+              Icons.confirmation_number_outlined,
               color: primary,
               size: 30,
             ),
@@ -177,7 +174,7 @@ class _HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Promotions',
+                  'Manage Coupons',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -186,7 +183,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier promotional offers. Promotions are managed separately and prepared for future backend integration.',
+                  'View, edit, and delete supplier coupons. These coupon rules follow the same owner coupon structure used in the e-commerce project.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -203,10 +200,10 @@ class _HeaderCard extends StatelessWidget {
   }
 }
 
-class _EmptyPromotionsCard extends StatelessWidget {
+class _EmptyCouponsCard extends StatelessWidget {
   final Color primary;
 
-  const _EmptyPromotionsCard({required this.primary});
+  const _EmptyCouponsCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -225,14 +222,14 @@ class _EmptyPromotionsCard extends StatelessWidget {
             radius: 30,
             backgroundColor: primary.withOpacity(0.12),
             child: Icon(
-              Icons.local_offer_outlined,
+              Icons.confirmation_number_outlined,
               color: primary,
               size: 30,
             ),
           ),
           const SizedBox(height: 14),
           const Text(
-            'No promotions yet',
+            'No coupons yet',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -260,7 +257,7 @@ class _EmptyPromotionsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create promotions from the supplier dashboard, then view them here.',
+            'Create coupons from the supplier dashboard, then view them here.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

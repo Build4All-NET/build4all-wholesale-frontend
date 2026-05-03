@@ -3,28 +3,28 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/promotion_mock_store.dart';
-import '../widgets/promotion_card.dart';
+import '../../data/banner_mock_store.dart';
+import '../widgets/banner_card.dart';
 
-class PromotionsScreen extends StatefulWidget {
-  const PromotionsScreen({super.key});
+class BannersScreen extends StatefulWidget {
+  const BannersScreen({super.key});
 
   @override
-  State<PromotionsScreen> createState() => _PromotionsScreenState();
+  State<BannersScreen> createState() => _BannersScreenState();
 }
 
-class _PromotionsScreenState extends State<PromotionsScreen> {
-  Future<void> _confirmDeletePromotion(String id, String title) async {
+class _BannersScreenState extends State<BannersScreen> {
+  Future<void> _confirmDeleteBanner(String id, String title) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text(
-            'Delete Promotion',
+            'Delete Banner',
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete promotion "$title"?',
+            'Are you sure you want to delete banner "$title"?',
           ),
           actions: [
             TextButton(
@@ -46,20 +46,20 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
       },
     );
 
-    if (shouldDelete != true) return;
+    if (!mounted || shouldDelete != true) return;
 
-    PromotionMockStore.deletePromotion(id);
+    BannerMockStore.deleteBanner(id);
     setState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Promotion deleted successfully')),
+      const SnackBar(content: Text('Banner deleted successfully')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final promotions = PromotionMockStore.promotions;
+    final banners = BannerMockStore.banners;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -77,7 +77,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           },
         ),
         title: Text(
-          'Promotions',
+          'Home Banners',
           style: TextStyle(
             color: primary,
             fontSize: 22,
@@ -97,7 +97,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
               const SizedBox(height: 20),
 
               const Text(
-                'Promotion List',
+                'Banner List',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -107,29 +107,29 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
 
               const SizedBox(height: 12),
 
-              if (promotions.isEmpty)
-                _EmptyPromotionsCard(primary: primary)
+              if (banners.isEmpty)
+                _EmptyBannersCard(primary: primary)
               else
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: promotions.length,
+                  itemCount: banners.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
-                    final promotion = promotions[index];
+                    final banner = banners[index];
 
-                    return PromotionCard(
-                      promotion: promotion,
+                    return BannerCard(
+                      banner: banner,
                       onEdit: () {
                         context.go(
-                          '/supplier-promotions/edit',
-                          extra: promotion,
+                          '/supplier-banners/edit',
+                          extra: banner,
                         );
                       },
                       onDelete: () {
-                        _confirmDeletePromotion(
-                          promotion.id,
-                          promotion.title,
+                        _confirmDeleteBanner(
+                          banner.id,
+                          banner.title,
                         );
                       },
                     );
@@ -166,7 +166,7 @@ class _HeaderCard extends StatelessWidget {
             radius: 28,
             backgroundColor: primary.withOpacity(0.12),
             child: Icon(
-              Icons.local_offer_outlined,
+              Icons.image_outlined,
               color: primary,
               size: 30,
             ),
@@ -177,7 +177,7 @@ class _HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Promotions',
+                  'Manage Home Banners',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -186,7 +186,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier promotional offers. Promotions are managed separately and prepared for future backend integration.',
+                  'Create and manage supplier marketing banners that will later appear on the retailer home page.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -203,10 +203,10 @@ class _HeaderCard extends StatelessWidget {
   }
 }
 
-class _EmptyPromotionsCard extends StatelessWidget {
+class _EmptyBannersCard extends StatelessWidget {
   final Color primary;
 
-  const _EmptyPromotionsCard({required this.primary});
+  const _EmptyBannersCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -225,14 +225,14 @@ class _EmptyPromotionsCard extends StatelessWidget {
             radius: 30,
             backgroundColor: primary.withOpacity(0.12),
             child: Icon(
-              Icons.local_offer_outlined,
+              Icons.image_outlined,
               color: primary,
               size: 30,
             ),
           ),
           const SizedBox(height: 14),
           const Text(
-            'No promotions yet',
+            'No banners yet',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -260,7 +260,7 @@ class _EmptyPromotionsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create promotions from the supplier dashboard, then view them here.',
+            'Create banners from the supplier dashboard, then view them here.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

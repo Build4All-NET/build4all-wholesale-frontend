@@ -1,85 +1,61 @@
-enum PromotionDiscountType {
+enum CouponDiscountType {
   percent,
   fixed,
   freeShipping,
 }
 
-extension PromotionDiscountTypeX on PromotionDiscountType {
+extension CouponDiscountTypeX on CouponDiscountType {
   String get label {
     switch (this) {
-      case PromotionDiscountType.percent:
+      case CouponDiscountType.percent:
         return 'Percent';
-      case PromotionDiscountType.fixed:
+      case CouponDiscountType.fixed:
         return 'Fixed';
-      case PromotionDiscountType.freeShipping:
+      case CouponDiscountType.freeShipping:
         return 'Free Shipping';
     }
   }
 }
 
-enum PromotionType {
-  seasonal,
-  flashSale,
-  bulkOffer,
-  general,
-}
-
-extension PromotionTypeX on PromotionType {
-  String get label {
-    switch (this) {
-      case PromotionType.seasonal:
-        return 'Seasonal';
-      case PromotionType.flashSale:
-        return 'Flash Sale';
-      case PromotionType.bulkOffer:
-        return 'Bulk Offer';
-      case PromotionType.general:
-        return 'General';
-    }
-  }
-}
-
-enum PromotionBranchScope {
+enum CouponBranchScope {
   allBranches,
   selectedBranches,
 }
 
-extension PromotionBranchScopeX on PromotionBranchScope {
+extension CouponBranchScopeX on CouponBranchScope {
   String get label {
     switch (this) {
-      case PromotionBranchScope.allBranches:
+      case CouponBranchScope.allBranches:
         return 'All Branches';
-      case PromotionBranchScope.selectedBranches:
+      case CouponBranchScope.selectedBranches:
         return 'Selected Branches';
     }
   }
 }
 
-class PromotionEntity {
+class CouponEntity {
   final String id;
   final int ownerProjectId;
-  final String title;
+  final String code;
   final String? description;
-  final PromotionType promotionType;
-  final PromotionDiscountType discountType;
+  final CouponDiscountType discountType;
   final double discountValue;
   final int? maxUses;
   final int usedCount;
   final double? minOrderAmount;
   final double? maxDiscountAmount;
   final DateTime? startsAt;
-  final DateTime? endsAt;
+  final DateTime? expiresAt;
   final bool active;
-  final PromotionBranchScope branchScope;
+  final CouponBranchScope branchScope;
   final List<String> selectedBranchIds;
   final List<String> selectedBranchNames;
 
-  const PromotionEntity({
+  const CouponEntity({
     required this.id,
     required this.ownerProjectId,
-    required this.title,
+    required this.code,
     this.description,
-    required this.promotionType,
     required this.discountType,
     required this.discountValue,
     this.maxUses,
@@ -87,9 +63,9 @@ class PromotionEntity {
     this.minOrderAmount,
     this.maxDiscountAmount,
     this.startsAt,
-    this.endsAt,
+    this.expiresAt,
     required this.active,
-    this.branchScope = PromotionBranchScope.allBranches,
+    this.branchScope = CouponBranchScope.allBranches,
     this.selectedBranchIds = const [],
     this.selectedBranchNames = const [],
   });
@@ -106,8 +82,8 @@ class PromotionEntity {
   }
 
   bool get expired {
-    if (endsAt == null) return false;
-    return DateTime.now().isAfter(endsAt!);
+    if (expiresAt == null) return false;
+    return DateTime.now().isAfter(expiresAt!);
   }
 
   bool get usageLimitReached {
@@ -145,17 +121,17 @@ class PromotionEntity {
 
   String get discountLabel {
     switch (discountType) {
-      case PromotionDiscountType.percent:
+      case CouponDiscountType.percent:
         return '${discountValue.toStringAsFixed(0)} %';
-      case PromotionDiscountType.fixed:
+      case CouponDiscountType.fixed:
         return discountValue.toStringAsFixed(2);
-      case PromotionDiscountType.freeShipping:
+      case CouponDiscountType.freeShipping:
         return 'Free Shipping';
     }
   }
 
   String get branchApplicabilityLabel {
-    if (branchScope == PromotionBranchScope.allBranches) {
+    if (branchScope == CouponBranchScope.allBranches) {
       return 'All Branches';
     }
 
@@ -166,31 +142,29 @@ class PromotionEntity {
     return selectedBranchNames.join(', ');
   }
 
-  PromotionEntity copyWith({
+  CouponEntity copyWith({
     String? id,
     int? ownerProjectId,
-    String? title,
+    String? code,
     String? description,
-    PromotionType? promotionType,
-    PromotionDiscountType? discountType,
+    CouponDiscountType? discountType,
     double? discountValue,
     int? maxUses,
     int? usedCount,
     double? minOrderAmount,
     double? maxDiscountAmount,
     DateTime? startsAt,
-    DateTime? endsAt,
+    DateTime? expiresAt,
     bool? active,
-    PromotionBranchScope? branchScope,
+    CouponBranchScope? branchScope,
     List<String>? selectedBranchIds,
     List<String>? selectedBranchNames,
   }) {
-    return PromotionEntity(
+    return CouponEntity(
       id: id ?? this.id,
       ownerProjectId: ownerProjectId ?? this.ownerProjectId,
-      title: title ?? this.title,
+      code: code ?? this.code,
       description: description ?? this.description,
-      promotionType: promotionType ?? this.promotionType,
       discountType: discountType ?? this.discountType,
       discountValue: discountValue ?? this.discountValue,
       maxUses: maxUses ?? this.maxUses,
@@ -198,7 +172,7 @@ class PromotionEntity {
       minOrderAmount: minOrderAmount ?? this.minOrderAmount,
       maxDiscountAmount: maxDiscountAmount ?? this.maxDiscountAmount,
       startsAt: startsAt ?? this.startsAt,
-      endsAt: endsAt ?? this.endsAt,
+      expiresAt: expiresAt ?? this.expiresAt,
       active: active ?? this.active,
       branchScope: branchScope ?? this.branchScope,
       selectedBranchIds: selectedBranchIds ?? this.selectedBranchIds,

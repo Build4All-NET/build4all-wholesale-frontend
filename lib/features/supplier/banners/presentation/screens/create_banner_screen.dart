@@ -2,99 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../branches/data/branch_mock_store.dart';
-import '../../../branches/domain/entities/branch_entity.dart';
-import '../../data/promotion_mock_store.dart';
-import '../../domain/entities/promotion_entity.dart';
+import '../../data/banner_mock_store.dart';
+import '../../domain/entities/banner_entity.dart';
 
-class CreatePromotionScreen extends StatefulWidget {
-  final PromotionEntity? promotion;
+class CreateBannerScreen extends StatefulWidget {
+  final BannerEntity? banner;
 
-  const CreatePromotionScreen({
+  const CreateBannerScreen({
     super.key,
-    this.promotion,
+    this.banner,
   });
 
   @override
-  State<CreatePromotionScreen> createState() => _CreatePromotionScreenState();
+  State<CreateBannerScreen> createState() => _CreateBannerScreenState();
 }
 
-class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
+class _CreateBannerScreenState extends State<CreateBannerScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _titleController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _discountValueController;
-  late final TextEditingController _maxUsesController;
-  late final TextEditingController _minOrderAmountController;
-  late final TextEditingController _maxDiscountAmountController;
+  late final TextEditingController _subtitleController;
+  late final TextEditingController _imageUrlController;
+  late final TextEditingController _targetValueController;
+  late final TextEditingController _displayOrderController;
 
-  PromotionType _promotionType = PromotionType.general;
-  PromotionDiscountType _discountType = PromotionDiscountType.percent;
-  PromotionBranchScope _branchScope = PromotionBranchScope.allBranches;
+  BannerTargetType _targetType = BannerTargetType.none;
   bool _active = true;
 
   DateTime? _startsAt;
   DateTime? _endsAt;
   String? _dateError;
 
-  final List<String> _selectedBranchIds = [];
-  final List<String> _selectedBranchNames = [];
-
-  bool get _isEditMode => widget.promotion != null;
-  bool get _isPercent => _discountType == PromotionDiscountType.percent;
-  bool get _isFreeShipping =>
-      _discountType == PromotionDiscountType.freeShipping;
-
-  List<BranchEntity> get _availableBranches {
-    return BranchMockStore.branches
-        .where((branch) => branch.status == BranchStatus.active)
-        .toList();
-  }
+  bool get _isEditMode => widget.banner != null;
+  bool get _targetValueRequired => _targetType != BannerTargetType.none;
 
   @override
   void initState() {
     super.initState();
 
-    final promotion = widget.promotion;
+    final banner = widget.banner;
 
-    _titleController = TextEditingController(text: promotion?.title ?? '');
-    _descriptionController = TextEditingController(
-      text: promotion?.description ?? '',
+    _titleController = TextEditingController(text: banner?.title ?? '');
+    _subtitleController = TextEditingController(text: banner?.subtitle ?? '');
+    _imageUrlController = TextEditingController(text: banner?.imageUrl ?? '');
+    _targetValueController = TextEditingController(
+      text: banner?.targetValue ?? '',
     );
-    _discountValueController = TextEditingController(
-      text: promotion == null ||
-              promotion.discountType == PromotionDiscountType.freeShipping
-          ? ''
-          : promotion.discountValue.toString(),
-    );
-    _maxUsesController = TextEditingController(
-      text: promotion?.maxUses?.toString() ?? '',
-    );
-    _minOrderAmountController = TextEditingController(
-      text: promotion?.minOrderAmount?.toString() ?? '',
-    );
-    _maxDiscountAmountController = TextEditingController(
-      text: promotion?.maxDiscountAmount?.toString() ?? '',
+    _displayOrderController = TextEditingController(
+      text: banner?.displayOrder.toString() ?? '1',
     );
 
-    _promotionType = promotion?.promotionType ?? PromotionType.general;
-    _discountType = promotion?.discountType ?? PromotionDiscountType.percent;
-    _branchScope = promotion?.branchScope ?? PromotionBranchScope.allBranches;
-    _active = promotion?.active ?? true;
-    _startsAt = promotion?.startsAt;
-    _endsAt = promotion?.endsAt;
-
-    _selectedBranchIds.addAll(promotion?.selectedBranchIds ?? []);
-    _selectedBranchNames.addAll(promotion?.selectedBranchNames ?? []);
-
-    if (!_isPercent) {
-      _maxDiscountAmountController.clear();
-    }
-
-    if (_isFreeShipping) {
-      _discountValueController.clear();
-    }
+    _targetType = banner?.targetType ?? BannerTargetType.none;
+    _active = banner?.active ?? true;
+    _startsAt = banner?.startsAt;
+    _endsAt = banner?.endsAt;
 
     _validateDates();
   }
@@ -102,11 +63,10 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
-    _discountValueController.dispose();
-    _maxUsesController.dispose();
-    _minOrderAmountController.dispose();
-    _maxDiscountAmountController.dispose();
+    _subtitleController.dispose();
+    _imageUrlController.dispose();
+    _targetValueController.dispose();
+    _displayOrderController.dispose();
     super.dispose();
   }
 
@@ -161,16 +121,6 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
     return true;
   }
 
-  double? _parseDouble(String value) {
-    if (value.trim().isEmpty) return null;
-    return double.tryParse(value.trim());
-  }
-
-  int? _parseInt(String value) {
-    if (value.trim().isEmpty) return null;
-    return int.tryParse(value.trim());
-  }
-
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
@@ -179,31 +129,24 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
     return null;
   }
 
-  String? _numberValidator(String? value, String fieldName) {
-    if (_isFreeShipping && fieldName == 'Discount Value') {
-      return null;
+  String? _optionalUrl(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final uri = Uri.tryParse(value.trim());
+
+    if (uri == null || !uri.hasScheme) {
+      return 'Image URL must be a valid URL';
     }
 
+    return null;
+  }
+
+  String? _positiveInt(String? value, String fieldName) {
     final requiredError = _required(value, fieldName);
+
     if (requiredError != null) return requiredError;
 
-    final parsed = double.tryParse(value!.trim());
-
-    if (parsed == null || parsed <= 0) {
-      return '$fieldName must be greater than 0';
-    }
-
-    if (_isPercent && fieldName == 'Discount Value' && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
-    }
-
-    return null;
-  }
-
-  String? _optionalPositiveNumber(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) return null;
-
-    final parsed = double.tryParse(value.trim());
+    final parsed = int.tryParse(value!.trim());
 
     if (parsed == null || parsed < 0) {
       return '$fieldName must be a valid number';
@@ -212,33 +155,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
     return null;
   }
 
-  String? _optionalPositiveInt(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) return null;
-
-    final parsed = int.tryParse(value.trim());
-
-    if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
-    }
-
-    return null;
-  }
-
-  void _toggleBranch(BranchEntity branch, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        if (!_selectedBranchIds.contains(branch.id)) {
-          _selectedBranchIds.add(branch.id);
-          _selectedBranchNames.add(branch.name);
-        }
-      } else {
-        _selectedBranchIds.remove(branch.id);
-        _selectedBranchNames.remove(branch.name);
-      }
-    });
-  }
-
-  void _savePromotion() {
+  void _saveBanner() {
     if (!_formKey.currentState!.validate()) return;
 
     if (!_validateDates()) {
@@ -246,58 +163,38 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       return;
     }
 
-    if (_branchScope == PromotionBranchScope.selectedBranches &&
-        _selectedBranchIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one branch')),
-      );
-      return;
-    }
-
-    final promotion = PromotionEntity(
-      id: widget.promotion?.id ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
-      ownerProjectId: widget.promotion?.ownerProjectId ?? 0,
+    final banner = BannerEntity(
+      id: widget.banner?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      ownerProjectId: widget.banner?.ownerProjectId ?? 0,
       title: _titleController.text.trim(),
-      description: _descriptionController.text.trim().isEmpty
+      subtitle: _subtitleController.text.trim().isEmpty
           ? null
-          : _descriptionController.text.trim(),
-      promotionType: _promotionType,
-      discountType: _discountType,
-      discountValue: _isFreeShipping
-          ? 0
-          : double.parse(_discountValueController.text.trim()),
-      maxUses: _parseInt(_maxUsesController.text),
-      usedCount: widget.promotion?.usedCount ?? 0,
-      minOrderAmount: _parseDouble(_minOrderAmountController.text),
-      maxDiscountAmount: _isPercent
-          ? _parseDouble(_maxDiscountAmountController.text)
-          : null,
+          : _subtitleController.text.trim(),
+      imageUrl: _imageUrlController.text.trim(),
+      targetType: _targetType,
+      targetValue: _targetType == BannerTargetType.none ||
+              _targetValueController.text.trim().isEmpty
+          ? null
+          : _targetValueController.text.trim(),
+      displayOrder: int.parse(_displayOrderController.text.trim()),
       startsAt: _startsAt,
       endsAt: _endsAt,
       active: _active,
-      branchScope: _branchScope,
-      selectedBranchIds: _branchScope == PromotionBranchScope.allBranches
-          ? []
-          : List.unmodifiable(_selectedBranchIds),
-      selectedBranchNames: _branchScope == PromotionBranchScope.allBranches
-          ? []
-          : List.unmodifiable(_selectedBranchNames),
     );
 
     if (_isEditMode) {
-      PromotionMockStore.updatePromotion(promotion);
+      BannerMockStore.updateBanner(banner);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promotion updated successfully')),
+        const SnackBar(content: Text('Banner updated successfully')),
       );
 
-      context.go('/supplier-promotions');
+      context.go('/supplier-banners');
     } else {
-      PromotionMockStore.addPromotion(promotion);
+      BannerMockStore.addBanner(banner);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promotion created successfully')),
+        const SnackBar(content: Text('Banner created successfully')),
       );
 
       context.go('/supplier-dashboard');
@@ -306,7 +203,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
 
   void _cancel() {
     if (_isEditMode) {
-      context.go('/supplier-promotions');
+      context.go('/supplier-banners');
     } else {
       context.go('/supplier-dashboard');
     }
@@ -315,7 +212,6 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final branches = _availableBranches;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -328,7 +224,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
           onPressed: _cancel,
         ),
         title: Text(
-          _isEditMode ? 'Edit Promotion' : 'Create Promotion',
+          _isEditMode ? 'Edit Banner' : 'Create Banner',
           style: const TextStyle(
             color: AppThemeTokens.textPrimary,
             fontSize: 24,
@@ -373,7 +269,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                 child: SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _savePromotion,
+                    onPressed: _saveBanner,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primary,
                       foregroundColor: Colors.white,
@@ -383,7 +279,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                       ),
                     ),
                     child: Text(
-                      _isEditMode ? 'Update Promotion' : 'Create Promotion',
+                      _isEditMode ? 'Update Banner' : 'Create Banner',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
@@ -404,188 +300,91 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
             child: Column(
               children: [
                 _SectionCard(
-                  title: 'Promotion Information',
+                  title: 'Banner Information',
                   children: [
-                    _FieldLabel('Promotion Title *'),
+                    _FieldLabel('Banner Title *'),
                     _InputField(
                       controller: _titleController,
-                      hintText: 'Summer Wholesale Offer',
+                      hintText: 'Wholesale Summer Deals',
                       validator: (value) => _required(
                         value,
-                        'Promotion Title',
+                        'Banner Title',
                       ),
                     ),
                     const _DividerSpace(),
-                    _FieldLabel('Description'),
+
+                    _FieldLabel('Subtitle'),
                     _InputField(
-                      controller: _descriptionController,
-                      hintText: 'Describe this promotion',
+                      controller: _subtitleController,
+                      hintText: 'Promote your supplier campaign',
                       maxLines: 2,
                     ),
                     const _DividerSpace(),
-                    _FieldLabel('Promotion Type *'),
-                    _PromotionTypeDropdown(
-                      value: _promotionType,
-                      onChanged: (value) {
-                        if (value == null) return;
 
-                        setState(() {
-                          _promotionType = value;
-                        });
-                      },
+                    _FieldLabel('Image URL'),
+                    _InputField(
+                      controller: _imageUrlController,
+                      hintText: 'https://example.com/banner.png',
+                      validator: _optionalUrl,
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 18),
+
                 _SectionCard(
-                  title: 'Discount Rules',
+                  title: 'Target Settings',
                   children: [
-                    _FieldLabel('Discount Type *'),
-                    _DiscountTypeDropdown(
-                      value: _discountType,
+                    _FieldLabel('Target Type *'),
+                    _TargetTypeDropdown(
+                      value: _targetType,
                       onChanged: (value) {
                         if (value == null) return;
 
                         setState(() {
-                          _discountType = value;
+                          _targetType = value;
 
-                          if (!_isPercent) {
-                            _maxDiscountAmountController.clear();
-                          }
-
-                          if (_isFreeShipping) {
-                            _discountValueController.clear();
+                          if (_targetType == BannerTargetType.none) {
+                            _targetValueController.clear();
                           }
                         });
                       },
                     ),
                     const _DividerSpace(),
+
                     _FieldLabel(
-                      _isPercent ? 'Discount Value (%) *' : 'Discount Value *',
+                      _targetValueRequired ? 'Target Value *' : 'Target Value',
                     ),
                     _InputField(
-                      controller: _discountValueController,
-                      hintText: _isFreeShipping ? 'Not required' : '25',
-                      enabled: !_isFreeShipping,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
+                      controller: _targetValueController,
+                      hintText: _targetValueRequired
+                          ? 'Product ID, Category ID, or URL'
+                          : 'Not required',
+                      enabled: _targetValueRequired,
                       validator: (value) {
-                        return _numberValidator(value, 'Discount Value');
+                        if (!_targetValueRequired) return null;
+                        return _required(value, 'Target Value');
                       },
                     ),
                     const _DividerSpace(),
-                    _FieldLabel('Min Order Amount'),
-                    _InputField(
-                      controller: _minOrderAmountController,
-                      hintText: '50',
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _optionalPositiveNumber(
-                          value,
-                          'Min Order Amount',
-                        );
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Max Discount Amount'),
-                    _InputField(
-                      controller: _maxDiscountAmountController,
-                      hintText: _isPercent ? '30' : 'Only for percent offers',
-                      enabled: _isPercent,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _optionalPositiveNumber(
-                          value,
-                          'Max Discount Amount',
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Branch Applicability',
-                  children: [
-                    _FieldLabel('Applies To *'),
-                    _BranchScopeDropdown(
-                      value: _branchScope,
-                      onChanged: (value) {
-                        if (value == null) return;
 
-                        setState(() {
-                          _branchScope = value;
-
-                          if (_branchScope ==
-                              PromotionBranchScope.allBranches) {
-                            _selectedBranchIds.clear();
-                            _selectedBranchNames.clear();
-                          }
-                        });
-                      },
-                    ),
-                    if (_branchScope ==
-                        PromotionBranchScope.selectedBranches) ...[
-                      const _DividerSpace(),
-                      _FieldLabel('Select Branches'),
-                      if (branches.isEmpty)
-                        const Text(
-                          'No active branches available. Add branches from Branch Management first.',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppThemeTokens.textSecondary,
-                          ),
-                        )
-                      else
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: branches.map((branch) {
-                            final selected =
-                                _selectedBranchIds.contains(branch.id);
-
-                            return FilterChip(
-                              selected: selected,
-                              label: Text(branch.name),
-                              selectedColor: primary.withOpacity(0.15),
-                              checkmarkColor: primary,
-                              onSelected: (isSelected) {
-                                _toggleBranch(branch, isSelected);
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Selected branches are loaded from Branch Management.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppThemeTokens.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Promotion Settings',
-                  children: [
-                    _FieldLabel('Max Uses'),
+                    _FieldLabel('Display Order *'),
                     _InputField(
-                      controller: _maxUsesController,
-                      hintText: '100',
+                      controller: _displayOrderController,
+                      hintText: '1',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        return _optionalPositiveInt(value, 'Max Uses');
+                        return _positiveInt(value, 'Display Order');
                       },
                     ),
-                    const _DividerSpace(),
+                  ],
+                ),
+
+                const SizedBox(height: 18),
+
+                _SectionCard(
+                  title: 'Visibility',
+                  children: [
                     _DateTimePickerRow(
                       label: 'Start Date',
                       value: _formatDateTime(_startsAt),
@@ -606,7 +405,9 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                         });
                       },
                     ),
+
                     const SizedBox(height: 12),
+
                     _DateTimePickerRow(
                       label: 'End Date',
                       value: _formatDateTime(_endsAt),
@@ -627,6 +428,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                         });
                       },
                     ),
+
                     if (_dateError != null) ...[
                       const SizedBox(height: 10),
                       Text(
@@ -637,7 +439,9 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                         ),
                       ),
                     ],
+
                     const _DividerSpace(),
+
                     Row(
                       children: [
                         const Expanded(
@@ -804,88 +608,24 @@ class _InputField extends StatelessWidget {
   }
 }
 
-class _PromotionTypeDropdown extends StatelessWidget {
-  final PromotionType value;
-  final ValueChanged<PromotionType?> onChanged;
+class _TargetTypeDropdown extends StatelessWidget {
+  final BannerTargetType value;
+  final ValueChanged<BannerTargetType?> onChanged;
 
-  const _PromotionTypeDropdown({
+  const _TargetTypeDropdown({
     required this.value,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionType>(
+    return DropdownButtonFormField<BannerTargetType>(
       value: value,
-      items: PromotionType.values
+      items: BannerTargetType.values
           .map(
-            (type) => DropdownMenuItem<PromotionType>(
+            (type) => DropdownMenuItem<BannerTargetType>(
               value: type,
               child: Text(type.label),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
-    );
-  }
-}
-
-class _DiscountTypeDropdown extends StatelessWidget {
-  final PromotionDiscountType value;
-  final ValueChanged<PromotionDiscountType?> onChanged;
-
-  const _DiscountTypeDropdown({
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionDiscountType>(
-      value: value,
-      items: PromotionDiscountType.values
-          .map(
-            (type) => DropdownMenuItem<PromotionDiscountType>(
-              value: type,
-              child: Text(type.label),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
-    );
-  }
-}
-
-class _BranchScopeDropdown extends StatelessWidget {
-  final PromotionBranchScope value;
-  final ValueChanged<PromotionBranchScope?> onChanged;
-
-  const _BranchScopeDropdown({
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionBranchScope>(
-      value: value,
-      items: PromotionBranchScope.values
-          .map(
-            (scope) => DropdownMenuItem<PromotionBranchScope>(
-              value: scope,
-              child: Text(scope.label),
             ),
           )
           .toList(),

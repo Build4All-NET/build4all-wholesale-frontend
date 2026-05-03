@@ -4,47 +4,46 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../branches/data/branch_mock_store.dart';
 import '../../../branches/domain/entities/branch_entity.dart';
-import '../../data/promotion_mock_store.dart';
-import '../../domain/entities/promotion_entity.dart';
+import '../../data/coupon_mock_store.dart';
+import '../../domain/entities/coupon_entity.dart';
 
-class CreatePromotionScreen extends StatefulWidget {
-  final PromotionEntity? promotion;
+class CreateCouponScreen extends StatefulWidget {
+  final CouponEntity? coupon;
 
-  const CreatePromotionScreen({
+  const CreateCouponScreen({
     super.key,
-    this.promotion,
+    this.coupon,
   });
 
   @override
-  State<CreatePromotionScreen> createState() => _CreatePromotionScreenState();
+  State<CreateCouponScreen> createState() => _CreateCouponScreenState();
 }
 
-class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
+class _CreateCouponScreenState extends State<CreateCouponScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late final TextEditingController _titleController;
+  late final TextEditingController _codeController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _discountValueController;
   late final TextEditingController _maxUsesController;
   late final TextEditingController _minOrderAmountController;
   late final TextEditingController _maxDiscountAmountController;
 
-  PromotionType _promotionType = PromotionType.general;
-  PromotionDiscountType _discountType = PromotionDiscountType.percent;
-  PromotionBranchScope _branchScope = PromotionBranchScope.allBranches;
+  CouponDiscountType _discountType = CouponDiscountType.percent;
+  CouponBranchScope _branchScope = CouponBranchScope.allBranches;
   bool _active = true;
 
   DateTime? _startsAt;
-  DateTime? _endsAt;
+  DateTime? _expiresAt;
   String? _dateError;
+  String? _codeError;
 
   final List<String> _selectedBranchIds = [];
   final List<String> _selectedBranchNames = [];
 
-  bool get _isEditMode => widget.promotion != null;
-  bool get _isPercent => _discountType == PromotionDiscountType.percent;
-  bool get _isFreeShipping =>
-      _discountType == PromotionDiscountType.freeShipping;
+  bool get _isEditMode => widget.coupon != null;
+  bool get _isPercent => _discountType == CouponDiscountType.percent;
+  bool get _isFreeShipping => _discountType == CouponDiscountType.freeShipping;
 
   List<BranchEntity> get _availableBranches {
     return BranchMockStore.branches
@@ -56,37 +55,36 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
   void initState() {
     super.initState();
 
-    final promotion = widget.promotion;
+    final coupon = widget.coupon;
 
-    _titleController = TextEditingController(text: promotion?.title ?? '');
+    _codeController = TextEditingController(text: coupon?.code ?? '');
     _descriptionController = TextEditingController(
-      text: promotion?.description ?? '',
+      text: coupon?.description ?? '',
     );
     _discountValueController = TextEditingController(
-      text: promotion == null ||
-              promotion.discountType == PromotionDiscountType.freeShipping
+      text: coupon == null ||
+              coupon.discountType == CouponDiscountType.freeShipping
           ? ''
-          : promotion.discountValue.toString(),
+          : coupon.discountValue.toString(),
     );
     _maxUsesController = TextEditingController(
-      text: promotion?.maxUses?.toString() ?? '',
+      text: coupon?.maxUses?.toString() ?? '',
     );
     _minOrderAmountController = TextEditingController(
-      text: promotion?.minOrderAmount?.toString() ?? '',
+      text: coupon?.minOrderAmount?.toString() ?? '',
     );
     _maxDiscountAmountController = TextEditingController(
-      text: promotion?.maxDiscountAmount?.toString() ?? '',
+      text: coupon?.maxDiscountAmount?.toString() ?? '',
     );
 
-    _promotionType = promotion?.promotionType ?? PromotionType.general;
-    _discountType = promotion?.discountType ?? PromotionDiscountType.percent;
-    _branchScope = promotion?.branchScope ?? PromotionBranchScope.allBranches;
-    _active = promotion?.active ?? true;
-    _startsAt = promotion?.startsAt;
-    _endsAt = promotion?.endsAt;
+    _discountType = coupon?.discountType ?? CouponDiscountType.percent;
+    _branchScope = coupon?.branchScope ?? CouponBranchScope.allBranches;
+    _active = coupon?.active ?? true;
+    _startsAt = coupon?.startsAt;
+    _expiresAt = coupon?.expiresAt;
 
-    _selectedBranchIds.addAll(promotion?.selectedBranchIds ?? []);
-    _selectedBranchNames.addAll(promotion?.selectedBranchNames ?? []);
+    _selectedBranchIds.addAll(coupon?.selectedBranchIds ?? []);
+    _selectedBranchNames.addAll(coupon?.selectedBranchNames ?? []);
 
     if (!_isPercent) {
       _maxDiscountAmountController.clear();
@@ -96,12 +94,20 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       _discountValueController.clear();
     }
 
+    _codeController.addListener(() {
+      if (_codeError != null) {
+        setState(() {
+          _codeError = null;
+        });
+      }
+    });
+
     _validateDates();
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
+    _codeController.dispose();
     _descriptionController.dispose();
     _discountValueController.dispose();
     _maxUsesController.dispose();
@@ -152,8 +158,10 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
   }
 
   bool _validateDates() {
-    if (_startsAt != null && _endsAt != null && _startsAt!.isAfter(_endsAt!)) {
-      _dateError = 'Start Date must be before End Date';
+    if (_startsAt != null &&
+        _expiresAt != null &&
+        _startsAt!.isAfter(_expiresAt!)) {
+      _dateError = 'Valid From must be before Valid To';
       return false;
     }
 
@@ -238,7 +246,11 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
     });
   }
 
-  void _savePromotion() {
+  void _saveCoupon() {
+    setState(() {
+      _codeError = null;
+    });
+
     if (!_formKey.currentState!.validate()) return;
 
     if (!_validateDates()) {
@@ -246,7 +258,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       return;
     }
 
-    if (_branchScope == PromotionBranchScope.selectedBranches &&
+    if (_branchScope == CouponBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select at least one branch')),
@@ -254,50 +266,64 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
       return;
     }
 
-    final promotion = PromotionEntity(
-      id: widget.promotion?.id ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
-      ownerProjectId: widget.promotion?.ownerProjectId ?? 0,
-      title: _titleController.text.trim(),
+    final normalizedCode = _codeController.text.trim().toUpperCase();
+
+    final duplicateExists = CouponMockStore.codeExists(
+      code: normalizedCode,
+      exceptCouponId: widget.coupon?.id,
+    );
+
+    if (duplicateExists) {
+      setState(() {
+        _codeError = 'Coupon code already exists.';
+      });
+
+      _formKey.currentState!.validate();
+      return;
+    }
+
+    final coupon = CouponEntity(
+      id: widget.coupon?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      ownerProjectId: widget.coupon?.ownerProjectId ?? 0,
+      code: normalizedCode,
       description: _descriptionController.text.trim().isEmpty
           ? null
           : _descriptionController.text.trim(),
-      promotionType: _promotionType,
       discountType: _discountType,
       discountValue: _isFreeShipping
           ? 0
           : double.parse(_discountValueController.text.trim()),
       maxUses: _parseInt(_maxUsesController.text),
-      usedCount: widget.promotion?.usedCount ?? 0,
+      usedCount: widget.coupon?.usedCount ?? 0,
       minOrderAmount: _parseDouble(_minOrderAmountController.text),
       maxDiscountAmount: _isPercent
           ? _parseDouble(_maxDiscountAmountController.text)
           : null,
       startsAt: _startsAt,
-      endsAt: _endsAt,
+      expiresAt: _expiresAt,
       active: _active,
       branchScope: _branchScope,
-      selectedBranchIds: _branchScope == PromotionBranchScope.allBranches
+      selectedBranchIds: _branchScope == CouponBranchScope.allBranches
           ? []
           : List.unmodifiable(_selectedBranchIds),
-      selectedBranchNames: _branchScope == PromotionBranchScope.allBranches
+      selectedBranchNames: _branchScope == CouponBranchScope.allBranches
           ? []
           : List.unmodifiable(_selectedBranchNames),
     );
 
     if (_isEditMode) {
-      PromotionMockStore.updatePromotion(promotion);
+      CouponMockStore.updateCoupon(coupon);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promotion updated successfully')),
+        const SnackBar(content: Text('Coupon updated successfully')),
       );
 
-      context.go('/supplier-promotions');
+      context.go('/supplier-coupons');
     } else {
-      PromotionMockStore.addPromotion(promotion);
+      CouponMockStore.addCoupon(coupon);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promotion created successfully')),
+        const SnackBar(content: Text('Coupon created successfully')),
       );
 
       context.go('/supplier-dashboard');
@@ -306,7 +332,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
 
   void _cancel() {
     if (_isEditMode) {
-      context.go('/supplier-promotions');
+      context.go('/supplier-coupons');
     } else {
       context.go('/supplier-dashboard');
     }
@@ -328,7 +354,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
           onPressed: _cancel,
         ),
         title: Text(
-          _isEditMode ? 'Edit Promotion' : 'Create Promotion',
+          _isEditMode ? 'Edit Coupon' : 'Create Coupon',
           style: const TextStyle(
             color: AppThemeTokens.textPrimary,
             fontSize: 24,
@@ -373,7 +399,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                 child: SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _savePromotion,
+                    onPressed: _saveCoupon,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primary,
                       foregroundColor: Colors.white,
@@ -383,7 +409,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                       ),
                     ),
                     child: Text(
-                      _isEditMode ? 'Update Promotion' : 'Create Promotion',
+                      _isEditMode ? 'Update Coupon' : 'Create Coupon',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
@@ -404,42 +430,33 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
             child: Column(
               children: [
                 _SectionCard(
-                  title: 'Promotion Information',
+                  title: 'Coupon Information',
                   children: [
-                    _FieldLabel('Promotion Title *'),
+                    _FieldLabel('Coupon Code *'),
                     _InputField(
-                      controller: _titleController,
-                      hintText: 'Summer Wholesale Offer',
-                      validator: (value) => _required(
-                        value,
-                        'Promotion Title',
-                      ),
+                      controller: _codeController,
+                      hintText: 'SPRING25',
+                      textCapitalization: TextCapitalization.characters,
+                      validator: (value) {
+                        final error = _required(value, 'Coupon Code');
+
+                        if (error != null) return error;
+
+                        if (_codeError != null) {
+                          return _codeError;
+                        }
+
+                        return null;
+                      },
                     ),
                     const _DividerSpace(),
                     _FieldLabel('Description'),
                     _InputField(
                       controller: _descriptionController,
-                      hintText: 'Describe this promotion',
+                      hintText: 'Describe this coupon',
                       maxLines: 2,
                     ),
                     const _DividerSpace(),
-                    _FieldLabel('Promotion Type *'),
-                    _PromotionTypeDropdown(
-                      value: _promotionType,
-                      onChanged: (value) {
-                        if (value == null) return;
-
-                        setState(() {
-                          _promotionType = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Discount Rules',
-                  children: [
                     _FieldLabel('Discount Type *'),
                     _DiscountTypeDropdown(
                       value: _discountType,
@@ -474,6 +491,21 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                         return _numberValidator(value, 'Discount Value');
                       },
                     ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                _SectionCard(
+                  title: 'Coupon Rules',
+                  children: [
+                    _FieldLabel('Max Uses'),
+                    _InputField(
+                      controller: _maxUsesController,
+                      hintText: '100',
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        return _optionalPositiveInt(value, 'Max Uses');
+                      },
+                    ),
                     const _DividerSpace(),
                     _FieldLabel('Min Order Amount'),
                     _InputField(
@@ -493,7 +525,7 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                     _FieldLabel('Max Discount Amount'),
                     _InputField(
                       controller: _maxDiscountAmountController,
-                      hintText: _isPercent ? '30' : 'Only for percent offers',
+                      hintText: _isPercent ? '30' : 'Only for percent coupons',
                       enabled: _isPercent,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
@@ -520,16 +552,14 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                         setState(() {
                           _branchScope = value;
 
-                          if (_branchScope ==
-                              PromotionBranchScope.allBranches) {
+                          if (_branchScope == CouponBranchScope.allBranches) {
                             _selectedBranchIds.clear();
                             _selectedBranchNames.clear();
                           }
                         });
                       },
                     ),
-                    if (_branchScope ==
-                        PromotionBranchScope.selectedBranches) ...[
+                    if (_branchScope == CouponBranchScope.selectedBranches) ...[
                       const _DividerSpace(),
                       _FieldLabel('Select Branches'),
                       if (branches.isEmpty)
@@ -574,20 +604,10 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                 ),
                 const SizedBox(height: 18),
                 _SectionCard(
-                  title: 'Promotion Settings',
+                  title: 'Validity',
                   children: [
-                    _FieldLabel('Max Uses'),
-                    _InputField(
-                      controller: _maxUsesController,
-                      hintText: '100',
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        return _optionalPositiveInt(value, 'Max Uses');
-                      },
-                    ),
-                    const _DividerSpace(),
                     _DateTimePickerRow(
-                      label: 'Start Date',
+                      label: 'Valid From',
                       value: _formatDateTime(_startsAt),
                       onPick: () async {
                         final picked = await _pickDateTime(_startsAt);
@@ -608,21 +628,21 @@ class _CreatePromotionScreenState extends State<CreatePromotionScreen> {
                     ),
                     const SizedBox(height: 12),
                     _DateTimePickerRow(
-                      label: 'End Date',
-                      value: _formatDateTime(_endsAt),
+                      label: 'Valid To',
+                      value: _formatDateTime(_expiresAt),
                       onPick: () async {
-                        final picked = await _pickDateTime(_endsAt);
+                        final picked = await _pickDateTime(_expiresAt);
 
                         if (picked == null) return;
 
                         setState(() {
-                          _endsAt = picked;
+                          _expiresAt = picked;
                           _validateDates();
                         });
                       },
                       onClear: () {
                         setState(() {
-                          _endsAt = null;
+                          _expiresAt = null;
                           _validateDates();
                         });
                       },
@@ -748,6 +768,7 @@ class _InputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool enabled;
   final int maxLines;
+  final TextCapitalization textCapitalization;
   final String? Function(String?)? validator;
 
   const _InputField({
@@ -756,6 +777,7 @@ class _InputField extends StatelessWidget {
     this.keyboardType,
     this.enabled = true,
     this.maxLines = 1,
+    this.textCapitalization = TextCapitalization.none,
     this.validator,
   });
 
@@ -766,6 +788,7 @@ class _InputField extends StatelessWidget {
       enabled: enabled,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      textCapitalization: textCapitalization,
       validator: validator,
       style: const TextStyle(
         fontSize: 15,
@@ -804,41 +827,9 @@ class _InputField extends StatelessWidget {
   }
 }
 
-class _PromotionTypeDropdown extends StatelessWidget {
-  final PromotionType value;
-  final ValueChanged<PromotionType?> onChanged;
-
-  const _PromotionTypeDropdown({
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionType>(
-      value: value,
-      items: PromotionType.values
-          .map(
-            (type) => DropdownMenuItem<PromotionType>(
-              value: type,
-              child: Text(type.label),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
-    );
-  }
-}
-
 class _DiscountTypeDropdown extends StatelessWidget {
-  final PromotionDiscountType value;
-  final ValueChanged<PromotionDiscountType?> onChanged;
+  final CouponDiscountType value;
+  final ValueChanged<CouponDiscountType?> onChanged;
 
   const _DiscountTypeDropdown({
     required this.value,
@@ -847,11 +838,11 @@ class _DiscountTypeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionDiscountType>(
+    return DropdownButtonFormField<CouponDiscountType>(
       value: value,
-      items: PromotionDiscountType.values
+      items: CouponDiscountType.values
           .map(
-            (type) => DropdownMenuItem<PromotionDiscountType>(
+            (type) => DropdownMenuItem<CouponDiscountType>(
               value: type,
               child: Text(type.label),
             ),
@@ -869,8 +860,8 @@ class _DiscountTypeDropdown extends StatelessWidget {
 }
 
 class _BranchScopeDropdown extends StatelessWidget {
-  final PromotionBranchScope value;
-  final ValueChanged<PromotionBranchScope?> onChanged;
+  final CouponBranchScope value;
+  final ValueChanged<CouponBranchScope?> onChanged;
 
   const _BranchScopeDropdown({
     required this.value,
@@ -879,11 +870,11 @@ class _BranchScopeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionBranchScope>(
+    return DropdownButtonFormField<CouponBranchScope>(
       value: value,
-      items: PromotionBranchScope.values
+      items: CouponBranchScope.values
           .map(
-            (scope) => DropdownMenuItem<PromotionBranchScope>(
+            (scope) => DropdownMenuItem<CouponBranchScope>(
               value: scope,
               child: Text(scope.label),
             ),
