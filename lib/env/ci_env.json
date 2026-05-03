@@ -1,6 +1,6 @@
 {
-  "API_BASE_URL": "http://192.168.1.101:8080/api",
-  "PROJECT_API_BASE_URL": "http://192.168.1.101:8083/api",
+  "API_BASE_URL": "http://192.168.1.104:8080/api",
+  "PROJECT_API_BASE_URL": "http://192.168.1.104:8083/api",
   "APP_NAME": "B2B Wholesale App",
   "APP_TYPE": "WHOLESALE",
   "OWNER_PROJECT_LINK_ID": "1",
@@ -8,3 +8,4 @@
   "CURRENCY_ID": "1",
   "DEFAULT_LANGUAGE": "en"
 }
+ 
