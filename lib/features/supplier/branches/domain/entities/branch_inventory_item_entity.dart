@@ -4,6 +4,7 @@ class BranchInventoryItemEntity {
   final String productId;
   final String productName;
   final String categoryName;
+  final String? subCategoryName;
   final int stockQuantity;
 
   const BranchInventoryItemEntity({
@@ -12,6 +13,7 @@ class BranchInventoryItemEntity {
     required this.productId,
     required this.productName,
     required this.categoryName,
+    this.subCategoryName,
     required this.stockQuantity,
   });
 }

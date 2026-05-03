@@ -23,18 +23,27 @@ import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
+
 import '../features/supplier/products/presentation/screens/product_management_screen.dart';
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
 import '../features/supplier/products/domain/entities/product_entity.dart';
-import '../features/supplier/promotions/presentation/screens/promotions_screen.dart';
-import '../features/supplier/promotions/presentation/screens/create_promotion_screen.dart';
-
-import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
 
 import '../features/supplier/branches/domain/entities/branch_entity.dart';
 import '../features/supplier/branches/presentation/screens/branch_management_screen.dart';
-import '../features/supplier/branches/presentation/screens/branch_inventory_screen.dart';
 import '../features/supplier/branches/presentation/screens/add_branch_screen.dart';
+import '../features/supplier/branches/presentation/screens/branch_inventory_screen.dart';
+
+import '../features/supplier/promotions/presentation/screens/promotions_screen.dart';
+import '../features/supplier/promotions/presentation/screens/create_promotion_screen.dart';
+import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
+
+import '../features/supplier/coupons/presentation/screens/coupons_screen.dart';
+import '../features/supplier/coupons/presentation/screens/create_coupon_screen.dart';
+import '../features/supplier/coupons/domain/entities/coupon_entity.dart';
+
+import '../features/supplier/banners/presentation/screens/banners_screen.dart';
+import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
+import '../features/supplier/banners/domain/entities/banner_entity.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -42,6 +51,7 @@ class AppRouter {
     routes: [
       GoRoute(path: '/', redirect: (context, state) => '/login'),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/', redirect: (context, state) => '/login'),
 
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
 
@@ -79,15 +89,18 @@ class AppRouter {
         path: '/forgot-password',
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
+
       GoRoute(
         path: '/reset-password',
         builder: (context, state) {
           final email = state.extra as String? ?? '';
           return ResetPasswordScreen(email: email);
           final extra = state.extra as Map<String, dynamic>;
+
           return ResetPasswordScreen(email: extra['email'] as String);
         },
       ),
+
       GoRoute(
         path: '/complete-supplier-profile',
         builder: (context, state) => const CompleteSupplierProfileScreen(),
@@ -98,9 +111,6 @@ class AppRouter {
         builder: (context, state) => const CompleteRetailerProfileScreen(),
       ),
 
-      // =========================
-      // SUPPLIER ROUTES
-      // =========================
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
@@ -152,6 +162,7 @@ class AppRouter {
           return BranchInventoryScreen(branch: branch);
         },
       ),
+
       GoRoute(
         path: '/supplier-inventory',
         builder: (context, state) => const SupplierComingSoonScreen(
@@ -172,10 +183,12 @@ class AppRouter {
         path: '/supplier-promotions',
         builder: (context, state) => const PromotionsScreen(),
       ),
+
       GoRoute(
         path: '/supplier-promotions/create',
         builder: (context, state) => const CreatePromotionScreen(),
       ),
+
       GoRoute(
         path: '/supplier-promotions/edit',
         builder: (context, state) {
@@ -184,20 +197,43 @@ class AppRouter {
           return CreatePromotionScreen(promotion: promotion);
         },
       ),
+
       GoRoute(
         path: '/supplier-coupons',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Coupons',
-          icon: Icons.sell_outlined,
-        ),
+        builder: (context, state) => const CouponsScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-coupons/create',
+        builder: (context, state) => const CreateCouponScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-coupons/edit',
+        builder: (context, state) {
+          final coupon = state.extra as CouponEntity;
+
+          return CreateCouponScreen(coupon: coupon);
+        },
       ),
 
       GoRoute(
         path: '/supplier-banners',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Home Banners',
-          icon: Icons.image_outlined,
-        ),
+        builder: (context, state) => const BannersScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-banners/create',
+        builder: (context, state) => const CreateBannerScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-banners/edit',
+        builder: (context, state) {
+          final banner = state.extra as BannerEntity;
+
+          return CreateBannerScreen(banner: banner);
+        },
       ),
 
       GoRoute(
@@ -232,9 +268,6 @@ class AppRouter {
         ),
       ),
 
-      // =========================
-      // RETAILER ROUTES
-      // =========================
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),

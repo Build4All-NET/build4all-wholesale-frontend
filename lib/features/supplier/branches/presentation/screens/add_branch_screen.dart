@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../data/branch_mock_store.dart';
+import '../../../../../injection_container.dart';
 import '../../domain/entities/branch_entity.dart';
+import '../../domain/repositories/branch_repository.dart';
 
 class AddBranchScreen extends StatefulWidget {
   final BranchEntity? branchToEdit;
@@ -21,6 +23,7 @@ class AddBranchScreen extends StatefulWidget {
 
 class _AddBranchScreenState extends State<AddBranchScreen> {
   final _formKey = GlobalKey<FormState>();
+  final BranchRepository _branchRepository = sl<BranchRepository>();
 
   final _branchNameController = TextEditingController();
   final _cityController = TextEditingController();
@@ -28,6 +31,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   final _phoneController = TextEditingController();
 
   BranchStatus _selectedStatus = BranchStatus.active;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -53,26 +57,107 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
     super.dispose();
   }
 
-  void _saveBranch() {
+  Future<void> _saveBranch() async {
+    if (_isSaving) return;
     if (!_formKey.currentState!.validate()) return;
 
-    final branch = BranchEntity(
-      id: widget.branchToEdit?.id ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
-      name: _branchNameController.text.trim(),
-      city: _cityController.text.trim(),
-      address: _addressController.text.trim(),
-      phoneNumber: _phoneController.text.trim(),
-      status: _selectedStatus,
-    );
+    setState(() {
+      _isSaving = true;
+    });
 
-    if (widget.isEditMode) {
-      BranchMockStore.updateBranch(branch);
-    } else {
-      BranchMockStore.addBranch(branch);
+    try {
+      final BranchEntity branch;
+
+      if (widget.isEditMode) {
+        branch = await _branchRepository.updateBranch(
+          branchId: widget.branchToEdit!.id,
+          name: _branchNameController.text,
+          city: _cityController.text,
+          address: _addressController.text,
+          phoneNumber: _phoneController.text,
+          status: _selectedStatus,
+        );
+      } else {
+        branch = await _branchRepository.createBranch(
+          name: _branchNameController.text,
+          city: _cityController.text,
+          address: _addressController.text,
+          phoneNumber: _phoneController.text,
+          status: _selectedStatus,
+        );
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _isSaving = false;
+      });
+
+      context.pop(branch);
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isSaving = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  String? _validateLebanesePhone(String? value) {
+    final rawPhone = value?.trim() ?? '';
+
+    if (rawPhone.isEmpty) {
+      return 'Phone number is required';
     }
 
-    context.pop(branch);
+    final digitsOnly = rawPhone.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (digitsOnly.isEmpty) {
+      return 'Enter a valid Lebanese phone number';
+    }
+
+    String localNumber = digitsOnly;
+
+    if (localNumber.startsWith('961')) {
+      localNumber = localNumber.substring(3);
+    }
+
+    if (localNumber.startsWith('0')) {
+      localNumber = localNumber.substring(1);
+    }
+
+    final isMobileWithOneDigitPrefix = RegExp(r'^3\d{6}$').hasMatch(
+      localNumber,
+    );
+
+    final isMobileWithTwoDigitPrefix =
+        RegExp(r'^(70|71|76|78|79|81)\d{6}$').hasMatch(localNumber);
+
+    final isLandline = RegExp(r'^(1|4|5|6|7|8|9)\d{6}$').hasMatch(
+      localNumber,
+    );
+
+    final isValidLebanesePhone = isMobileWithOneDigitPrefix ||
+        isMobileWithTwoDigitPrefix ||
+        isLandline;
+
+    if (!isValidLebanesePhone) {
+      return 'Enter a valid Lebanese phone number';
+    }
+
+    return null;
+  }
+
+  void _showError(Object error) {
+    final message = error is AppException
+        ? error.message
+        : error.toString().replaceFirst('Exception: ', '');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -107,7 +192,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => context.pop(),
+                  onPressed: _isSaving ? null : () => context.pop(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeTokens.textPrimary,
                     side: const BorderSide(color: AppThemeTokens.border),
@@ -127,7 +212,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _saveBranch,
+                  onPressed: _isSaving ? null : _saveBranch,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
@@ -139,10 +224,19 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                       ),
                     ),
                   ),
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(fontWeight: FontWeight.w900),
-                  ),
+                  child: _isSaving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          buttonText,
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
                 ),
               ),
             ],
@@ -216,22 +310,10 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                 ),
                 _AppTextField(
                   label: 'Phone Number *',
-                  hint: 'e.g., +961 1 234 567',
+                  hint: 'e.g., +961 71 123 456 or 03 123 456',
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    final phone = value?.trim() ?? '';
-
-                    if (phone.isEmpty) return 'Phone number is required';
-                    if (phone.length < 7) {
-                      return 'Phone number is too short';
-                    }
-                    if (phone.length > 20) {
-                      return 'Phone number is too long';
-                    }
-
-                    return null;
-                  },
+                  validator: _validateLebanesePhone,
                 ),
                 _StatusSelector(
                   selectedStatus: _selectedStatus,
@@ -245,7 +327,6 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                 ),
               ],
             ),
-            
           ],
         ),
       ),
@@ -438,4 +519,3 @@ class _StatusSelector extends StatelessWidget {
     );
   }
 }
-

@@ -8,6 +8,7 @@ import 'core/storage/locale_storage.dart';
 
 import 'core/theme/theme_cubit.dart';
 import 'core/theme/locale_cubit.dart';
+import 'core/theme/runtime_theme_service.dart';
 
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/services/auth_service.dart';
@@ -23,7 +24,7 @@ import 'features/supplier_profile/data/services/supplier_profile_service.dart';
 import 'features/supplier_profile/domain/repositories/supplier_profile_repository.dart';
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
-import 'core/theme/runtime_theme_service.dart';
+
 import 'features/dashboard/data/services/retailer_home_service.dart';
 import 'features/dashboard/data/repositories/retailer_home_repository_impl.dart';
 import 'features/dashboard/domain/repositories/retailer_home_repository.dart';
@@ -36,6 +37,22 @@ import 'features/retailer_profile/presentation/cubit/retailer_profile_cubit.dart
 
 import 'features/dashboard/data/services/retailer_cart_service.dart';
 import 'features/dashboard/presentation/cubit/retailer_cart_cubit.dart';
+
+import 'features/supplier/categories/data/repositories/supplier_category_repository_impl.dart';
+import 'features/supplier/categories/data/services/supplier_category_api_service.dart';
+import 'features/supplier/categories/domain/repositories/supplier_category_repository.dart';
+
+import 'features/supplier/branches/data/repositories/branch_repository_impl.dart';
+import 'features/supplier/branches/data/services/branch_api_service.dart';
+import 'features/supplier/branches/domain/repositories/branch_repository.dart';
+
+import 'features/supplier/products/data/repositories/product_repository_impl.dart';
+import 'features/supplier/products/data/services/product_api_service.dart';
+import 'features/supplier/products/domain/repositories/product_repository.dart';
+
+import 'features/supplier/branches/data/repositories/branch_inventory_repository_impl.dart';
+import 'features/supplier/branches/data/services/branch_inventory_api_service.dart';
+import 'features/supplier/branches/domain/repositories/branch_inventory_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -67,13 +84,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<LocaleStorage>()));
 
-  sl.registerLazySingleton<RetailerCartService>(
-    () => RetailerCartService(projectApiClient: sl()),
-  );
-
-  sl.registerFactory<RetailerCartCubit>(
-    () => RetailerCartCubit(retailerCartService: sl()),
-  );
+  sl.registerLazySingleton<RuntimeThemeService>(() => RuntimeThemeService());
 
   // =========================
   // SERVICES
@@ -84,8 +95,15 @@ Future<void> init() async {
       projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
+
   sl.registerLazySingleton<RetailerHomeService>(
     () => RetailerHomeService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<RetailerCartService>(
+    () => RetailerCartService(
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<SupplierProfileService>(
@@ -99,6 +117,27 @@ Future<void> init() async {
       projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
+
+  sl.registerLazySingleton<SupplierCategoryApiService>(
+    () => SupplierCategoryApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<BranchApiService>(
+    () => BranchApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<ProductApiService>(
+    () => ProductApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<BranchInventoryApiService>(
+    () => BranchInventoryApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   // =========================
   // REPOSITORIES
   // =========================
@@ -114,6 +153,7 @@ Future<void> init() async {
       supplierProfileService: sl<SupplierProfileService>(),
     ),
   );
+
   sl.registerLazySingleton<RetailerHomeRepository>(
     () => RetailerHomeRepositoryImpl(
       retailerHomeService: sl<RetailerHomeService>(),
@@ -124,6 +164,26 @@ Future<void> init() async {
     () => RetailerProfileRepositoryImpl(
       retailerProfileService: sl<RetailerProfileService>(),
       authStorage: sl<AuthStorage>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierCategoryRepository>(
+    () => SupplierCategoryRepositoryImpl(
+      apiService: sl<SupplierCategoryApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<BranchRepository>(
+    () => BranchRepositoryImpl(apiService: sl<BranchApiService>()),
+  );
+
+  sl.registerLazySingleton<ProductRepository>(
+    () => ProductRepositoryImpl(apiService: sl<ProductApiService>()),
+  );
+
+  sl.registerLazySingleton<BranchInventoryRepository>(
+    () => BranchInventoryRepositoryImpl(
+      apiService: sl<BranchInventoryApiService>(),
     ),
   );
 
@@ -149,7 +209,6 @@ Future<void> init() async {
   sl.registerLazySingleton<CreateSupplierProfileUseCase>(
     () => CreateSupplierProfileUseCase(sl<SupplierProfileRepository>()),
   );
-  sl.registerLazySingleton<RuntimeThemeService>(() => RuntimeThemeService());
 
   // =========================
   // CUBITS
@@ -168,9 +227,14 @@ Future<void> init() async {
       createSupplierProfileUseCase: sl<CreateSupplierProfileUseCase>(),
     ),
   );
+
   sl.registerFactory<RetailerHomeCubit>(
     () =>
         RetailerHomeCubit(retailerHomeRepository: sl<RetailerHomeRepository>()),
+  );
+
+  sl.registerFactory<RetailerCartCubit>(
+    () => RetailerCartCubit(retailerCartService: sl<RetailerCartService>()),
   );
 
   sl.registerFactory<RetailerProfileCubit>(

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../products/data/product_mock_store.dart';
+import '../../../../../injection_container.dart';
 import '../../../products/domain/entities/product_entity.dart';
-import '../../data/branch_mock_store.dart';
+import '../../../products/domain/repositories/product_repository.dart';
 import '../../domain/entities/branch_entity.dart';
 import '../../domain/entities/branch_inventory_item_entity.dart';
+import '../../domain/repositories/branch_inventory_repository.dart';
 import '../widgets/branch_inventory_item_card.dart';
 
 class BranchInventoryScreen extends StatefulWidget {
@@ -22,12 +24,64 @@ class BranchInventoryScreen extends StatefulWidget {
 }
 
 class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
-  Future<void> _showAddProductStockDialog() async {
-    final availableProducts = ProductMockStore.products.where((product) {
-      return !BranchMockStore.branchHasProduct(
+  final BranchInventoryRepository _inventoryRepository =
+      sl<BranchInventoryRepository>();
+
+  final ProductRepository _productRepository = sl<ProductRepository>();
+
+  bool _isLoading = true;
+  bool _isAssigning = false;
+  bool _isUpdating = false;
+  bool _isDeleting = false;
+
+  List<BranchInventoryItemEntity> _inventoryItems = [];
+  List<ProductEntity> _products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final inventoryItems = await _inventoryRepository.getInventoryByBranch(
         branchId: widget.branch.id,
-        productId: product.id,
       );
+
+      final products = await _productRepository.getProducts();
+
+      if (!mounted) return;
+
+      setState(() {
+        _inventoryItems = inventoryItems;
+        _products = products;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  Future<void> _showAddProductStockDialog() async {
+    if (_isAssigning) return;
+
+    final assignedProductIds = _inventoryItems
+        .map((inventoryItem) => inventoryItem.productId)
+        .toSet();
+
+    final availableProducts = _products.where((product) {
+      return !assignedProductIds.contains(product.id);
     }).toList();
 
     if (availableProducts.isEmpty) {
@@ -166,32 +220,49 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
 
     if (result == null) return;
 
-    BranchMockStore.addInventoryItemToBranch(
-      branchId: widget.branch.id,
-      productId: result.product.id,
-      productName: result.product.name,
-      categoryName: result.product.subCategoryName == null ||
-              result.product.subCategoryName!.trim().isEmpty
-          ? result.product.categoryName
-          : '${result.product.categoryName} • ${result.product.subCategoryName}',
-      stockQuantity: result.stockQuantity,
-    );
+    setState(() {
+      _isAssigning = true;
+    });
 
-    if (!mounted) return;
+    try {
+      await _inventoryRepository.assignProductToBranch(
+        branchId: widget.branch.id,
+        productId: result.product.id,
+        stockQuantity: result.stockQuantity,
+      );
 
-    setState(() {});
+      if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:
-            Text('${result.product.name} assigned to ${widget.branch.name}'),
-      ),
-    );
+      setState(() {
+        _isAssigning = false;
+      });
+
+      await _loadInitialData();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text('${result.product.name} assigned to ${widget.branch.name}'),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isAssigning = false;
+      });
+
+      _showError(e);
+    }
   }
 
   Future<void> _showUpdateStockDialog(
     BranchInventoryItemEntity item,
   ) async {
+    if (_isUpdating) return;
+
     final controller = TextEditingController(
       text: item.stockQuantity.toString(),
     );
@@ -249,28 +320,121 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
 
     if (newStock == null) return;
 
-    BranchMockStore.updateInventoryStock(
-      inventoryItemId: item.id,
-      newStockQuantity: newStock,
+    setState(() {
+      _isUpdating = true;
+    });
+
+    try {
+      await _inventoryRepository.updateStock(
+        inventoryId: item.id,
+        stockQuantity: newStock,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _isUpdating = false;
+      });
+
+      await _loadInitialData();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${item.productName} stock updated'),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isUpdating = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  Future<void> _deleteInventoryItem(
+    BranchInventoryItemEntity item,
+  ) async {
+    if (_isDeleting) return;
+
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Remove Product from Branch',
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
+          content: Text(
+            'Are you sure you want to remove ${item.productName} from ${widget.branch.name} inventory?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Remove'),
+            ),
+          ],
+        );
+      },
     );
 
-    if (!mounted) return;
+    if (shouldDelete != true) return;
 
-    setState(() {});
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      await _inventoryRepository.deleteInventoryItem(
+        inventoryId: item.id,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _isDeleting = false;
+      });
+
+      await _loadInitialData();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${item.productName} removed from inventory'),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isDeleting = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  void _showError(Object error) {
+    final message = error is AppException
+        ? error.message
+        : error.toString().replaceFirst('Exception: ', '');
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${item.productName} stock updated'),
-      ),
+      SnackBar(content: Text(message)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final inventoryItems = BranchMockStore.getInventoryByBranchId(
-      widget.branch.id,
-    );
-
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
@@ -306,7 +470,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: _showAddProductStockDialog,
+            onPressed: _isAssigning ? null : _showAddProductStockDialog,
             icon: Icon(
               Icons.add_circle,
               color: primaryColor,
@@ -316,22 +480,28 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: inventoryItems.isEmpty
-          ? _EmptyInventoryView(
-              onAssignProduct: _showAddProductStockDialog,
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: inventoryItems.length,
-              itemBuilder: (context, index) {
-                final item = inventoryItems[index];
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _inventoryItems.isEmpty
+              ? _EmptyInventoryView(
+                  onAssignProduct: _showAddProductStockDialog,
+                )
+              : RefreshIndicator(
+                  onRefresh: _loadInitialData,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _inventoryItems.length,
+                    itemBuilder: (context, index) {
+                      final item = _inventoryItems[index];
 
-                return BranchInventoryItemCard(
-                  item: item,
-                  onUpdate: () => _showUpdateStockDialog(item),
-                );
-              },
-            ),
+                      return BranchInventoryItemCard(
+                        item: item,
+                        onUpdate: () => _showUpdateStockDialog(item),
+                        onDelete: () => _deleteInventoryItem(item),
+                      );
+                    },
+                  ),
+                ),
     );
   }
 }
