@@ -11,7 +11,6 @@ import '../features/auth/presentation/screens/complete_retailer_profile_screen.d
 
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
-import '../features/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 
 import '../features/retailer_profile/presentation/screens/retailer_profile_screen.dart';
 import '../features/retailer_profile/presentation/screens/edit_retailer_profile_screen.dart';

@@ -36,13 +36,11 @@ class ApiClient {
           if (!isPublicCentralAuth) {
             final rawToken = await authStorage.getToken();
             final token = _cleanToken(rawToken);
-            final token = await authStorage.getToken();
 
             if (token != null && token.isNotEmpty) {
               options.headers['Authorization'] = 'Bearer $token';
             }
           }
-
           // DEBUG LOGS
           print(
             'API REQUEST: ${options.method} ${options.baseUrl}${options.path}',
