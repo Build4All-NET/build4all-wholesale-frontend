@@ -26,6 +26,10 @@ import '../features/supplier/promotions/domain/entities/promotion_entity.dart';
 import '../features/supplier/coupons/presentation/screens/coupons_screen.dart';
 import '../features/supplier/coupons/presentation/screens/create_coupon_screen.dart';
 import '../features/supplier/coupons/domain/entities/coupon_entity.dart';
+import '../features/supplier/branches/domain/entities/branch_entity.dart';
+import '../features/supplier/branches/presentation/screens/branch_management_screen.dart';
+import '../features/supplier/branches/presentation/screens/branch_inventory_screen.dart';
+import '../features/supplier/branches/presentation/screens/add_branch_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -129,12 +133,31 @@ class AppRouter {
 
       GoRoute(
         path: '/supplier-branches',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Branch Management',
-          icon: Icons.store_mall_directory_outlined,
-        ),
+        builder: (context, state) => const BranchManagementScreen(),
       ),
 
+      GoRoute(
+        path: '/supplier-branches/add',
+        builder: (context, state) => const AddBranchScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-branches/edit',
+        builder: (context, state) {
+          final branch = state.extra as BranchEntity;
+
+          return AddBranchScreen(branchToEdit: branch);
+        },
+      ),
+
+      GoRoute(
+        path: '/supplier-branches/inventory',
+        builder: (context, state) {
+          final branch = state.extra as BranchEntity;
+
+          return BranchInventoryScreen(branch: branch);
+        },
+      ),
       GoRoute(
         path: '/supplier-inventory',
         builder: (context, state) => const SupplierComingSoonScreen(

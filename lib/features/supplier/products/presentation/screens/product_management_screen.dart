@@ -6,7 +6,7 @@ import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../data/product_mock_store.dart';
 import '../../domain/entities/product_entity.dart';
 import '../widgets/product_card.dart';
-
+import '../../../branches/data/branch_mock_store.dart';
 class ProductManagementScreen extends StatefulWidget {
   const ProductManagementScreen({super.key});
 
@@ -35,7 +35,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
 
     return _products.where((product) {
       return product.name.toLowerCase().contains(query) ||
-          product.category.toLowerCase().contains(query);
+          product.categoryName.toLowerCase().contains(query) ||
+          (product.subCategoryName ?? '').toLowerCase().contains(query);
     }).toList();
   }
 
@@ -54,17 +55,17 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   }
 
   void _deleteProduct(ProductEntity product) {
-    setState(() {
-      ProductMockStore.deleteProduct(product.id);
-    });
+  setState(() {
+    ProductMockStore.deleteProduct(product.id);
+    BranchMockStore.deleteInventoryForProduct(product.id);
+  });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product.name} deleted'),
-      ),
-    );
-  }
-
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('${product.name} deleted'),
+    ),
+  );
+}
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -106,7 +107,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 });
               },
               decoration: InputDecoration(
-                hintText: 'Search products...',
+                hintText: 'Search products, categories...',
                 prefixIcon: const Icon(
                   Icons.search,
                   color: AppThemeTokens.textSecondary,
