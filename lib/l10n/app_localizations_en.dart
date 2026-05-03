@@ -437,4 +437,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseLanguage => 'Choose a language';
+
+  @override
+  String get emailVerificationRequired =>
+      'A verification code was sent to your new email.';
+
+  @override
+  String get verifyEmail => 'Verify Email';
+
+  @override
+  String get resendCode => 'Resend Code';
+
+  @override
+  String get verificationCode => 'Verification Code';
+
+  @override
+  String get emailUpdatedSuccessfully => 'Email updated successfully';
+
+  @override
+  String get passwordVerificationCodeSent =>
+      'A password verification code was sent to your email.';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordUpdatedSuccessfully => 'Password updated successfully';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get dangerZone => 'Danger Zone';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountWarningTitle => 'Delete Account';
+
+  @override
+  String get deleteAccountWarningMessage =>
+      'Deleting your account is permanent. This action cannot be undone.';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete Account';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Are you sure you want to delete your account? This will remove your Build4All account and your retailer profile.';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get currentPassword => 'Current Password';
+
+  @override
+  String get accountDeletedSuccessfully => 'Account deleted successfully';
+
+  @override
+  String get currentPasswordRequired => 'Current password is required';
+
+  @override
+  String get shoppingCart => 'Shopping Cart';
+
+  @override
+  String get item => 'item';
+
+  @override
+  String get items => 'items';
+
+  @override
+  String get yourCartIsEmpty => 'Your cart is empty';
+
+  @override
+  String get emptyCartMessage =>
+      'Add products from the home page to start your order.';
+
+  @override
+  String get perUnit => 'per unit';
+
+  @override
+  String get orderSummary => 'Order Summary';
+
+  @override
+  String get subtotal => 'Subtotal';
+
+  @override
+  String get shippingEstimated => 'Shipping (estimated)';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get continueShopping => 'Continue Shopping';
+
+  @override
+  String get proceedToCheckout => 'Proceed to Checkout';
+
+  @override
+  String get checkoutComingSoon => 'Checkout will be available soon';
+
+  @override
+  String get createRfq => 'Create RFQ';
+
+  @override
+  String get smartRecommendations => 'Smart recommendations';
+
+  @override
+  String get requestQuotesQuickly => 'Request quotes quickly';
+
+  @override
+  String get trackYourRewards => 'Track your rewards';
+
+  @override
+  String get viewAvailableDeals => 'View available deals';
 }

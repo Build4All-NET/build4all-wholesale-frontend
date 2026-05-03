@@ -52,13 +52,19 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     super.dispose();
   }
 
+  /// Adds the selected product to cart.
+  ///
+  /// The cubit now tracks the selected product ID only, so only the clicked
+  /// product button shows loading.
   void _addToCart(HomeProductModel product) {
-    context.read<RetailerHomeCubit>().addToCart(
-      productId: product.id,
-      quantity: product.moq,
-    );
+    context.read<RetailerHomeCubit>().addToCart(product: product);
   }
 
+  /// Bottom navigation routing.
+  ///
+  /// Home is dynamic.
+  /// Top Ranking, Orders, RFQ are placeholder pages for now.
+  /// Profile is dynamic.
   void _goToBottomTab(int index) {
     setState(() => _selectedBottomIndex = index);
 
@@ -66,15 +72,22 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
       case 0:
         context.go('/retailer-dashboard');
         break;
+
+      // Push = opens placeholder with back button.
       case 1:
-        context.go('/retailer-top-ranking');
+        context.push('/retailer-top-ranking');
         break;
+
+      // Push = opens placeholder with back button.
       case 2:
-        context.go('/retailer-orders');
+        context.push('/retailer-orders');
         break;
+
+      // Push = opens placeholder with back button.
       case 3:
-        context.go('/retailer-rfq');
+        context.push('/retailer-rfq');
         break;
+
       case 4:
         context.go('/retailer-profile');
         break;
@@ -86,6 +99,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     return BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
@@ -93,6 +107,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
         }
 
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
@@ -107,6 +122,8 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             elevation: 0,
             title: Text(
               context.l10n.retailerDashboard,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: AppThemeTokens.textPrimary,
                 fontWeight: FontWeight.w900,
@@ -160,7 +177,13 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               onCartTap: () => context.push('/retailer-cart'),
             ),
             const SizedBox(height: 18),
-            RetailerSearchBar(controller: _searchController, onChanged: (_) {}),
+            RetailerSearchBar(
+              controller: _searchController,
+              onChanged: (_) {
+                /// Search UI exists now.
+                /// Search backend/page can be connected later.
+              },
+            ),
             const SizedBox(height: 18),
             HomeBannerSection(banners: home.banners),
             const SizedBox(height: 18),
@@ -172,7 +195,12 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             const SizedBox(height: 24),
             FeaturedProductsSection(
               products: home.featuredProducts,
-              isAddingToCart: state.isAddingToCart,
+
+              /// Important:
+              /// only the selected product id is passed.
+              /// This prevents all Add buttons from loading together.
+              addingProductId: state.addingProductId,
+
               onAddToCart: _addToCart,
             ),
           ],
@@ -190,6 +218,14 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Theme.of(context).colorScheme.primary,
       unselectedItemColor: AppThemeTokens.textSecondary,
+      selectedLabelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+      ),
+      unselectedLabelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+      ),
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_rounded),
@@ -250,10 +286,32 @@ class _ErrorView extends StatelessWidget {
             Text(
               l10n.checkConnectionTryAgain,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppThemeTokens.textSecondary),
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                height: 1.35,
+              ),
             ),
             const SizedBox(height: 18),
-            ElevatedButton(onPressed: onRetry, child: Text(l10n.retry)),
+            ElevatedButton(
+              onPressed: onRetry,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: Text(
+                l10n.retry,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ),

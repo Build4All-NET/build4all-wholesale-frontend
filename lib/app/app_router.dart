@@ -18,6 +18,9 @@ import '../features/retailer_profile/presentation/screens/edit_retailer_profile_
 
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 import '../l10n/app_localizations.dart';
+import '../features/retailer_profile/presentation/screens/profile_verification_code_screen.dart';
+
+import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -163,17 +166,7 @@ class AppRouter {
           );
         },
       ),
-      GoRoute(
-        path: '/retailer-live-chat',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-          return RetailerPlaceholderScreen(
-            title: l10n.liveChat,
-            message: l10n.liveChatComingSoon,
-            icon: Icons.chat_bubble_outline_rounded,
-          );
-        },
-      ),
+
       GoRoute(
         path: '/retailer-loyalty',
         builder: (context, state) {
@@ -206,6 +199,66 @@ class AppRouter {
             icon: Icons.credit_card_outlined,
           );
         },
+      ),
+      GoRoute(
+        path: '/retailer-profile/verify-code',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+
+          return ProfileVerificationCodeScreen(
+            mode: extra['mode'] as String,
+            email: extra['email'] as String,
+            newPassword: extra['newPassword'] as String?,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/retailer-ai-assistant',
+        builder: (context, state) {
+          final l10n = AppLocalizations.of(context)!;
+          return RetailerPlaceholderScreen(
+            title: l10n.aiAssistant,
+            message: l10n.aiAssistantComingSoon,
+            icon: Icons.auto_awesome,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/retailer-rfq',
+        builder: (context, state) {
+          final l10n = AppLocalizations.of(context)!;
+          return RetailerPlaceholderScreen(
+            title: l10n.rfq,
+            message: l10n.rfqComingSoon,
+            icon: Icons.description_outlined,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/retailer-loyalty',
+        builder: (context, state) {
+          final l10n = AppLocalizations.of(context)!;
+          return RetailerPlaceholderScreen(
+            title: l10n.loyaltyPoints,
+            message: l10n.loyaltyComingSoon,
+            icon: Icons.star_border_rounded,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/retailer-promotions',
+        builder: (context, state) {
+          final l10n = AppLocalizations.of(context)!;
+          return RetailerPlaceholderScreen(
+            title: l10n.promotions,
+            message: l10n.promotionsComingSoon,
+            icon: Icons.local_offer_outlined,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/retailer-cart',
+        builder: (context, state) => const RetailerCartScreen(),
       ),
     ],
   );

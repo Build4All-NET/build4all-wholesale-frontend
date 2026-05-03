@@ -21,9 +21,12 @@ class RetailerPlaceholderScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
+
+        // Do not set leading manually.
+        // Flutter automatically shows back button when opened using context.push().
       ),
       body: Center(
         child: Padding(

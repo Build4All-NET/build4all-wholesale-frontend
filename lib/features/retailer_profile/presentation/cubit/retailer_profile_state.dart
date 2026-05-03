@@ -6,7 +6,9 @@ class RetailerProfileState extends Equatable {
   final bool isLoading;
   final bool isSaving;
   final bool isLoggingOut;
+  final bool isDeletingAccount;
   final bool logoutSuccess;
+  final bool accountDeletedSuccess;
   final RetailerProfileCombinedModel? profile;
   final String? errorMessage;
   final String? successMessage;
@@ -15,7 +17,9 @@ class RetailerProfileState extends Equatable {
     this.isLoading = false,
     this.isSaving = false,
     this.isLoggingOut = false,
+    this.isDeletingAccount = false,
     this.logoutSuccess = false,
+    this.accountDeletedSuccess = false,
     this.profile,
     this.errorMessage,
     this.successMessage,
@@ -25,7 +29,9 @@ class RetailerProfileState extends Equatable {
     bool? isLoading,
     bool? isSaving,
     bool? isLoggingOut,
+    bool? isDeletingAccount,
     bool? logoutSuccess,
+    bool? accountDeletedSuccess,
     RetailerProfileCombinedModel? profile,
     String? errorMessage,
     String? successMessage,
@@ -36,7 +42,10 @@ class RetailerProfileState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isSaving: isSaving ?? this.isSaving,
       isLoggingOut: isLoggingOut ?? this.isLoggingOut,
+      isDeletingAccount: isDeletingAccount ?? this.isDeletingAccount,
       logoutSuccess: logoutSuccess ?? this.logoutSuccess,
+      accountDeletedSuccess:
+          accountDeletedSuccess ?? this.accountDeletedSuccess,
       profile: profile ?? this.profile,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       successMessage: clearSuccess
@@ -50,7 +59,9 @@ class RetailerProfileState extends Equatable {
     isLoading,
     isSaving,
     isLoggingOut,
+    isDeletingAccount,
     logoutSuccess,
+    accountDeletedSuccess,
     profile,
     errorMessage,
     successMessage,

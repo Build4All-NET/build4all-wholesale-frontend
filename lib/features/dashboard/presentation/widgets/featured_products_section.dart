@@ -7,13 +7,16 @@ import '../../data/models/retailer_home_model.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
   final List<HomeProductModel> products;
-  final bool isAddingToCart;
+
+  /// Only the clicked product id becomes loading.
+  final int? addingProductId;
+
   final void Function(HomeProductModel product) onAddToCart;
 
   const FeaturedProductsSection({
     super.key,
     required this.products,
-    required this.isAddingToCart,
+    required this.addingProductId,
     required this.onAddToCart,
   });
 
@@ -30,6 +33,8 @@ class FeaturedProductsSection extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.featuredProducts,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 20,
@@ -41,6 +46,8 @@ class FeaturedProductsSection extends StatelessWidget {
               onPressed: () => context.push('/retailer-promotions'),
               child: Text(
                 l10n.viewAll,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.w800,
@@ -51,15 +58,17 @@ class FeaturedProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 292,
+          height: 365,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
             separatorBuilder: (context, index) => const SizedBox(width: 14),
             itemBuilder: (context, index) {
+              final product = products[index];
+
               return _ProductCard(
-                product: products[index],
-                isAddingToCart: isAddingToCart,
+                product: product,
+                isAddingThisProduct: addingProductId == product.id,
                 onAddToCart: onAddToCart,
               );
             },
@@ -72,12 +81,15 @@ class FeaturedProductsSection extends StatelessWidget {
 
 class _ProductCard extends StatelessWidget {
   final HomeProductModel product;
-  final bool isAddingToCart;
+
+  /// Only true for the clicked product.
+  final bool isAddingThisProduct;
+
   final void Function(HomeProductModel product) onAddToCart;
 
   const _ProductCard({
     required this.product,
-    required this.isAddingToCart,
+    required this.isAddingThisProduct,
     required this.onAddToCart,
   });
 
@@ -86,39 +98,44 @@ class _ProductCard extends StatelessWidget {
     final l10n = context.l10n;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(22),
-      onTap: () => context.push('/retailer-promotions'),
-      child: Container(
-        width: 206,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: AppThemeTokens.border),
-          borderRadius: BorderRadius.circular(22),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ProductImage(product: product),
-            Padding(
-              padding: const EdgeInsets.all(12),
+    return Container(
+      width: 214,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: AppThemeTokens.border),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () => context.push('/retailer-promotions'),
+            child: _ProductImage(product: product),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (product.badgeLabel != null &&
-                      product.badgeLabel!.trim().isNotEmpty)
+                      product.badgeLabel!.trim().isNotEmpty) ...[
                     _Badge(product: product),
-                  const SizedBox(height: 8),
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppThemeTokens.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      height: 1.2,
+                    const SizedBox(height: 8),
+                  ],
+                  InkWell(
+                    onTap: () => context.push('/retailer-promotions'),
+                    child: Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppThemeTokens.textPrimary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        height: 1.18,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -138,49 +155,62 @@ class _ProductCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        '(${product.reviewCount})',
-                        style: const TextStyle(
-                          color: AppThemeTokens.textSecondary,
-                          fontSize: 12,
+                      Expanded(
+                        child: Text(
+                          '(${product.reviewCount})',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: AppThemeTokens.textSecondary,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 9),
+                  const SizedBox(height: 8),
                   Text(
                     '${product.currency}${product.price.toStringAsFixed(2)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: primaryColor,
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   Text(
                     'MOQ: ${product.moq} ${product.moqUnit}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: AppThemeTokens.textSecondary,
                       fontSize: 12,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const Spacer(),
                   SizedBox(
                     width: double.infinity,
-                    height: 38,
+                    height: 42,
                     child: ElevatedButton(
-                      onPressed: isAddingToCart
+                      /// Only clicked product is disabled/loading.
+                      /// Other product buttons stay normal.
+                      onPressed: isAddingThisProduct
                           ? null
                           : () => onAddToCart(product),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
+                        disabledBackgroundColor: primaryColor,
+                        disabledForegroundColor: Colors.white,
                         elevation: 0,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      child: isAddingToCart
+                      child: isAddingThisProduct
                           ? const SizedBox(
                               width: 18,
                               height: 18,
@@ -191,8 +221,10 @@ class _ProductCard extends StatelessWidget {
                             )
                           : Text(
                               l10n.add,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
                     ),
@@ -200,8 +232,8 @@ class _ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -217,13 +249,13 @@ class _ProductImage extends StatelessWidget {
     final imageUrl = product.imageUrl;
 
     return Container(
-      height: 92,
+      height: 105,
       width: double.infinity,
       color: const Color(0xFFF1F5F9),
       child: imageUrl == null || imageUrl.trim().isEmpty
           ? const Icon(
               Icons.inventory_2_outlined,
-              size: 42,
+              size: 46,
               color: AppThemeTokens.textSecondary,
             )
           : Image.network(
@@ -232,7 +264,7 @@ class _ProductImage extends StatelessWidget {
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(
                   Icons.inventory_2_outlined,
-                  size: 42,
+                  size: 46,
                   color: AppThemeTokens.textSecondary,
                 );
               },
@@ -251,13 +283,16 @@ class _Badge extends StatelessWidget {
     final color = _parseColor(product.badgeColor ?? '#EF4444');
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      constraints: const BoxConstraints(maxWidth: 170),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         product.badgeLabel!,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 11,

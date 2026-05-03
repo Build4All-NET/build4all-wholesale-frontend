@@ -1,5 +1,6 @@
 class Build4AllUserProfileModel {
   final int id;
+  final int ownerProjectLinkId;
   final String username;
   final String firstName;
   final String lastName;
@@ -9,6 +10,7 @@ class Build4AllUserProfileModel {
 
   const Build4AllUserProfileModel({
     required this.id,
+    required this.ownerProjectLinkId,
     required this.username,
     required this.firstName,
     required this.lastName,
@@ -22,6 +24,11 @@ class Build4AllUserProfileModel {
   factory Build4AllUserProfileModel.fromJson(Map<String, dynamic> json) {
     return Build4AllUserProfileModel(
       id: _toInt(json['id'] ?? json['userId']),
+      ownerProjectLinkId: _toInt(
+        json['ownerProjectLinkId'] ??
+            json['ownerProjectId'] ??
+            json['aupId'],
+      ),
       username: json['username']?.toString() ?? '',
       firstName: json['firstName']?.toString() ?? '',
       lastName: json['lastName']?.toString() ?? '',
@@ -30,6 +37,30 @@ class Build4AllUserProfileModel {
       profileImageUrl:
           json['profileImageUrl']?.toString() ??
           json['profilePictureUrl']?.toString(),
+    );
+  }
+}
+
+class AccountProfileUpdateResult {
+  final Build4AllUserProfileModel account;
+  final bool emailVerificationRequired;
+  final String? pendingEmail;
+
+  const AccountProfileUpdateResult({
+    required this.account,
+    required this.emailVerificationRequired,
+    required this.pendingEmail,
+  });
+
+  factory AccountProfileUpdateResult.fromJson(Map<String, dynamic> json) {
+    final userJson = json['user'] is Map
+        ? Map<String, dynamic>.from(json['user'] as Map)
+        : json;
+
+    return AccountProfileUpdateResult(
+      account: Build4AllUserProfileModel.fromJson(userJson),
+      emailVerificationRequired: json['emailVerificationRequired'] == true,
+      pendingEmail: json['pendingEmail']?.toString(),
     );
   }
 }

@@ -14,7 +14,6 @@ class RetailerProfileService {
     required this.projectApiClient,
   });
 
-  /// Reads account identity from Build4All users table.
   Future<Build4AllUserProfileModel> getBuild4AllUserProfile(int userId) async {
     try {
       final response = await centralApiClient.dio.get(
@@ -29,21 +28,26 @@ class RetailerProfileService {
     }
   }
 
-  /// Updates only account fields Build4All allows directly:
-  /// username, firstName, lastName.
-  Future<Build4AllUserProfileModel> updateBuild4AllUserProfile({
+  Future<AccountProfileUpdateResult> updateBuild4AllUserProfile({
     required int userId,
     required String username,
     required String firstName,
     required String lastName,
+    String? changedEmail,
   }) async {
     try {
-      final formData = FormData.fromMap({
+      final data = <String, dynamic>{
         'username': username.trim(),
         'firstName': firstName.trim(),
         'lastName': lastName.trim(),
         'isPublicProfile': 'true',
-      });
+      };
+
+      if (changedEmail != null && changedEmail.trim().isNotEmpty) {
+        data['email'] = changedEmail.trim();
+      }
+
+      final formData = FormData.fromMap(data);
 
       final response = await centralApiClient.dio.put(
         ApiConfig.build4AllUserProfile(userId),
@@ -51,7 +55,7 @@ class RetailerProfileService {
         options: Options(contentType: 'multipart/form-data'),
       );
 
-      return Build4AllUserProfileModel.fromJson(
+      return AccountProfileUpdateResult.fromJson(
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
@@ -59,10 +63,69 @@ class RetailerProfileService {
     }
   }
 
-  /// Reads business profile from Wholesale backend.
+  Future<void> verifyEmailChange({
+    required int userId,
+    required String code,
+  }) async {
+    try {
+      await centralApiClient.dio.post(
+        ApiConfig.build4AllVerifyEmailChange(userId),
+        data: {'code': code.trim()},
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<void> resendEmailChangeCode({required int userId}) async {
+    try {
+      await centralApiClient.dio.post(
+        ApiConfig.build4AllResendEmailChange(userId),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<void> sendPasswordResetCode({
+    required String email,
+    required int ownerProjectLinkId,
+  }) async {
+    try {
+      await centralApiClient.dio.post(
+        ApiConfig.build4AllResetPassword(ownerProjectLinkId),
+        data: {'email': email.trim()},
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<void> updatePasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+    required int ownerProjectLinkId,
+  }) async {
+    try {
+      await centralApiClient.dio.post(
+        ApiConfig.build4AllUpdatePassword(ownerProjectLinkId),
+        data: {
+          'email': email.trim(),
+          'code': code.trim(),
+          'newPassword': newPassword,
+        },
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   Future<RetailerBusinessProfileModel> getRetailerBusinessProfile() async {
     try {
-      final response = await projectApiClient.dio.get(ApiConfig.retailerProfileMe);
+      final response = await projectApiClient.dio.get(
+        ApiConfig.retailerProfileMe,
+      );
 
       return RetailerBusinessProfileModel.fromJson(
         Map<String, dynamic>.from(response.data as Map),
@@ -72,7 +135,6 @@ class RetailerProfileService {
     }
   }
 
-  /// Updates business data stored in Wholesale DB.
   Future<RetailerBusinessProfileModel> updateRetailerBusinessProfile({
     required String fullName,
     required String storeName,
@@ -102,12 +164,35 @@ class RetailerProfileService {
     }
   }
 
+  Future<void> deleteBuild4AllUser({
+    required int userId,
+    required String password,
+  }) async {
+    try {
+      await centralApiClient.dio.delete(
+        ApiConfig.build4AllDeleteUser(userId),
+        data: {'password': password},
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<void> deleteRetailerBusinessProfile() async {
+    try {
+      await projectApiClient.dio.delete(ApiConfig.retailerProfileMe);
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   String _extractMessage(DioException e) {
     final data = e.response?.data;
 
     if (data is Map<String, dynamic>) {
       if (data['message'] != null) return data['message'].toString();
       if (data['error'] != null) return data['error'].toString();
+      if (data['code'] != null) return data['code'].toString();
     }
 
     return e.message ?? 'Something went wrong';

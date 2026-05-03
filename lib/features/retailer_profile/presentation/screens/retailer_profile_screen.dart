@@ -7,7 +7,7 @@ import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../cubit/retailer_profile_cubit.dart';
 import '../cubit/retailer_profile_state.dart';
-import '../../../../common/widgets/language_selector.dart';
+
 import '../../../../core/theme/locale_cubit.dart';
 
 class RetailerProfileScreen extends StatelessWidget {

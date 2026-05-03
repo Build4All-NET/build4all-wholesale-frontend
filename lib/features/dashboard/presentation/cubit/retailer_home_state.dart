@@ -4,22 +4,29 @@ import '../../data/models/retailer_home_model.dart';
 
 class RetailerHomeState extends Equatable {
   final bool isLoading;
-  final bool isAddingToCart;
+
+  /// This stores the product id currently being added.
+  /// If null, no product is loading.
+  final int? addingProductId;
+
   final RetailerHomeModel? home;
   final String? errorMessage;
   final String? successMessage;
 
   const RetailerHomeState({
     this.isLoading = false,
-    this.isAddingToCart = false,
+    this.addingProductId,
     this.home,
     this.errorMessage,
     this.successMessage,
   });
 
+  bool get isAddingToCart => addingProductId != null;
+
   RetailerHomeState copyWith({
     bool? isLoading,
-    bool? isAddingToCart,
+    int? addingProductId,
+    bool clearAddingProductId = false,
     RetailerHomeModel? home,
     String? errorMessage,
     String? successMessage,
@@ -28,7 +35,9 @@ class RetailerHomeState extends Equatable {
   }) {
     return RetailerHomeState(
       isLoading: isLoading ?? this.isLoading,
-      isAddingToCart: isAddingToCart ?? this.isAddingToCart,
+      addingProductId: clearAddingProductId
+          ? null
+          : (addingProductId ?? this.addingProductId),
       home: home ?? this.home,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       successMessage: clearSuccess
@@ -40,7 +49,7 @@ class RetailerHomeState extends Equatable {
   @override
   List<Object?> get props => [
     isLoading,
-    isAddingToCart,
+    addingProductId,
     home,
     errorMessage,
     successMessage,

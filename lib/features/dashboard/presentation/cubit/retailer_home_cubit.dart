@@ -2,34 +2,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/repositories/retailer_home_repository.dart';
 import 'retailer_home_state.dart';
+import '../../data/models/retailer_home_model.dart';
 
 class RetailerHomeCubit extends Cubit<RetailerHomeState> {
   final RetailerHomeRepository retailerHomeRepository;
 
-  RetailerHomeCubit({
-    required this.retailerHomeRepository,
-  }) : super(const RetailerHomeState());
+  RetailerHomeCubit({required this.retailerHomeRepository})
+    : super(const RetailerHomeState());
 
-  /// Loads complete Retailer Home data from Wholesale backend.
+  /// Loads all Retailer Home data:
+  /// - welcome name
+  /// - banners
+  /// - categories
+  /// - featured products
+  /// - cart count
+  /// - notifications count
   Future<void> loadHome() async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        clearError: true,
-        clearSuccess: true,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, clearError: true, clearSuccess: true));
 
     try {
       final home = await retailerHomeRepository.getHome();
 
-      emit(
-        state.copyWith(
-          isLoading: false,
-          home: home,
-          clearError: true,
-        ),
-      );
+      emit(state.copyWith(isLoading: false, home: home));
     } catch (e) {
       emit(
         state.copyWith(
@@ -40,51 +34,44 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
     }
   }
 
-  /// Adds product to cart, then reloads home to refresh cart badge.
-  Future<void> addToCart({
-    required int productId,
-    required int quantity,
-  }) async {
+  /// Adds only the selected product to the cart.
+  ///
+  /// Important:
+  /// We store [addingProductId] instead of using one global loading bool.
+  /// This prevents all Add buttons from showing loading at the same time.
+  Future<void> addToCart({required HomeProductModel product}) async {
     emit(
       state.copyWith(
-        isAddingToCart: true,
+        addingProductId: product.id,
         clearError: true,
         clearSuccess: true,
       ),
     );
 
     try {
-      final response = await retailerHomeRepository.addToCart(
-        productId: productId,
-        quantity: quantity,
-      );
+      await retailerHomeRepository.addToCart(product: product);
 
-      final updatedHome = await retailerHomeRepository.getHome();
+      final refreshedHome = await retailerHomeRepository.getHome();
 
       emit(
         state.copyWith(
-          isAddingToCart: false,
-          home: updatedHome,
-          successMessage: response.message,
-          clearError: true,
+          clearAddingProductId: true,
+          home: refreshedHome,
+          successMessage: 'Product added to cart',
         ),
       );
     } catch (e) {
       emit(
         state.copyWith(
-          isAddingToCart: false,
+          clearAddingProductId: true,
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
     }
   }
 
+  /// Clears snack-bar messages after they are shown.
   void clearMessages() {
-    emit(
-      state.copyWith(
-        clearError: true,
-        clearSuccess: true,
-      ),
-    );
+    emit(state.copyWith(clearError: true, clearSuccess: true));
   }
 }

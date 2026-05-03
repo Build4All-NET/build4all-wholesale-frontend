@@ -445,4 +445,122 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chooseLanguage => 'Choisissez une langue';
+
+  @override
+  String get emailVerificationRequired =>
+      'Un code de vérification a été envoyé à votre nouvel e-mail.';
+
+  @override
+  String get verifyEmail => 'Vérifier l’e-mail';
+
+  @override
+  String get resendCode => 'Renvoyer le code';
+
+  @override
+  String get verificationCode => 'Code de vérification';
+
+  @override
+  String get emailUpdatedSuccessfully => 'E-mail mis à jour avec succès';
+
+  @override
+  String get passwordVerificationCodeSent =>
+      'Un code de vérification du mot de passe a été envoyé à votre e-mail.';
+
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get passwordUpdatedSuccessfully =>
+      'Mot de passe mis à jour avec succès';
+
+  @override
+  String get passwordMinLength =>
+      'Le mot de passe doit contenir au moins 6 caractères';
+
+  @override
+  String get dangerZone => 'Zone dangereuse';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountWarningTitle => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountWarningMessage =>
+      'La suppression de votre compte est permanente. Cette action est irréversible.';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Êtes-vous sûr de vouloir supprimer votre compte ? Cela supprimera votre compte Build4All et votre profil détaillant.';
+
+  @override
+  String get delete => 'Supprimer';
+
+  @override
+  String get currentPassword => 'Mot de passe actuel';
+
+  @override
+  String get accountDeletedSuccessfully => 'Compte supprimé avec succès';
+
+  @override
+  String get currentPasswordRequired => 'Le mot de passe actuel est requis';
+
+  @override
+  String get shoppingCart => 'Panier';
+
+  @override
+  String get item => 'article';
+
+  @override
+  String get items => 'articles';
+
+  @override
+  String get yourCartIsEmpty => 'Votre panier est vide';
+
+  @override
+  String get emptyCartMessage =>
+      'Ajoutez des produits depuis la page d’accueil pour commencer votre commande.';
+
+  @override
+  String get perUnit => 'par unité';
+
+  @override
+  String get orderSummary => 'Résumé de la commande';
+
+  @override
+  String get subtotal => 'Sous-total';
+
+  @override
+  String get shippingEstimated => 'Livraison (estimée)';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get continueShopping => 'Continuer les achats';
+
+  @override
+  String get proceedToCheckout => 'Passer à la caisse';
+
+  @override
+  String get checkoutComingSoon => 'Le paiement sera bientôt disponible';
+
+  @override
+  String get createRfq => 'Créer une RFQ';
+
+  @override
+  String get smartRecommendations => 'Recommandations intelligentes';
+
+  @override
+  String get requestQuotesQuickly => 'Demandez des devis rapidement';
+
+  @override
+  String get trackYourRewards => 'Suivez vos récompenses';
+
+  @override
+  String get viewAvailableDeals => 'Voir les offres disponibles';
 }

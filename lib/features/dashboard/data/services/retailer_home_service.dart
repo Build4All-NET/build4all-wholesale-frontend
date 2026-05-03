@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
-import '../../../auth/data/models/api_response_model.dart';
+
 import '../models/retailer_home_model.dart';
 
 class RetailerHomeService {
@@ -25,21 +25,20 @@ class RetailerHomeService {
   }
 
   /// Adds selected product using backend MOQ logic.
-  Future<ApiResponseModel> addToCart({
-    required int productId,
-    required int quantity,
-  }) async {
+  Future<void> addToCart({required HomeProductModel product}) async {
     try {
-      final response = await apiClient.dio.post(
-        ApiConfig.retailerHomeAddCartItem,
+      await apiClient.dio.post(
+        ApiConfig.retailerCartItems,
         data: {
-          'productId': productId,
-          'quantity': quantity,
+          'productId': product.id,
+          'productName': product.name,
+          'imageUrl': product.imageUrl,
+          'unitPrice': product.price,
+          'currency': product.currency,
+          'moq': product.moq,
+          'moqUnit': product.moqUnit,
+          'quantity': product.moq,
         },
-      );
-
-      return ApiResponseModel.fromJson(
-        Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));

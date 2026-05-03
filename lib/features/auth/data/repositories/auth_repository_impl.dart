@@ -13,10 +13,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthService authService;
   final AuthStorage authStorage;
 
-  AuthRepositoryImpl({
-    required this.authService,
-    required this.authStorage,
-  });
+  AuthRepositoryImpl({required this.authService, required this.authStorage});
 
   @override
   Future<AuthUserEntity> login({
@@ -34,6 +31,18 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
+
+      final wasDeleted = userLoginResponse['wasDeleted'] == true;
+
+      if (wasDeleted) {
+        final message = userLoginResponse['message']?.toString().trim();
+
+        throw AppException(
+          message == null || message.isEmpty
+              ? 'This account was deleted. Confirm reactivation.'
+              : message,
+        );
+      }
 
       final token = userLoginResponse['token']?.toString() ?? '';
       final user = Map<String, dynamic>.from(userLoginResponse['user'] as Map);
@@ -203,9 +212,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<ForgotPasswordResponseEntity> forgotPassword({
     required String email,
   }) async {
-    return await authService.forgotPassword(
-      email: email,
-    );
+    return await authService.forgotPassword(email: email);
   }
 
   @override

@@ -24,4 +24,25 @@ class ApiConfig {
 
   static String build4AllUserById(int id) => '/users/$id';
   static String build4AllUserProfile(int id) => '/users/$id/profile';
+
+  static String build4AllVerifyEmailChange(int id) =>
+      '/users/$id/email-change/verify';
+
+  static String build4AllResendEmailChange(int id) =>
+      '/users/$id/email-change/resend';
+
+  static String build4AllResetPassword(int ownerProjectLinkId) =>
+      '/users/reset-password?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllVerifyResetCode(int ownerProjectLinkId) =>
+      '/users/verify-reset-code?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllUpdatePassword(int ownerProjectLinkId) =>
+      '/users/update-password?ownerProjectLinkId=$ownerProjectLinkId';
+  static String build4AllDeleteUser(int userId) => '/users/$userId';
+  static const String retailerCart = '/retailer/cart';
+  static const String retailerCartItems = '/retailer/cart/items';
+
+  static String retailerCartItemById(int cartItemId) =>
+      '/retailer/cart/items/$cartItemId';
 }

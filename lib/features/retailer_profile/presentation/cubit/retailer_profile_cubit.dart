@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/models/retailer_profile_model.dart';
 import '../../domain/repositories/retailer_profile_repository.dart';
 import 'retailer_profile_state.dart';
 
@@ -26,10 +27,38 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
     }
   }
 
-  Future<void> updateProfile({
+  Future<AccountProfileUpdateResult?> updateAccountInfo({
     required String username,
     required String firstName,
     required String lastName,
+    String? changedEmail,
+  }) async {
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
+
+    try {
+      final result = await retailerProfileRepository.updateAccountInfo(
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        changedEmail: changedEmail,
+      );
+
+      emit(state.copyWith(isSaving: false));
+
+      return result;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+      return null;
+    }
+  }
+
+  Future<bool> updateBusinessInfo({
+    required String fullName,
     required String storeName,
     required String phoneNumber,
     required String storeAddress,
@@ -40,16 +69,16 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
     emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
 
     try {
-      final profile = await retailerProfileRepository.updateProfile(
-        username: username,
-        firstName: firstName,
-        lastName: lastName,
+      await retailerProfileRepository.updateBusinessInfo(
+        fullName: fullName,
         storeName: storeName,
         phoneNumber: phoneNumber,
         storeAddress: storeAddress,
         city: city,
         businessType: businessType,
       );
+
+      final profile = await retailerProfileRepository.getProfile();
 
       emit(
         state.copyWith(
@@ -58,6 +87,8 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           successMessage: successMessage,
         ),
       );
+
+      return true;
     } catch (e) {
       emit(
         state.copyWith(
@@ -65,6 +96,122 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+      return false;
+    }
+  }
+
+  Future<bool> verifyEmailChange(String code) async {
+    emit(state.copyWith(isSaving: true, clearError: true));
+
+    try {
+      await retailerProfileRepository.verifyEmailChange(code: code);
+
+      final profile = await retailerProfileRepository.getProfile();
+
+      emit(state.copyWith(isSaving: false, profile: profile));
+
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> resendEmailChangeCode() async {
+    emit(state.copyWith(isSaving: true, clearError: true));
+
+    try {
+      await retailerProfileRepository.resendEmailChangeCode();
+      emit(state.copyWith(isSaving: false));
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> sendPasswordResetCode({required String email}) async {
+    emit(state.copyWith(isSaving: true, clearError: true));
+
+    try {
+      await retailerProfileRepository.sendPasswordResetCode(email: email);
+      emit(state.copyWith(isSaving: false));
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> updatePasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    emit(state.copyWith(isSaving: true, clearError: true));
+
+    try {
+      await retailerProfileRepository.updatePasswordWithCode(
+        email: email,
+        code: code,
+        newPassword: newPassword,
+      );
+
+      emit(state.copyWith(isSaving: false));
+
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> deleteAccount({required String password}) async {
+    emit(
+      state.copyWith(
+        isDeletingAccount: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    try {
+      await retailerProfileRepository.deleteAccount(password: password);
+
+      emit(
+        state.copyWith(isDeletingAccount: false, accountDeletedSuccess: true),
+      );
+
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isDeletingAccount: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+
+      return false;
     }
   }
 

@@ -34,6 +34,9 @@ import 'features/retailer_profile/data/repositories/retailer_profile_repository_
 import 'features/retailer_profile/domain/repositories/retailer_profile_repository.dart';
 import 'features/retailer_profile/presentation/cubit/retailer_profile_cubit.dart';
 
+import 'features/dashboard/data/services/retailer_cart_service.dart';
+import 'features/dashboard/presentation/cubit/retailer_cart_cubit.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -63,6 +66,14 @@ Future<void> init() async {
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<ThemeStorage>()));
 
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<LocaleStorage>()));
+
+  sl.registerLazySingleton<RetailerCartService>(
+    () => RetailerCartService(projectApiClient: sl()),
+  );
+
+  sl.registerFactory<RetailerCartCubit>(
+    () => RetailerCartCubit(retailerCartService: sl()),
+  );
 
   // =========================
   // SERVICES
