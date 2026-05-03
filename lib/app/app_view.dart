@@ -12,7 +12,7 @@ import '../core/theme/theme_state.dart';
 import '../injection_container.dart';
 import 'app_router.dart';
 import '../l10n/app_localizations.dart';
-
+import '../core/config/app_config.dart';
 class AppView extends StatelessWidget {
   const AppView({super.key});
 
@@ -31,7 +31,7 @@ class AppView extends StatelessWidget {
               builder: (context, localeState) {
                 return MaterialApp.router(
                   debugShowCheckedModeBanner: false,
-                  title: 'B2B Wholesale App',
+                  title: AppConfig.appName,
                   theme: AppThemeBuilder.buildTheme(themeState.config),
                   routerConfig: AppRouter.router,
                   locale: localeState.locale,
