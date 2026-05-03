@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../branches/data/branch_mock_store.dart';
-import '../../../branches/domain/entities/branch_entity.dart';
-import '../../../categories/data/supplier_category_mock_store.dart';
+import '../../../../../injection_container.dart';
 import '../../../categories/domain/entities/supplier_category_entity.dart';
 import '../../../categories/domain/entities/supplier_sub_category_entity.dart';
-import '../../data/product_mock_store.dart';
+import '../../../categories/domain/repositories/supplier_category_repository.dart';
 import '../../domain/entities/product_entity.dart';
+import '../../domain/repositories/product_repository.dart';
 
 class AddProductScreen extends StatefulWidget {
   final ProductEntity? productToEdit;
@@ -30,33 +30,29 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  final SupplierCategoryRepository _categoryRepository =
+      sl<SupplierCategoryRepository>();
+
+  final ProductRepository _productRepository = sl<ProductRepository>();
+
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _minimumOrderQuantityController = TextEditingController(text: '10');
-
-  final Map<String, TextEditingController> _branchStockControllers = {};
 
   String? _selectedCategoryId;
   String? _selectedSubCategoryId;
   String? _selectedImagePath;
   ProductStatus _selectedStatus = ProductStatus.active;
 
-  List<SupplierCategoryEntity> get _categories {
-    return SupplierCategoryMockStore.categories;
-  }
+  bool _isLoadingCategories = true;
+  bool _isLoadingSubCategories = false;
+  bool _isSavingProduct = false;
+  bool _isCreatingCategory = false;
+  bool _isCreatingSubCategory = false;
 
-  List<SupplierSubCategoryEntity> get _subCategories {
-    if (_selectedCategoryId == null) return [];
-
-    return SupplierCategoryMockStore.getSubCategoriesByCategoryId(
-      _selectedCategoryId!,
-    );
-  }
-
-  List<BranchEntity> get _branches {
-    return BranchMockStore.branches;
-  }
+  List<SupplierCategoryEntity> _categories = [];
+  List<SupplierSubCategoryEntity> _subCategories = [];
 
   @override
   void initState() {
@@ -77,7 +73,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       _selectedStatus = product.status;
     }
 
-    _syncBranchStockControllers();
+    _loadCategories();
   }
 
   @override
@@ -86,39 +82,83 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _descriptionController.dispose();
     _priceController.dispose();
     _minimumOrderQuantityController.dispose();
-
-    for (final controller in _branchStockControllers.values) {
-      controller.dispose();
-    }
-
     super.dispose();
   }
 
-  void _syncBranchStockControllers() {
-    final currentBranchIds = _branches.map((branch) => branch.id).toSet();
+  Future<void> _loadCategories() async {
+    setState(() {
+      _isLoadingCategories = true;
+    });
 
-    for (final branch in _branches) {
-      if (_branchStockControllers.containsKey(branch.id)) continue;
+    try {
+      final categories = await _categoryRepository.getCategories();
 
-      final initialStock = widget.productToEdit == null
-          ? 0
-          : BranchMockStore.getProductStockForBranch(
-              branchId: branch.id,
-              productId: widget.productToEdit!.id,
-            );
+      if (!mounted) return;
 
-      _branchStockControllers[branch.id] = TextEditingController(
-        text: initialStock.toString(),
-      );
+      setState(() {
+        _categories = categories;
+        _isLoadingCategories = false;
+      });
+
+      if (_selectedCategoryId != null) {
+        final exists = _categories.any(
+          (category) => category.id == _selectedCategoryId,
+        );
+
+        if (exists) {
+          await _loadSubCategoriesByCategory(_selectedCategoryId!);
+        } else {
+          setState(() {
+            _selectedCategoryId = null;
+            _selectedSubCategoryId = null;
+            _subCategories = [];
+          });
+        }
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingCategories = false;
+      });
+
+      _showError(e);
     }
+  }
 
-    final removedBranchIds = _branchStockControllers.keys
-        .where((branchId) => !currentBranchIds.contains(branchId))
-        .toList();
+  Future<void> _loadSubCategoriesByCategory(String categoryId) async {
+    setState(() {
+      _isLoadingSubCategories = true;
+    });
 
-    for (final branchId in removedBranchIds) {
-      _branchStockControllers[branchId]?.dispose();
-      _branchStockControllers.remove(branchId);
+    try {
+      final subCategories = await _categoryRepository
+          .getSubCategoriesByCategory(categoryId: categoryId);
+
+      if (!mounted) return;
+
+      setState(() {
+        _subCategories = subCategories;
+        _isLoadingSubCategories = false;
+
+        final selectedStillExists = _subCategories.any(
+          (subCategory) => subCategory.id == _selectedSubCategoryId,
+        );
+
+        if (!selectedStillExists) {
+          _selectedSubCategoryId = null;
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingSubCategories = false;
+        _subCategories = [];
+        _selectedSubCategoryId = null;
+      });
+
+      _showError(e);
     }
   }
 
@@ -136,6 +176,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _showAddCategoryDialog() async {
+    if (_isCreatingCategory) return;
+
     final controller = TextEditingController();
 
     final categoryName = await showDialog<String>(
@@ -175,17 +217,42 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     if (categoryName == null || categoryName.trim().isEmpty) return;
 
-    final category = SupplierCategoryMockStore.addCategory(categoryName);
-
-    if (!mounted) return;
-
     setState(() {
-      _selectedCategoryId = category.id;
-      _selectedSubCategoryId = null;
+      _isCreatingCategory = true;
     });
+
+    try {
+      final category = await _categoryRepository.createCategory(
+        name: categoryName,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _categories = [..._categories, category];
+        _selectedCategoryId = category.id;
+        _selectedSubCategoryId = null;
+        _subCategories = [];
+        _isCreatingCategory = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${category.name} added')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isCreatingCategory = false;
+      });
+
+      _showError(e);
+    }
   }
 
   Future<void> _showAddSubCategoryDialog() async {
+    if (_isCreatingSubCategory) return;
+
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -234,24 +301,46 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     if (subCategoryName == null || subCategoryName.trim().isEmpty) return;
 
-    final subCategory = SupplierCategoryMockStore.addSubCategory(
-      categoryId: _selectedCategoryId!,
-      name: subCategoryName,
-    );
-
-    if (!mounted) return;
-
     setState(() {
-      _selectedSubCategoryId = subCategory.id;
+      _isCreatingSubCategory = true;
     });
+
+    try {
+      final subCategory = await _categoryRepository.createSubCategory(
+        categoryId: _selectedCategoryId!,
+        name: subCategoryName,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _subCategories = [..._subCategories, subCategory];
+        _selectedSubCategoryId = subCategory.id;
+        _isCreatingSubCategory = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${subCategory.name} added')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isCreatingSubCategory = false;
+      });
+
+      _showError(e);
+    }
   }
 
-  void _saveProduct() {
+  Future<void> _saveProduct() async {
+    if (_isSavingProduct) return;
     if (!_formKey.currentState!.validate()) return;
 
-    final selectedCategory = SupplierCategoryMockStore.getCategoryById(
-      _selectedCategoryId!,
-    );
+    final selectedCategory = _categories
+        .where((category) => category.id == _selectedCategoryId)
+        .cast<SupplierCategoryEntity?>()
+        .firstWhere((category) => category != null, orElse: () => null);
 
     if (selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -262,61 +351,82 @@ class _AddProductScreenState extends State<AddProductScreen> {
       return;
     }
 
-    final selectedSubCategory = SupplierCategoryMockStore.getSubCategoryById(
-      _selectedSubCategoryId,
-    );
+    final selectedSubCategory = _selectedSubCategoryId == null
+        ? null
+        : _subCategories
+            .where((subCategory) => subCategory.id == _selectedSubCategoryId)
+            .cast<SupplierSubCategoryEntity?>()
+            .firstWhere(
+              (subCategory) => subCategory != null,
+              orElse: () => null,
+            );
 
-    final productId = widget.productToEdit?.id ??
-        DateTime.now().millisecondsSinceEpoch.toString();
+    setState(() {
+      _isSavingProduct = true;
+    });
 
-    final product = ProductEntity(
-      id: productId,
-      name: _nameController.text.trim(),
-      description: _descriptionController.text.trim(),
-      categoryId: selectedCategory.id,
-      categoryName: selectedCategory.name,
-      subCategoryId: selectedSubCategory?.id,
-      subCategoryName: selectedSubCategory?.name,
-      price: double.parse(_priceController.text.trim()),
-      minimumOrderQuantity: int.parse(
-        _minimumOrderQuantityController.text.trim(),
-      ),
-      status: _selectedStatus,
-      imagePath: _selectedImagePath,
-    );
+    try {
+      final ProductEntity product;
 
-    if (widget.isEditMode) {
-      ProductMockStore.updateProduct(product);
-    } else {
-      ProductMockStore.addProduct(product);
+      if (widget.isEditMode) {
+        product = await _productRepository.updateProduct(
+          productId: widget.productToEdit!.id,
+          name: _nameController.text.trim(),
+          description: _descriptionController.text.trim(),
+          categoryId: selectedCategory.id,
+          subCategoryId: selectedSubCategory?.id,
+          price: double.parse(_priceController.text.trim()),
+          minimumOrderQuantity: int.parse(
+            _minimumOrderQuantityController.text.trim(),
+          ),
+          status: _selectedStatus,
+          imagePath: _selectedImagePath,
+        );
+      } else {
+        product = await _productRepository.createProduct(
+          name: _nameController.text.trim(),
+          description: _descriptionController.text.trim(),
+          categoryId: selectedCategory.id,
+          subCategoryId: selectedSubCategory?.id,
+          price: double.parse(_priceController.text.trim()),
+          minimumOrderQuantity: int.parse(
+            _minimumOrderQuantityController.text.trim(),
+          ),
+          status: _selectedStatus,
+          imagePath: _selectedImagePath,
+        );
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _isSavingProduct = false;
+      });
+
+      context.pop(product);
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isSavingProduct = false;
+      });
+
+      _showError(e);
     }
+  }
 
-    final categoryDisplayName = selectedSubCategory == null
-        ? selectedCategory.name
-        : '${selectedCategory.name} • ${selectedSubCategory.name}';
+  void _showError(Object error) {
+    final message = error is AppException
+        ? error.message
+        : error.toString().replaceFirst('Exception: ', '');
 
-    final stockByBranchId = <String, int>{};
-
-    for (final branch in _branches) {
-      final controller = _branchStockControllers[branch.id];
-      final stock = int.tryParse(controller?.text.trim() ?? '0') ?? 0;
-      stockByBranchId[branch.id] = stock;
-    }
-
-    BranchMockStore.setProductInventoryAllocations(
-      productId: product.id,
-      productName: product.name,
-      categoryName: categoryDisplayName,
-      stockByBranchId: stockByBranchId,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
-
-    context.pop(product);
   }
 
   @override
   Widget build(BuildContext context) {
-    _syncBranchStockControllers();
-
     final primaryColor = Theme.of(context).colorScheme.primary;
     final title = widget.isEditMode ? 'Edit Product' : 'Add Product';
     final buttonText = widget.isEditMode ? 'Update Product' : 'Save Product';
@@ -347,7 +457,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => context.pop(),
+                  onPressed: _isSavingProduct ? null : () => context.pop(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeTokens.textPrimary,
                     side: const BorderSide(color: AppThemeTokens.border),
@@ -362,220 +472,300 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _saveProduct,
+                  onPressed: _isSavingProduct ? null : _saveProduct,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(fontWeight: FontWeight.w900),
-                  ),
+                  child: _isSavingProduct
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          buttonText,
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
                 ),
               ),
             ],
           ),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(14, 0, 14, 24),
-          children: [
-            _SectionCard(
-              title: 'Product Information',
-              children: [
-                _AppTextField(
-                  label: 'Product Name *',
-                  hint: 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box',
-                  controller: _nameController,
-                  validator: (value) {
-                    final name = value?.trim() ?? '';
+      body: _isLoadingCategories
+          ? const Center(child: CircularProgressIndicator())
+          : Form(
+              key: _formKey,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 24),
+                children: [
+                  _SectionCard(
+                    title: 'Product Information',
+                    children: [
+                      _AppTextField(
+                        label: 'Product Name *',
+                        hint: 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box',
+                        controller: _nameController,
+                        validator: (value) {
+                          final name = value?.trim() ?? '';
 
-                    if (name.isEmpty) return 'Product name is required';
-                    if (name.length < 3) {
-                      return 'Product name must be at least 3 characters';
-                    }
-                    if (name.length > 80) return 'Product name is too long';
+                          if (name.isEmpty) return 'Product name is required';
+                          if (name.length < 3) {
+                            return 'Product name must be at least 3 characters';
+                          }
+                          if (name.length > 80) {
+                            return 'Product name is too long';
+                          }
 
-                    return null;
-                  },
-                ),
-                _AppTextField(
-                  label: 'Description *',
-                  hint: 'Write a clear wholesale product description...',
-                  controller: _descriptionController,
-                  maxLines: 3,
-                  validator: (value) {
-                    final description = value?.trim() ?? '';
+                          return null;
+                        },
+                      ),
+                      _AppTextField(
+                        label: 'Description *',
+                        hint: 'Write a clear wholesale product description...',
+                        controller: _descriptionController,
+                        maxLines: 3,
+                        validator: (value) {
+                          final description = value?.trim() ?? '';
 
-                    if (description.isEmpty) return 'Description is required';
-                    if (description.length < 10) {
-                      return 'Description must be at least 10 characters';
-                    }
-                    if (description.length > 300) {
-                      return 'Description is too long';
-                    }
+                          if (description.isEmpty) {
+                            return 'Description is required';
+                          }
+                          if (description.length < 10) {
+                            return 'Description must be at least 10 characters';
+                          }
+                          if (description.length > 300) {
+                            return 'Description is too long';
+                          }
 
-                    return null;
-                  },
-                ),
-                _CategorySelector(
-                  selectedCategoryId: _selectedCategoryId,
-                  categories: _categories,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCategoryId = value;
-                      _selectedSubCategoryId = null;
-                    });
-                  },
-                  onAddCategory: _showAddCategoryDialog,
-                ),
-                _SubCategorySelector(
-                  selectedSubCategoryId: _selectedSubCategoryId,
-                  subCategories: _subCategories,
-                  isEnabled: _selectedCategoryId != null,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedSubCategoryId = value;
-                    });
-                  },
-                  onAddSubCategory: _showAddSubCategoryDialog,
-                ),
-                _AppTextField(
-                  label: 'Price per Unit *',
-                  hint: '0.00',
-                  controller: _priceController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
+                          return null;
+                        },
+                      ),
+                      _CategorySelector(
+                        selectedCategoryId: _selectedCategoryId,
+                        categories: _categories,
+                        isCreatingCategory: _isCreatingCategory,
+                        onChanged: (value) async {
+                          setState(() {
+                            _selectedCategoryId = value;
+                            _selectedSubCategoryId = null;
+                            _subCategories = [];
+                          });
+
+                          if (value != null) {
+                            await _loadSubCategoriesByCategory(value);
+                          }
+                        },
+                        onAddCategory: _showAddCategoryDialog,
+                      ),
+                      _SubCategorySelector(
+                        selectedSubCategoryId: _selectedSubCategoryId,
+                        subCategories: _subCategories,
+                        isEnabled: _selectedCategoryId != null &&
+                            !_isLoadingSubCategories,
+                        isLoading: _isLoadingSubCategories,
+                        isCreatingSubCategory: _isCreatingSubCategory,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSubCategoryId = value;
+                          });
+                        },
+                        onAddSubCategory: _showAddSubCategoryDialog,
+                      ),
+                      _AppTextField(
+                        label: 'Price per Unit *',
+                        hint: '0.00',
+                        controller: _priceController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        validator: (value) {
+                          final price = double.tryParse(value?.trim() ?? '');
+
+                          if (price == null) return 'Enter a valid price';
+                          if (price <= 0) {
+                            return 'Price must be greater than 0';
+                          }
+                          if (price > 100000) return 'Price is too high';
+
+                          return null;
+                        },
+                      ),
+                      _AppTextField(
+                        label: 'Minimum Order Quantity *',
+                        hint: '10',
+                        controller: _minimumOrderQuantityController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          final quantity = int.tryParse(value?.trim() ?? '');
+
+                          if (quantity == null) {
+                            return 'Enter a valid quantity';
+                          }
+                          if (quantity < 5) {
+                            return 'Minimum order quantity must be at least 5 for wholesale';
+                          }
+                          if (quantity > 10000) {
+                            return 'Minimum order quantity is too high';
+                          }
+
+                          return null;
+                        },
+                      ),
+                      _StatusSelector(
+                        selectedStatus: _selectedStatus,
+                        onChanged: (value) {
+                          if (value == null) return;
+
+                          setState(() {
+                            _selectedStatus = value;
+                          });
+                        },
+                      ),
+                      _UploadImagesBox(
+                        imagePath: _selectedImagePath,
+                        onTap: _pickImage,
+                      ),
+                    ],
                   ),
-                  validator: (value) {
-                    final price = double.tryParse(value?.trim() ?? '');
-
-                    if (price == null) return 'Enter a valid price';
-                    if (price <= 0) return 'Price must be greater than 0';
-                    if (price > 100000) return 'Price is too high';
-
-                    return null;
-                  },
-                ),
-                _AppTextField(
-                  label: 'Minimum Order Quantity *',
-                  hint: '10',
-                  controller: _minimumOrderQuantityController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    final quantity = int.tryParse(value?.trim() ?? '');
-
-                    if (quantity == null) return 'Enter a valid quantity';
-                    if (quantity < 5) {
-                      return 'Minimum order quantity must be at least 5 for wholesale';
-                    }
-                    if (quantity > 10000) {
-                      return 'Minimum order quantity is too high';
-                    }
-
-                    return null;
-                  },
-                ),
-                _StatusSelector(
-                  selectedStatus: _selectedStatus,
-                  onChanged: (value) {
-                    if (value == null) return;
-
-                    setState(() {
-                      _selectedStatus = value;
-                    });
-                  },
-                ),
-                _UploadImagesBox(
-                  imagePath: _selectedImagePath,
-                  onTap: _pickImage,
-                ),
-              ],
+                  const SizedBox(height: 18),
+                  _InventoryManagedInfoCard(
+                    isEditMode: widget.isEditMode,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 18),
-            _BranchStockAllocationSection(
-              branches: _branches,
-              stockControllers: _branchStockControllers,
-              validator: _stockValidator,
-            ),
-          ],
-        ),
-      ),
     );
-  }
-
-  String? _stockValidator(String? value) {
-    final stock = int.tryParse(value?.trim() ?? '');
-
-    if (stock == null) return 'Enter valid stock';
-    if (stock < 0) return 'Stock cannot be negative';
-    if (stock > 1000000) return 'Stock quantity is too high';
-
-    return null;
   }
 }
 
-class _BranchStockAllocationSection extends StatelessWidget {
-  final List<BranchEntity> branches;
-  final Map<String, TextEditingController> stockControllers;
-  final String? Function(String?) validator;
+class _InventoryManagedInfoCard extends StatelessWidget {
+  final bool isEditMode;
 
-  const _BranchStockAllocationSection({
-    required this.branches,
-    required this.stockControllers,
-    required this.validator,
+  const _InventoryManagedInfoCard({
+    required this.isEditMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (branches.isEmpty) {
-      return _SectionCard(
-        title: 'Branch Stock Allocation',
-        children: const [
-          Text(
-            'No branches available. Add supplier branches first to allocate product stock.',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: AppThemeTokens.textSecondary,
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.inventory_2_outlined,
+                color: primaryColor,
+                size: 28,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Branch Inventory',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                        color: AppThemeTokens.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      isEditMode
+                          ? 'Product details are saved here. Stock is assigned per branch from Branch Inventory.'
+                          : 'Save this product first, then assign its stock per branch from Branch Inventory.',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppThemeTokens.textSecondary,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          if (isEditMode)
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  context.push('/supplier-branches');
+                },
+                icon: const Icon(Icons.store_mall_directory_outlined),
+                label: const Text(
+                  'Manage Branch Inventory',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  side: BorderSide(color: primaryColor.withOpacity(0.35)),
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppThemeTokens.radiusSmall,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 12,
+              ),
+              decoration: BoxDecoration(
+                color: AppThemeTokens.inputFill,
+                borderRadius: BorderRadius.circular(
+                  AppThemeTokens.radiusSmall,
+                ),
+                border: Border.all(color: AppThemeTokens.border),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: AppThemeTokens.textSecondary,
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Branch stock becomes available after saving the product.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppThemeTokens.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
-      );
-    }
-
-    return _SectionCard(
-      title: 'Branch Stock Allocation',
-      children: [
-        const Text(
-          'Set initial stock per branch. Product info stays separate, and stock is saved in Branch Inventory.',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: AppThemeTokens.textSecondary,
-            height: 1.35,
-          ),
-        ),
-        const SizedBox(height: 16),
-        ...branches.map((branch) {
-          final controller = stockControllers[branch.id];
-
-          if (controller == null) {
-            return const SizedBox.shrink();
-          }
-
-          return _AppTextField(
-            label: '${branch.name} Stock',
-            hint: '0',
-            controller: controller,
-            keyboardType: TextInputType.number,
-            validator: validator,
-          );
-        }),
-      ],
+      ),
     );
   }
 }
@@ -583,12 +773,14 @@ class _BranchStockAllocationSection extends StatelessWidget {
 class _CategorySelector extends StatelessWidget {
   final String? selectedCategoryId;
   final List<SupplierCategoryEntity> categories;
+  final bool isCreatingCategory;
   final ValueChanged<String?> onChanged;
   final VoidCallback onAddCategory;
 
   const _CategorySelector({
     required this.selectedCategoryId,
     required this.categories,
+    required this.isCreatingCategory,
     required this.onChanged,
     required this.onAddCategory,
   });
@@ -620,8 +812,8 @@ class _CategorySelector extends StatelessWidget {
         },
         decoration: _dropdownDecoration('Select category'),
       ),
-      buttonText: 'Add Category',
-      onButtonPressed: onAddCategory,
+      buttonText: isCreatingCategory ? 'Adding...' : 'Add Category',
+      onButtonPressed: isCreatingCategory ? null : onAddCategory,
     );
   }
 }
@@ -630,6 +822,8 @@ class _SubCategorySelector extends StatelessWidget {
   final String? selectedSubCategoryId;
   final List<SupplierSubCategoryEntity> subCategories;
   final bool isEnabled;
+  final bool isLoading;
+  final bool isCreatingSubCategory;
   final ValueChanged<String?> onChanged;
   final VoidCallback onAddSubCategory;
 
@@ -637,6 +831,8 @@ class _SubCategorySelector extends StatelessWidget {
     required this.selectedSubCategoryId,
     required this.subCategories,
     required this.isEnabled,
+    required this.isLoading,
+    required this.isCreatingSubCategory,
     required this.onChanged,
     required this.onAddSubCategory,
   });
@@ -661,11 +857,16 @@ class _SubCategorySelector extends StatelessWidget {
         }).toList(),
         onChanged: isEnabled ? onChanged : null,
         decoration: _dropdownDecoration(
-          isEnabled ? 'Select sub category if needed' : 'Select category first',
+          isLoading
+              ? 'Loading sub categories...'
+              : isEnabled
+                  ? 'Select sub category if needed'
+                  : 'Select category first',
         ),
       ),
-      buttonText: 'Add Sub Category',
-      onButtonPressed: isEnabled ? onAddSubCategory : null,
+      buttonText: isCreatingSubCategory ? 'Adding...' : 'Add Sub Category',
+      onButtonPressed:
+          isEnabled && !isCreatingSubCategory ? onAddSubCategory : null,
     );
   }
 }

@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/product_mock_store.dart';
 import '../../domain/entities/product_entity.dart';
+import '../../domain/repositories/product_repository.dart';
 import '../widgets/product_card.dart';
-import '../../../branches/data/branch_mock_store.dart';
+
 class ProductManagementScreen extends StatefulWidget {
   const ProductManagementScreen({super.key});
 
@@ -17,55 +21,171 @@ class ProductManagementScreen extends StatefulWidget {
 
 class _ProductManagementScreenState extends State<ProductManagementScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final ProductRepository _productRepository = sl<ProductRepository>();
 
+  Timer? _searchDebounce;
+
+  bool _isLoading = true;
+  bool _isDeleting = false;
   String _searchText = '';
 
-  List<ProductEntity> get _products => ProductMockStore.products;
+  List<ProductEntity> _products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
 
-  List<ProductEntity> get _filteredProducts {
-    final query = _searchText.trim().toLowerCase();
+  Future<void> _loadProducts() async {
+    setState(() {
+      _isLoading = true;
+    });
 
-    if (query.isEmpty) return _products;
+    try {
+      final products = await _productRepository.getProducts();
 
-    return _products.where((product) {
-      return product.name.toLowerCase().contains(query) ||
-          product.categoryName.toLowerCase().contains(query) ||
-          (product.subCategoryName ?? '').toLowerCase().contains(query);
-    }).toList();
+      if (!mounted) return;
+
+      setState(() {
+        _products = products;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  Future<void> _searchProducts(String query) async {
+    try {
+      final products = query.trim().isEmpty
+          ? await _productRepository.getProducts()
+          : await _productRepository.searchProducts(query: query);
+
+      if (!mounted) return;
+
+      setState(() {
+        _products = products;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      _showError(e);
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchText = value;
+    });
+
+    _searchDebounce?.cancel();
+
+    _searchDebounce = Timer(
+      const Duration(milliseconds: 350),
+      () => _searchProducts(value),
+    );
   }
 
   Future<void> _addProduct() async {
-    await context.push<ProductEntity>('/supplier-products/add');
-    setState(() {});
+    final result = await context.push<ProductEntity>('/supplier-products/add');
+
+    if (result != null) {
+      await _loadProducts();
+    }
   }
 
   Future<void> _editProduct(ProductEntity product) async {
-    await context.push<ProductEntity>(
+    final result = await context.push<ProductEntity>(
       '/supplier-products/edit',
       extra: product,
     );
 
-    setState(() {});
+    if (result != null) {
+      await _loadProducts();
+    }
   }
 
-  void _deleteProduct(ProductEntity product) {
-  setState(() {
-    ProductMockStore.deleteProduct(product.id);
-    BranchMockStore.deleteInventoryForProduct(product.id);
-  });
+  Future<void> _deleteProduct(ProductEntity product) async {
+    if (_isDeleting) return;
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('${product.name} deleted'),
-    ),
-  );
-}
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Delete Product',
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
+          content: Text(
+            'Are you sure you want to delete ${product.name}?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      await _productRepository.deleteProduct(productId: product.id);
+
+      if (!mounted) return;
+
+      setState(() {
+        _products.removeWhere((item) => item.id == product.id);
+        _isDeleting = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${product.name} deleted')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isDeleting = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  void _showError(Object error) {
+    final message = error is AppException
+        ? error.message
+        : error.toString().replaceFirst('Exception: ', '');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -101,11 +221,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
             child: TextField(
               controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchText = value;
-                });
-              },
+              onChanged: _onSearchChanged,
               decoration: InputDecoration(
                 hintText: 'Search products, categories...',
                 prefixIcon: const Icon(
@@ -125,29 +241,36 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
           ),
           const Divider(height: 1, color: AppThemeTokens.border),
           Expanded(
-            child: _filteredProducts.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No products found',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: AppThemeTokens.textSecondary,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filteredProducts.length,
-                    itemBuilder: (context, index) {
-                      final product = _filteredProducts[index];
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _products.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No products found',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: AppThemeTokens.textSecondary,
+                          ),
+                        ),
+                      )
+                    : RefreshIndicator(
+                        onRefresh: _searchText.trim().isEmpty
+                            ? _loadProducts
+                            : () => _searchProducts(_searchText),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: _products.length,
+                          itemBuilder: (context, index) {
+                            final product = _products[index];
 
-                      return ProductCard(
-                        product: product,
-                        onEdit: () => _editProduct(product),
-                        onDelete: () => _deleteProduct(product),
-                      );
-                    },
-                  ),
+                            return ProductCard(
+                              product: product,
+                              onEdit: () => _editProduct(product),
+                              onDelete: () => _deleteProduct(product),
+                            );
+                          },
+                        ),
+                      ),
           ),
         ],
       ),

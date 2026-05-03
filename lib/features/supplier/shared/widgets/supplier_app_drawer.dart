@@ -6,6 +6,47 @@ import '../../../../core/theme/app_theme_tokens.dart';
 class SupplierAppDrawer extends StatelessWidget {
   const SupplierAppDrawer({super.key});
 
+  Future<void> _confirmLogout(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Logout',
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
+          content: const Text(
+            'Are you sure you want to logout?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                'Logout',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout != true) return;
+
+    if (!context.mounted) return;
+
+    Navigator.of(context).pop();
+    context.go('/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -73,7 +114,7 @@ class SupplierAppDrawer extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              onTap: () => context.go('/login'),
+              onTap: () => _confirmLogout(context),
             ),
             const SizedBox(height: 12),
           ],

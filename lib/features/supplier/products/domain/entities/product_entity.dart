@@ -19,6 +19,9 @@ class ProductEntity {
   final ProductStatus status;
   final String? imagePath;
 
+  /// Comes from backend and is calculated from branch inventory.
+  final int totalStock;
+
   const ProductEntity({
     required this.id,
     required this.name,
@@ -31,5 +34,6 @@ class ProductEntity {
     required this.minimumOrderQuantity,
     required this.status,
     this.imagePath,
+    this.totalStock = 0,
   });
 }

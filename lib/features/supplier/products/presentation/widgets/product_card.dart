@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../branches/data/branch_mock_store.dart';
 import '../../domain/entities/product_entity.dart';
 
 class ProductCard extends StatelessWidget {
@@ -21,7 +20,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final totalStock = BranchMockStore.getTotalStockByProductId(product.id);
+    final totalStock = product.totalStock;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
@@ -153,7 +152,7 @@ class _ProductImagePlaceholder extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: hasImage
+      child: hasImage && File(imagePath!).existsSync()
           ? ClipRRect(
               borderRadius: BorderRadius.circular(
                 AppThemeTokens.radiusMedium,
