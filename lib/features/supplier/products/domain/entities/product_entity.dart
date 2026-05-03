@@ -1,20 +1,21 @@
 enum ProductStatus {
   active,
-  lowStock,
-  outOfStock,
+  inactive,
 }
 
 class ProductEntity {
   final String id;
   final String name;
   final String description;
-  final String category;
+
+  final String categoryId;
+  final String categoryName;
+
+  final String? subCategoryId;
+  final String? subCategoryName;
+
   final double price;
   final int minimumOrderQuantity;
-  final int stockQuantity;
-  final int beirutStock;
-  final int tripoliStock;
-  final int saidaStock;
   final ProductStatus status;
   final String? imagePath;
 
@@ -22,13 +23,12 @@ class ProductEntity {
     required this.id,
     required this.name,
     required this.description,
-    required this.category,
+    required this.categoryId,
+    required this.categoryName,
+    this.subCategoryId,
+    this.subCategoryName,
     required this.price,
     required this.minimumOrderQuantity,
-    required this.stockQuantity,
-    required this.beirutStock,
-    required this.tripoliStock,
-    required this.saidaStock,
     required this.status,
     this.imagePath,
   });
