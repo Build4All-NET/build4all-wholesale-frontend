@@ -250,4 +250,320 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get businessOther => 'أخرى';
+
+  @override
+  String get welcomeBack => 'مرحباً بعودتك';
+
+  @override
+  String get searchProducts => 'ابحث عن المنتجات...';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get quickActions => 'إجراءات سريعة';
+
+  @override
+  String get featuredProducts => 'منتجات مميزة';
+
+  @override
+  String get viewAll => 'عرض الكل';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get topRanking => 'الأعلى تقييماً';
+
+  @override
+  String get orders => 'الطلبات';
+
+  @override
+  String get rfq => 'RFQ';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get couldNotLoadRetailerHome => 'تعذر تحميل الصفحة الرئيسية للتاجر';
+
+  @override
+  String get checkConnectionTryAgain =>
+      'يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get cart => 'السلة';
+
+  @override
+  String get cartComingSoon => 'صفحة السلة ستكون متاحة قريباً';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get notificationsComingSoon => 'صفحة الإشعارات ستكون متاحة قريباً';
+
+  @override
+  String get promotions => 'العروض';
+
+  @override
+  String get promotionsComingSoon => 'العروض ستكون متاحة قريباً';
+
+  @override
+  String get topRankingComingSoon => 'ستظهر المنتجات الأعلى تقييماً هنا قريباً';
+
+  @override
+  String get ordersComingSoon => 'ستظهر طلباتك هنا قريباً';
+
+  @override
+  String get rfqComingSoon => 'ستظهر طلبات RFQ هنا قريباً';
+
+  @override
+  String get aiAssistant => 'المساعد الذكي';
+
+  @override
+  String get aiAssistantComingSoon => 'المساعد الذكي سيكون متاحاً قريباً';
+
+  @override
+  String get liveChat => 'الدردشة المباشرة';
+
+  @override
+  String get liveChatComingSoon => 'الدردشة المباشرة ستكون متاحة قريباً';
+
+  @override
+  String get loyaltyPoints => 'نقاط الولاء';
+
+  @override
+  String get loyaltyComingSoon => 'نقاط الولاء ستكون متاحة قريباً';
+
+  @override
+  String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get basicInformation => 'المعلومات الأساسية';
+
+  @override
+  String get system => 'النظام';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get logoutQuestion => 'هل تريد تسجيل الخروج؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get accountInformation => 'معلومات الحساب';
+
+  @override
+  String get businessInformation => 'معلومات العمل';
+
+  @override
+  String get changePasswordOptional => 'تغيير كلمة المرور (اختياري)';
+
+  @override
+  String get passwordManagedByBuild4All =>
+      'تغيير كلمة المرور يحتاج إلى تحقق من Build4All وسيتم إضافته لاحقاً.';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'اسم العائلة';
+
+  @override
+  String get phoneLebanon => 'رقم الهاتف (لبنان)';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get profileUpdatedSuccessfully => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get walletBalance => 'رصيد المحفظة';
+
+  @override
+  String get creditBalance => 'رصيد الائتمان';
+
+  @override
+  String get comingSoon => 'قريباً';
+
+  @override
+  String get languageSettings => 'إعدادات اللغة';
+
+  @override
+  String get languageSettingsComingSoon => 'إعدادات اللغة ستكون متاحة قريباً';
+
+  @override
+  String get walletComingSoon => 'تفاصيل المحفظة ستكون متاحة قريباً';
+
+  @override
+  String get creditComingSoon => 'تفاصيل الائتمان ستكون متاحة قريباً';
+
+  @override
+  String get chooseLanguage => 'اختر لغة';
+
+  @override
+  String get emailVerificationRequired =>
+      'تم إرسال رمز تحقق إلى بريدك الإلكتروني الجديد.';
+
+  @override
+  String get verifyEmail => 'تأكيد البريد الإلكتروني';
+
+  @override
+  String get resendCode => 'إعادة إرسال الرمز';
+
+  @override
+  String get verificationCode => 'رمز التحقق';
+
+  @override
+  String get emailUpdatedSuccessfully => 'تم تحديث البريد الإلكتروني بنجاح';
+
+  @override
+  String get passwordVerificationCodeSent =>
+      'تم إرسال رمز تحقق كلمة المرور إلى بريدك الإلكتروني.';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get passwordUpdatedSuccessfully => 'تم تحديث كلمة المرور بنجاح';
+
+  @override
+  String get passwordMinLength =>
+      'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
+
+  @override
+  String get dangerZone => 'منطقة الخطر';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get deleteAccountWarningTitle => 'حذف الحساب';
+
+  @override
+  String get deleteAccountWarningMessage =>
+      'حذف حسابك نهائي ولا يمكن التراجع عنه.';
+
+  @override
+  String get deleteAccountConfirmTitle => 'حذف الحساب';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'هل أنت متأكد أنك تريد حذف حسابك؟ سيتم حذف حساب Build4All وملف التاجر الخاص بك.';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get currentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get accountDeletedSuccessfully => 'تم حذف الحساب بنجاح';
+
+  @override
+  String get currentPasswordRequired => 'كلمة المرور الحالية مطلوبة';
+
+  @override
+  String get shoppingCart => 'سلة التسوق';
+
+  @override
+  String get item => 'عنصر';
+
+  @override
+  String get items => 'عناصر';
+
+  @override
+  String get yourCartIsEmpty => 'سلتك فارغة';
+
+  @override
+  String get emptyCartMessage => 'أضف منتجات من الصفحة الرئيسية لبدء طلبك.';
+
+  @override
+  String get perUnit => 'لكل وحدة';
+
+  @override
+  String get orderSummary => 'ملخص الطلب';
+
+  @override
+  String get subtotal => 'المجموع الفرعي';
+
+  @override
+  String get shippingEstimated => 'الشحن (تقديري)';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
+  String get continueShopping => 'متابعة التسوق';
+
+  @override
+  String get proceedToCheckout => 'المتابعة للدفع';
+
+  @override
+  String get checkoutComingSoon => 'الدفع سيكون متاحاً قريباً';
+
+  @override
+  String get createRfq => 'إنشاء RFQ';
+
+  @override
+  String get smartRecommendations => 'توصيات ذكية';
+
+  @override
+  String get requestQuotesQuickly => 'اطلب عروض أسعار بسرعة';
+
+  @override
+  String get trackYourRewards => 'تابع مكافآتك';
+
+  @override
+  String get viewAvailableDeals => 'عرض العروض المتاحة';
+
+  @override
+  String get productsLabel => 'منتجات';
+
+  @override
+  String get all => 'الكل';
+
+  @override
+  String get moq => 'الحد الأدنى';
+
+  @override
+  String get stock => 'المخزون';
+
+  @override
+  String get outOfStock => 'غير متوفر';
+
+  @override
+  String get noProductsInCategory => 'لا توجد منتجات في هذه الفئة';
+
+  @override
+  String get productAddedToCart => 'تمت إضافة المنتج إلى السلة';
 }

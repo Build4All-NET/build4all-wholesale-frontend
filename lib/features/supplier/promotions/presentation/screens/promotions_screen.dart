@@ -14,12 +14,45 @@ class PromotionsScreen extends StatefulWidget {
 }
 
 class _PromotionsScreenState extends State<PromotionsScreen> {
-  void _deletePromotion(String id) {
+  Future<void> _confirmDeletePromotion(String id, String title) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text(
+            'Delete Promotion',
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
+          content: Text(
+            'Are you sure you want to delete promotion "$title"?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text(
+                'Delete',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
     PromotionMockStore.deletePromotion(id);
     setState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Promotion deleted')),
+      const SnackBar(content: Text('Promotion deleted successfully')),
     );
   }
 
@@ -36,10 +69,12 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
         elevation: 0,
         centerTitle: true,
         leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, size: 30),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu, size: 30),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            );
+          },
         ),
         title: Text(
           'Promotions',
@@ -50,23 +85,17 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/supplier-promotions/create'),
-        backgroundColor: primary,
-        foregroundColor: Colors.white,
-        label: const Text(
-          'Create Promotion',
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppThemeTokens.screenHorizontalPadding),
+          padding: const EdgeInsets.all(
+            AppThemeTokens.screenHorizontalPadding,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeaderCard(context),
+              _HeaderCard(primary: primary),
               const SizedBox(height: 20),
+
               const Text(
                 'Promotion List',
                 style: TextStyle(
@@ -75,15 +104,17 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                   color: AppThemeTokens.textPrimary,
                 ),
               ),
+
               const SizedBox(height: 12),
+
               if (promotions.isEmpty)
-                _buildEmptyCard(context)
+                _EmptyPromotionsCard(primary: primary)
               else
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: promotions.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 14),
+                  separatorBuilder: (_, __) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
                     final promotion = promotions[index];
 
@@ -95,21 +126,32 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                           extra: promotion,
                         );
                       },
-                      onDelete: () => _deletePromotion(promotion.id),
+                      onDelete: () {
+                        _confirmDeletePromotion(
+                          promotion.id,
+                          promotion.title,
+                        );
+                      },
                     );
                   },
                 ),
-              const SizedBox(height: 90),
+
+              const SizedBox(height: 28),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeaderCard(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+class _HeaderCard extends StatelessWidget {
+  final Color primary;
 
+  const _HeaderCard({required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -123,7 +165,11 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           CircleAvatar(
             radius: 28,
             backgroundColor: primary.withOpacity(0.12),
-            child: Icon(Icons.local_offer_outlined, color: primary, size: 30),
+            child: Icon(
+              Icons.local_offer_outlined,
+              color: primary,
+              size: 30,
+            ),
           ),
           const SizedBox(width: 14),
           const Expanded(
@@ -140,7 +186,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'Create discounts and promotional offers that will later appear to retailers.',
+                  'View, edit, and delete supplier promotional offers. Promotions are managed separately and prepared for future backend integration.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -155,24 +201,34 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
       ),
     );
   }
+}
 
-  Widget _buildEmptyCard(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+class _EmptyPromotionsCard extends StatelessWidget {
+  final Color primary;
 
+  const _EmptyPromotionsCard({required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
         border: Border.all(color: AppThemeTokens.border),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
-            radius: 28,
+            radius: 30,
             backgroundColor: primary.withOpacity(0.12),
-            child: Icon(Icons.local_offer_outlined, color: primary),
+            child: Icon(
+              Icons.local_offer_outlined,
+              color: primary,
+              size: 30,
+            ),
           ),
           const SizedBox(height: 14),
           const Text(
@@ -183,13 +239,33 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 6,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFEF3C7),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              'Draft',
+              style: TextStyle(
+                color: Color(0xFFD97706),
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           const Text(
-            'Create your first promotion to show it to retailers.',
+            'Create promotions from the supplier dashboard, then view them here.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w600,
+              height: 1.4,
             ),
           ),
         ],

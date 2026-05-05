@@ -8,7 +8,7 @@ class PromotionMockStore {
   static List<PromotionEntity> get promotions => List.unmodifiable(_promotions);
 
   static void addPromotion(PromotionEntity promotion) {
-    _promotions.add(promotion);
+    _promotions.insert(0, promotion);
   }
 
   static void updatePromotion(PromotionEntity updatedPromotion) {

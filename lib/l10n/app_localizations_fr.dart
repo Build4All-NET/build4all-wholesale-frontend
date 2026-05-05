@@ -258,4 +258,330 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get businessOther => 'Autre';
+
+  @override
+  String get welcomeBack => 'Bon retour';
+
+  @override
+  String get searchProducts => 'Rechercher des produits...';
+
+  @override
+  String get categories => 'Catégories';
+
+  @override
+  String get seeAll => 'Voir tout';
+
+  @override
+  String get quickActions => 'Actions rapides';
+
+  @override
+  String get featuredProducts => 'Produits en vedette';
+
+  @override
+  String get viewAll => 'Voir tout';
+
+  @override
+  String get add => 'Ajouter';
+
+  @override
+  String get home => 'Accueil';
+
+  @override
+  String get topRanking => 'Classement';
+
+  @override
+  String get orders => 'Commandes';
+
+  @override
+  String get rfq => 'RFQ';
+
+  @override
+  String get profile => 'Profil';
+
+  @override
+  String get couldNotLoadRetailerHome =>
+      'Impossible de charger l’accueil détaillant';
+
+  @override
+  String get checkConnectionTryAgain =>
+      'Veuillez vérifier votre connexion et réessayer.';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get cart => 'Panier';
+
+  @override
+  String get cartComingSoon => 'La page panier sera bientôt disponible';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationsComingSoon =>
+      'La page notifications sera bientôt disponible';
+
+  @override
+  String get promotions => 'Promotions';
+
+  @override
+  String get promotionsComingSoon =>
+      'Les promotions seront bientôt disponibles';
+
+  @override
+  String get topRankingComingSoon =>
+      'Les produits les mieux classés apparaîtront bientôt ici';
+
+  @override
+  String get ordersComingSoon => 'Vos commandes apparaîtront bientôt ici';
+
+  @override
+  String get rfqComingSoon => 'Les demandes RFQ apparaîtront bientôt ici';
+
+  @override
+  String get aiAssistant => 'Assistant IA';
+
+  @override
+  String get aiAssistantComingSoon => 'L’assistant IA sera bientôt disponible';
+
+  @override
+  String get liveChat => 'Chat en direct';
+
+  @override
+  String get liveChatComingSoon => 'Le chat en direct sera bientôt disponible';
+
+  @override
+  String get loyaltyPoints => 'Points de fidélité';
+
+  @override
+  String get loyaltyComingSoon =>
+      'Les points de fidélité seront bientôt disponibles';
+
+  @override
+  String get profileTitle => 'Profil';
+
+  @override
+  String get settings => 'Paramètres';
+
+  @override
+  String get editProfile => 'Modifier le profil';
+
+  @override
+  String get basicInformation => 'Informations de base';
+
+  @override
+  String get system => 'Système';
+
+  @override
+  String get logout => 'Déconnexion';
+
+  @override
+  String get logoutQuestion => 'Voulez-vous vous déconnecter ?';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get confirm => 'Confirmer';
+
+  @override
+  String get accountInformation => 'Informations du compte';
+
+  @override
+  String get businessInformation => 'Informations commerciales';
+
+  @override
+  String get changePasswordOptional => 'Changer le mot de passe (optionnel)';
+
+  @override
+  String get passwordManagedByBuild4All =>
+      'Le changement de mot de passe nécessite la vérification Build4All et sera ajouté ensuite.';
+
+  @override
+  String get username => 'Nom d’utilisateur';
+
+  @override
+  String get firstName => 'Prénom';
+
+  @override
+  String get lastName => 'Nom';
+
+  @override
+  String get phoneLebanon => 'Numéro de téléphone (Liban)';
+
+  @override
+  String get address => 'Adresse';
+
+  @override
+  String get saveChanges => 'Enregistrer';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profil mis à jour avec succès';
+
+  @override
+  String get walletBalance => 'Solde du portefeuille';
+
+  @override
+  String get creditBalance => 'Solde de crédit';
+
+  @override
+  String get comingSoon => 'Bientôt disponible';
+
+  @override
+  String get languageSettings => 'Paramètres de langue';
+
+  @override
+  String get languageSettingsComingSoon =>
+      'Les paramètres de langue seront bientôt disponibles';
+
+  @override
+  String get walletComingSoon =>
+      'Les détails du portefeuille seront bientôt disponibles';
+
+  @override
+  String get creditComingSoon =>
+      'Les détails du crédit seront bientôt disponibles';
+
+  @override
+  String get chooseLanguage => 'Choisissez une langue';
+
+  @override
+  String get emailVerificationRequired =>
+      'Un code de vérification a été envoyé à votre nouvel e-mail.';
+
+  @override
+  String get verifyEmail => 'Vérifier l’e-mail';
+
+  @override
+  String get resendCode => 'Renvoyer le code';
+
+  @override
+  String get verificationCode => 'Code de vérification';
+
+  @override
+  String get emailUpdatedSuccessfully => 'E-mail mis à jour avec succès';
+
+  @override
+  String get passwordVerificationCodeSent =>
+      'Un code de vérification du mot de passe a été envoyé à votre e-mail.';
+
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get passwordUpdatedSuccessfully =>
+      'Mot de passe mis à jour avec succès';
+
+  @override
+  String get passwordMinLength =>
+      'Le mot de passe doit contenir au moins 6 caractères';
+
+  @override
+  String get dangerZone => 'Zone dangereuse';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountWarningTitle => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountWarningMessage =>
+      'La suppression de votre compte est permanente. Cette action est irréversible.';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Êtes-vous sûr de vouloir supprimer votre compte ? Cela supprimera votre compte Build4All et votre profil détaillant.';
+
+  @override
+  String get delete => 'Supprimer';
+
+  @override
+  String get currentPassword => 'Mot de passe actuel';
+
+  @override
+  String get accountDeletedSuccessfully => 'Compte supprimé avec succès';
+
+  @override
+  String get currentPasswordRequired => 'Le mot de passe actuel est requis';
+
+  @override
+  String get shoppingCart => 'Panier';
+
+  @override
+  String get item => 'article';
+
+  @override
+  String get items => 'articles';
+
+  @override
+  String get yourCartIsEmpty => 'Votre panier est vide';
+
+  @override
+  String get emptyCartMessage =>
+      'Ajoutez des produits depuis la page d’accueil pour commencer votre commande.';
+
+  @override
+  String get perUnit => 'par unité';
+
+  @override
+  String get orderSummary => 'Résumé de la commande';
+
+  @override
+  String get subtotal => 'Sous-total';
+
+  @override
+  String get shippingEstimated => 'Livraison (estimée)';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get continueShopping => 'Continuer les achats';
+
+  @override
+  String get proceedToCheckout => 'Passer à la caisse';
+
+  @override
+  String get checkoutComingSoon => 'Le paiement sera bientôt disponible';
+
+  @override
+  String get createRfq => 'Créer une RFQ';
+
+  @override
+  String get smartRecommendations => 'Recommandations intelligentes';
+
+  @override
+  String get requestQuotesQuickly => 'Demandez des devis rapidement';
+
+  @override
+  String get trackYourRewards => 'Suivez vos récompenses';
+
+  @override
+  String get viewAvailableDeals => 'Voir les offres disponibles';
+
+  @override
+  String get productsLabel => 'produits';
+
+  @override
+  String get all => 'Tout';
+
+  @override
+  String get moq => 'MOQ';
+
+  @override
+  String get stock => 'Stock';
+
+  @override
+  String get outOfStock => 'Rupture';
+
+  @override
+  String get noProductsInCategory => 'Aucun produit dans cette catégorie';
+
+  @override
+  String get productAddedToCart => 'Produit ajouté au panier';
 }
