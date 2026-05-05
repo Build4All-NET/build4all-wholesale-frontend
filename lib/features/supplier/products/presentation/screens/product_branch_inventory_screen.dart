@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../branches/domain/entities/branch_entity.dart';
 import '../../../branches/domain/entities/branch_inventory_item_entity.dart';
-import '../../../branches/domain/repositories/branch_inventory_repository.dart';
-import '../../../branches/domain/repositories/branch_repository.dart';
 import '../../domain/entities/product_entity.dart';
+import '../bloc/product_branch_inventory/product_branch_inventory_bloc.dart';
+import '../bloc/product_branch_inventory/product_branch_inventory_event.dart';
+import '../bloc/product_branch_inventory/product_branch_inventory_state.dart';
 
 class ProductBranchInventoryScreen extends StatefulWidget {
   final ProductEntity product;
@@ -25,55 +26,36 @@ class ProductBranchInventoryScreen extends StatefulWidget {
 
 class _ProductBranchInventoryScreenState
     extends State<ProductBranchInventoryScreen> {
-  final BranchRepository _branchRepository = sl<BranchRepository>();
-  final BranchInventoryRepository _inventoryRepository =
-      sl<BranchInventoryRepository>();
-
-  bool _isLoading = true;
-  bool _isSaving = false;
-  bool _isDeleting = false;
-
-  List<BranchEntity> _branches = [];
-  List<BranchInventoryItemEntity> _productInventory = [];
+  final ProductBranchInventoryBloc _productBranchInventoryBloc =
+      sl<ProductBranchInventoryBloc>();
 
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
+
+    _productBranchInventoryBloc.add(
+      LoadProductBranchInventory(product: widget.product),
+    );
   }
 
-  Future<void> _loadInitialData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final branches = await _branchRepository.getBranches();
-      final productInventory = await _inventoryRepository.getInventoryByProduct(
-        productId: widget.product.id,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        _branches = branches;
-        _productInventory = productInventory;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      _showError(e);
-    }
+  @override
+  void dispose() {
+    _productBranchInventoryBloc.close();
+    super.dispose();
   }
 
-  BranchInventoryItemEntity? _getInventoryForBranch(String branchId) {
+  Future<void> _refreshInventory() async {
+    _productBranchInventoryBloc.add(
+      LoadProductBranchInventory(product: widget.product),
+    );
+  }
+
+  BranchInventoryItemEntity? _getInventoryForBranch({
+    required ProductBranchInventoryState state,
+    required String branchId,
+  }) {
     try {
-      return _productInventory.firstWhere(
+      return state.productInventory.firstWhere(
         (item) => item.branchId == branchId,
       );
     } catch (_) {
@@ -81,19 +63,10 @@ class _ProductBranchInventoryScreenState
     }
   }
 
-  int get _totalStock {
-    return _productInventory.fold<int>(
-      0,
-      (sum, item) => sum + item.stockQuantity,
-    );
-  }
-
   Future<void> _showStockDialog({
     required BranchEntity branch,
     BranchInventoryItemEntity? inventoryItem,
   }) async {
-    if (_isSaving) return;
-
     final isUpdate = inventoryItem != null;
 
     final controller = TextEditingController(
@@ -174,51 +147,22 @@ class _ProductBranchInventoryScreenState
 
     if (stockQuantity == null) return;
 
-    setState(() {
-      _isSaving = true;
-    });
-
-    try {
-      if (isUpdate) {
-        await _inventoryRepository.updateStock(
+    if (isUpdate) {
+      _productBranchInventoryBloc.add(
+        UpdateProductBranchStockRequested(
+          product: widget.product,
           inventoryId: inventoryItem.id,
           stockQuantity: stockQuantity,
-        );
-      } else {
-        await _inventoryRepository.assignProductToBranch(
-          branchId: branch.id,
-          productId: widget.product.id,
-          stockQuantity: stockQuantity,
-        );
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _isSaving = false;
-      });
-
-      await _loadInitialData();
-
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isUpdate
-                ? '${branch.name} stock updated'
-                : '${widget.product.name} assigned to ${branch.name}',
-          ),
         ),
       );
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isSaving = false;
-      });
-
-      _showError(e);
+    } else {
+      _productBranchInventoryBloc.add(
+        AssignProductStockToBranchRequested(
+          product: widget.product,
+          branchId: branch.id,
+          stockQuantity: stockQuantity,
+        ),
+      );
     }
   }
 
@@ -226,8 +170,6 @@ class _ProductBranchInventoryScreenState
     required BranchEntity branch,
     required BranchInventoryItemEntity inventoryItem,
   }) async {
-    if (_isDeleting) return;
-
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -259,154 +201,154 @@ class _ProductBranchInventoryScreenState
 
     if (shouldDelete != true) return;
 
-    setState(() {
-      _isDeleting = true;
-    });
-
-    try {
-      await _inventoryRepository.deleteInventoryItem(
+    _productBranchInventoryBloc.add(
+      DeleteProductBranchInventoryItemRequested(
+        product: widget.product,
         inventoryId: inventoryItem.id,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        _isDeleting = false;
-      });
-
-      await _loadInitialData();
-
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${widget.product.name} removed from ${branch.name}'),
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isDeleting = false;
-      });
-
-      _showError(e);
-    }
-  }
-
-  void _showError(Object error) {
-    final message = error is AppException
-        ? error.message
-        : error.toString().replaceFirst('Exception: ', '');
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    return BlocProvider<ProductBranchInventoryBloc>.value(
+      value: _productBranchInventoryBloc,
+      child:
+          BlocListener<ProductBranchInventoryBloc, ProductBranchInventoryState>(
+        listenWhen: (previous, current) {
+          return previous.error != current.error ||
+              previous.successMessage != current.successMessage;
+        },
+        listener: (context, state) {
+          if (state.error != null && state.error!.trim().isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error!)),
+            );
+          }
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      appBar: AppBar(
-        backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Product Branch Stock',
-              style: TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.w900,
-                color: AppThemeTokens.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              widget.product.name,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppThemeTokens.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: _loadInitialData,
-            icon: Icon(
-              Icons.refresh,
-              color: primaryColor,
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _loadInitialData,
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  _ProductStockSummaryCard(
-                    product: widget.product,
-                    totalBranches: _branches.length,
-                    assignedBranches: _productInventory.length,
-                    totalStock: _totalStock,
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Stock by Branch',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
+          if (state.successMessage != null &&
+              state.successMessage!.trim().isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.successMessage!)),
+            );
+          }
+        },
+        child:
+            BlocBuilder<ProductBranchInventoryBloc, ProductBranchInventoryState>(
+          builder: (context, state) {
+            final primaryColor = Theme.of(context).colorScheme.primary;
+
+            return Scaffold(
+              backgroundColor: AppThemeTokens.background,
+              appBar: AppBar(
+                backgroundColor: AppThemeTokens.background,
+                elevation: 0,
+                leading: IconButton(
+                  onPressed: () => context.pop(),
+                  icon: const Icon(Icons.arrow_back),
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Product Branch Stock',
+                      style: TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w900,
+                        color: AppThemeTokens.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.product.name,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppThemeTokens.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: _refreshInventory,
+                    icon: Icon(
+                      Icons.refresh,
+                      color: primaryColor,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Update this product stock directly per branch. This saves to Branch Inventory, not Product details.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
-                      height: 1.35,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (_branches.isEmpty)
-                    const _EmptyBranchesCard()
-                  else
-                    ..._branches.map((branch) {
-                      final inventoryItem = _getInventoryForBranch(branch.id);
-
-                      return _ProductBranchStockCard(
-                        branch: branch,
-                        inventoryItem: inventoryItem,
-                        onAssignOrUpdate: () => _showStockDialog(
-                          branch: branch,
-                          inventoryItem: inventoryItem,
-                        ),
-                        onDelete: inventoryItem == null
-                            ? null
-                            : () => _deleteInventoryItem(
-                                  branch: branch,
-                                  inventoryItem: inventoryItem,
-                                ),
-                      );
-                    }),
+                  const SizedBox(width: 8),
                 ],
               ),
-            ),
+              body: state.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : RefreshIndicator(
+                      onRefresh: _refreshInventory,
+                      child: ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: [
+                          _ProductStockSummaryCard(
+                            product: widget.product,
+                            totalBranches: state.branches.length,
+                            assignedBranches: state.productInventory.length,
+                            totalStock: state.totalStock,
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Stock by Branch',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              color: AppThemeTokens.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            'Update this product stock directly per branch. This saves to Branch Inventory, not Product details.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppThemeTokens.textSecondary,
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          if (state.branches.isEmpty)
+                            const _EmptyBranchesCard()
+                          else
+                            ...state.branches.map((branch) {
+                              final inventoryItem = _getInventoryForBranch(
+                                state: state,
+                                branchId: branch.id,
+                              );
+
+                              return _ProductBranchStockCard(
+                                branch: branch,
+                                inventoryItem: inventoryItem,
+                                onAssignOrUpdate:
+                                    state.isSaving || state.isDeleting
+                                        ? () {}
+                                        : () => _showStockDialog(
+                                              branch: branch,
+                                              inventoryItem: inventoryItem,
+                                            ),
+                                onDelete: inventoryItem == null ||
+                                        state.isSaving ||
+                                        state.isDeleting
+                                    ? null
+                                    : () => _deleteInventoryItem(
+                                          branch: branch,
+                                          inventoryItem: inventoryItem,
+                                        ),
+                              );
+                            }),
+                        ],
+                      ),
+                    ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
