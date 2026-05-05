@@ -1,5 +1,5 @@
-import '../domain/entities/supplier_order_entity.dart';
-import '../domain/entities/supplier_order_item_entity.dart';
+import '../../domain/entities/supplier_order_entity.dart';
+import '../../domain/entities/supplier_order_item_entity.dart';
 
 class SupplierOrderMockStore {
   static final List<SupplierOrderEntity> _orders = [
@@ -119,14 +119,14 @@ class SupplierOrderMockStore {
     ),
   ];
 
- Future<List<SupplierOrderEntity>> getOrders() async {
-  await Future.delayed(const Duration(milliseconds: 250));
-  return List<SupplierOrderEntity>.from(_orders);
-}
+  Future<List<SupplierOrderEntity>> getOrders() async {
+    await Future.delayed(const Duration(milliseconds: 250));
+    return List<SupplierOrderEntity>.from(_orders);
+  }
 
-List<SupplierOrderEntity> getCurrentOrders() {
-  return List<SupplierOrderEntity>.from(_orders);
-}
+  List<SupplierOrderEntity> getCurrentOrders() {
+    return List<SupplierOrderEntity>.from(_orders);
+  }
 
   Future<List<SupplierOrderEntity>> searchOrders({
     required String query,

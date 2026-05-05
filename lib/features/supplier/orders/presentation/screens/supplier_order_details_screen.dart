@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../data/supplier_order_mock_store.dart';
+import '../../data/repositories/supplier_order_repository_impl.dart';
 import '../../domain/entities/supplier_order_entity.dart';
+import '../../domain/repositories/supplier_order_repository.dart';
+import '../../domain/usecases/update_supplier_order_status_usecase.dart';
 import '../widgets/order_status_badge.dart';
-
 class SupplierOrderDetailsScreen extends StatefulWidget {
   final SupplierOrderEntity order;
 
@@ -17,8 +18,11 @@ class SupplierOrderDetailsScreen extends StatefulWidget {
 
 class _SupplierOrderDetailsScreenState
     extends State<SupplierOrderDetailsScreen> {
-  final SupplierOrderMockStore _mockStore = SupplierOrderMockStore();
+  final SupplierOrderRepository _orderRepository =
+    SupplierOrderRepositoryImpl();
 
+late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
+    UpdateSupplierOrderStatusUseCase(_orderRepository);
   late SupplierOrderEntity _order;
   bool _isUpdating = false;
 
@@ -36,10 +40,10 @@ class _SupplierOrderDetailsScreenState
     });
 
     try {
-      final updatedOrder = await _mockStore.updateOrderStatus(
-        orderId: _order.id,
-        status: status,
-      );
+      final updatedOrder = await _updateSupplierOrderStatusUseCase(
+  orderId: _order.id,
+  status: status,
+);
 
       if (!mounted) return;
 

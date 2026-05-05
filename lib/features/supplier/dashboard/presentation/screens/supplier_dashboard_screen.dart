@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../orders/data/supplier_order_mock_store.dart';
+import '../../../orders/data/repositories/supplier_order_repository_impl.dart';
 import '../../../orders/domain/entities/supplier_order_entity.dart';
+import '../../../orders/domain/repositories/supplier_order_repository.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
@@ -14,16 +15,20 @@ class SupplierDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final orderStore = SupplierOrderMockStore();
 
-    final pendingOrders = orderStore.countByStatus(SupplierOrderStatus.pending);
+    final SupplierOrderRepository orderRepository =
+        SupplierOrderRepositoryImpl();
+
+    final pendingOrders =
+        orderRepository.countByStatus(SupplierOrderStatus.pending);
     final acceptedOrders =
-        orderStore.countByStatus(SupplierOrderStatus.accepted);
+        orderRepository.countByStatus(SupplierOrderStatus.accepted);
     final preparingOrders =
-        orderStore.countByStatus(SupplierOrderStatus.preparing);
-    final shippedOrders = orderStore.countByStatus(SupplierOrderStatus.shipped);
+        orderRepository.countByStatus(SupplierOrderStatus.preparing);
+    final shippedOrders =
+        orderRepository.countByStatus(SupplierOrderStatus.shipped);
     final completedOrders =
-        orderStore.countByStatus(SupplierOrderStatus.delivered);
+        orderRepository.countByStatus(SupplierOrderStatus.delivered);
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -150,9 +155,12 @@ class SupplierDashboardScreen extends StatelessWidget {
 
   Widget _buildFinancialSummary(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final orderStore = SupplierOrderMockStore();
 
-    final orders = orderStore.getCurrentOrders();
+    final SupplierOrderRepository orderRepository =
+        SupplierOrderRepositoryImpl();
+
+    final orders = orderRepository.getCurrentOrders();
+
     final deliveredOrders = orders.where(
       (order) => order.status == SupplierOrderStatus.delivered,
     );
