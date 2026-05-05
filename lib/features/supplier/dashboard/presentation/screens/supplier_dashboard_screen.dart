@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../orders/data/supplier_order_mock_store.dart';
+import '../../../orders/domain/entities/supplier_order_entity.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
@@ -12,6 +14,16 @@ class SupplierDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final orderStore = SupplierOrderMockStore();
+
+    final pendingOrders = orderStore.countByStatus(SupplierOrderStatus.pending);
+    final acceptedOrders =
+        orderStore.countByStatus(SupplierOrderStatus.accepted);
+    final preparingOrders =
+        orderStore.countByStatus(SupplierOrderStatus.preparing);
+    final shippedOrders = orderStore.countByStatus(SupplierOrderStatus.shipped);
+    final completedOrders =
+        orderStore.countByStatus(SupplierOrderStatus.delivered);
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -48,7 +60,12 @@ class SupplierDashboardScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildStatsGrid(),
+              _buildStatsGrid(
+                pendingOrders: pendingOrders,
+                activeOrders: acceptedOrders + preparingOrders,
+                shippedOrders: shippedOrders,
+                completedOrders: completedOrders,
+              ),
               const SizedBox(height: 24),
               _buildFinancialSummary(context),
               const SizedBox(height: 24),
@@ -80,35 +97,40 @@ class SupplierDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsGrid() {
+  Widget _buildStatsGrid({
+    required int pendingOrders,
+    required int activeOrders,
+    required int shippedOrders,
+    required int completedOrders,
+  }) {
     final cards = [
-      const SupplierDashboardStatCard(
+      SupplierDashboardStatCard(
         title: 'Pending Orders',
-        value: '0',
+        value: pendingOrders.toString(),
+        icon: Icons.receipt_long_outlined,
+        iconColor: const Color(0xFFF97316),
+        iconBackgroundColor: const Color(0xFFFFEDD5),
+      ),
+      SupplierDashboardStatCard(
+        title: 'Active Orders',
+        value: activeOrders.toString(),
         icon: Icons.inventory_2_outlined,
-        iconColor: Color(0xFFF97316),
-        iconBackgroundColor: Color(0xFFFFEDD5),
+        iconColor: const Color(0xFF2563EB),
+        iconBackgroundColor: const Color(0xFFDBEAFE),
       ),
-      const SupplierDashboardStatCard(
-        title: 'Preparing Orders',
-        value: '0',
-        icon: Icons.local_shipping_outlined,
-        iconColor: Color(0xFF2563EB),
-        iconBackgroundColor: Color(0xFFDBEAFE),
-      ),
-      const SupplierDashboardStatCard(
+      SupplierDashboardStatCard(
         title: 'Shipped Orders',
-        value: '0',
-        icon: Icons.fire_truck_outlined,
-        iconColor: Color(0xFFA855F7),
-        iconBackgroundColor: Color(0xFFF3E8FF),
+        value: shippedOrders.toString(),
+        icon: Icons.local_shipping_outlined,
+        iconColor: const Color(0xFFA855F7),
+        iconBackgroundColor: const Color(0xFFF3E8FF),
       ),
-      const SupplierDashboardStatCard(
+      SupplierDashboardStatCard(
         title: 'Completed Orders',
-        value: '0',
+        value: completedOrders.toString(),
         icon: Icons.check_circle_outline,
-        iconColor: Color(0xFF16A34A),
-        iconBackgroundColor: Color(0xFFDCFCE7),
+        iconColor: const Color(0xFF16A34A),
+        iconBackgroundColor: const Color(0xFFDCFCE7),
       ),
     ];
 
@@ -128,6 +150,25 @@ class SupplierDashboardScreen extends StatelessWidget {
 
   Widget _buildFinancialSummary(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final orderStore = SupplierOrderMockStore();
+
+    final orders = orderStore.getCurrentOrders();
+    final deliveredOrders = orders.where(
+      (order) => order.status == SupplierOrderStatus.delivered,
+    );
+
+    final totalDeliveredRevenue = deliveredOrders.fold<double>(
+      0,
+      (sum, order) => sum + order.totalAmount,
+    );
+
+    final totalOrdersToday = orders.where((order) {
+      final now = DateTime.now();
+
+      return order.orderDate.year == now.year &&
+          order.orderDate.month == now.month &&
+          order.orderDate.day == now.day;
+    }).length;
 
     return Container(
       width: double.infinity,
@@ -153,21 +194,21 @@ class SupplierDashboardScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: _FinancialItem(
-                  value: '\$0',
-                  label: "Today's Sales",
+                  value: '\$${totalDeliveredRevenue.toStringAsFixed(2)}',
+                  label: 'Delivered Sales',
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
-                  value: '\$0',
+                  value: '\$${totalDeliveredRevenue.toStringAsFixed(2)}',
                   label: 'Monthly Revenue',
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
-                  value: '0',
+                  value: totalOrdersToday.toString(),
                   label: 'Orders Today',
                   valueColor: primary,
                 ),
@@ -212,14 +253,19 @@ class SupplierDashboardScreen extends StatelessWidget {
         onTap: () => context.push('/supplier-products/add'),
       ),
       SupplierQuickActionCard(
-        title: 'Create Promotion',
-        icon: Icons.local_offer_outlined,
-        onTap: () => context.go('/supplier-promotions/create'),
+        title: 'Manage Orders',
+        icon: Icons.receipt_long_outlined,
+        onTap: () => context.go('/supplier-orders'),
       ),
       SupplierQuickActionCard(
         title: 'Manage Branches',
         icon: Icons.location_on_outlined,
         onTap: () => context.go('/supplier-branches'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Create Promotion',
+        icon: Icons.local_offer_outlined,
+        onTap: () => context.go('/supplier-promotions/create'),
       ),
       SupplierQuickActionCard(
         title: 'Shipping Methods',
@@ -230,11 +276,6 @@ class SupplierDashboardScreen extends StatelessWidget {
         title: 'Configure Taxes',
         icon: Icons.attach_money,
         onTap: () => context.go('/supplier-tax'),
-      ),
-      SupplierQuickActionCard(
-        title: 'Import Excel',
-        icon: Icons.upload_outlined,
-        onTap: () => context.go('/supplier-excel-import'),
       ),
       SupplierQuickActionCard(
         title: 'Home Banners',

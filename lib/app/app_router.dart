@@ -36,6 +36,14 @@ import '../features/supplier/banners/presentation/screens/banners_screen.dart';
 import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
 import '../features/supplier/banners/domain/entities/banner_entity.dart';
 
+import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
+import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
+import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
+
+import '../features/supplier/products/presentation/screens/product_branch_inventory_screen.dart';
+
+
+
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
@@ -112,25 +120,35 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: '/supplier-products',
-        builder: (context, state) => const ProductManagementScreen(),
-      ),
+  path: '/supplier-products',
+  builder: (context, state) => const ProductManagementScreen(),
+),
+GoRoute(
+  path: '/supplier-products/add',
+  builder: (context, state) => const AddProductScreen(),
+),
+GoRoute(
+  path: '/supplier-products/edit',
+  builder: (context, state) {
+    final product = state.extra as ProductEntity;
 
-      GoRoute(
-        path: '/supplier-products/add',
-        builder: (context, state) => const AddProductScreen(),
-      ),
+    return AddProductScreen(
+      productToEdit: product,
+    );
+  },
+),
+GoRoute(
+  path: '/supplier-products/branch-stock',
+  builder: (context, state) {
+    final product = state.extra as ProductEntity;
 
-      GoRoute(
-        path: '/supplier-products/edit',
-        builder: (context, state) {
-          final product = state.extra as ProductEntity;
+    return ProductBranchInventoryScreen(
+      product: product,
+    );
+  },
+),
 
-          return AddProductScreen(
-            productToEdit: product,
-          );
-        },
-      ),
+
 
       GoRoute(
         path: '/supplier-branches',
@@ -173,12 +191,20 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: '/supplier-orders',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Orders Management',
-          icon: Icons.receipt_long_outlined,
-        ),
-      ),
+  path: '/supplier-orders',
+  builder: (context, state) => const SupplierOrdersScreen(),
+),
+
+GoRoute(
+  path: '/supplier-orders/details',
+  builder: (context, state) {
+    final order = state.extra as SupplierOrderEntity;
+
+    return SupplierOrderDetailsScreen(
+      order: order,
+    );
+  },
+),
 
       GoRoute(
         path: '/supplier-promotions',

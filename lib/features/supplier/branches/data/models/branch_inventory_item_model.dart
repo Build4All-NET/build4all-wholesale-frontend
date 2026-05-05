@@ -1,7 +1,7 @@
 import '../../domain/entities/branch_inventory_item_entity.dart';
 
-class BranchInventoryModel extends BranchInventoryItemEntity {
-  const BranchInventoryModel({
+class BranchInventoryItemModel extends BranchInventoryItemEntity {
+  const BranchInventoryItemModel({
     required super.id,
     required super.branchId,
     required super.branchName,
@@ -15,8 +15,8 @@ class BranchInventoryModel extends BranchInventoryItemEntity {
     required super.stockQuantity,
   });
 
-  factory BranchInventoryModel.fromJson(Map<String, dynamic> json) {
-    return BranchInventoryModel(
+  factory BranchInventoryItemModel.fromJson(Map<String, dynamic> json) {
+    return BranchInventoryItemModel(
       id: json['id'].toString(),
       branchId: json['branchId'].toString(),
       branchName: (json['branchName'] ?? '').toString(),

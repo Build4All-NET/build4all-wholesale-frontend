@@ -5,6 +5,10 @@ abstract class BranchInventoryRepository {
     required String branchId,
   });
 
+  Future<List<BranchInventoryItemEntity>> getInventoryByProduct({
+    required String productId,
+  });
+
   Future<BranchInventoryItemEntity> assignProductToBranch({
     required String branchId,
     required String productId,
@@ -20,3 +24,4 @@ abstract class BranchInventoryRepository {
     required String inventoryId,
   });
 }
+

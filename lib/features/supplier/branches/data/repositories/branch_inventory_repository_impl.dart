@@ -17,6 +17,13 @@ class BranchInventoryRepositoryImpl implements BranchInventoryRepository {
   }
 
   @override
+  Future<List<BranchInventoryItemEntity>> getInventoryByProduct({
+    required String productId,
+  }) {
+    return apiService.getInventoryByProduct(productId: productId);
+  }
+
+  @override
   Future<BranchInventoryItemEntity> assignProductToBranch({
     required String branchId,
     required String productId,
@@ -44,6 +51,8 @@ class BranchInventoryRepositoryImpl implements BranchInventoryRepository {
   Future<void> deleteInventoryItem({
     required String inventoryId,
   }) {
-    return apiService.deleteInventoryItem(inventoryId: inventoryId);
+    return apiService.deleteInventoryItem(
+      inventoryId: inventoryId,
+    );
   }
 }
