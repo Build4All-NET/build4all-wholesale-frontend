@@ -563,4 +563,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get viewAvailableDeals => 'Voir les offres disponibles';
+
+  @override
+  String get productsLabel => 'produits';
+
+  @override
+  String get all => 'Tout';
+
+  @override
+  String get moq => 'MOQ';
+
+  @override
+  String get stock => 'Stock';
+
+  @override
+  String get outOfStock => 'Rupture';
+
+  @override
+  String get noProductsInCategory => 'Aucun produit dans cette catégorie';
+
+  @override
+  String get productAddedToCart => 'Produit ajouté au panier';
 }

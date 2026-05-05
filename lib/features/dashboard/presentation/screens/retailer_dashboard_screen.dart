@@ -52,42 +52,28 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     super.dispose();
   }
 
-  /// Adds the selected product to cart.
-  ///
-  /// The cubit now tracks the selected product ID only, so only the clicked
-  /// product button shows loading.
   void _addToCart(HomeProductModel product) {
     context.read<RetailerHomeCubit>().addToCart(product: product);
   }
 
-  /// Bottom navigation routing.
-  ///
-  /// Home is dynamic.
-  /// Top Ranking, Orders, RFQ are placeholder pages for now.
-  /// Profile is dynamic.
   void _goToBottomTab(int index) {
+    if (index == _selectedBottomIndex && index == 0) return;
+
     setState(() => _selectedBottomIndex = index);
 
     switch (index) {
       case 0:
         context.go('/retailer-dashboard');
         break;
-
-      // Push = opens placeholder with back button.
       case 1:
         context.push('/retailer-top-ranking');
         break;
-
-      // Push = opens placeholder with back button.
       case 2:
         context.push('/retailer-orders');
         break;
-
-      // Push = opens placeholder with back button.
       case 3:
         context.push('/retailer-rfq');
         break;
-
       case 4:
         context.go('/retailer-profile');
         break;
@@ -104,13 +90,14 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             context,
           ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
           context.read<RetailerHomeCubit>().clearMessages();
+          return;
         }
 
-        if (state.successMessage != null && state.successMessage!.isNotEmpty) {
+        if (state.successMessage == 'PRODUCT_ADDED_TO_CART') {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.productAddedToCart)),
+          );
           context.read<RetailerHomeCubit>().clearMessages();
         }
       },
@@ -145,7 +132,11 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
 
   Widget _buildBody(BuildContext context, RetailerHomeState state) {
     if (state.isLoading && state.home == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      );
     }
 
     if (state.home == null) {
@@ -157,6 +148,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     final home = state.home!;
 
     return RefreshIndicator(
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: () => context.read<RetailerHomeCubit>().loadHome(),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -174,16 +166,14 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               notificationCount: home.unreadNotificationsCount,
               cartCount: home.cartItemsCount,
               onNotificationsTap: () => context.push('/retailer-notifications'),
-              onCartTap: () => context.push('/retailer-cart'),
-            ),
-            const SizedBox(height: 18),
-            RetailerSearchBar(
-              controller: _searchController,
-              onChanged: (_) {
-                /// Search UI exists now.
-                /// Search backend/page can be connected later.
+              onCartTap: () async {
+                await context.push('/retailer-cart');
+                if (!context.mounted) return;
+                context.read<RetailerHomeCubit>().loadHome();
               },
             ),
+            const SizedBox(height: 18),
+            RetailerSearchBar(controller: _searchController, onChanged: (_) {}),
             const SizedBox(height: 18),
             HomeBannerSection(banners: home.banners),
             const SizedBox(height: 18),
@@ -195,12 +185,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             const SizedBox(height: 24),
             FeaturedProductsSection(
               products: home.featuredProducts,
-
-              /// Important:
-              /// only the selected product id is passed.
-              /// This prevents all Add buttons from loading together.
               addingProductId: state.addingProductId,
-
               onAddToCart: _addToCart,
             ),
           ],

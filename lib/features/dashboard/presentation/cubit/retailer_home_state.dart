@@ -5,8 +5,10 @@ import '../../data/models/retailer_home_model.dart';
 class RetailerHomeState extends Equatable {
   final bool isLoading;
 
-  /// This stores the product id currently being added.
-  /// If null, no product is loading.
+  final bool isCategoryProductsLoading;
+  final List<HomeProductModel> categoryProducts;
+  final HomeCategoryModel? selectedCategory;
+
   final int? addingProductId;
 
   final RetailerHomeModel? home;
@@ -15,6 +17,9 @@ class RetailerHomeState extends Equatable {
 
   const RetailerHomeState({
     this.isLoading = false,
+    this.isCategoryProductsLoading = false,
+    this.categoryProducts = const [],
+    this.selectedCategory,
     this.addingProductId,
     this.home,
     this.errorMessage,
@@ -25,6 +30,10 @@ class RetailerHomeState extends Equatable {
 
   RetailerHomeState copyWith({
     bool? isLoading,
+    bool? isCategoryProductsLoading,
+    List<HomeProductModel>? categoryProducts,
+    HomeCategoryModel? selectedCategory,
+    bool clearSelectedCategory = false,
     int? addingProductId,
     bool clearAddingProductId = false,
     RetailerHomeModel? home,
@@ -35,6 +44,12 @@ class RetailerHomeState extends Equatable {
   }) {
     return RetailerHomeState(
       isLoading: isLoading ?? this.isLoading,
+      isCategoryProductsLoading:
+          isCategoryProductsLoading ?? this.isCategoryProductsLoading,
+      categoryProducts: categoryProducts ?? this.categoryProducts,
+      selectedCategory: clearSelectedCategory
+          ? null
+          : (selectedCategory ?? this.selectedCategory),
       addingProductId: clearAddingProductId
           ? null
           : (addingProductId ?? this.addingProductId),
@@ -49,6 +64,9 @@ class RetailerHomeState extends Equatable {
   @override
   List<Object?> get props => [
     isLoading,
+    isCategoryProductsLoading,
+    categoryProducts,
+    selectedCategory,
     addingProductId,
     home,
     errorMessage,

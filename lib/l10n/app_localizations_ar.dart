@@ -545,4 +545,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get viewAvailableDeals => 'عرض العروض المتاحة';
+
+  @override
+  String get productsLabel => 'منتجات';
+
+  @override
+  String get all => 'الكل';
+
+  @override
+  String get moq => 'الحد الأدنى';
+
+  @override
+  String get stock => 'المخزون';
+
+  @override
+  String get outOfStock => 'غير متوفر';
+
+  @override
+  String get noProductsInCategory => 'لا توجد منتجات في هذه الفئة';
+
+  @override
+  String get productAddedToCart => 'تمت إضافة المنتج إلى السلة';
 }

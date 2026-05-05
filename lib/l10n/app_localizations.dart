@@ -1155,6 +1155,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View available deals'**
   String get viewAvailableDeals;
+
+  /// No description provided for @productsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'products'**
+  String get productsLabel;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @moq.
+  ///
+  /// In en, this message translates to:
+  /// **'MOQ'**
+  String get moq;
+
+  /// No description provided for @stock.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stock;
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get outOfStock;
+
+  /// No description provided for @noProductsInCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No products in this category'**
+  String get noProductsInCategory;
+
+  /// No description provided for @productAddedToCart.
+  ///
+  /// In en, this message translates to:
+  /// **'Product added to cart'**
+  String get productAddedToCart;
 }
 
 class _AppLocalizationsDelegate

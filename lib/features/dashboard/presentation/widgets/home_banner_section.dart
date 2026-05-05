@@ -86,12 +86,15 @@ class _HomeBannerCard extends StatelessWidget {
                       backgroundColor: Colors.white,
                       foregroundColor: AppThemeTokens.textPrimary,
                       elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(999),
                       ),
                     ),
                     child: Text(
-                      banner.ctaLabel,
+                      banner.ctaLabel.isEmpty ? 'Shop Now' : banner.ctaLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
@@ -110,9 +113,19 @@ class _HomeBannerCard extends StatelessWidget {
     );
   }
 
-  Color _parseColor(String hex, Color fallback) {
-    final cleaned = hex.replaceAll('#', '');
+  Color _parseColor(String? hex, Color fallback) {
+    if (hex == null || hex.trim().isEmpty) {
+      return fallback;
+    }
+
+    final cleaned = hex.replaceAll('#', '').trim();
+
+    if (cleaned.length != 6) {
+      return fallback;
+    }
+
     final value = int.tryParse('FF$cleaned', radix: 16);
+
     return value == null ? fallback : Color(value);
   }
 }

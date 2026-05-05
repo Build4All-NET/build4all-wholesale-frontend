@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
@@ -43,7 +42,7 @@ class FeaturedProductsSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () => context.push('/retailer-promotions'),
+              onPressed: null,
               child: Text(
                 l10n.viewAll,
                 maxLines: 1,
@@ -58,7 +57,7 @@ class FeaturedProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 365,
+          height: 380,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
@@ -97,22 +96,27 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final isOutOfStock = product.totalStock <= 0;
 
     return Container(
-      width: 214,
+      width: 224,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppThemeTokens.surface,
         border: Border.all(color: AppThemeTokens.border),
         borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.035),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            onTap: () => context.push('/retailer-promotions'),
-            child: _ProductImage(product: product),
-          ),
+          _ProductImage(product: product),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
@@ -124,49 +128,40 @@ class _ProductCard extends StatelessWidget {
                     _Badge(product: product),
                     const SizedBox(height: 8),
                   ],
-                  InkWell(
-                    onTap: () => context.push('/retailer-promotions'),
-                    child: Text(
-                      product.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppThemeTokens.textPrimary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        height: 1.18,
-                      ),
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textPrimary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      height: 1.18,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star_rounded,
-                        color: Color(0xFFF59E0B),
-                        size: 18,
+                  if (product.description.trim().isNotEmpty) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      product.description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppThemeTokens.textSecondary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const SizedBox(width: 3),
-                      Text(
-                        product.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          '(${product.reviewCount})',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppThemeTokens.textSecondary,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ],
+                  const SizedBox(height: 6),
+                  Text(
+                    _categoryLine(product),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -179,33 +174,33 @@ class _ProductCard extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'MOQ: ${product.moq} ${product.moqUnit}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppThemeTokens.textSecondary,
-                      fontSize: 12,
-                    ),
+                  const SizedBox(height: 8),
+                  _MiniInfo(
+                    icon: Icons.inventory_2_outlined,
+                    text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
+                  ),
+                  const SizedBox(height: 6),
+                  _MiniInfo(
+                    icon: Icons.warehouse_outlined,
+                    text: '${l10n.stock}: ${product.totalStock}',
                   ),
                   const Spacer(),
                   SizedBox(
                     width: double.infinity,
-                    height: 42,
+                    height: 40,
                     child: ElevatedButton(
                       /// Only clicked product is disabled/loading.
                       /// Other product buttons stay normal.
-                      onPressed: isAddingThisProduct
+                      onPressed: isAddingThisProduct || isOutOfStock
                           ? null
                           : () => onAddToCart(product),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: primaryColor,
-                        disabledForegroundColor: Colors.white,
+                        disabledBackgroundColor: AppThemeTokens.border,
+                        disabledForegroundColor: AppThemeTokens.textSecondary,
                         elevation: 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -219,13 +214,25 @@ class _ProductCard extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             )
-                          : Text(
-                              l10n.add,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w900,
-                              ),
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (!isOutOfStock) ...[
+                                  const Icon(Icons.add_rounded, size: 18),
+                                  const SizedBox(width: 4),
+                                ],
+                                Flexible(
+                                  child: Text(
+                                    isOutOfStock ? l10n.outOfStock : l10n.add,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                     ),
                   ),
@@ -236,6 +243,20 @@ class _ProductCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _categoryLine(HomeProductModel product) {
+    final category = product.categoryName ?? '';
+    final subCategory = product.subCategoryName ?? '';
+
+    if (category.isNotEmpty && subCategory.isNotEmpty) {
+      return '$category • $subCategory';
+    }
+
+    if (category.isNotEmpty) return category;
+    if (subCategory.isNotEmpty) return subCategory;
+
+    return '';
   }
 }
 
@@ -249,9 +270,9 @@ class _ProductImage extends StatelessWidget {
     final imageUrl = product.imageUrl;
 
     return Container(
-      height: 105,
+      height: 108,
       width: double.infinity,
-      color: const Color(0xFFF1F5F9),
+      color: AppThemeTokens.background,
       child: imageUrl == null || imageUrl.trim().isEmpty
           ? const Icon(
               Icons.inventory_2_outlined,
@@ -269,6 +290,43 @@ class _ProductImage extends StatelessWidget {
                 );
               },
             ),
+    );
+  }
+}
+
+class _MiniInfo extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _MiniInfo({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.background,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 13, color: AppThemeTokens.textSecondary),
+          const SizedBox(width: 5),
+          Expanded(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -27,18 +27,11 @@ class RetailerCartService {
     required HomeProductModel product,
   }) async {
     try {
+      final quantity = product.moq <= 0 ? 1 : product.moq;
+
       final response = await projectApiClient.dio.post(
         ApiConfig.retailerCartItems,
-        data: {
-          'productId': product.id,
-          'productName': product.name,
-          'imageUrl': product.imageUrl,
-          'unitPrice': product.price,
-          'currency': product.currency,
-          'moq': product.moq,
-          'moqUnit': product.moqUnit,
-          'quantity': product.moq,
-        },
+        data: {'productId': product.id, 'quantity': quantity},
       );
 
       return RetailerCartModel.fromJson(

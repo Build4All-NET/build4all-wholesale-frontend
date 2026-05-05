@@ -21,12 +21,14 @@ class RetailerHomeModel {
 
   factory RetailerHomeModel.fromJson(Map<String, dynamic> json) {
     return RetailerHomeModel(
-      welcomeName: json['welcomeName']?.toString() ?? 'Retail Store',
+      welcomeName: json['welcomeName']?.toString() ?? '',
       unreadNotificationsCount: _toInt(json['unreadNotificationsCount']),
       cartItemsCount: _toInt(json['cartItemsCount']),
-      banners: (json['banners'] as List? ?? [])
+      banners: (json['banners'] as List<dynamic>? ?? [])
           .map(
-            (item) => HomeBannerModel.fromJson(Map<String, dynamic>.from(item)),
+            (item) => HomeBannerModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
           )
           .toList(),
       groupDelivery: json['groupDelivery'] == null
@@ -34,22 +36,25 @@ class RetailerHomeModel {
           : GroupDeliveryModel.fromJson(
               Map<String, dynamic>.from(json['groupDelivery'] as Map),
             ),
-      quickActions: (json['quickActions'] as List? ?? [])
+      quickActions: (json['quickActions'] as List<dynamic>? ?? [])
           .map(
-            (item) =>
-                QuickActionModel.fromJson(Map<String, dynamic>.from(item)),
+            (item) => QuickActionModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
           )
           .toList(),
-      categories: (json['categories'] as List? ?? [])
+      categories: (json['categories'] as List<dynamic>? ?? [])
           .map(
-            (item) =>
-                HomeCategoryModel.fromJson(Map<String, dynamic>.from(item)),
+            (item) => HomeCategoryModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
           )
           .toList(),
-      featuredProducts: (json['featuredProducts'] as List? ?? [])
+      featuredProducts: (json['featuredProducts'] as List<dynamic>? ?? [])
           .map(
-            (item) =>
-                HomeProductModel.fromJson(Map<String, dynamic>.from(item)),
+            (item) => HomeProductModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
           )
           .toList(),
     );
@@ -63,8 +68,8 @@ class HomeBannerModel {
   final String? imageUrl;
   final String ctaLabel;
   final String bannerType;
-  final String backgroundColorStart;
-  final String backgroundColorEnd;
+  final String? backgroundColorStart;
+  final String? backgroundColorEnd;
 
   const HomeBannerModel({
     required this.id,
@@ -83,11 +88,10 @@ class HomeBannerModel {
       title: json['title']?.toString() ?? '',
       subtitle: json['subtitle']?.toString() ?? '',
       imageUrl: json['imageUrl']?.toString(),
-      ctaLabel: json['ctaLabel']?.toString() ?? 'Shop Now',
+      ctaLabel: json['ctaLabel']?.toString() ?? '',
       bannerType: json['bannerType']?.toString() ?? '',
-      backgroundColorStart:
-          json['backgroundColorStart']?.toString() ?? '#16A34A',
-      backgroundColorEnd: json['backgroundColorEnd']?.toString() ?? '#15803D',
+      backgroundColorStart: json['backgroundColorStart']?.toString(),
+      backgroundColorEnd: json['backgroundColorEnd']?.toString(),
     );
   }
 }
@@ -110,7 +114,7 @@ class GroupDeliveryModel {
       available: json['available'] == true,
       title: json['title']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
-      ctaLabel: json['ctaLabel']?.toString() ?? 'Learn More',
+      ctaLabel: json['ctaLabel']?.toString() ?? '',
     );
   }
 }
@@ -133,7 +137,7 @@ class QuickActionModel {
       label: json['label']?.toString() ?? '',
       icon: json['icon']?.toString() ?? '',
       route: json['route']?.toString() ?? '',
-      colorHex: json['colorHex']?.toString() ?? '#16A34A',
+      colorHex: json['colorHex']?.toString() ?? '',
     );
   }
 }
@@ -164,24 +168,40 @@ class HomeCategoryModel {
 class HomeProductModel {
   final int id;
   final int? supplierBuild4allUserId;
+
   final int? categoryId;
+  final String? categoryName;
+
+  final int? subCategoryId;
+  final String? subCategoryName;
+
   final String name;
+  final String description;
   final String? imageUrl;
+
   final double price;
   final String currency;
+
   final int moq;
   final String moqUnit;
+
   final double rating;
   final int reviewCount;
   final String? badgeLabel;
   final String? badgeColor;
   final int? discountPercent;
 
+  final int totalStock;
+
   const HomeProductModel({
     required this.id,
     required this.supplierBuild4allUserId,
     required this.categoryId,
+    required this.categoryName,
+    required this.subCategoryId,
+    required this.subCategoryName,
     required this.name,
+    required this.description,
     required this.imageUrl,
     required this.price,
     required this.currency,
@@ -192,6 +212,7 @@ class HomeProductModel {
     required this.badgeLabel,
     required this.badgeColor,
     required this.discountPercent,
+    required this.totalStock,
   });
 
   factory HomeProductModel.fromJson(Map<String, dynamic> json) {
@@ -203,10 +224,16 @@ class HomeProductModel {
       categoryId: json['categoryId'] == null
           ? null
           : _toInt(json['categoryId']),
+      categoryName: json['categoryName']?.toString(),
+      subCategoryId: json['subCategoryId'] == null
+          ? null
+          : _toInt(json['subCategoryId']),
+      subCategoryName: json['subCategoryName']?.toString(),
       name: json['name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       imageUrl: json['imageUrl']?.toString(),
       price: _toDouble(json['price']),
-      currency: json['currency']?.toString() ?? '\$',
+      currency: json['currency']?.toString() ?? r'$',
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',
       rating: _toDouble(json['rating']),
@@ -216,6 +243,7 @@ class HomeProductModel {
       discountPercent: json['discountPercent'] == null
           ? null
           : _toInt(json['discountPercent']),
+      totalStock: _toInt(json['totalStock']),
     );
   }
 }

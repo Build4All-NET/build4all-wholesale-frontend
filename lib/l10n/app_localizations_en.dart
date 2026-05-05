@@ -553,4 +553,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAvailableDeals => 'View available deals';
+
+  @override
+  String get productsLabel => 'products';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get moq => 'MOQ';
+
+  @override
+  String get stock => 'Stock';
+
+  @override
+  String get outOfStock => 'Out';
+
+  @override
+  String get noProductsInCategory => 'No products in this category';
+
+  @override
+  String get productAddedToCart => 'Product added to cart';
 }

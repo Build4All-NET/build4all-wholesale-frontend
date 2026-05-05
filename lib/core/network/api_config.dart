@@ -112,4 +112,7 @@ class ApiConfig {
   static String supplierProductInventorySummary(String productId) {
     return '/supplier/branch-inventory/product/$productId/summary';
   }
+
+  static String retailerHomeCategoryProducts(int categoryId) =>
+      '/retailer-home/categories/$categoryId/products';
 }

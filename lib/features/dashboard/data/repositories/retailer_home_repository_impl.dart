@@ -13,6 +13,13 @@ class RetailerHomeRepositoryImpl implements RetailerHomeRepository {
   }
 
   @override
+  Future<List<HomeProductModel>> getProductsByCategory({
+    required int categoryId,
+  }) {
+    return retailerHomeService.getProductsByCategory(categoryId: categoryId);
+  }
+
+  @override
   Future<void> addToCart({required HomeProductModel product}) {
     return retailerHomeService.addToCart(product: product);
   }

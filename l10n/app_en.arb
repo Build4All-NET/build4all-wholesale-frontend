@@ -182,7 +182,14 @@
 "smartRecommendations": "Smart recommendations",
 "requestQuotesQuickly": "Request quotes quickly",
 "trackYourRewards": "Track your rewards",
-"viewAvailableDeals": "View available deals"
-
+"viewAvailableDeals": "View available deals",
+"productsLabel": "products",
+"all": "All",
+"moq": "MOQ",
+"stock": "Stock",
+"outOfStock": "Out",
+"noProductsInCategory": "No products in this category",
+"productAddedToCart": "Product added to cart",
+"searchProducts": "Search products..."
 }
 

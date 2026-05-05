@@ -182,6 +182,14 @@
 "smartRecommendations": "Recommandations intelligentes",
 "requestQuotesQuickly": "Demandez des devis rapidement",
 "trackYourRewards": "Suivez vos récompenses",
-"viewAvailableDeals": "Voir les offres disponibles"
+"viewAvailableDeals": "Voir les offres disponibles",
+"productsLabel": "produits",
+"all": "Tout",
+"moq": "MOQ",
+"stock": "Stock",
+"outOfStock": "Rupture",
+"noProductsInCategory": "Aucun produit dans cette catégorie",
+"productAddedToCart": "Produit ajouté au panier",
+"searchProducts": "Rechercher des produits..."
 }
 

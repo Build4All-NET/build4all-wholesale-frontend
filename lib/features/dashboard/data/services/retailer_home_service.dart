@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
-
 import '../models/retailer_home_model.dart';
 
 class RetailerHomeService {
@@ -11,7 +10,6 @@ class RetailerHomeService {
 
   RetailerHomeService(this.apiClient);
 
-  /// Loads all data needed by Retailer Home from one backend endpoint.
   Future<RetailerHomeModel> getHome() async {
     try {
       final response = await apiClient.dio.get(ApiConfig.retailerHome);
@@ -24,21 +22,33 @@ class RetailerHomeService {
     }
   }
 
-  /// Adds selected product using backend MOQ logic.
+  Future<List<HomeProductModel>> getProductsByCategory({
+    required int categoryId,
+  }) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerHomeCategoryProducts(categoryId),
+      );
+
+      return (response.data as List<dynamic>? ?? [])
+          .map(
+            (item) => HomeProductModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList();
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   Future<void> addToCart({required HomeProductModel product}) async {
     try {
+      final quantity = product.moq <= 0 ? 1 : product.moq;
+
       await apiClient.dio.post(
         ApiConfig.retailerCartItems,
-        data: {
-          'productId': product.id,
-          'productName': product.name,
-          'imageUrl': product.imageUrl,
-          'unitPrice': product.price,
-          'currency': product.currency,
-          'moq': product.moq,
-          'moqUnit': product.moqUnit,
-          'quantity': product.moq,
-        },
+        data: {'productId': product.id, 'quantity': quantity},
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));

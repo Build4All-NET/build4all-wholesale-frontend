@@ -182,6 +182,14 @@
 "smartRecommendations": "توصيات ذكية",
 "requestQuotesQuickly": "اطلب عروض أسعار بسرعة",
 "trackYourRewards": "تابع مكافآتك",
-"viewAvailableDeals": "عرض العروض المتاحة"
+"viewAvailableDeals": "عرض العروض المتاحة",
+"productsLabel": "منتجات",
+"all": "الكل",
+"moq": "الحد الأدنى",
+"stock": "المخزون",
+"outOfStock": "غير متوفر",
+"noProductsInCategory": "لا توجد منتجات في هذه الفئة",
+"productAddedToCart": "تمت إضافة المنتج إلى السلة",
+"searchProducts": "ابحث عن المنتجات..."
 
 }
