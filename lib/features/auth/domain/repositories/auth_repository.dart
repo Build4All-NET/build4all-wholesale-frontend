@@ -1,11 +1,13 @@
 import '../entities/api_response_entity.dart';
 import '../entities/auth_user_entity.dart';
 import '../entities/forgot_password_response_entity.dart';
+import '../entities/login_account_type.dart';
 
 abstract class AuthRepository {
   Future<AuthUserEntity> login({
     required String email,
     required String password,
+    LoginAccountType? preferredAccountType,
   });
 
   Future<ApiResponseEntity> retailerSignup({
@@ -20,9 +22,9 @@ abstract class AuthRepository {
     required String businessType,
   });
 
-  Future<ForgotPasswordResponseEntity> forgotPassword({
-    required String email,
-  });
+  Future<AuthUserEntity> getCurrentUser();
+
+  Future<ForgotPasswordResponseEntity> forgotPassword({required String email});
 
   Future<ApiResponseEntity> resetPassword({
     required String resetToken,
@@ -30,5 +32,5 @@ abstract class AuthRepository {
     required String confirmPassword,
   });
 
-  Future<AuthUserEntity> getCurrentUser();
+  Future<void> logout();
 }
