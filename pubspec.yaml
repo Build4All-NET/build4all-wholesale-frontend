@@ -9,8 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_localizations:
     sdk: flutter
+
   cupertino_icons: ^1.0.8
   dio: ^5.9.0
   flutter_bloc: ^9.1.1
@@ -20,21 +22,34 @@ dependencies:
   get_it: ^8.2.0
   intl: ^0.20.2
   image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
 flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/logo/default_launcher_icon.png
+    - assets/branding/
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo/default_launcher_icon.png"
+  image_path: "assets/branding/launcher.png"
   adaptive_icon_background: "#FFFFFF"
+  remove_alpha_ios: true
 
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/branding/splash.png
+  android: true
+  ios: true
+
+  android_12:
+    color: "#FFFFFF"
+    image: assets/branding/splash.png

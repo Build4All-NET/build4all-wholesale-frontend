@@ -13,9 +13,6 @@ class ApiConfig {
   static const String verifyEmailCode = '/auth/verify-email-code';
   static const String completeProfile = '/auth/complete-profile';
 
-  static const String forgotPassword = '/auth/forgot-password';
-  static const String resetPassword = '/auth/reset-password';
-
   static const String currentUser = '/auth/me';
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
@@ -30,6 +27,37 @@ class ApiConfig {
   // =========================
   // Supplier Categories
   // =========================
+  // Retailer Home endpoints from Wholesale backend
+  static const String retailerHome = '/retailer-home';
+  static const String retailerHomeAddCartItem = '/retailer-home/cart/items';
+
+  static String build4AllUserById(int id) => '/users/$id';
+  static String build4AllUserProfile(int id) => '/users/$id/profile';
+
+  static String build4AllVerifyEmailChange(int id) =>
+      '/users/$id/email-change/verify';
+
+  static String build4AllResendEmailChange(int id) =>
+      '/users/$id/email-change/resend';
+
+  static String build4AllResetPassword(int ownerProjectLinkId) =>
+      '/users/reset-password?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllVerifyResetCode(int ownerProjectLinkId) =>
+      '/users/verify-reset-code?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllUpdatePassword(int ownerProjectLinkId) =>
+      '/users/update-password?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllDeleteUser(int userId) => '/users/$userId';
+
+  static const String retailerCart = '/retailer/cart';
+  static const String retailerCartItems = '/retailer/cart/items';
+
+  static String retailerCartItemById(int cartItemId) =>
+      '/retailer/cart/items/$cartItemId';
+
+  // Supplier Categories
   static const String supplierCategories = '/supplier/categories';
   static const String supplierSubCategories = '/supplier/subcategories';
 
@@ -133,9 +161,13 @@ class ApiConfig {
   // =========================
   // Supplier Shipping Methods
   // =========================
+
   static const String supplierShippingMethods = '/supplier/shipping-methods';
 
   static String supplierShippingMethodById(String id) {
     return '/supplier/shipping-methods/$id';
   }
+
+  static String retailerHomeCategoryProducts(int categoryId) =>
+      '/retailer-home/categories/$categoryId/products';
 }

@@ -1,142 +1,126 @@
 import 'package:flutter/material.dart';
+
 import 'app_theme_config.dart';
-import 'app_theme_tokens.dart';
 
 class AppThemeBuilder {
   static ThemeData buildTheme(AppThemeConfig config) {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: config.seedColor,
       brightness: config.brightness,
+      primary: config.seedColor,
+      onPrimary: config.onPrimary,
+      surface: config.surface,
+      error: config.error,
+      onError: config.onPrimary,
     );
 
     final isDark = config.brightness == Brightness.dark;
 
+    final background = isDark ? const Color(0xFF0F172A) : config.background;
+    final surface = isDark ? const Color(0xFF111827) : config.surface;
+    final inputFill = isDark ? const Color(0xFF1E293B) : config.inputFill;
+    final textPrimary = isDark ? Colors.white : config.textPrimary;
+    final textSecondary = isDark ? Colors.white70 : config.textSecondary;
+    final border = isDark ? Colors.white12 : config.border;
+
     return ThemeData(
       useMaterial3: true,
       brightness: config.brightness,
-      scaffoldBackgroundColor:
-          isDark ? const Color(0xFF0F172A) : AppThemeTokens.background,
+      scaffoldBackgroundColor: background,
       colorScheme: colorScheme,
       primaryColor: config.seedColor,
-
       appBarTheme: AppBarTheme(
-        backgroundColor:
-            isDark ? const Color(0xFF0F172A) : AppThemeTokens.background,
-        foregroundColor: isDark ? Colors.white : AppThemeTokens.textPrimary,
+        backgroundColor: background,
+        foregroundColor: textPrimary,
         elevation: 0,
         centerTitle: true,
       ),
-
       textTheme: TextTheme(
         headlineMedium: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.bold,
-          color: isDark ? Colors.white : AppThemeTokens.textPrimary,
+          color: textPrimary,
         ),
         titleLarge: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.w700,
-          color: isDark ? Colors.white : AppThemeTokens.textPrimary,
+          color: textPrimary,
         ),
         bodyLarge: TextStyle(
           fontSize: 16,
-          color: isDark ? Colors.white : AppThemeTokens.textPrimary,
+          color: textPrimary,
         ),
         bodyMedium: TextStyle(
           fontSize: 14,
-          color: isDark ? Colors.white70 : AppThemeTokens.textSecondary,
+          color: textSecondary,
         ),
       ),
-
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-
+        fillColor: inputFill,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 18,
         ),
-
         hintStyle: TextStyle(
-          color: isDark ? Colors.white54 : Colors.grey.shade500,
+          color: isDark ? Colors.white54 : config.muted,
           fontSize: 15,
           fontWeight: FontWeight.w400,
         ),
-
         labelStyle: TextStyle(
-          color: isDark ? Colors.white70 : Colors.grey.shade700,
+          color: textSecondary,
           fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
-
         prefixIconColor: config.seedColor,
         suffixIconColor: config.seedColor,
-
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1.4,
-          ),
+          borderRadius: BorderRadius.circular(config.radiusMedium),
+          borderSide: BorderSide(color: border, width: 1.4),
         ),
-
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-          borderSide: BorderSide(
-            color: Colors.grey.shade400,
-            width: 1.5,
-          ),
+          borderRadius: BorderRadius.circular(config.radiusMedium),
+          borderSide: BorderSide(color: border, width: 1.5),
         ),
-
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-          borderSide: BorderSide(
-            color: config.seedColor,
-            width: 2.0,
-          ),
+          borderRadius: BorderRadius.circular(config.radiusMedium),
+          borderSide: BorderSide(color: config.seedColor, width: 2.0),
         ),
-
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-          borderSide: const BorderSide(
-            color: AppThemeTokens.error,
-            width: 1.6,
-          ),
+          borderRadius: BorderRadius.circular(config.radiusMedium),
+          borderSide: BorderSide(color: config.error, width: 1.6),
         ),
-
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-          borderSide: const BorderSide(
-            color: AppThemeTokens.error,
-            width: 2.0,
-          ),
+          borderRadius: BorderRadius.circular(config.radiusMedium),
+          borderSide: BorderSide(color: config.error, width: 2.0),
         ),
       ),
-
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: config.seedColor,
-          foregroundColor: Colors.white,
+          foregroundColor: config.onPrimary,
           elevation: 0,
-          minimumSize: const Size(double.infinity, 54),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
+          minimumSize: Size(
+            config.buttonFullWidth ? double.infinity : 0,
+            config.buttonHeight,
           ),
-          textStyle: const TextStyle(
-            fontSize: 16,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(config.radiusMedium),
+          ),
+          textStyle: TextStyle(
+            fontSize: config.buttonTextSize,
             fontWeight: FontWeight.w700,
           ),
         ),
       ),
-
       cardTheme: CardThemeData(
-        color: isDark ? const Color(0xFF111827) : Colors.white,
-        elevation: 0,
+        color: surface,
+        elevation: config.cardShowShadow ? config.cardElevation : 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-          side: BorderSide(
-            color: isDark ? Colors.white12 : AppThemeTokens.border,
-          ),
+          borderRadius: BorderRadius.circular(config.radiusLarge),
+          side: config.cardShowBorder
+              ? BorderSide(color: border)
+              : BorderSide.none,
         ),
       ),
     );

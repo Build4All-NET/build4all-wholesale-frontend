@@ -25,6 +25,19 @@ import 'features/supplier_profile/domain/repositories/supplier_profile_repositor
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
 
+import 'features/dashboard/data/services/retailer_home_service.dart';
+import 'features/dashboard/data/repositories/retailer_home_repository_impl.dart';
+import 'features/dashboard/domain/repositories/retailer_home_repository.dart';
+import 'features/dashboard/presentation/cubit/retailer_home_cubit.dart';
+
+import 'features/retailer_profile/data/services/retailer_profile_service.dart';
+import 'features/retailer_profile/data/repositories/retailer_profile_repository_impl.dart';
+import 'features/retailer_profile/domain/repositories/retailer_profile_repository.dart';
+import 'features/retailer_profile/presentation/cubit/retailer_profile_cubit.dart';
+
+import 'features/dashboard/data/services/retailer_cart_service.dart';
+import 'features/dashboard/presentation/cubit/retailer_cart_cubit.dart';
+
 import 'features/supplier/categories/data/repositories/supplier_category_repository_impl.dart';
 import 'features/supplier/categories/data/services/supplier_category_api_service.dart';
 import 'features/supplier/categories/domain/repositories/supplier_category_repository.dart';
@@ -85,32 +98,23 @@ Future<void> init() async {
   sl.registerLazySingleton<LocaleStorage>(() => LocaleStorage());
 
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(
-      sl<AuthStorage>(),
-      baseUrl: AppConfig.apiBaseUrl,
-    ),
+    () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.apiBaseUrl),
     instanceName: 'centralApiClient',
   );
 
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(
-      sl<AuthStorage>(),
-      baseUrl: AppConfig.projectApiBaseUrl,
-    ),
+    () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.projectApiBaseUrl),
     instanceName: 'projectApiClient',
   );
 
-  sl.registerLazySingleton<ThemeCubit>(
-    () => ThemeCubit(sl<ThemeStorage>()),
-  );
+  // =========================
+  // THEME / LOCALE
+  // =========================
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<ThemeStorage>()));
 
-  sl.registerLazySingleton<LocaleCubit>(
-    () => LocaleCubit(sl<LocaleStorage>()),
-  );
+  sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<LocaleStorage>()));
 
-  sl.registerLazySingleton<RuntimeThemeService>(
-    () => RuntimeThemeService(),
-  );
+  sl.registerLazySingleton<RuntimeThemeService>(() => RuntimeThemeService());
 
   sl.registerLazySingleton<AuthService>(
     () => AuthService(
@@ -119,9 +123,25 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<RetailerHomeService>(
+    () => RetailerHomeService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<RetailerCartService>(
+    () => RetailerCartService(
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierProfileService>(
-    () => SupplierProfileService(
-      sl<ApiClient>(instanceName: 'projectApiClient'),
+    () =>
+        SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<RetailerProfileService>(
+    () => RetailerProfileService(
+      centralApiClient: sl<ApiClient>(instanceName: 'centralApiClient'),
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
 
@@ -132,9 +152,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<BranchApiService>(
-    () => BranchApiService(
-      sl<ApiClient>(instanceName: 'projectApiClient'),
-    ),
+    () => BranchApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
   sl.registerLazySingleton<BranchInventoryApiService>(
@@ -192,6 +210,19 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<RetailerHomeRepository>(
+    () => RetailerHomeRepositoryImpl(
+      retailerHomeService: sl<RetailerHomeService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<RetailerProfileRepository>(
+    () => RetailerProfileRepositoryImpl(
+      retailerProfileService: sl<RetailerProfileService>(),
+      authStorage: sl<AuthStorage>(),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierCategoryRepository>(
     () => SupplierCategoryRepositoryImpl(
       apiService: sl<SupplierCategoryApiService>(),
@@ -199,9 +230,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<BranchRepository>(
-    () => BranchRepositoryImpl(
-      apiService: sl<BranchApiService>(),
-    ),
+    () => BranchRepositoryImpl(apiService: sl<BranchApiService>()),
   );
 
   sl.registerLazySingleton<BranchInventoryRepository>(
@@ -339,7 +368,7 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory<CouponsBloc>(
+    sl.registerFactory<CouponsBloc>(
     () => CouponsBloc(
       getCouponsUseCase: sl<GetCouponsUseCase>(),
       createCouponUseCase: sl<CreateCouponUseCase>(),
@@ -372,6 +401,21 @@ Future<void> init() async {
       createShippingMethodUseCase: sl<CreateShippingMethodUseCase>(),
       updateShippingMethodUseCase: sl<UpdateShippingMethodUseCase>(),
       deleteShippingMethodUseCase: sl<DeleteShippingMethodUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<RetailerHomeCubit>(
+    () =>
+        RetailerHomeCubit(retailerHomeRepository: sl<RetailerHomeRepository>()),
+  );
+
+  sl.registerFactory<RetailerCartCubit>(
+    () => RetailerCartCubit(retailerCartService: sl<RetailerCartService>()),
+  );
+
+  sl.registerFactory<RetailerProfileCubit>(
+    () => RetailerProfileCubit(
+      retailerProfileRepository: sl<RetailerProfileRepository>(),
     ),
   );
 }

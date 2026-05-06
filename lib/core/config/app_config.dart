@@ -1,15 +1,37 @@
 class AppConfig {
-  /// Build4All central backend
-  static const String apiBaseUrl = String.fromEnvironment(
+  /// Build4All central backend root URL.
+  /// In env this should be WITHOUT /api.
+  /// Example: http://192.168.1.104:8080
+  static const String apiRootUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://3.96.140.126:8080/api',
+    defaultValue: 'http://3.96.140.126:8080',
   );
 
-  /// Wholesale project backend
-  static const String projectApiBaseUrl = String.fromEnvironment(
-    'PROJECT_API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8082/api',
+  /// Wholesale backend root URL.
+  /// In env this should be WITHOUT /api.
+  /// Example: http://192.168.1.104:8083
+  static const String overrideRootUrl = String.fromEnvironment(
+    'OVERRIDE_BASE_URL',
+    defaultValue: 'http://10.0.2.2:8082',
   );
+
+  /// Build4All central API base URL.
+  /// Result example: http://192.168.1.104:8080/api
+  static String get apiBaseUrl => _withApi(apiRootUrl);
+
+  /// Wholesale project API base URL.
+  /// Result example: http://192.168.1.104:8083/api
+  static String get projectApiBaseUrl => _withApi(overrideRootUrl);
+
+  static String _withApi(String value) {
+    final clean = value.trim().replaceAll(RegExp(r'/+$'), '');
+
+    if (clean.endsWith('/api')) {
+      return clean;
+    }
+
+    return '$clean/api';
+  }
 
   static const String appName = String.fromEnvironment(
     'APP_NAME',
@@ -41,11 +63,43 @@ class AppConfig {
     defaultValue: 'en',
   );
 
-  /// Optional:
-  /// only needed if /runtime-config/by-link requires X-Auth-Token
+  static const String themeJsonB64 = String.fromEnvironment(
+    'THEME_JSON_B64',
+    defaultValue: '',
+  );
+
+  static const String themeJson = String.fromEnvironment(
+    'THEME_JSON',
+    defaultValue: '',
+  );
+
+  static const String navJsonB64 = String.fromEnvironment(
+    'NAV_JSON_B64',
+    defaultValue: '',
+  );
+
+  static const String enabledFeaturesJsonB64 = String.fromEnvironment(
+    'ENABLED_FEATURES_JSON_B64',
+    defaultValue: '',
+  );
+
+  static const String homeJsonB64 = String.fromEnvironment(
+    'HOME_JSON_B64',
+    defaultValue: '',
+  );
+
+  static const String brandingJsonB64 = String.fromEnvironment(
+    'BRANDING_JSON_B64',
+    defaultValue: '',
+  );
+
+  static const String menuType = String.fromEnvironment(
+    'MENU_TYPE',
+    defaultValue: '',
+  );
+
   static const String runtimeConfigToken = String.fromEnvironment(
     'RUNTIME_CONFIG_TOKEN',
     defaultValue: '',
   );
 }
-
