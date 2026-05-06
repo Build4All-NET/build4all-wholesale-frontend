@@ -87,6 +87,17 @@ import 'features/supplier/branches/presentation/bloc/branch_list/branch_list_blo
 
 import 'features/supplier/branches/presentation/bloc/branch_inventory/branch_inventory_bloc.dart';
 import 'features/supplier/products/presentation/bloc/product_branch_inventory/product_branch_inventory_bloc.dart';
+
+// =========================
+// SUPPLIER ORDERS
+// =========================
+import 'features/supplier/orders/data/repositories/supplier_order_repository_impl.dart';
+import 'features/supplier/orders/data/services/supplier_order_api_service.dart';
+import 'features/supplier/orders/domain/repositories/supplier_order_repository.dart';
+import 'features/supplier/orders/domain/usecases/get_supplier_orders_usecase.dart';
+import 'features/supplier/orders/domain/usecases/get_supplier_order_details_usecase.dart';
+import 'features/supplier/orders/domain/usecases/update_supplier_order_status_usecase.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -175,6 +186,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierOrderApiService>(
+    () => SupplierOrderApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   // =========================
   // REPOSITORIES
   // =========================
@@ -213,6 +230,12 @@ Future<void> init() async {
   sl.registerLazySingleton<BranchInventoryRepository>(
     () => BranchInventoryRepositoryImpl(
       apiService: sl<BranchInventoryApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierOrderRepository>(
+    () => SupplierOrderRepositoryImpl(
+      apiService: sl<SupplierOrderApiService>(),
     ),
   );
 
@@ -339,6 +362,22 @@ Future<void> init() async {
   );
 
   // =========================
+  // SUPPLIER ORDER USE CASES
+  // =========================
+
+  sl.registerLazySingleton<GetSupplierOrdersUseCase>(
+    () => GetSupplierOrdersUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<GetSupplierOrderDetailsUseCase>(
+    () => GetSupplierOrderDetailsUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateSupplierOrderStatusUseCase>(
+    () => UpdateSupplierOrderStatusUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  // =========================
   // CUBITS
   // =========================
 
@@ -376,7 +415,8 @@ Future<void> init() async {
       deleteBranchUseCase: sl<DeleteBranchUseCase>(),
     ),
   );
-    sl.registerFactory<BranchInventoryBloc>(
+
+  sl.registerFactory<BranchInventoryBloc>(
     () => BranchInventoryBloc(
       getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
       getProductsUseCase: sl<GetProductsUseCase>(),

@@ -81,4 +81,18 @@ class ApiConfig {
   static String supplierProductInventorySummary(String productId) {
     return '/supplier/branch-inventory/product/$productId/summary';
   }
+    // Supplier Orders
+  static const String supplierOrders = '/supplier/orders';
+
+  static String supplierOrdersByStatus(String status) {
+    return '/supplier/orders/status/$status';
+  }
+
+  static String supplierOrderById(String orderId) {
+    return '/supplier/orders/$orderId';
+  }
+
+  static String supplierOrderStatus(String orderId) {
+    return '/supplier/orders/$orderId/status';
+  }
 }

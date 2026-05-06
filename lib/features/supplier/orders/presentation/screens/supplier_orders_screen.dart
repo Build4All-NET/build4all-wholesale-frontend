@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/repositories/supplier_order_repository_impl.dart';
 import '../../domain/entities/supplier_order_entity.dart';
 import '../../domain/repositories/supplier_order_repository.dart';
 import '../../domain/usecases/get_supplier_orders_usecase.dart';
@@ -22,10 +22,11 @@ class _SupplierOrdersScreenState extends State<SupplierOrdersScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   final SupplierOrderRepository _orderRepository =
-      SupplierOrderRepositoryImpl();
+      sl<SupplierOrderRepository>();
 
   late final GetSupplierOrdersUseCase _getSupplierOrdersUseCase =
       GetSupplierOrdersUseCase(_orderRepository);
+
   Timer? _searchDebounce;
 
   bool _isLoading = true;
@@ -91,7 +92,10 @@ class _SupplierOrdersScreenState extends State<SupplierOrdersScreen> {
 
     _searchDebounce?.cancel();
 
-    _searchDebounce = Timer(const Duration(milliseconds: 350), _loadOrders);
+    _searchDebounce = Timer(
+      const Duration(milliseconds: 350),
+      _loadOrders,
+    );
   }
 
   Future<void> _selectStatus(SupplierOrderStatus? status) async {
@@ -114,15 +118,15 @@ class _SupplierOrdersScreenState extends State<SupplierOrdersScreen> {
   }
 
   int _countByStatus(SupplierOrderStatus status) {
-  return _orderRepository.countByStatus(status);
-}
+    return _orderRepository.countByStatus(status);
+  }
 
   void _showError(Object error) {
     final message = error.toString().replaceFirst('Exception: ', '');
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -205,22 +209,22 @@ class _SupplierOrdersScreenState extends State<SupplierOrdersScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _orders.isEmpty
-                ? const _EmptyOrdersView()
-                : RefreshIndicator(
-                    onRefresh: _loadOrders,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: _orders.length,
-                      itemBuilder: (context, index) {
-                        final order = _orders[index];
+                    ? const _EmptyOrdersView()
+                    : RefreshIndicator(
+                        onRefresh: _loadOrders,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: _orders.length,
+                          itemBuilder: (context, index) {
+                            final order = _orders[index];
 
-                        return SupplierOrderCard(
-                          order: order,
-                          onViewDetails: () => _goToDetails(order),
-                        );
-                      },
-                    ),
-                  ),
+                            return SupplierOrderCard(
+                              order: order,
+                              onViewDetails: () => _goToDetails(order),
+                            );
+                          },
+                        ),
+                      ),
           ),
         ],
       ),
@@ -286,7 +290,11 @@ class _EmptyOrdersView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.receipt_long_outlined, size: 58, color: primary),
+            Icon(
+              Icons.receipt_long_outlined,
+              size: 58,
+              color: primary,
+            ),
             const SizedBox(height: 14),
             const Text(
               'No orders found',

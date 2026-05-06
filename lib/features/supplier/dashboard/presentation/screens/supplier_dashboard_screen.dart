@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../orders/data/repositories/supplier_order_repository_impl.dart';
+import '../../../../../injection_container.dart';
 import '../../../orders/domain/entities/supplier_order_entity.dart';
 import '../../../orders/domain/repositories/supplier_order_repository.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
@@ -17,7 +17,7 @@ class SupplierDashboardScreen extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
 
     final SupplierOrderRepository orderRepository =
-        SupplierOrderRepositoryImpl();
+        sl<SupplierOrderRepository>();
 
     final pendingOrders =
         orderRepository.countByStatus(SupplierOrderStatus.pending);
@@ -157,7 +157,7 @@ class SupplierDashboardScreen extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
 
     final SupplierOrderRepository orderRepository =
-        SupplierOrderRepositoryImpl();
+        sl<SupplierOrderRepository>();
 
     final orders = orderRepository.getCurrentOrders();
 

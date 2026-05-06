@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../data/repositories/supplier_order_repository_impl.dart';
+import '../../../../../injection_container.dart';
 import '../../domain/entities/supplier_order_entity.dart';
 import '../../domain/repositories/supplier_order_repository.dart';
 import '../../domain/usecases/update_supplier_order_status_usecase.dart';
 import '../widgets/order_status_badge.dart';
+
 class SupplierOrderDetailsScreen extends StatefulWidget {
   final SupplierOrderEntity order;
 
-  const SupplierOrderDetailsScreen({super.key, required this.order});
+  const SupplierOrderDetailsScreen({
+    super.key,
+    required this.order,
+  });
 
   @override
   State<SupplierOrderDetailsScreen> createState() =>
@@ -19,10 +23,11 @@ class SupplierOrderDetailsScreen extends StatefulWidget {
 class _SupplierOrderDetailsScreenState
     extends State<SupplierOrderDetailsScreen> {
   final SupplierOrderRepository _orderRepository =
-    SupplierOrderRepositoryImpl();
+      sl<SupplierOrderRepository>();
 
-late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
-    UpdateSupplierOrderStatusUseCase(_orderRepository);
+  late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
+      UpdateSupplierOrderStatusUseCase(_orderRepository);
+
   late SupplierOrderEntity _order;
   bool _isUpdating = false;
 
@@ -41,9 +46,9 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
 
     try {
       final updatedOrder = await _updateSupplierOrderStatusUseCase(
-  orderId: _order.id,
-  status: status,
-);
+        orderId: _order.id,
+        status: status,
+      );
 
       if (!mounted) return;
 
@@ -53,7 +58,9 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Order marked as ${status.label}')),
+        SnackBar(
+          content: Text('Order marked as ${status.label}'),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -63,7 +70,9 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(
+          content: Text(e.toString().replaceFirst('Exception: ', '')),
+        ),
       );
     }
   }
@@ -72,71 +81,65 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-      },
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: AppThemeTokens.background,
+      appBar: AppBar(
         backgroundColor: AppThemeTokens.background,
-        appBar: AppBar(
-          backgroundColor: AppThemeTokens.background,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            icon: const Icon(Icons.arrow_back),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Order Details',
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  color: AppThemeTokens.textPrimary,
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                _order.orderNumber,
-                style: const TextStyle(
-                  color: AppThemeTokens.textSecondary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          centerTitle: false,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          icon: const Icon(Icons.arrow_back),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      _buildOrderSummary(primary),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Order Details',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: AppThemeTokens.textPrimary,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              _order.orderNumber,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: false,
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildOrderSummary(primary),
+                    const SizedBox(height: 16),
+                    _buildStatusTimeline(primary),
+                    const SizedBox(height: 16),
+                    _buildProductsCard(),
+                    const SizedBox(height: 16),
+                    _buildDeliveryCard(),
+                    if (_order.notes != null &&
+                        _order.notes!.trim().isNotEmpty) ...[
                       const SizedBox(height: 16),
-                      _buildStatusTimeline(primary),
-                      const SizedBox(height: 16),
-                      _buildProductsCard(),
-                      const SizedBox(height: 16),
-                      _buildDeliveryCard(),
-                      if (_order.notes != null &&
-                          _order.notes!.trim().isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        _buildNotesCard(),
-                      ],
-                      const SizedBox(height: 100),
+                      _buildNotesCard(),
                     ],
-                  ),
+                    const SizedBox(height: 100),
+                  ],
                 ),
               ),
-              _buildActionArea(),
-            ],
-          ),
+            ),
+            _buildActionArea(),
+          ],
         ),
       ),
     );
@@ -188,7 +191,10 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
                   value: _formatFullDate(_order.orderDate),
                 ),
                 const SizedBox(height: 14),
-                _InfoRow(label: 'Payment Method', value: _order.paymentMethod),
+                _InfoRow(
+                  label: 'Payment Method',
+                  value: _order.paymentMethod,
+                ),
                 const SizedBox(height: 14),
                 _InfoRow(
                   label: 'Total Amount',
@@ -275,7 +281,9 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
                         Container(
                           width: 2,
                           height: 28,
-                          color: isCompleted ? primary : AppThemeTokens.border,
+                          color: isCompleted
+                              ? primary
+                              : AppThemeTokens.border,
                         ),
                     ],
                   ),
@@ -285,9 +293,8 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
                     child: Text(
                       status.label,
                       style: TextStyle(
-                        fontWeight: isCompleted
-                            ? FontWeight.w900
-                            : FontWeight.w700,
+                        fontWeight:
+                            isCompleted ? FontWeight.w900 : FontWeight.w700,
                         color: isCompleted
                             ? AppThemeTokens.textPrimary
                             : AppThemeTokens.textSecondary,
@@ -389,13 +396,22 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
             ),
           ),
           const SizedBox(height: 14),
-          _InfoRow(label: 'Retailer Phone', value: _order.retailerPhone),
+          _InfoRow(
+            label: 'Retailer Phone',
+            value: _order.retailerPhone,
+          ),
           const SizedBox(height: 14),
-          _InfoRow(label: 'Delivery Address', value: _order.deliveryAddress),
+          _InfoRow(
+            label: 'Delivery Address',
+            value: _order.deliveryAddress,
+          ),
           if (_order.branchName != null &&
               _order.branchName!.trim().isNotEmpty) ...[
             const SizedBox(height: 14),
-            _InfoRow(label: 'Branch', value: _order.branchName!),
+            _InfoRow(
+              label: 'Branch',
+              value: _order.branchName!,
+            ),
           ],
         ],
       ),
@@ -441,7 +457,9 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
         decoration: const BoxDecoration(
           color: AppThemeTokens.background,
-          border: Border(top: BorderSide(color: AppThemeTokens.border)),
+          border: Border(
+            top: BorderSide(color: AppThemeTokens.border),
+          ),
         ),
         child: const Text(
           'No more status actions available for this order.',
@@ -458,9 +476,13 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
       decoration: const BoxDecoration(
         color: AppThemeTokens.background,
-        border: Border(top: BorderSide(color: AppThemeTokens.border)),
+        border: Border(
+          top: BorderSide(color: AppThemeTokens.border),
+        ),
       ),
-      child: Column(children: actions),
+      child: Column(
+        children: actions,
+      ),
     );
   }
 
@@ -568,8 +590,8 @@ late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
     final hour = date.hour > 12
         ? date.hour - 12
         : date.hour == 0
-        ? 12
-        : date.hour;
+            ? 12
+            : date.hour;
     final minute = date.minute.toString().padLeft(2, '0');
     final period = date.hour >= 12 ? 'PM' : 'AM';
 
@@ -602,7 +624,11 @@ class _InfoRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
-  const _InfoRow({required this.label, required this.value, this.valueColor});
+  const _InfoRow({
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -664,7 +690,12 @@ class _ActionButton extends StatelessWidget {
             children: [
               Icon(icon, size: 20),
               const SizedBox(width: 8),
-              Text(label, style: const TextStyle(fontWeight: FontWeight.w900)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
             ],
           );
 
