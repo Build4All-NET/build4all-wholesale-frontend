@@ -5,13 +5,16 @@ import 'package:go_router/go_router.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/config/app_config.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
+import '../../data/services/build4all_login_gate.dart';
+import '../../domain/entities/login_account_type.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
-import '../widgets/auth_header.dart';
+import '../widgets/login_account_choice_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,7 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
+  final Build4AllLoginGate _loginGate = Build4AllLoginGate();
+
   bool _obscurePassword = true;
+  bool _isCheckingAccounts = false;
 
   @override
   void initState() {
@@ -42,13 +48,166 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _submit(AuthCubit cubit) {
+  Future<void> _submit(AuthCubit cubit) async {
     if (!_formKey.currentState!.validate()) return;
 
-    cubit.login(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    setState(() {
+      _isCheckingAccounts = true;
+    });
+
+    try {
+      final gateResult = await _loginGate.checkAvailableAccounts(
+        email: email,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      if (gateResult.hasBoth) {
+        final selectedType = await showModalBottomSheet<LoginAccountType>(
+          context: context,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black.withValues(alpha: 0.55),
+          isScrollControlled: true,
+          builder: (_) => const LoginAccountChoiceDialog(),
+        );
+
+        if (selectedType == null) {
+          return;
+        }
+
+        await cubit.login(
+          email: email,
+          password: password,
+          preferredAccountType: selectedType,
+        );
+
+        return;
+      }
+
+      if (gateResult.hasOnlySupplier) {
+        await cubit.login(
+          email: email,
+          password: password,
+          preferredAccountType: LoginAccountType.supplier,
+        );
+
+        return;
+      }
+
+      if (gateResult.hasOnlyRetailer) {
+        await cubit.login(
+          email: email,
+          password: password,
+          preferredAccountType: LoginAccountType.retailer,
+        );
+
+        return;
+      }
+
+      await cubit.login(email: email, password: password);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCheckingAccounts = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildBrandingHeader(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = context.l10n;
+
+    return Column(
+      children: [
+        Container(
+          width: 82,
+          height: 82,
+          decoration: BoxDecoration(
+            color: primaryColor.withValues(alpha: 0.12),
+            shape: BoxShape.circle,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Image.asset(
+              'assets/branding/logo.png',
+              fit: BoxFit.contain,
+              errorBuilder: (_, error, __) {
+                debugPrint('LOGIN LOGO ASSET ERROR: $error');
+
+                return Icon(
+                  Icons.storefront_outlined,
+                  size: 38,
+                  color: primaryColor,
+                );
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          AppConfig.appName,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w700,
+            color: AppThemeTokens.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.loginSubtitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 16,
+            color: AppThemeTokens.textSecondary,
+          ),
+        ),
+      ],
     );
+  }
+
+  void _handleLoginNavigation(BuildContext context, AuthState state) {
+    if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+
+      context.read<AuthCubit>().clearMessages();
+    }
+
+    if (state.loginSuccess && state.user != null) {
+      final user = state.user!;
+
+      if (user.isSupplier) {
+        if (user.profileCompleted == false) {
+          context.go('/complete-supplier-profile');
+        } else {
+          context.go('/supplier-dashboard');
+        }
+        return;
+      }
+
+      if (user.isRetailer) {
+        if (user.profileCompleted == false) {
+          context.go('/complete-retailer-profile');
+        } else {
+          context.go('/retailer-dashboard');
+        }
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unknown user role returned from backend'),
+        ),
+      );
+    }
   }
 
   @override
@@ -56,45 +215,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocProvider(
       create: (_) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-            context.read<AuthCubit>().clearMessages();
-          }
-
-          if (state.loginSuccess && state.user != null) {
-            final user = state.user!;
-
-            if (user.isSupplier) {
-              if (user.profileCompleted == false) {
-                context.go('/complete-supplier-profile');
-              } else {
-                context.go('/supplier-dashboard');
-              }
-              return;
-            }
-
-            if (user.isRetailer) {
-              if (user.profileCompleted == false) {
-                context.go('/complete-retailer-profile');
-              } else {
-                context.go('/retailer-dashboard');
-              }
-              return;
-            }
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Unknown user role returned from backend'),
-              ),
-            );
-          }
-        },
+        listener: _handleLoginNavigation,
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
           final l10n = context.l10n;
+
+          final isLoading = state.isLoading || _isCheckingAccounts;
 
           return Scaffold(
             body: SafeArea(
@@ -127,15 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: LanguageSelector(),
                               ),
                               const SizedBox(height: 6),
-                              AuthHeader(
-                                icon: Icons.storefront_outlined,
-                                iconBackgroundColor: const Color(0xFFDCFCE7),
-                                iconColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
-                                title: l10n.supplierManager,
-                                subtitle: l10n.loginSubtitle,
-                              ),
+                              _buildBrandingHeader(context),
                               const SizedBox(height: 28),
                               Text(
                                 l10n.email,
@@ -205,9 +323,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               const SizedBox(height: 10),
                               PrimaryButton(
-                                text: l10n.login,
-                                isLoading: state.isLoading,
-                                onPressed: () => _submit(cubit),
+                                text: isLoading ? 'Checking...' : l10n.login,
+                                isLoading: isLoading,
+                                onPressed: () {
+                                  if (isLoading) return;
+                                  _submit(cubit);
+                                },
                               ),
                               const SizedBox(height: 22),
                               Row(
