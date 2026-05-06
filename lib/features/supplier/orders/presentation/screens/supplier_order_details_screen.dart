@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../domain/entities/supplier_order_entity.dart';
-import '../../domain/repositories/supplier_order_repository.dart';
-import '../../domain/usecases/update_supplier_order_status_usecase.dart';
+import '../bloc/supplier_order_details/supplier_order_details_bloc.dart';
+import '../bloc/supplier_order_details/supplier_order_details_event.dart';
+import '../bloc/supplier_order_details/supplier_order_details_state.dart';
 import '../widgets/order_status_badge.dart';
 
-class SupplierOrderDetailsScreen extends StatefulWidget {
+class SupplierOrderDetailsScreen extends StatelessWidget {
   final SupplierOrderEntity order;
 
   const SupplierOrderDetailsScreen({
@@ -16,66 +18,93 @@ class SupplierOrderDetailsScreen extends StatefulWidget {
   });
 
   @override
-  State<SupplierOrderDetailsScreen> createState() =>
-      _SupplierOrderDetailsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<SupplierOrderDetailsBloc>(
+      create: (_) => sl<SupplierOrderDetailsBloc>()
+        ..add(
+          SupplierOrderDetailsStarted(
+            orderId: order.id,
+            initialOrder: order,
+          ),
+        ),
+      child: const _SupplierOrderDetailsView(),
+    );
+  }
 }
 
-class _SupplierOrderDetailsScreenState
-    extends State<SupplierOrderDetailsScreen> {
-  final SupplierOrderRepository _orderRepository =
-      sl<SupplierOrderRepository>();
-
-  late final UpdateSupplierOrderStatusUseCase _updateSupplierOrderStatusUseCase =
-      UpdateSupplierOrderStatusUseCase(_orderRepository);
-
-  late SupplierOrderEntity _order;
-  bool _isUpdating = false;
+class _SupplierOrderDetailsView extends StatelessWidget {
+  const _SupplierOrderDetailsView();
 
   @override
-  void initState() {
-    super.initState();
-    _order = widget.order;
+  Widget build(BuildContext context) {
+    return BlocConsumer<SupplierOrderDetailsBloc, SupplierOrderDetailsState>(
+      listenWhen: (previous, current) {
+        return previous.errorMessage != current.errorMessage ||
+            previous.successMessage != current.successMessage;
+      },
+      listener: (context, state) {
+        if (state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage!)),
+          );
+        }
+
+        if (state.successMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.successMessage!)),
+          );
+        }
+      },
+      builder: (context, state) {
+        final order = state.order;
+
+        if (state.isLoading && order == null) {
+          return const Scaffold(
+            backgroundColor: AppThemeTokens.background,
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (order == null) {
+          return Scaffold(
+            backgroundColor: AppThemeTokens.background,
+            appBar: AppBar(
+              backgroundColor: AppThemeTokens.background,
+              elevation: 0,
+              title: const Text(
+                'Order Details',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+            body: const Center(
+              child: Text(
+                'Order not found',
+                style: TextStyle(
+                  color: AppThemeTokens.textSecondary,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          );
+        }
+
+        return _OrderDetailsContent(
+          order: order,
+          isUpdating: state.isUpdating,
+        );
+      },
+    );
   }
+}
 
-  Future<void> _updateStatus(SupplierOrderStatus status) async {
-    if (_isUpdating) return;
+class _OrderDetailsContent extends StatelessWidget {
+  final SupplierOrderEntity order;
+  final bool isUpdating;
 
-    setState(() {
-      _isUpdating = true;
-    });
-
-    try {
-      final updatedOrder = await _updateSupplierOrderStatusUseCase(
-        orderId: _order.id,
-        status: status,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        _order = updatedOrder;
-        _isUpdating = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Order marked as ${status.label}'),
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isUpdating = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
-        ),
-      );
-    }
-  }
+  const _OrderDetailsContent({
+    required this.order,
+    required this.isUpdating,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +131,7 @@ class _SupplierOrderDetailsScreenState
               ),
             ),
             Text(
-              _order.orderNumber,
+              order.orderNumber,
               style: const TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontSize: 14,
@@ -128,8 +157,8 @@ class _SupplierOrderDetailsScreenState
                     _buildProductsCard(),
                     const SizedBox(height: 16),
                     _buildDeliveryCard(),
-                    if (_order.notes != null &&
-                        _order.notes!.trim().isNotEmpty) ...[
+                    if (order.notes != null &&
+                        order.notes!.trim().isNotEmpty) ...[
                       const SizedBox(height: 16),
                       _buildNotesCard(),
                     ],
@@ -138,7 +167,7 @@ class _SupplierOrderDetailsScreenState
                 ),
               ),
             ),
-            _buildActionArea(),
+            _buildActionArea(context),
           ],
         ),
       ),
@@ -157,7 +186,7 @@ class _SupplierOrderDetailsScreenState
             children: [
               Expanded(
                 child: Text(
-                  _order.retailerName,
+                  order.retailerName,
                   style: const TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w900,
@@ -165,12 +194,12 @@ class _SupplierOrderDetailsScreenState
                   ),
                 ),
               ),
-              OrderStatusBadge(status: _order.status),
+              OrderStatusBadge(status: order.status),
             ],
           ),
           const SizedBox(height: 6),
           Text(
-            _order.deliveryAddress,
+            order.deliveryAddress,
             style: const TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w600,
@@ -188,17 +217,17 @@ class _SupplierOrderDetailsScreenState
               children: [
                 _InfoRow(
                   label: 'Order Date',
-                  value: _formatFullDate(_order.orderDate),
+                  value: _formatFullDate(order.orderDate),
                 ),
                 const SizedBox(height: 14),
                 _InfoRow(
                   label: 'Payment Method',
-                  value: _order.paymentMethod,
+                  value: order.paymentMethod,
                 ),
                 const SizedBox(height: 14),
                 _InfoRow(
                   label: 'Total Amount',
-                  value: _formatMoney(_order.totalAmount),
+                  value: _formatMoney(order.totalAmount),
                   valueColor: primary,
                 ),
               ],
@@ -218,9 +247,9 @@ class _SupplierOrderDetailsScreenState
       SupplierOrderStatus.delivered,
     ];
 
-    final currentIndex = statuses.indexOf(_order.status);
+    final currentIndex = statuses.indexOf(order.status);
 
-    if (_order.status == SupplierOrderStatus.cancelled) {
+    if (order.status == SupplierOrderStatus.cancelled) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
@@ -281,9 +310,8 @@ class _SupplierOrderDetailsScreenState
                         Container(
                           width: 2,
                           height: 28,
-                          color: isCompleted
-                              ? primary
-                              : AppThemeTokens.border,
+                          color:
+                              isCompleted ? primary : AppThemeTokens.border,
                         ),
                     ],
                   ),
@@ -291,7 +319,7 @@ class _SupplierOrderDetailsScreenState
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
-                      status.label,
+                      _statusLabel(status),
                       style: TextStyle(
                         fontWeight:
                             isCompleted ? FontWeight.w900 : FontWeight.w700,
@@ -327,7 +355,7 @@ class _SupplierOrderDetailsScreenState
             ),
           ),
           const SizedBox(height: 18),
-          ..._order.items.map((item) {
+          ...order.items.map((item) {
             return Column(
               children: [
                 Row(
@@ -366,7 +394,7 @@ class _SupplierOrderDetailsScreenState
                     ),
                   ],
                 ),
-                if (item != _order.items.last) ...[
+                if (item != order.items.last) ...[
                   const SizedBox(height: 14),
                   const Divider(color: AppThemeTokens.border),
                   const SizedBox(height: 14),
@@ -398,19 +426,19 @@ class _SupplierOrderDetailsScreenState
           const SizedBox(height: 14),
           _InfoRow(
             label: 'Retailer Phone',
-            value: _order.retailerPhone,
+            value: order.retailerPhone,
           ),
           const SizedBox(height: 14),
           _InfoRow(
             label: 'Delivery Address',
-            value: _order.deliveryAddress,
+            value: order.deliveryAddress,
           ),
-          if (_order.branchName != null &&
-              _order.branchName!.trim().isNotEmpty) ...[
+          if (order.branchName != null &&
+              order.branchName!.trim().isNotEmpty) ...[
             const SizedBox(height: 14),
             _InfoRow(
               label: 'Branch',
-              value: _order.branchName!,
+              value: order.branchName!,
             ),
           ],
         ],
@@ -436,7 +464,7 @@ class _SupplierOrderDetailsScreenState
           ),
           const SizedBox(height: 10),
           Text(
-            _order.notes!,
+            order.notes!,
             style: const TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w600,
@@ -448,8 +476,8 @@ class _SupplierOrderDetailsScreenState
     );
   }
 
-  Widget _buildActionArea() {
-    final actions = _getAvailableActions();
+  Widget _buildActionArea(BuildContext context) {
+    final actions = _getAvailableActions(context);
 
     if (actions.isEmpty) {
       return Container(
@@ -486,8 +514,8 @@ class _SupplierOrderDetailsScreenState
     );
   }
 
-  List<Widget> _getAvailableActions() {
-    switch (_order.status) {
+  List<Widget> _getAvailableActions(BuildContext context) {
+    switch (order.status) {
       case SupplierOrderStatus.pending:
         return [
           Row(
@@ -498,8 +526,11 @@ class _SupplierOrderDetailsScreenState
                   icon: Icons.cancel_outlined,
                   color: AppThemeTokens.error,
                   isOutlined: true,
-                  isLoading: _isUpdating,
-                  onPressed: () => _updateStatus(SupplierOrderStatus.cancelled),
+                  isLoading: isUpdating,
+                  onPressed: () => _updateStatus(
+                    context,
+                    SupplierOrderStatus.cancelled,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -508,8 +539,11 @@ class _SupplierOrderDetailsScreenState
                   label: 'Accept Order',
                   icon: Icons.check_circle_outline,
                   color: Theme.of(context).colorScheme.primary,
-                  isLoading: _isUpdating,
-                  onPressed: () => _updateStatus(SupplierOrderStatus.accepted),
+                  isLoading: isUpdating,
+                  onPressed: () => _updateStatus(
+                    context,
+                    SupplierOrderStatus.accepted,
+                  ),
                 ),
               ),
             ],
@@ -522,8 +556,11 @@ class _SupplierOrderDetailsScreenState
             label: 'Mark Preparing',
             icon: Icons.inventory_2_outlined,
             color: Theme.of(context).colorScheme.primary,
-            isLoading: _isUpdating,
-            onPressed: () => _updateStatus(SupplierOrderStatus.preparing),
+            isLoading: isUpdating,
+            onPressed: () => _updateStatus(
+              context,
+              SupplierOrderStatus.preparing,
+            ),
           ),
           const SizedBox(height: 10),
           _ActionButton(
@@ -531,8 +568,11 @@ class _SupplierOrderDetailsScreenState
             icon: Icons.cancel_outlined,
             color: AppThemeTokens.error,
             isOutlined: true,
-            isLoading: _isUpdating,
-            onPressed: () => _updateStatus(SupplierOrderStatus.cancelled),
+            isLoading: isUpdating,
+            onPressed: () => _updateStatus(
+              context,
+              SupplierOrderStatus.cancelled,
+            ),
           ),
         ];
 
@@ -542,8 +582,11 @@ class _SupplierOrderDetailsScreenState
             label: 'Ship Order',
             icon: Icons.local_shipping_outlined,
             color: Theme.of(context).colorScheme.primary,
-            isLoading: _isUpdating,
-            onPressed: () => _updateStatus(SupplierOrderStatus.shipped),
+            isLoading: isUpdating,
+            onPressed: () => _updateStatus(
+              context,
+              SupplierOrderStatus.shipped,
+            ),
           ),
           const SizedBox(height: 10),
           _ActionButton(
@@ -551,8 +594,11 @@ class _SupplierOrderDetailsScreenState
             icon: Icons.cancel_outlined,
             color: AppThemeTokens.error,
             isOutlined: true,
-            isLoading: _isUpdating,
-            onPressed: () => _updateStatus(SupplierOrderStatus.cancelled),
+            isLoading: isUpdating,
+            onPressed: () => _updateStatus(
+              context,
+              SupplierOrderStatus.cancelled,
+            ),
           ),
         ];
 
@@ -562,8 +608,11 @@ class _SupplierOrderDetailsScreenState
             label: 'Mark Delivered',
             icon: Icons.task_alt,
             color: Theme.of(context).colorScheme.primary,
-            isLoading: _isUpdating,
-            onPressed: () => _updateStatus(SupplierOrderStatus.delivered),
+            isLoading: isUpdating,
+            onPressed: () => _updateStatus(
+              context,
+              SupplierOrderStatus.delivered,
+            ),
           ),
         ];
 
@@ -571,6 +620,12 @@ class _SupplierOrderDetailsScreenState
       case SupplierOrderStatus.cancelled:
         return [];
     }
+  }
+
+  void _updateStatus(BuildContext context, SupplierOrderStatus status) {
+    context.read<SupplierOrderDetailsBloc>().add(
+          SupplierOrderDetailsStatusUpdateRequested(status),
+        );
   }
 
   BoxDecoration _cardDecoration() {
@@ -616,6 +671,23 @@ class _SupplierOrderDetailsScreenState
     ];
 
     return months[month];
+  }
+
+  String _statusLabel(SupplierOrderStatus status) {
+    switch (status) {
+      case SupplierOrderStatus.pending:
+        return 'Pending';
+      case SupplierOrderStatus.accepted:
+        return 'Accepted';
+      case SupplierOrderStatus.preparing:
+        return 'Preparing';
+      case SupplierOrderStatus.shipped:
+        return 'Shipped';
+      case SupplierOrderStatus.delivered:
+        return 'Delivered';
+      case SupplierOrderStatus.cancelled:
+        return 'Cancelled';
+    }
   }
 }
 

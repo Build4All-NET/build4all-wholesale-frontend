@@ -1,39 +1,37 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../domain/entities/supplier_order_entity.dart';
-import '../../domain/repositories/supplier_order_repository.dart';
-import '../../domain/usecases/get_supplier_orders_usecase.dart';
+import '../bloc/supplier_orders/supplier_orders_bloc.dart';
+import '../bloc/supplier_orders/supplier_orders_event.dart';
+import '../bloc/supplier_orders/supplier_orders_state.dart';
 import '../widgets/supplier_order_card.dart';
 
-class SupplierOrdersScreen extends StatefulWidget {
+class SupplierOrdersScreen extends StatelessWidget {
   const SupplierOrdersScreen({super.key});
 
   @override
-  State<SupplierOrdersScreen> createState() => _SupplierOrdersScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<SupplierOrdersBloc>(
+      create: (_) => sl<SupplierOrdersBloc>()..add(const SupplierOrdersStarted()),
+      child: const _SupplierOrdersView(),
+    );
+  }
 }
 
-class _SupplierOrdersScreenState extends State<SupplierOrdersScreen> {
+class _SupplierOrdersView extends StatefulWidget {
+  const _SupplierOrdersView();
+
+  @override
+  State<_SupplierOrdersView> createState() => _SupplierOrdersViewState();
+}
+
+class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
   final TextEditingController _searchController = TextEditingController();
-
-  final SupplierOrderRepository _orderRepository =
-      sl<SupplierOrderRepository>();
-
-  late final GetSupplierOrdersUseCase _getSupplierOrdersUseCase =
-      GetSupplierOrdersUseCase(_orderRepository);
-
-  Timer? _searchDebounce;
-
-  bool _isLoading = true;
-  String _searchText = '';
-  SupplierOrderStatus? _selectedStatus;
-
-  List<SupplierOrderEntity> _orders = [];
 
   final List<SupplierOrderStatus> _statuses = const [
     SupplierOrderStatus.pending,
@@ -45,190 +43,177 @@ class _SupplierOrdersScreenState extends State<SupplierOrdersScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _loadOrders();
-  }
-
-  @override
   void dispose() {
-    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadOrders() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final orders = await _getSupplierOrdersUseCase(
-        query: _searchText,
-        status: _selectedStatus,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        _orders = orders;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      _showError(e);
-    }
-  }
-
-  void _onSearchChanged(String value) {
-    setState(() {
-      _searchText = value;
-    });
-
-    _searchDebounce?.cancel();
-
-    _searchDebounce = Timer(
-      const Duration(milliseconds: 350),
-      _loadOrders,
-    );
-  }
-
-  Future<void> _selectStatus(SupplierOrderStatus? status) async {
-    setState(() {
-      _selectedStatus = status;
-    });
-
-    await _loadOrders();
-  }
-
-  Future<void> _goToDetails(SupplierOrderEntity order) async {
+  Future<void> _goToDetails(
+    BuildContext context,
+    SupplierOrderEntity order,
+  ) async {
     final result = await context.push<bool>(
       '/supplier-orders/details',
       extra: order,
     );
 
+    if (!context.mounted) return;
+
     if (result == true) {
-      await _loadOrders();
+      context.read<SupplierOrdersBloc>().add(const SupplierOrdersRefreshed());
     }
-  }
-
-  int _countByStatus(SupplierOrderStatus status) {
-    return _orderRepository.countByStatus(status);
-  }
-
-  void _showError(Object error) {
-    final message = error.toString().replaceFirst('Exception: ', '');
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
-      appBar: AppBar(
+    return BlocListener<SupplierOrdersBloc, SupplierOrdersState>(
+      listenWhen: (previous, current) {
+        return previous.errorMessage != current.errorMessage &&
+            current.errorMessage != null;
+      },
+      listener: (context, state) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(state.errorMessage!)),
+        );
+      },
+      child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(Icons.menu),
-            );
-          },
-        ),
-        title: Text(
-          'Orders Management',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            color: primary,
-            fontSize: 22,
+        drawer: const SupplierAppDrawer(),
+        appBar: AppBar(
+          backgroundColor: AppThemeTokens.background,
+          elevation: 0,
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                onPressed: () => Scaffold.of(context).openDrawer(),
+                icon: const Icon(Icons.menu),
+              );
+            },
           ),
-        ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-            child: TextField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              decoration: InputDecoration(
-                hintText: 'Search orders, retailers...',
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: AppThemeTokens.textSecondary,
-                ),
-                filled: true,
-                fillColor: AppThemeTokens.inputFill,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppThemeTokens.radiusSmall,
-                  ),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+          title: Text(
+            'Orders Management',
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              color: primary,
+              fontSize: 22,
             ),
           ),
-          SizedBox(
-            height: 46,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+        ),
+        body: BlocBuilder<SupplierOrdersBloc, SupplierOrdersState>(
+          builder: (context, state) {
+            return Column(
               children: [
-                _StatusFilterChip(
-                  label: 'All',
-                  count: null,
-                  isSelected: _selectedStatus == null,
-                  onTap: () => _selectStatus(null),
-                ),
-                ..._statuses.map(
-                  (status) => _StatusFilterChip(
-                    label: status.label,
-                    count: _countByStatus(status),
-                    isSelected: _selectedStatus == status,
-                    onTap: () => _selectStatus(status),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      context.read<SupplierOrdersBloc>().add(
+                            SupplierOrdersSearchChanged(value),
+                          );
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search orders, retailers...',
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: AppThemeTokens.textSecondary,
+                      ),
+                      filled: true,
+                      fillColor: AppThemeTokens.inputFill,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppThemeTokens.radiusSmall,
+                        ),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Divider(height: 1, color: AppThemeTokens.border),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _orders.isEmpty
-                    ? const _EmptyOrdersView()
-                    : RefreshIndicator(
-                        onRefresh: _loadOrders,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: _orders.length,
-                          itemBuilder: (context, index) {
-                            final order = _orders[index];
-
-                            return SupplierOrderCard(
-                              order: order,
-                              onViewDetails: () => _goToDetails(order),
-                            );
+                SizedBox(
+                  height: 46,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: [
+                      _StatusFilterChip(
+                        label: 'All',
+                        count: null,
+                        isSelected: state.selectedStatus == null,
+                        onTap: () {
+                          context.read<SupplierOrdersBloc>().add(
+                                const SupplierOrdersStatusFilterChanged(null),
+                              );
+                        },
+                      ),
+                      ..._statuses.map(
+                        (status) => _StatusFilterChip(
+                          label: _statusLabel(status),
+                          count: state.countForStatus(status),
+                          isSelected: state.selectedStatus == status,
+                          onTap: () {
+                            context.read<SupplierOrdersBloc>().add(
+                                  SupplierOrdersStatusFilterChanged(status),
+                                );
                           },
                         ),
                       ),
-          ),
-        ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Divider(height: 1, color: AppThemeTokens.border),
+                Expanded(
+                  child: state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : state.orders.isEmpty
+                          ? const _EmptyOrdersView()
+                          : RefreshIndicator(
+                              onRefresh: () async {
+                                context.read<SupplierOrdersBloc>().add(
+                                      const SupplierOrdersRefreshed(),
+                                    );
+                              },
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(16),
+                                itemCount: state.orders.length,
+                                itemBuilder: (context, index) {
+                                  final order = state.orders[index];
+
+                                  return SupplierOrderCard(
+                                    order: order,
+                                    onViewDetails: () {
+                                      _goToDetails(context, order);
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
+  }
+
+  String _statusLabel(SupplierOrderStatus status) {
+    switch (status) {
+      case SupplierOrderStatus.pending:
+        return 'Pending';
+      case SupplierOrderStatus.accepted:
+        return 'Accepted';
+      case SupplierOrderStatus.preparing:
+        return 'Preparing';
+      case SupplierOrderStatus.shipped:
+        return 'Shipped';
+      case SupplierOrderStatus.delivered:
+        return 'Delivered';
+      case SupplierOrderStatus.cancelled:
+        return 'Cancelled';
+    }
   }
 }
 
