@@ -4,6 +4,9 @@ class ApiConfig {
   static String get apiBaseUrl => AppConfig.apiBaseUrl;
   static String get projectApiBaseUrl => AppConfig.projectApiBaseUrl;
 
+  // =========================
+  // Build4All / Auth
+  // =========================
   static const String adminLoginFront = '/auth/admin/login/front';
   static const String userLogin = '/auth/user/login';
   static const String sendVerification = '/auth/send-verification';
@@ -17,10 +20,16 @@ class ApiConfig {
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
 
+  // =========================
+  // Profiles
+  // =========================
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
-    // Supplier Categories
+
+  // =========================
+  // Supplier Categories
+  // =========================
   static const String supplierCategories = '/supplier/categories';
   static const String supplierSubCategories = '/supplier/subcategories';
 
@@ -35,7 +44,10 @@ class ApiConfig {
   static String supplierSubCategoriesByCategory(String categoryId) {
     return '/supplier/subcategories/category/$categoryId';
   }
-    // Supplier Branches
+
+  // =========================
+  // Supplier Branches
+  // =========================
   static const String supplierBranches = '/supplier/branches';
 
   static String supplierBranchById(String id) {
@@ -45,7 +57,10 @@ class ApiConfig {
   static String supplierBranchesSearch(String query) {
     return '/supplier/branches/search?query=$query';
   }
-    // Supplier Products
+
+  // =========================
+  // Supplier Products
+  // =========================
   static const String supplierProducts = '/supplier/products';
 
   static String supplierProductById(String id) {
@@ -55,7 +70,10 @@ class ApiConfig {
   static String supplierProductsSearch(String query) {
     return '/supplier/products/search?query=$query';
   }
-    // Supplier Branch Inventory
+
+  // =========================
+  // Supplier Branch Inventory
+  // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';
 
   static String supplierInventoryByBranch(String branchId) {
@@ -80,5 +98,44 @@ class ApiConfig {
 
   static String supplierProductInventorySummary(String productId) {
     return '/supplier/branch-inventory/product/$productId/summary';
+  }
+
+  // =========================
+  // Supplier Coupons
+  // =========================
+  static const String supplierCoupons = '/supplier/coupons';
+
+  static String supplierCouponById(String id) {
+    return '/supplier/coupons/$id';
+  }
+
+  // =========================
+  // Supplier Promotions
+  // =========================
+  static const String supplierPromotions = '/supplier/promotions';
+
+  static String supplierPromotionById(String id) {
+    return '/supplier/promotions/$id';
+  }
+
+  // =========================
+  // Supplier Home Banners
+  // =========================
+  static const String supplierBanners = '/supplier/banners';
+
+  static const String supplierBannerUploadImage =
+      '/supplier/banners/upload-image';
+
+  static String supplierBannerById(String id) {
+    return '/supplier/banners/$id';
+  }
+
+  // =========================
+  // Supplier Shipping Methods
+  // =========================
+  static const String supplierShippingMethods = '/supplier/shipping-methods';
+
+  static String supplierShippingMethodById(String id) {
+    return '/supplier/shipping-methods/$id';
   }
 }

@@ -221,11 +221,16 @@ class SupplierDashboardScreen extends StatelessWidget {
         icon: Icons.location_on_outlined,
         onTap: () => context.go('/supplier-branches'),
       ),
+
+      // IMPORTANT:
+      // This quick action opens the CREATE screen directly.
+      // The drawer/sidebar still opens /supplier-shipping list screen.
       SupplierQuickActionCard(
-        title: 'Shipping Methods',
+        title: 'Create Shipping Method',
         icon: Icons.local_shipping_outlined,
-        onTap: () => context.go('/supplier-shipping'),
+        onTap: () => context.go('/supplier-shipping/create'),
       ),
+
       SupplierQuickActionCard(
         title: 'Configure Taxes',
         icon: Icons.attach_money,
@@ -237,12 +242,12 @@ class SupplierDashboardScreen extends StatelessWidget {
         onTap: () => context.go('/supplier-excel-import'),
       ),
       SupplierQuickActionCard(
-        title: 'Home Banners',
+        title: 'Create Banner',
         icon: Icons.image_outlined,
         onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Coupons',
+        title: 'Create Coupon',
         icon: Icons.sell_outlined,
         onTap: () => context.go('/supplier-coupons/create'),
       ),
