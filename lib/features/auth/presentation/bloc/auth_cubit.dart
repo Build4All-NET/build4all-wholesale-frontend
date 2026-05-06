@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/login_account_type.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
@@ -22,6 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login({
     required String email,
     required String password,
+    LoginAccountType? preferredAccountType,
   }) async {
     emit(
       state.copyWith(
@@ -36,6 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await loginUseCase(
         email: email,
         password: password,
+        preferredAccountType: preferredAccountType,
       );
 
       emit(
@@ -111,9 +114,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> forgotPassword({
-    required String email,
-  }) async {
+  Future<void> forgotPassword({required String email}) async {
     emit(
       state.copyWith(
         isLoading: true,

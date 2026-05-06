@@ -10,9 +10,6 @@ class ApiConfig {
   static const String verifyEmailCode = '/auth/verify-email-code';
   static const String completeProfile = '/auth/complete-profile';
 
-  static const String forgotPassword = '/auth/forgot-password';
-  static const String resetPassword = '/auth/reset-password';
-
   static const String currentUser = '/auth/me';
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
@@ -20,7 +17,44 @@ class ApiConfig {
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
-    // Supplier Categories
+
+  // Retailer Home endpoints from Wholesale backend
+  static const String retailerHome = '/retailer-home';
+  static const String retailerHomeAddCartItem = '/retailer-home/cart/items';
+
+  static String retailerHomeCategoryProducts(int categoryId) =>
+      '/retailer-home/categories/$categoryId/products';
+
+  // Retailer Cart
+  static const String retailerCart = '/retailer/cart';
+  static const String retailerCartItems = '/retailer/cart/items';
+
+  static String retailerCartItemById(int cartItemId) =>
+      '/retailer/cart/items/$cartItemId';
+
+  // Build4All user endpoints
+  static String build4AllUserById(int id) => '/users/$id';
+
+  static String build4AllUserProfile(int id) => '/users/$id/profile';
+
+  static String build4AllVerifyEmailChange(int id) =>
+      '/users/$id/email-change/verify';
+
+  static String build4AllResendEmailChange(int id) =>
+      '/users/$id/email-change/resend';
+
+  static String build4AllResetPassword(int ownerProjectLinkId) =>
+      '/users/reset-password?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllVerifyResetCode(int ownerProjectLinkId) =>
+      '/users/verify-reset-code?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllUpdatePassword(int ownerProjectLinkId) =>
+      '/users/update-password?ownerProjectLinkId=$ownerProjectLinkId';
+
+  static String build4AllDeleteUser(int userId) => '/users/$userId';
+
+  // Supplier Categories
   static const String supplierCategories = '/supplier/categories';
   static const String supplierSubCategories = '/supplier/subcategories';
 
@@ -35,7 +69,8 @@ class ApiConfig {
   static String supplierSubCategoriesByCategory(String categoryId) {
     return '/supplier/subcategories/category/$categoryId';
   }
-    // Supplier Branches
+
+  // Supplier Branches
   static const String supplierBranches = '/supplier/branches';
 
   static String supplierBranchById(String id) {
@@ -45,7 +80,8 @@ class ApiConfig {
   static String supplierBranchesSearch(String query) {
     return '/supplier/branches/search?query=$query';
   }
-    // Supplier Products
+
+  // Supplier Products
   static const String supplierProducts = '/supplier/products';
 
   static String supplierProductById(String id) {
@@ -55,7 +91,8 @@ class ApiConfig {
   static String supplierProductsSearch(String query) {
     return '/supplier/products/search?query=$query';
   }
-    // Supplier Branch Inventory
+
+  // Supplier Branch Inventory
   static const String supplierBranchInventory = '/supplier/branch-inventory';
 
   static String supplierInventoryByBranch(String branchId) {
@@ -81,7 +118,8 @@ class ApiConfig {
   static String supplierProductInventorySummary(String productId) {
     return '/supplier/branch-inventory/product/$productId/summary';
   }
-    // Supplier Orders
+
+  // Supplier Orders
   static const String supplierOrders = '/supplier/orders';
 
   static String supplierOrdersByStatus(String status) {

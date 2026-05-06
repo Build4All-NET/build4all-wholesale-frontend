@@ -20,7 +20,7 @@ class AuthStorage {
     required String email,
     required String fullName,
   }) async {
-    await _storage.write(key: _tokenKey, value: token);
+    await _storage.write(key: _tokenKey, value: _cleanToken(token));
     await _storage.write(
       key: _build4allUserIdKey,
       value: build4allUserId.toString(),
@@ -38,7 +38,10 @@ class AuthStorage {
     await _storage.write(key: _fullNameKey, value: fullName);
   }
 
-  Future<String?> getToken() async => _storage.read(key: _tokenKey);
+  Future<String?> getToken() async {
+    final token = await _storage.read(key: _tokenKey);
+    return token != null ? _cleanToken(token) : null;
+  }
 
   Future<int?> getBuild4allUserId() async {
     final value = await _storage.read(key: _build4allUserIdKey);
@@ -66,5 +69,15 @@ class AuthStorage {
 
   Future<void> clearSession() async {
     await _storage.deleteAll();
+  }
+
+  String _cleanToken(String token) {
+    final trimmed = token.trim();
+
+    if (trimmed.toLowerCase().startsWith('bearer ')) {
+      return trimmed.substring(7).trim();
+    }
+
+    return trimmed;
   }
 }
