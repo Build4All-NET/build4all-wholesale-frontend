@@ -10,6 +10,7 @@ import '../features/auth/presentation/screens/retailer_complete_profile_screen.d
 import '../features/auth/presentation/screens/complete_retailer_profile_screen.dart';
 
 import '../features/dashboard/data/models/retailer_home_model.dart';
+import '../features/dashboard/presentation/screens/retailer_all_categories_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
@@ -24,6 +25,7 @@ import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
 
 import '../features/supplier/products/domain/entities/product_entity.dart';
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
+import '../features/supplier/products/presentation/screens/product_branch_inventory_screen.dart';
 import '../features/supplier/products/presentation/screens/product_management_screen.dart';
 
 import '../features/supplier/branches/domain/entities/branch_entity.dart';
@@ -43,10 +45,13 @@ import '../features/supplier/banners/domain/entities/banner_entity.dart';
 import '../features/supplier/banners/presentation/screens/banners_screen.dart';
 import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
 
+import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
+import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
+import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
+
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
 import '../l10n/app_localizations.dart';
-import '../features/dashboard/presentation/screens/retailer_all_categories_screen.dart';
 
 import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
 import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
@@ -56,8 +61,14 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(path: '/', redirect: (context, state) => '/login'),
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/',
+        redirect: (context, state) => '/login',
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
       GoRoute(
         path: '/signup',
         builder: (context, state) => const RetailerSignupScreen(),
@@ -135,6 +146,13 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: '/supplier-products/branch-stock',
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+          return ProductBranchInventoryScreen(product: product);
+        },
+      ),
+      GoRoute(
         path: '/supplier-branches',
         builder: (context, state) => const BranchManagementScreen(),
       ),
@@ -165,10 +183,14 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-orders',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Orders Management',
-          icon: Icons.receipt_long_outlined,
-        ),
+        builder: (context, state) => const SupplierOrdersScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-orders/details',
+        builder: (context, state) {
+          final order = state.extra as SupplierOrderEntity;
+          return SupplierOrderDetailsScreen(order: order);
+        },
       ),
       GoRoute(
         path: '/supplier-promotions',

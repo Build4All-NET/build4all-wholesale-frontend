@@ -25,13 +25,28 @@ class ApiConfig {
   static const String retailerProfileMe = '/retailer-profile/me';
 
   // =========================
-  // Supplier Categories
+  // Retailer Home
   // =========================
-  // Retailer Home endpoints from Wholesale backend
   static const String retailerHome = '/retailer-home';
   static const String retailerHomeAddCartItem = '/retailer-home/cart/items';
 
+  static String retailerHomeCategoryProducts(int categoryId) =>
+      '/retailer-home/categories/$categoryId/products';
+
+  // =========================
+  // Retailer Cart
+  // =========================
+  static const String retailerCart = '/retailer/cart';
+  static const String retailerCartItems = '/retailer/cart/items';
+
+  static String retailerCartItemById(int cartItemId) =>
+      '/retailer/cart/items/$cartItemId';
+
+  // =========================
+  // Build4All user endpoints
+  // =========================
   static String build4AllUserById(int id) => '/users/$id';
+
   static String build4AllUserProfile(int id) => '/users/$id/profile';
 
   static String build4AllVerifyEmailChange(int id) =>
@@ -51,13 +66,9 @@ class ApiConfig {
 
   static String build4AllDeleteUser(int userId) => '/users/$userId';
 
-  static const String retailerCart = '/retailer/cart';
-  static const String retailerCartItems = '/retailer/cart/items';
-
-  static String retailerCartItemById(int cartItemId) =>
-      '/retailer/cart/items/$cartItemId';
-
+  // =========================
   // Supplier Categories
+  // =========================
   static const String supplierCategories = '/supplier/categories';
   static const String supplierSubCategories = '/supplier/subcategories';
 
@@ -161,13 +172,26 @@ class ApiConfig {
   // =========================
   // Supplier Shipping Methods
   // =========================
-
   static const String supplierShippingMethods = '/supplier/shipping-methods';
 
   static String supplierShippingMethodById(String id) {
     return '/supplier/shipping-methods/$id';
   }
 
-  static String retailerHomeCategoryProducts(int categoryId) =>
-      '/retailer-home/categories/$categoryId/products';
+  // =========================
+  // Supplier Orders
+  // =========================
+  static const String supplierOrders = '/supplier/orders';
+
+  static String supplierOrdersByStatus(String status) {
+    return '/supplier/orders/status/$status';
+  }
+
+  static String supplierOrderById(String orderId) {
+    return '/supplier/orders/$orderId';
+  }
+
+  static String supplierOrderStatus(String orderId) {
+    return '/supplier/orders/$orderId/status';
+  }
 }

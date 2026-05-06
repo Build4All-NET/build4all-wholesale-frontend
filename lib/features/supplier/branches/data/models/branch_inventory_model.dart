@@ -4,9 +4,13 @@ class BranchInventoryModel extends BranchInventoryItemEntity {
   const BranchInventoryModel({
     required super.id,
     required super.branchId,
+    required super.branchName,
+    required super.branchCity,
     required super.productId,
     required super.productName,
+    required super.categoryId,
     required super.categoryName,
+    super.subCategoryId,
     super.subCategoryName,
     required super.stockQuantity,
   });
@@ -15,12 +19,22 @@ class BranchInventoryModel extends BranchInventoryItemEntity {
     return BranchInventoryModel(
       id: json['id'].toString(),
       branchId: json['branchId'].toString(),
+      branchName: (json['branchName'] ?? '').toString(),
+      branchCity: (json['branchCity'] ?? '').toString(),
       productId: json['productId'].toString(),
-      productName: json['productName']?.toString() ?? '',
-      categoryName: json['categoryName']?.toString() ?? '',
+      productName: (json['productName'] ?? '').toString(),
+      categoryId: json['categoryId'].toString(),
+      categoryName: (json['categoryName'] ?? '').toString(),
+      subCategoryId: json['subCategoryId']?.toString(),
       subCategoryName: json['subCategoryName']?.toString(),
-      stockQuantity:
-          int.tryParse(json['stockQuantity']?.toString() ?? '0') ?? 0,
+      stockQuantity: _toInt(json['stockQuantity']),
     );
+  }
+
+  static int _toInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    return int.tryParse(value.toString()) ?? 0;
   }
 }

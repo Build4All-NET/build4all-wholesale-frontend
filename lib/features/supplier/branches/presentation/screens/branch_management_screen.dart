@@ -1,15 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../data/models/branch_model.dart';
 import '../../domain/entities/branch_entity.dart';
-import '../../domain/repositories/branch_repository.dart';
+import '../bloc/branch_list/branch_list_bloc.dart';
+import '../bloc/branch_list/branch_list_event.dart';
+import '../bloc/branch_list/branch_list_state.dart';
 import '../widgets/branch_card.dart';
 
 class BranchManagementScreen extends StatefulWidget {
@@ -21,81 +23,35 @@ class BranchManagementScreen extends StatefulWidget {
 
 class _BranchManagementScreenState extends State<BranchManagementScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final BranchRepository _branchRepository = sl<BranchRepository>();
+  final BranchListBloc _branchListBloc = sl<BranchListBloc>();
 
   Timer? _searchDebounce;
-
-  bool _isLoading = true;
-  bool _isDeleting = false;
   String _searchText = '';
-
-  List<BranchEntity> _branches = [];
 
   @override
   void initState() {
     super.initState();
-    _loadBranches();
+    _branchListBloc.add(const LoadBranches());
   }
 
   @override
   void dispose() {
     _searchDebounce?.cancel();
     _searchController.dispose();
+    _branchListBloc.close();
     super.dispose();
   }
 
-  Future<void> _loadBranches() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final branches = await _branchRepository.getBranches();
-
-      if (!mounted) return;
-
-      setState(() {
-        _branches = branches;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      _showError(e);
-    }
-  }
-
-  Future<void> _searchBranches(String query) async {
-    try {
-      final branches = query.trim().isEmpty
-          ? await _branchRepository.getBranches()
-          : await _branchRepository.searchBranches(query: query);
-
-      if (!mounted) return;
-
-      setState(() {
-        _branches = branches;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      _showError(e);
-    }
-  }
-
   void _onSearchChanged(String value) {
-    setState(() {
-      _searchText = value;
-    });
+    _searchText = value;
 
     _searchDebounce?.cancel();
 
     _searchDebounce = Timer(
       const Duration(milliseconds: 350),
-      () => _searchBranches(value),
+      () {
+        _branchListBloc.add(SearchBranches(value));
+      },
     );
   }
 
@@ -103,7 +59,11 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     final result = await context.push<BranchEntity>('/supplier-branches/add');
 
     if (result != null) {
-      await _loadBranches();
+      _branchListBloc.add(
+        _searchText.trim().isEmpty
+            ? const LoadBranches()
+            : SearchBranches(_searchText),
+      );
     }
   }
 
@@ -114,19 +74,25 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     );
 
     if (result != null) {
-      await _loadBranches();
+      _branchListBloc.add(
+        _searchText.trim().isEmpty
+            ? const LoadBranches()
+            : SearchBranches(_searchText),
+      );
     }
   }
 
   Future<void> _goToInventory(BranchEntity branch) async {
     await context.push('/supplier-branches/inventory', extra: branch);
 
-    await _loadBranches();
+    _branchListBloc.add(
+      _searchText.trim().isEmpty
+          ? const LoadBranches()
+          : SearchBranches(_searchText),
+    );
   }
 
   Future<void> _deleteBranch(BranchEntity branch) async {
-    if (_isDeleting) return;
-
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -154,34 +120,15 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
 
     if (shouldDelete != true) return;
 
-    setState(() {
-      _isDeleting = true;
-    });
+    _branchListBloc.add(DeleteBranchRequested(branch.id));
+  }
 
-    try {
-      await _branchRepository.deleteBranch(branchId: branch.id);
-
-      if (!mounted) return;
-
-      setState(() {
-        _branches.removeWhere((item) => item.id == branch.id);
-        _isDeleting = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${branch.name} deleted'),
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isDeleting = false;
-      });
-
-      _showError(e);
-    }
+  Future<void> _refreshBranches() async {
+    _branchListBloc.add(
+      _searchText.trim().isEmpty
+          ? const LoadBranches()
+          : SearchBranches(_searchText),
+    );
   }
 
   int _getTotalProducts(BranchEntity branch) {
@@ -200,107 +147,126 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     return 0;
   }
 
-  void _showError(Object error) {
-    final message = error is AppException
-        ? error.message
-        : error.toString().replaceFirst('Exception: ', '');
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    return BlocProvider<BranchListBloc>.value(
+      value: _branchListBloc,
+      child: BlocListener<BranchListBloc, BranchListState>(
+        listenWhen: (previous, current) {
+          return previous.error != current.error ||
+              previous.successMessage != current.successMessage;
+        },
+        listener: (context, state) {
+          if (state.error != null && state.error!.trim().isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error!)),
+            );
+          }
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
-      appBar: AppBar(
-        backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(Icons.menu),
+          if (state.successMessage != null &&
+              state.successMessage!.trim().isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.successMessage!)),
+            );
+          }
+        },
+        child: BlocBuilder<BranchListBloc, BranchListState>(
+          builder: (context, state) {
+            final primaryColor = Theme.of(context).colorScheme.primary;
+
+            return Scaffold(
+              backgroundColor: AppThemeTokens.background,
+              drawer: const SupplierAppDrawer(),
+              appBar: AppBar(
+                backgroundColor: AppThemeTokens.background,
+                elevation: 0,
+                leading: Builder(
+                  builder: (context) {
+                    return IconButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: const Icon(Icons.menu),
+                    );
+                  },
+                ),
+                title: const Text(
+                  'Branch\nManagement',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: AppThemeTokens.textPrimary,
+                    height: 1.15,
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: _goToAddBranch,
+                    icon: Icon(
+                      Icons.add_circle,
+                      color: primaryColor,
+                      size: 31,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              body: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: _onSearchChanged,
+                      decoration: InputDecoration(
+                        hintText: 'Search branches...',
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: AppThemeTokens.textSecondary,
+                        ),
+                        filled: true,
+                        fillColor: AppThemeTokens.inputFill,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppThemeTokens.radiusSmall,
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Divider(height: 1, color: AppThemeTokens.border),
+                  Expanded(
+                    child: state.isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : state.branches.isEmpty
+                            ? const _EmptyBranchesView()
+                            : RefreshIndicator(
+                                onRefresh: _refreshBranches,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(16),
+                                  itemCount: state.branches.length,
+                                  itemBuilder: (context, index) {
+                                    final branch = state.branches[index];
+
+                                    return BranchCard(
+                                      branch: branch,
+                                      totalProducts:
+                                          _getTotalProducts(branch),
+                                      totalStock: _getTotalStock(branch),
+                                      onEdit: () => _goToEditBranch(branch),
+                                      onDelete: state.isDeleting
+                                          ? () {}
+                                          : () => _deleteBranch(branch),
+                                      onViewInventory: () =>
+                                          _goToInventory(branch),
+                                    );
+                                  },
+                                ),
+                              ),
+                  ),
+                ],
+              ),
             );
           },
         ),
-        title: const Text(
-          'Branch\nManagement',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            color: AppThemeTokens.textPrimary,
-            height: 1.15,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: _goToAddBranch,
-            icon: Icon(
-              Icons.add_circle,
-              color: primaryColor,
-              size: 31,
-            ),
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-            child: TextField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              decoration: InputDecoration(
-                hintText: 'Search branches...',
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: AppThemeTokens.textSecondary,
-                ),
-                filled: true,
-                fillColor: AppThemeTokens.inputFill,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppThemeTokens.radiusSmall,
-                  ),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-          ),
-          const Divider(height: 1, color: AppThemeTokens.border),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _branches.isEmpty
-                    ? const _EmptyBranchesView()
-                    : RefreshIndicator(
-                        onRefresh: _searchText.trim().isEmpty
-                            ? _loadBranches
-                            : () => _searchBranches(_searchText),
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: _branches.length,
-                          itemBuilder: (context, index) {
-                            final branch = _branches[index];
-
-                            return BranchCard(
-                              branch: branch,
-                              totalProducts: _getTotalProducts(branch),
-                              totalStock: _getTotalStock(branch),
-                              onEdit: () => _goToEditBranch(branch),
-                              onDelete: () => _deleteBranch(branch),
-                              onViewInventory: () => _goToInventory(branch),
-                            );
-                          },
-                        ),
-                      ),
-          ),
-        ],
       ),
     );
   }
