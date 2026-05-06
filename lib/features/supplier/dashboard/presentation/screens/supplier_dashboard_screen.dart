@@ -17,8 +17,8 @@ class SupplierDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplierDashboardBloc>(
-      create: (_) => sl<SupplierDashboardBloc>()
-        ..add(const SupplierDashboardStarted()),
+      create: (_) =>
+          sl<SupplierDashboardBloc>()..add(const SupplierDashboardStarted()),
       child: const _SupplierDashboardView(),
     );
   }
@@ -263,7 +263,7 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-   Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions(BuildContext context) {
     final actions = [
       SupplierQuickActionCard(
         title: 'Add Product',
@@ -325,3 +325,80 @@ class _SupplierDashboardView extends StatelessWidget {
       itemBuilder: (context, index) => actions[index],
     );
   }
+
+  String _formatMoney(double amount) {
+    return '\$${amount.toStringAsFixed(2)}';
+  }
+}
+
+class _DashboardLoadingCard extends StatelessWidget {
+  const _DashboardLoadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: const Center(
+        child: Column(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 14),
+            Text(
+              'Loading dashboard data...',
+              style: TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FinancialItem extends StatelessWidget {
+  final String value;
+  final String label;
+  final Color valueColor;
+
+  const _FinancialItem({
+    required this.value,
+    required this.label,
+    required this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: valueColor,
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: AppThemeTokens.textSecondary,
+            fontSize: 13,
+            height: 1.25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
