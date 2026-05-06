@@ -116,6 +116,7 @@ import 'features/supplier/orders/domain/usecases/update_supplier_order_status_us
 import 'features/supplier/orders/presentation/bloc/supplier_orders/supplier_orders_bloc.dart';
 import 'features/supplier/orders/presentation/bloc/supplier_order_details/supplier_order_details_bloc.dart';
 
+import 'features/supplier/dashboard/presentation/bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -477,6 +478,11 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory<SupplierDashboardBloc>(
+    () => SupplierDashboardBloc(
+      getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
+    ),
+  );
   // =========================
   // RETAILER CUBITS
   // =========================
