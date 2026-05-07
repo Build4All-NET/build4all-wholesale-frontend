@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/coupon_mock_store.dart';
+import '../../domain/entities/coupon_entity.dart';
+import '../bloc/coupons_bloc.dart';
+import '../bloc/coupons_event.dart';
+import '../bloc/coupons_state.dart';
 import '../widgets/coupon_card.dart';
 
-class CouponsScreen extends StatefulWidget {
+class CouponsScreen extends StatelessWidget {
   const CouponsScreen({super.key});
 
   @override
-  State<CouponsScreen> createState() => _CouponsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<CouponsBloc>(
+      create: (_) => sl<CouponsBloc>()..add(const LoadCouponsRequested()),
+      child: const _CouponsView(),
+    );
+  }
 }
 
-class _CouponsScreenState extends State<CouponsScreen> {
-  Future<void> _confirmDeleteCoupon(String id, String code) async {
+class _CouponsView extends StatefulWidget {
+  const _CouponsView();
+
+  @override
+  State<_CouponsView> createState() => _CouponsViewState();
+}
+
+class _CouponsViewState extends State<_CouponsView> {
+  Future<void> _refresh(BuildContext context) async {
+    context.read<CouponsBloc>().add(const LoadCouponsRequested());
+  }
+
+  Future<void> _confirmDeleteCoupon(
+    BuildContext context,
+    CouponEntity coupon,
+  ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -24,7 +48,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete coupon "$code"?',
+            'Are you sure you want to delete coupon "${coupon.code}"?',
           ),
           actions: [
             TextButton(
@@ -46,95 +70,126 @@ class _CouponsScreenState extends State<CouponsScreen> {
       },
     );
 
-    if (shouldDelete != true) return;
+    if (shouldDelete != true || !context.mounted) return;
 
-    CouponMockStore.deleteCoupon(id);
-    setState(() {});
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Coupon deleted successfully')),
-    );
+    context.read<CouponsBloc>().add(
+          DeleteCouponRequested(coupon.id),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final coupons = CouponMockStore.coupons;
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
-      appBar: AppBar(
+    return BlocListener<CouponsBloc, CouponsState>(
+      listener: (context, state) {
+        final message = state.successMessage ?? state.errorMessage;
+
+        if (message != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+
+          context.read<CouponsBloc>().add(
+                const ClearCouponMessageRequested(),
+              );
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        centerTitle: true,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu, size: 30),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            );
-          },
-        ),
-        title: Text(
-          'Coupons',
-          style: TextStyle(
-            color: primary,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
+        drawer: const SupplierAppDrawer(),
+        appBar: AppBar(
+          backgroundColor: AppThemeTokens.background,
+          elevation: 0,
+          centerTitle: true,
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu, size: 30),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              );
+            },
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            AppThemeTokens.screenHorizontalPadding,
+          title: Text(
+            'Coupons',
+            style: TextStyle(
+              color: primary,
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _HeaderCard(primary: primary),
-              const SizedBox(height: 20),
+          actions: [
+            IconButton(
+              onPressed: () => _refresh(context),
+              icon: const Icon(Icons.refresh),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: SafeArea(
+          child: BlocBuilder<CouponsBloc, CouponsState>(
+            builder: (context, state) {
+              return RefreshIndicator(
+                onRefresh: () => _refresh(context),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(
+                    AppThemeTokens.screenHorizontalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _HeaderCard(primary: primary),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Coupon List',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (state.loading)
+                        const _LoadingCard()
+                      else if (state.errorMessage != null)
+                        _ErrorCard(
+                          message: state.errorMessage!,
+                          onRetry: () => _refresh(context),
+                        )
+                      else if (state.coupons.isEmpty)
+                        _EmptyCouponsCard(primary: primary)
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: state.coupons.length,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 16);
+                          },
+                          itemBuilder: (context, index) {
+                            final coupon = state.coupons[index];
 
-              const Text(
-                'Coupon List',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppThemeTokens.textPrimary,
+                            return CouponCard(
+                              coupon: coupon,
+                              onEdit: () {
+                                context.go(
+                                  '/supplier-coupons/edit',
+                                  extra: coupon,
+                                );
+                              },
+                              onDelete: () {
+                                _confirmDeleteCoupon(context, coupon);
+                              },
+                            );
+                          },
+                        ),
+                      const SizedBox(height: 28),
+                    ],
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 12),
-
-              if (coupons.isEmpty)
-                _EmptyCouponsCard(primary: primary)
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: coupons.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final coupon = coupons[index];
-
-                    return CouponCard(
-                      coupon: coupon,
-                      onEdit: () {
-                        context.go(
-                          '/supplier-coupons/edit',
-                          extra: coupon,
-                        );
-                      },
-                      onDelete: () {
-                        _confirmDeleteCoupon(coupon.id, coupon.code);
-                      },
-                    );
-                  },
-                ),
-
-              const SizedBox(height: 28),
-            ],
+              );
+            },
           ),
         ),
       ),
@@ -183,7 +238,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier coupons. These coupon rules follow the same owner coupon structure used in the e-commerce project.',
+                  'View, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -192,6 +247,91 @@ class _HeaderCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingCard extends StatelessWidget {
+  const _LoadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
+class _ErrorCard extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorCard({
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: Colors.red,
+            size: 34,
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Could not load coupons',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppThemeTokens.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 14),
+          ElevatedButton(
+            onPressed: onRetry,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primary,
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
+            child: const Text(
+              'Retry',
+              style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
         ],
@@ -234,25 +374,6 @@ class _EmptyCouponsCard extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFEF3C7),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Draft',
-              style: TextStyle(
-                color: Color(0xFFD97706),
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-              ),
             ),
           ),
           const SizedBox(height: 10),

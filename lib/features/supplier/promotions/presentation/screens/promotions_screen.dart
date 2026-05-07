@@ -1,20 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/promotion_mock_store.dart';
+import '../../domain/entities/promotion_entity.dart';
+import '../bloc/promotions_bloc.dart';
+import '../bloc/promotions_event.dart';
+import '../bloc/promotions_state.dart';
 import '../widgets/promotion_card.dart';
 
-class PromotionsScreen extends StatefulWidget {
+class PromotionsScreen extends StatelessWidget {
   const PromotionsScreen({super.key});
 
   @override
-  State<PromotionsScreen> createState() => _PromotionsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<PromotionsBloc>(
+      create: (_) => sl<PromotionsBloc>()..add(const LoadPromotionsRequested()),
+      child: const _PromotionsView(),
+    );
+  }
 }
 
-class _PromotionsScreenState extends State<PromotionsScreen> {
-  Future<void> _confirmDeletePromotion(String id, String title) async {
+class _PromotionsView extends StatefulWidget {
+  const _PromotionsView();
+
+  @override
+  State<_PromotionsView> createState() => _PromotionsViewState();
+}
+
+class _PromotionsViewState extends State<_PromotionsView> {
+  Future<void> _refresh(BuildContext context) async {
+    context.read<PromotionsBloc>().add(const LoadPromotionsRequested());
+  }
+
+  Future<void> _copyTitle(BuildContext context, String title) async {
+    await Clipboard.setData(ClipboardData(text: title));
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Promotion title copied')),
+    );
+  }
+
+  Future<void> _confirmDeletePromotion(
+    BuildContext context,
+    PromotionEntity promotion,
+  ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -24,7 +59,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete promotion "$title"?',
+            'Are you sure you want to delete "${promotion.title}"?',
           ),
           actions: [
             TextButton(
@@ -33,9 +68,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text(
                 'Delete',
                 style: TextStyle(fontWeight: FontWeight.w900),
@@ -46,98 +79,130 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
       },
     );
 
-    if (shouldDelete != true) return;
+    if (shouldDelete != true || !context.mounted) return;
 
-    PromotionMockStore.deletePromotion(id);
-    setState(() {});
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Promotion deleted successfully')),
-    );
+    context.read<PromotionsBloc>().add(
+          DeletePromotionRequested(promotion.id),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final promotions = PromotionMockStore.promotions;
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
-      appBar: AppBar(
+    return BlocListener<PromotionsBloc, PromotionsState>(
+      listener: (context, state) {
+        final message = state.successMessage ?? state.errorMessage;
+
+        if (message != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+
+          context.read<PromotionsBloc>().add(
+                const ClearPromotionMessageRequested(),
+              );
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        centerTitle: true,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu, size: 30),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            );
-          },
-        ),
-        title: Text(
-          'Promotions',
-          style: TextStyle(
-            color: primary,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
+        drawer: const SupplierAppDrawer(),
+        appBar: AppBar(
+          backgroundColor: AppThemeTokens.background,
+          elevation: 0,
+          centerTitle: true,
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu, size: 30),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              );
+            },
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            AppThemeTokens.screenHorizontalPadding,
+          title: Text(
+            'Promotions',
+            style: TextStyle(
+              color: primary,
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _HeaderCard(primary: primary),
-              const SizedBox(height: 20),
+          actions: [
+            IconButton(
+              onPressed: () => _refresh(context),
+              icon: const Icon(Icons.refresh),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: SafeArea(
+          child: BlocBuilder<PromotionsBloc, PromotionsState>(
+            builder: (context, state) {
+              return RefreshIndicator(
+                onRefresh: () => _refresh(context),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(
+                    AppThemeTokens.screenHorizontalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _HeaderCard(primary: primary),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Promotion List',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (state.loading)
+                        const _LoadingCard()
+                      else if (state.errorMessage != null)
+                        _ErrorCard(
+                          message: state.errorMessage!,
+                          onRetry: () => _refresh(context),
+                        )
+                      else if (state.promotions.isEmpty)
+                        _EmptyPromotionsCard(primary: primary)
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: state.promotions.length,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 16);
+                          },
+                          itemBuilder: (context, index) {
+                            final promotion = state.promotions[index];
 
-              const Text(
-                'Promotion List',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppThemeTokens.textPrimary,
+                            return PromotionCard(
+                              promotion: promotion,
+                              onCopy: () => _copyTitle(
+                                context,
+                                promotion.title,
+                              ),
+                              onEdit: () {
+                                context.go(
+                                  '/supplier-promotions/edit',
+                                  extra: promotion,
+                                );
+                              },
+                              onDelete: () {
+                                _confirmDeletePromotion(context, promotion);
+                              },
+                            );
+                          },
+                        ),
+                      const SizedBox(height: 28),
+                    ],
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 12),
-
-              if (promotions.isEmpty)
-                _EmptyPromotionsCard(primary: primary)
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: promotions.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final promotion = promotions[index];
-
-                    return PromotionCard(
-                      promotion: promotion,
-                      onEdit: () {
-                        context.go(
-                          '/supplier-promotions/edit',
-                          extra: promotion,
-                        );
-                      },
-                      onDelete: () {
-                        _confirmDeletePromotion(
-                          promotion.id,
-                          promotion.title,
-                        );
-                      },
-                    );
-                  },
-                ),
-
-              const SizedBox(height: 28),
-            ],
+              );
+            },
           ),
         ),
       ),
@@ -186,7 +251,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier promotional offers. Promotions are managed separately and prepared for future backend integration.',
+                  'View, edit, and delete supplier promotions saved in the backend database. Promotions can apply to all branches or selected branches and will later appear in retailer flows.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -195,6 +260,85 @@ class _HeaderCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingCard extends StatelessWidget {
+  const _LoadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: const Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class _ErrorCard extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorCard({
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red, size: 34),
+          const SizedBox(height: 12),
+          const Text(
+            'Could not load promotions',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppThemeTokens.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 14),
+          ElevatedButton(
+            onPressed: onRetry,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primary,
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
+            child: const Text(
+              'Retry',
+              style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
         ],
@@ -219,7 +363,6 @@ class _EmptyPromotionsCard extends StatelessWidget {
         border: Border.all(color: AppThemeTokens.border),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             radius: 30,
@@ -237,25 +380,6 @@ class _EmptyPromotionsCard extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFEF3C7),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Draft',
-              style: TextStyle(
-                color: Color(0xFFD97706),
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-              ),
             ),
           ),
           const SizedBox(height: 10),

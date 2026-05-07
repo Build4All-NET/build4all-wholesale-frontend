@@ -5,48 +5,17 @@ import '../../domain/entities/promotion_entity.dart';
 
 class PromotionCard extends StatelessWidget {
   final PromotionEntity promotion;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback? onCopy;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const PromotionCard({
     super.key,
     required this.promotion,
-    required this.onEdit,
-    required this.onDelete,
+    this.onCopy,
+    this.onEdit,
+    this.onDelete,
   });
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '—';
-
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
-
-    return '$year-$month-$day $hour:$minute';
-  }
-
-  String _usageText() {
-    if (promotion.maxUses == null) {
-      return '${promotion.usedCount} / ∞';
-    }
-
-    return '${promotion.usedCount} / ${promotion.maxUses}';
-  }
-
-  String _remainingText() {
-    if (promotion.remainingUses == null) return 'Unlimited';
-    return promotion.remainingUses.toString();
-  }
-
-  String _validityText() {
-    if (promotion.startsAt == null && promotion.endsAt == null) {
-      return 'Always active';
-    }
-
-    return '${_formatDate(promotion.startsAt)} → ${_formatDate(promotion.endsAt)}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,64 +23,57 @@ class PromotionCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
         border: Border.all(color: AppThemeTokens.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.035),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: primary.withOpacity(0.12),
-                child: Icon(
-                  Icons.local_offer_outlined,
-                  color: primary,
-                  size: 28,
-                ),
+              _PromotionBadge(
+                title: promotion.title,
+                primary: primary,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       promotion.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.w900,
                         color: AppThemeTokens.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     Text(
-                      '${promotion.promotionType.label} • ${promotion.discountType.label} • ${promotion.discountLabel}',
+                      '${promotion.discountTypeLabel} • ${promotion.discountLabel}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                         color: primary,
                       ),
                     ),
                   ],
                 ),
               ),
-              _StatusBadge(promotion: promotion),
+              const SizedBox(width: 10),
+              _StatusPill(status: promotion.statusLabel),
             ],
           ),
           if (promotion.description != null &&
               promotion.description!.trim().isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Text(
               promotion.description!,
               maxLines: 2,
@@ -124,12 +86,12 @@ class PromotionCard extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Text(
-            _validityText(),
+            promotion.validityLabel,
             style: const TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w800,
               color: AppThemeTokens.textSecondary,
             ),
           ),
@@ -138,78 +100,56 @@ class PromotionCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(label: 'Used', value: _usageText()),
-              _InfoChip(label: 'Remaining', value: _remainingText()),
-              _InfoChip(
+              _AmountChip(
                 label: 'Min order',
-                value: promotion.minOrderAmount == null
-                    ? '—'
-                    : promotion.minOrderAmount!.toStringAsFixed(2),
+                value: promotion.minOrderAmount,
+                emptyValue: '—',
               ),
-              _InfoChip(
+              _AmountChip(
                 label: 'Max discount',
-                value: promotion.maxDiscountAmount == null
-                    ? '—'
-                    : promotion.maxDiscountAmount!.toStringAsFixed(2),
+                value: promotion.maxDiscountAmount,
+                emptyValue: '—',
               ),
-              _InfoChip(
-                label: 'Branches',
-                value: promotion.branchApplicabilityLabel,
+              _TextChip(
+                text: 'Branches: ${promotion.branchScopeLabel}',
               ),
-              _InfoChip(
-                label: 'Valid now',
-                value: promotion.currentlyValid ? 'Yes' : 'No',
+              _TextChip(
+                text: 'Valid now: ${promotion.currentlyValid ? 'Yes' : 'No'}',
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           const Divider(height: 1, color: AppThemeTokens.border),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: OutlinedButton.icon(
-                    onPressed: onEdit,
-                    icon: const Icon(Icons.edit_outlined, size: 17),
-                    label: const Text('Edit'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: primary,
-                      side: BorderSide(color: primary.withOpacity(0.35)),
-                      backgroundColor: primary.withOpacity(0.06),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
+                child: _ActionButton(
+                  icon: Icons.copy,
+                  label: 'Copy',
+                  onPressed: onCopy,
+                  borderColor: AppThemeTokens.border,
+                  textColor: AppThemeTokens.textPrimary,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: OutlinedButton.icon(
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete_outline, size: 17),
-                    label: const Text('Delete'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFFDC2626),
-                      side: const BorderSide(color: Color(0xFFFCA5A5)),
-                      backgroundColor: const Color(0xFFFEF2F2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
+                child: _ActionButton(
+                  icon: Icons.edit_outlined,
+                  label: 'Edit',
+                  onPressed: onEdit,
+                  borderColor: primary.withOpacity(0.35),
+                  textColor: primary,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.delete_outline,
+                  label: 'Delete',
+                  onPressed: onDelete,
+                  borderColor: Colors.red.withOpacity(0.45),
+                  textColor: Colors.red,
                 ),
               ),
             ],
@@ -220,98 +160,156 @@ class PromotionCard extends StatelessWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final PromotionEntity promotion;
+class _PromotionBadge extends StatelessWidget {
+  final String title;
+  final Color primary;
 
-  const _StatusBadge({required this.promotion});
+  const _PromotionBadge({
+    required this.title,
+    required this.primary,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
-    final Color backgroundColor;
-    final Color textColor;
-
-    switch (promotion.status) {
-      case 'INACTIVE':
-        backgroundColor = const Color(0xFFFEE2E2);
-        textColor = const Color(0xFFDC2626);
-        break;
-      case 'SCHEDULED':
-        backgroundColor = primary.withOpacity(0.12);
-        textColor = primary;
-        break;
-      case 'EXPIRED':
-        backgroundColor = const Color(0xFFFEE2E2);
-        textColor = const Color(0xFFDC2626);
-        break;
-      case 'USAGE_LIMIT_REACHED':
-        backgroundColor = const Color(0xFFFFEDD5);
-        textColor = const Color(0xFFC2410C);
-        break;
-      case 'ACTIVE':
-      default:
-        backgroundColor = const Color(0xFFDCFCE7);
-        textColor = const Color(0xFF15803D);
-        break;
-    }
+    final text = title.trim().isEmpty
+        ? 'PROMO'
+        : title.trim().split(RegExp(r'\s+')).take(2).join(' ').toUpperCase();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      width: 86,
+      height: 58,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(999),
+        color: primary.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: primary,
+          width: 1.4,
+        ),
       ),
       child: Text(
-        promotion.statusLabel,
+        text,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
         style: TextStyle(
-          color: textColor,
           fontSize: 11,
           fontWeight: FontWeight.w900,
+          color: primary,
         ),
       ),
     );
   }
 }
 
-class _InfoChip extends StatelessWidget {
-  final String label;
-  final String value;
+class _StatusPill extends StatelessWidget {
+  final String status;
 
-  const _InfoChip({
-    required this.label,
-    required this.value,
-  });
+  const _StatusPill({required this.status});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 10,
+        horizontal: 12,
+        vertical: 7,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF4E8EE),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        status,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w900,
+          color: Color(0xFF9B4D6D),
+        ),
+      ),
+    );
+  }
+}
+
+class _AmountChip extends StatelessWidget {
+  final String label;
+  final double? value;
+  final String emptyValue;
+
+  const _AmountChip({
+    required this.label,
+    required this.value,
+    required this.emptyValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final displayValue = value == null ? emptyValue : value!.toStringAsFixed(2);
+
+    return _TextChip(text: '$label: $displayValue');
+  }
+}
+
+class _TextChip extends StatelessWidget {
+  final String text;
+
+  const _TextChip({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 11,
         vertical: 7,
       ),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(
-            color: AppThemeTokens.textSecondary,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w900,
+          color: AppThemeTokens.textPrimary,
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+  final Color borderColor;
+  final Color textColor;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    required this.borderColor,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 46,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 18),
+        label: Text(label),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: textColor,
+          side: BorderSide(color: borderColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-          children: [
-            TextSpan(
-              text: '$label: ',
-              style: const TextStyle(
-                color: AppThemeTokens.textPrimary,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            TextSpan(text: value),
-          ],
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
     );

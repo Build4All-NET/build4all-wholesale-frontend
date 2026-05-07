@@ -102,6 +102,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-banners',
                   ),
                   _DrawerItem(
+                    icon: Icons.local_shipping_outlined,
+                    title: 'Shipping Methods',
+                    route: '/supplier-shipping',
+                  ),
+                  _DrawerItem(
                     icon: Icons.settings_outlined,
                     title: 'Settings',
                     route: '/supplier-settings',

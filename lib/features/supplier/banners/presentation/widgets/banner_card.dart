@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/banner_entity.dart';
@@ -15,317 +16,233 @@ class BannerCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  String _formatDate(DateTime? date) {
-    if (date == null) return '—';
+  Future<void> _copyBanner(BuildContext context) async {
+    final textToCopy = banner.imageUrl.trim().isNotEmpty
+        ? banner.imageUrl.trim()
+        : banner.title.trim();
 
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
+    await Clipboard.setData(
+      ClipboardData(text: textToCopy),
+    );
 
-    return '$year-$month-$day $hour:$minute';
-  }
+    if (!context.mounted) return;
 
-  String _validityText() {
-    if (banner.startsAt == null && banner.endsAt == null) {
-      return 'Always visible';
-    }
-
-    return '${_formatDate(banner.startsAt)} → ${_formatDate(banner.endsAt)}';
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Banner copied successfully'),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final statusColor = _statusColor();
+    final visibleText = banner.currentlyVisible ? 'Yes' : 'No';
 
     return Container(
       width: double.infinity,
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
         border: Border.all(color: AppThemeTokens.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.035),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _BannerPreview(
-            banner: banner,
+          _BannerImage(
+            imageUrl: banner.imageUrl,
             primary: primary,
           ),
-
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        banner.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: AppThemeTokens.textPrimary,
-                        ),
-                      ),
-                    ),
-                    _StatusBadge(banner: banner),
-                  ],
-                ),
-
-                if (banner.subtitle != null &&
-                    banner.subtitle!.trim().isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    banner.subtitle!,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      height: 1.35,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
-                    ),
-                  ),
-                ],
-
-                const SizedBox(height: 12),
-
-                Text(
-                  _validityText(),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  banner.title,
                   style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: AppThemeTokens.textSecondary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: AppThemeTokens.textPrimary,
                   ),
                 ),
-
-                const SizedBox(height: 14),
-
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _InfoChip(
-                      label: 'Order',
-                      value: banner.displayOrder.toString(),
-                    ),
-                    _InfoChip(
-                      label: 'Target',
-                      value: banner.targetLabel,
-                    ),
-                    _InfoChip(
-                      label: 'Visible now',
-                      value: banner.currentlyVisible ? 'Yes' : 'No',
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 14),
-                const Divider(height: 1, color: AppThemeTokens.border),
-                const SizedBox(height: 12),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: OutlinedButton.icon(
-                          onPressed: onEdit,
-                          icon: const Icon(Icons.edit_outlined, size: 17),
-                          label: const Text('Edit'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: primary,
-                            side: BorderSide(color: primary.withOpacity(0.35)),
-                            backgroundColor: primary.withOpacity(0.06),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(11),
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: OutlinedButton.icon(
-                          onPressed: onDelete,
-                          icon: const Icon(Icons.delete_outline, size: 17),
-                          label: const Text('Delete'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFFDC2626),
-                            side: const BorderSide(color: Color(0xFFFCA5A5)),
-                            backgroundColor: const Color(0xFFFEF2F2),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(11),
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BannerPreview extends StatelessWidget {
-  final BannerEntity banner;
-  final Color primary;
-
-  const _BannerPreview({
-    required this.banner,
-    required this.primary,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hasImage = banner.imageUrl.trim().isNotEmpty;
-
-    return Container(
-      height: 150,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: primary.withOpacity(0.12),
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppThemeTokens.radiusLarge),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppThemeTokens.radiusLarge),
-        ),
-        child: hasImage
-            ? Image.network(
-                banner.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return _BannerPlaceholder(
-                    primary: primary,
-                    title: banner.title,
-                  );
-                },
-              )
-            : _BannerPlaceholder(
-                primary: primary,
-                title: banner.title,
               ),
-      ),
-    );
-  }
-}
-
-class _BannerPlaceholder extends StatelessWidget {
-  final Color primary;
-  final String title;
-
-  const _BannerPlaceholder({
-    required this.primary,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: primary.withOpacity(0.12),
-      padding: const EdgeInsets.all(18),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: primary.withOpacity(0.14),
-            child: Icon(
-              Icons.image_outlined,
-              color: primary,
-              size: 32,
-            ),
+              const SizedBox(width: 10),
+              _StatusBadge(
+                text: banner.statusLabel,
+                color: statusColor,
+              ),
+            ],
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Text(
-              title,
+          if (banner.subtitle != null &&
+              banner.subtitle!.trim().isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              banner.subtitle!,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: primary,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
+              style: const TextStyle(
+                fontSize: 13,
+                height: 1.35,
+                fontWeight: FontWeight.w700,
+                color: AppThemeTokens.textSecondary,
               ),
             ),
+          ],
+          const SizedBox(height: 12),
+          Text(
+            banner.validityLabel,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppThemeTokens.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _InfoChip(
+                text: 'Target: ${banner.targetLabelText}',
+              ),
+              _InfoChip(
+                text: 'Order: ${banner.sortOrder}',
+              ),
+              _InfoChip(
+                text: 'Visible now: $visibleText',
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1, color: AppThemeTokens.border),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.copy_outlined,
+                  label: 'Copy',
+                  onPressed: () => _copyBanner(context),
+                  color: AppThemeTokens.textSecondary,
+                  borderColor: AppThemeTokens.border,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.edit_outlined,
+                  label: 'Edit',
+                  onPressed: onEdit,
+                  color: primary,
+                  borderColor: primary.withOpacity(0.35),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.delete_outline,
+                  label: 'Delete',
+                  onPressed: onDelete,
+                  color: Colors.red,
+                  borderColor: Colors.red.withOpacity(0.35),
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  Color _statusColor() {
+    switch (banner.status) {
+      case 'INACTIVE':
+        return Colors.grey;
+      case 'SCHEDULED':
+        return const Color(0xFF9F4F73);
+      case 'EXPIRED':
+        return Colors.red;
+      case 'ACTIVE':
+      default:
+        return Colors.green;
+    }
+  }
+}
+
+class _BannerImage extends StatelessWidget {
+  final String imageUrl;
+  final Color primary;
+
+  const _BannerImage({
+    required this.imageUrl,
+    required this.primary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cleanUrl = imageUrl.trim();
+
+    return Container(
+      width: double.infinity,
+      height: 150,
+      decoration: BoxDecoration(
+        color: primary.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: cleanUrl.isEmpty
+          ? Icon(
+              Icons.image_outlined,
+              color: primary,
+              size: 42,
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: Image.network(
+                cleanUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.broken_image_outlined,
+                    color: primary,
+                    size: 42,
+                  );
+                },
+              ),
+            ),
     );
   }
 }
 
 class _StatusBadge extends StatelessWidget {
-  final BannerEntity banner;
+  final String text;
+  final Color color;
 
-  const _StatusBadge({required this.banner});
+  const _StatusBadge({
+    required this.text,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
-    final Color backgroundColor;
-    final Color textColor;
-
-    switch (banner.status) {
-      case 'INACTIVE':
-        backgroundColor = const Color(0xFFFEE2E2);
-        textColor = const Color(0xFFDC2626);
-        break;
-      case 'SCHEDULED':
-        backgroundColor = primary.withOpacity(0.12);
-        textColor = primary;
-        break;
-      case 'EXPIRED':
-        backgroundColor = const Color(0xFFFEE2E2);
-        textColor = const Color(0xFFDC2626);
-        break;
-      case 'ACTIVE':
-      default:
-        backgroundColor = const Color(0xFFDCFCE7);
-        textColor = const Color(0xFF15803D);
-        break;
-    }
-
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      constraints: const BoxConstraints(maxWidth: 105),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        banner.statusLabel,
+        text,
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: textColor,
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: FontWeight.w900,
+          color: color,
         ),
       ),
     );
@@ -333,43 +250,77 @@ class _StatusBadge extends StatelessWidget {
 }
 
 class _InfoChip extends StatelessWidget {
-  final String label;
-  final String value;
+  final String text;
 
   const _InfoChip({
-    required this.label,
-    required this.value,
+    required this.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 7,
-      ),
+      constraints: const BoxConstraints(maxWidth: 280),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(999),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(
-            color: AppThemeTokens.textSecondary,
+      child: Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: AppThemeTokens.textPrimary,
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+  final Color color;
+  final Color borderColor;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    required this.color,
+    required this.borderColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 48,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(
+          icon,
+          size: 16,
+          color: color,
+        ),
+        label: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.clip,
+          style: TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w900,
+            color: color,
           ),
-          children: [
-            TextSpan(
-              text: '$label: ',
-              style: const TextStyle(
-                color: AppThemeTokens.textPrimary,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            TextSpan(text: value),
-          ],
+        ),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          side: BorderSide(color: borderColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );

@@ -17,8 +17,8 @@ class SupplierDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplierDashboardBloc>(
-      create: (_) => sl<SupplierDashboardBloc>()
-        ..add(const SupplierDashboardStarted()),
+      create: (_) =>
+          sl<SupplierDashboardBloc>()..add(const SupplierDashboardStarted()),
       child: const _SupplierDashboardView(),
     );
   }
@@ -286,9 +286,9 @@ class _SupplierDashboardView extends StatelessWidget {
         onTap: () => context.go('/supplier-promotions/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Shipping Methods',
+        title: 'Create Shipping Method',
         icon: Icons.local_shipping_outlined,
-        onTap: () => context.go('/supplier-shipping'),
+        onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
         title: 'Configure Taxes',
@@ -296,12 +296,17 @@ class _SupplierDashboardView extends StatelessWidget {
         onTap: () => context.go('/supplier-tax'),
       ),
       SupplierQuickActionCard(
-        title: 'Home Banners',
+        title: 'Import Excel',
+        icon: Icons.upload_outlined,
+        onTap: () => context.go('/supplier-excel-import'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Create Banner',
         icon: Icons.image_outlined,
         onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Coupons',
+        title: 'Create Coupon',
         icon: Icons.sell_outlined,
         onTap: () => context.go('/supplier-coupons/create'),
       ),

@@ -53,6 +53,10 @@ import '../features/supplier_profile/presentation/screens/complete_supplier_prof
 
 import '../l10n/app_localizations.dart';
 
+import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
+import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
+import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
+
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
@@ -235,10 +239,23 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-shipping',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Shipping Methods',
-          icon: Icons.local_shipping_outlined,
-        ),
+        builder: (context, state) => const ShippingMethodsScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-shipping/create',
+        builder: (context, state) => const CreateShippingMethodScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-shipping/edit',
+        builder: (context, state) {
+          final method = state.extra as ShippingMethodEntity;
+
+          return CreateShippingMethodScreen(
+            method: method,
+          );
+        },
       ),
       GoRoute(
         path: '/supplier-tax',
