@@ -1373,15 +1373,6 @@ class _UploadImagesBox extends StatelessWidget {
                 : const _UploadImagePlaceholder(),
           ),
         ),
-        const SizedBox(height: 6),
-        const Text(
-          'Images are uploaded to the backend and saved as a public relative URL.',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppThemeTokens.textSecondary,
-          ),
-        ),
       ],
     );
   }
