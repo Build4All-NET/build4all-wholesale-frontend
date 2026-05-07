@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import '../../../../../core/config/app_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/product_entity.dart';
 
@@ -142,7 +142,8 @@ class _ProductImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = imagePath != null && imagePath!.isNotEmpty;
+    final resolvedImageUrl = _resolveImageUrl(imagePath);
+    final localFile = _resolveLocalFile(imagePath);
 
     return Container(
       height: 245,
@@ -152,25 +153,100 @@ class _ProductImagePlaceholder extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: hasImage && File(imagePath!).existsSync()
+      child: localFile != null
           ? ClipRRect(
               borderRadius: BorderRadius.circular(
                 AppThemeTokens.radiusMedium,
               ),
               child: Image.file(
-                File(imagePath!),
+                localFile,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
             )
-          : Icon(
-              Icons.inventory_2_outlined,
-              size: 72,
-              color: primaryColor.withOpacity(0.75),
-            ),
+          : resolvedImageUrl != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    AppThemeTokens.radiusMedium,
+                  ),
+                  child: Image.network(
+                    resolvedImageUrl,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _ImageFallbackIcon(primaryColor: primaryColor);
+                    },
+                  ),
+                )
+              : _ImageFallbackIcon(primaryColor: primaryColor),
+    );
+  }
+
+  File? _resolveLocalFile(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+
+    final normalized = value.trim();
+
+    if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('http://') ||
+        normalized.startsWith('https://')) {
+      return null;
+    }
+
+    final file = File(normalized);
+
+    return file.existsSync() ? file : null;
+  }
+
+  String? _resolveImageUrl(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+
+    final normalized = value.trim();
+
+    if (normalized.startsWith('http://') ||
+        normalized.startsWith('https://')) {
+      return normalized;
+    }
+
+    if (normalized.startsWith('/uploadsPublic/')) {
+      return '${_projectHostWithoutApi()}$normalized';
+    }
+
+    return null;
+  }
+
+  String _projectHostWithoutApi() {
+    final baseUrl = AppConfig.projectApiBaseUrl;
+
+    if (baseUrl.endsWith('/api')) {
+      return baseUrl.substring(0, baseUrl.length - 4);
+    }
+
+    return baseUrl;
+  }
+}
+
+class _ImageFallbackIcon extends StatelessWidget {
+  final Color primaryColor;
+
+  const _ImageFallbackIcon({
+    required this.primaryColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.inventory_2_outlined,
+      size: 72,
+      color: primaryColor.withOpacity(0.75),
     );
   }
 }
+
 
 class _InventoryStockBadge extends StatelessWidget {
   final int totalStock;

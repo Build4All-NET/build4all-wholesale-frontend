@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
@@ -76,6 +78,8 @@ class ProductApiService {
     String? imagePath,
   }) async {
     try {
+      final imageUrl = await _resolveProductImageUrl(imagePath);
+
       final response = await apiClient.dio.post(
         ApiConfig.supplierProducts,
         data: {
@@ -88,7 +92,7 @@ class ProductApiService {
           'price': price,
           'minimumOrderQuantity': minimumOrderQuantity,
           'status': ProductModel.statusToJson(status),
-          'imageUrl': imagePath,
+          'imageUrl': imageUrl,
         },
       );
 
@@ -112,6 +116,8 @@ class ProductApiService {
     String? imagePath,
   }) async {
     try {
+      final imageUrl = await _resolveProductImageUrl(imagePath);
+
       final response = await apiClient.dio.put(
         ApiConfig.supplierProductById(productId),
         data: {
@@ -124,7 +130,7 @@ class ProductApiService {
           'price': price,
           'minimumOrderQuantity': minimumOrderQuantity,
           'status': ProductModel.statusToJson(status),
-          'imageUrl': imagePath,
+          'imageUrl': imageUrl,
         },
       );
 
@@ -146,6 +152,68 @@ class ProductApiService {
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
+  }
+
+  Future<String?> _resolveProductImageUrl(String? imagePath) async {
+    if (imagePath == null || imagePath.trim().isEmpty) {
+      return null;
+    }
+
+    final normalized = imagePath.trim();
+
+    if (normalized.startsWith('/uploadsPublic/')) {
+      return normalized;
+    }
+
+    if (normalized.contains('/uploadsPublic/')) {
+      return normalized.substring(
+        normalized.indexOf('/uploadsPublic/'),
+      );
+    }
+
+    final file = File(normalized);
+
+    if (!file.existsSync()) {
+      return null;
+    }
+
+    return _uploadProductImage(file);
+  }
+
+  Future<String> _uploadProductImage(File file) async {
+    try {
+      final filename = _extractFilename(file.path);
+
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          file.path,
+          filename: filename,
+        ),
+      });
+
+      final response = await apiClient.dio.post(
+        ApiConfig.supplierProductImageUpload,
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+        ),
+      );
+
+      final data = response.data;
+
+      if (data is Map && data['imageUrl'] != null) {
+        return data['imageUrl'].toString();
+      }
+
+      throw AppException('Image upload failed');
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  String _extractFilename(String filePath) {
+    final parts = filePath.split(RegExp(r'[\\/]'));
+    return parts.isEmpty ? 'product_image.jpg' : parts.last;
   }
 
   String _extractMessage(DioException e) {
