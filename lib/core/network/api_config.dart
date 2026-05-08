@@ -101,10 +101,13 @@ class ApiConfig {
   // Supplier Products
   // =========================
   static const String supplierProducts = '/supplier/products';
+static const String supplierProductImageUpload = '/supplier/products/image';
 
-  static String supplierProductById(String id) {
-    return '/supplier/products/$id';
-  }
+static String supplierProductById(String id) {
+  return '/supplier/products/$id';
+}
+
+  
 
   static String supplierProductsSearch(String query) {
     return '/supplier/products/search?query=$query';
