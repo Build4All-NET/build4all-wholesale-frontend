@@ -120,6 +120,12 @@ class _CouponsViewState extends State<_CouponsView> {
           ),
           actions: [
             IconButton(
+              tooltip: 'Create Coupon',
+              onPressed: () => context.go('/supplier-coupons/create'),
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+            IconButton(
+              tooltip: 'Refresh',
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -238,7 +244,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.',
+                  'View, create, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -378,7 +384,7 @@ class _EmptyCouponsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create coupons from the supplier dashboard, then view them here.',
+            'Create coupons from the supplier dashboard quick action or tap the plus icon above.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
