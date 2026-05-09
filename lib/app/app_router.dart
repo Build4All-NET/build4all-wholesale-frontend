@@ -22,6 +22,7 @@ import '../features/retailer_profile/presentation/screens/retailer_profile_scree
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
+import '../features/supplier/excel_import/presentation/screens/supplier_excel_import_screen.dart';
 
 import '../features/supplier/products/domain/entities/product_entity.dart';
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
@@ -273,10 +274,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-excel-import',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Import Excel',
-          icon: Icons.upload_outlined,
-        ),
+        builder: (context, state) => const SupplierExcelImportScreen(),
       ),
 
       // Retailer routes

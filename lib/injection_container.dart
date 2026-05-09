@@ -153,6 +153,19 @@ import 'features/supplier/shipping/domain/usecases/update_shipping_method_usecas
 import 'features/supplier/shipping/presentation/bloc/shipping_methods_bloc.dart';
 
 // =========================
+// SUPPLIER EXCEL IMPORT
+// =========================
+import 'features/supplier/excel_import/data/repositories/supplier_excel_import_repository_impl.dart';
+import 'features/supplier/excel_import/data/services/supplier_excel_reader_service.dart';
+import 'features/supplier/excel_import/domain/repositories/supplier_excel_import_repository.dart';
+import 'features/supplier/excel_import/domain/usecases/clear_supplier_excel_import_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/import_supplier_excel_products_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/parse_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/pick_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/validate_supplier_excel_rows_usecase.dart';
+import 'features/supplier/excel_import/presentation/bloc/supplier_excel_import_bloc.dart';
+
+// =========================
 // SUPPLIER ORDERS
 // =========================
 import 'features/supplier/orders/data/repositories/supplier_order_repository_impl.dart';
@@ -167,6 +180,10 @@ import 'features/supplier/orders/presentation/bloc/supplier_order_details/suppli
 // =========================
 // SUPPLIER DASHBOARD
 // =========================
+import 'features/supplier/dashboard/data/repositories/supplier_dashboard_repository_impl.dart';
+import 'features/supplier/dashboard/data/services/supplier_dashboard_api_service.dart';
+import 'features/supplier/dashboard/domain/repositories/supplier_dashboard_repository.dart';
+import 'features/supplier/dashboard/domain/usecases/get_supplier_low_stock_alerts_usecase.dart';
 import 'features/supplier/dashboard/presentation/bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 
 final sl = GetIt.instance;
@@ -217,7 +234,9 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<SupplierProfileService>(
-    () => SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
+    () => SupplierProfileService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<RetailerProfileService>(
@@ -247,6 +266,10 @@ Future<void> init() async {
     () => ProductApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
+  );
+
+  sl.registerLazySingleton<SupplierExcelReaderService>(
+    () => SupplierExcelReaderService(),
   );
 
   sl.registerLazySingleton<CouponApiService>(
@@ -281,6 +304,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<SupplierOrderApiService>(
     () => SupplierOrderApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierDashboardApiService>(
+    () => SupplierDashboardApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
@@ -336,6 +365,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierExcelImportRepository>(
+    () => SupplierExcelImportRepositoryImpl(
+      readerService: sl<SupplierExcelReaderService>(),
+    ),
+  );
+
   sl.registerLazySingleton<CouponRepository>(
     () => CouponRepositoryImpl(
       apiService: sl<CouponApiService>(),
@@ -363,6 +398,12 @@ Future<void> init() async {
   sl.registerLazySingleton<SupplierOrderRepository>(
     () => SupplierOrderRepositoryImpl(
       apiService: sl<SupplierOrderApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierDashboardRepository>(
+    () => SupplierDashboardRepositoryImpl(
+      apiService: sl<SupplierDashboardApiService>(),
     ),
   );
 
@@ -432,6 +473,31 @@ Future<void> init() async {
 
   sl.registerLazySingleton<DeleteProductUseCase>(
     () => DeleteProductUseCase(sl<ProductRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER EXCEL IMPORT USE CASES
+  // =========================
+  sl.registerLazySingleton<PickSupplierExcelFileUseCase>(
+    () => PickSupplierExcelFileUseCase(sl<SupplierExcelImportRepository>()),
+  );
+
+  sl.registerLazySingleton<ParseSupplierExcelFileUseCase>(
+    () => ParseSupplierExcelFileUseCase(sl<SupplierExcelImportRepository>()),
+  );
+
+  sl.registerLazySingleton<ValidateSupplierExcelRowsUseCase>(
+    () => ValidateSupplierExcelRowsUseCase(),
+  );
+
+  sl.registerLazySingleton<ImportSupplierExcelProductsUseCase>(
+    () => ImportSupplierExcelProductsUseCase(
+      createProductUseCase: sl<CreateProductUseCase>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ClearSupplierExcelImportUseCase>(
+    () => const ClearSupplierExcelImportUseCase(),
   );
 
   // =========================
@@ -572,6 +638,15 @@ Future<void> init() async {
   );
 
   // =========================
+  // SUPPLIER DASHBOARD USE CASES
+  // =========================
+  sl.registerLazySingleton<GetSupplierLowStockAlertsUseCase>(
+    () => GetSupplierLowStockAlertsUseCase(
+      sl<SupplierDashboardRepository>(),
+    ),
+  );
+
+  // =========================
   // CUBITS / BLOCS
   // =========================
   sl.registerFactory<AuthCubit>(
@@ -633,6 +708,21 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory<SupplierExcelImportBloc>(
+    () => SupplierExcelImportBloc(
+      pickSupplierExcelFileUseCase: sl<PickSupplierExcelFileUseCase>(),
+      parseSupplierExcelFileUseCase: sl<ParseSupplierExcelFileUseCase>(),
+      validateSupplierExcelRowsUseCase: sl<ValidateSupplierExcelRowsUseCase>(),
+      importSupplierExcelProductsUseCase:
+          sl<ImportSupplierExcelProductsUseCase>(),
+      clearSupplierExcelImportUseCase: sl<ClearSupplierExcelImportUseCase>(),
+      getCategoriesUseCase: sl<GetCategoriesUseCase>(),
+      getSubCategoriesByCategoryUseCase:
+          sl<GetSubCategoriesByCategoryUseCase>(),
+      getProductsUseCase: sl<GetProductsUseCase>(),
+    ),
+  );
+
   sl.registerFactory<BranchListBloc>(
     () => BranchListBloc(
       getBranchesUseCase: sl<GetBranchesUseCase>(),
@@ -678,12 +768,15 @@ Future<void> init() async {
   sl.registerFactory<SupplierDashboardBloc>(
     () => SupplierDashboardBloc(
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
+      getSupplierLowStockAlertsUseCase:
+          sl<GetSupplierLowStockAlertsUseCase>(),
     ),
   );
 
   sl.registerFactory<RetailerHomeCubit>(
-    () =>
-        RetailerHomeCubit(retailerHomeRepository: sl<RetailerHomeRepository>()),
+    () => RetailerHomeCubit(
+      retailerHomeRepository: sl<RetailerHomeRepository>(),
+    ),
   );
 
   sl.registerFactory<RetailerCartCubit>(

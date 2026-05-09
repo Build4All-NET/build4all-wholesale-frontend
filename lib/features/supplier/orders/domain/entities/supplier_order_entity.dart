@@ -35,7 +35,19 @@ class SupplierOrderEntity {
   final String retailerPhone;
   final String deliveryAddress;
   final String? branchName;
+
+  /// Date when the order was created.
+  /// Used for Orders Today.
   final DateTime orderDate;
+
+  /// Date when the status was last updated.
+  /// Used as fallback for sales date if deliveredAt is not available.
+  final DateTime? statusUpdatedAt;
+
+  /// Date when the order was delivered.
+  /// Best field for Today's Sales and Monthly Revenue if backend sends it.
+  final DateTime? deliveredAt;
+
   final String paymentMethod;
   final SupplierOrderStatus status;
   final List<SupplierOrderItemEntity> items;
@@ -52,6 +64,8 @@ class SupplierOrderEntity {
     required this.paymentMethod,
     required this.status,
     required this.items,
+    this.statusUpdatedAt,
+    this.deliveredAt,
     this.notes,
   });
 
@@ -71,6 +85,8 @@ class SupplierOrderEntity {
     String? deliveryAddress,
     String? branchName,
     DateTime? orderDate,
+    DateTime? statusUpdatedAt,
+    DateTime? deliveredAt,
     String? paymentMethod,
     SupplierOrderStatus? status,
     List<SupplierOrderItemEntity>? items,
@@ -84,6 +100,8 @@ class SupplierOrderEntity {
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       branchName: branchName ?? this.branchName,
       orderDate: orderDate ?? this.orderDate,
+      statusUpdatedAt: statusUpdatedAt ?? this.statusUpdatedAt,
+      deliveredAt: deliveredAt ?? this.deliveredAt,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       status: status ?? this.status,
       items: items ?? this.items,
