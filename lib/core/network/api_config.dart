@@ -66,23 +66,33 @@ class ApiConfig {
 
   static String build4AllDeleteUser(int userId) => '/users/$userId';
 
-  // =========================
+ 
   // Supplier Categories
-  // =========================
   static const String supplierCategories = '/supplier/categories';
+  static const String supplierCategoriesAll = '/supplier/categories/all';
   static const String supplierSubCategories = '/supplier/subcategories';
+  static const String supplierSubCategoriesAll = '/supplier/subcategories/all';
 
   static String supplierCategoryById(String id) {
     return '/supplier/categories/$id';
+  }
+
+  static String supplierCategoryStatus(String id, String status) {
+    return '/supplier/categories/$id/status?status=$status';
   }
 
   static String supplierSubCategoryById(String id) {
     return '/supplier/subcategories/$id';
   }
 
+  static String supplierSubCategoryStatus(String id, String status) {
+    return '/supplier/subcategories/$id/status?status=$status';
+  }
+
   static String supplierSubCategoriesByCategory(String categoryId) {
     return '/supplier/subcategories/category/$categoryId';
   }
+
 
   // =========================
   // Supplier Branches

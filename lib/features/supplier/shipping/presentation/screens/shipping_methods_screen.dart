@@ -140,6 +140,11 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
           ),
           actions: [
             IconButton(
+              tooltip: 'Create Shipping Method',
+              onPressed: () => context.go('/supplier-shipping/create'),
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+            IconButton(
               tooltip: 'Refresh',
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
@@ -266,7 +271,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, search, edit, and delete supplier shipping methods saved in the backend.',
+                  'View, search, create, edit, and delete supplier shipping methods saved in the backend.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -476,7 +481,7 @@ class _EmptyMethodsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create shipping methods from the supplier dashboard quick action. This page is only for viewing, searching, editing, and deleting created methods.',
+            'Create shipping methods from the supplier dashboard quick action or tap the plus icon above. This page is also for viewing, searching, editing, and deleting created methods.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

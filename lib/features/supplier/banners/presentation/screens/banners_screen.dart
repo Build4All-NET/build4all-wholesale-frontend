@@ -118,6 +118,12 @@ class _BannersViewState extends State<_BannersView> {
           ),
           actions: [
             IconButton(
+              tooltip: 'Create Banner',
+              onPressed: () => context.go('/supplier-banners/create'),
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+            IconButton(
+              tooltip: 'Refresh',
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -236,7 +242,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier banners saved in the backend database. These banners will later appear for retailers on the home screen.',
+                  'View, create, edit, and delete supplier banners saved in the backend database. These banners will later appear for retailers on the home screen.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -369,7 +375,7 @@ class _EmptyBannersCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create banners from the supplier dashboard, then view them here.',
+            'Create banners from the supplier dashboard quick action or tap the plus icon above.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

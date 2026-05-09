@@ -129,6 +129,12 @@ class _PromotionsViewState extends State<_PromotionsView> {
           ),
           actions: [
             IconButton(
+              tooltip: 'Create Promotion',
+              onPressed: () => context.go('/supplier-promotions/create'),
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+            IconButton(
+              tooltip: 'Refresh',
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -251,7 +257,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, edit, and delete supplier promotions saved in the backend database. Promotions can apply to all branches or selected branches and will later appear in retailer flows.',
+                  'View, create, edit, and delete supplier promotions saved in the backend database. Promotions can apply to all branches or selected branches and will later appear in retailer flows.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -384,7 +390,7 @@ class _EmptyPromotionsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create promotions from the supplier dashboard, then view them here.',
+            'Create promotions from the supplier dashboard quick action or tap the plus icon above.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

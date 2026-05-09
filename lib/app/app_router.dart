@@ -28,6 +28,8 @@ import '../features/supplier/products/presentation/screens/add_product_screen.da
 import '../features/supplier/products/presentation/screens/product_branch_inventory_screen.dart';
 import '../features/supplier/products/presentation/screens/product_management_screen.dart';
 
+import '../features/supplier/categories/presentation/screens/supplier_catalog_screen.dart';
+
 import '../features/supplier/branches/domain/entities/branch_entity.dart';
 import '../features/supplier/branches/presentation/screens/add_branch_screen.dart';
 import '../features/supplier/branches/presentation/screens/branch_inventory_screen.dart';
@@ -45,6 +47,10 @@ import '../features/supplier/banners/domain/entities/banner_entity.dart';
 import '../features/supplier/banners/presentation/screens/banners_screen.dart';
 import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
 
+import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
+import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
+import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
+
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
@@ -52,10 +58,6 @@ import '../features/supplier/orders/presentation/screens/supplier_orders_screen.
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
 import '../l10n/app_localizations.dart';
-
-import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
-import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
-import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -65,6 +67,10 @@ class AppRouter {
         path: '/',
         redirect: (context, state) => '/login',
       ),
+
+      // =========================
+      // AUTH ROUTES
+      // =========================
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
@@ -106,7 +112,9 @@ class AppRouter {
           final extra = state.extra;
 
           if (extra is Map<String, dynamic>) {
-            return ResetPasswordScreen(email: extra['email']?.toString() ?? '');
+            return ResetPasswordScreen(
+              email: extra['email']?.toString() ?? '',
+            );
           }
 
           if (extra is String) {
@@ -125,7 +133,9 @@ class AppRouter {
         builder: (context, state) => const CompleteRetailerProfileScreen(),
       ),
 
-      // Supplier routes
+      // =========================
+      // SUPPLIER ROUTES
+      // =========================
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
@@ -142,6 +152,7 @@ class AppRouter {
         path: '/supplier-products/edit',
         builder: (context, state) {
           final product = state.extra as ProductEntity;
+
           return AddProductScreen(productToEdit: product);
         },
       ),
@@ -149,9 +160,17 @@ class AppRouter {
         path: '/supplier-products/branch-stock',
         builder: (context, state) {
           final product = state.extra as ProductEntity;
+
           return ProductBranchInventoryScreen(product: product);
         },
       ),
+
+      // Catalog Management
+      GoRoute(
+        path: '/supplier-catalog',
+        builder: (context, state) => const SupplierCatalogScreen(),
+      ),
+
       GoRoute(
         path: '/supplier-branches',
         builder: (context, state) => const BranchManagementScreen(),
@@ -164,6 +183,7 @@ class AppRouter {
         path: '/supplier-branches/edit',
         builder: (context, state) {
           final branch = state.extra as BranchEntity;
+
           return AddBranchScreen(branchToEdit: branch);
         },
       ),
@@ -171,6 +191,7 @@ class AppRouter {
         path: '/supplier-branches/inventory',
         builder: (context, state) {
           final branch = state.extra as BranchEntity;
+
           return BranchInventoryScreen(branch: branch);
         },
       ),
@@ -189,6 +210,7 @@ class AppRouter {
         path: '/supplier-orders/details',
         builder: (context, state) {
           final order = state.extra as SupplierOrderEntity;
+
           return SupplierOrderDetailsScreen(order: order);
         },
       ),
@@ -204,6 +226,7 @@ class AppRouter {
         path: '/supplier-promotions/edit',
         builder: (context, state) {
           final promotion = state.extra as PromotionEntity;
+
           return CreatePromotionScreen(promotion: promotion);
         },
       ),
@@ -219,6 +242,7 @@ class AppRouter {
         path: '/supplier-coupons/edit',
         builder: (context, state) {
           final coupon = state.extra as CouponEntity;
+
           return CreateCouponScreen(coupon: coupon);
         },
       ),
@@ -234,6 +258,7 @@ class AppRouter {
         path: '/supplier-banners/edit',
         builder: (context, state) {
           final banner = state.extra as BannerEntity;
+
           return CreateBannerScreen(banner: banner);
         },
       ),
@@ -241,20 +266,16 @@ class AppRouter {
         path: '/supplier-shipping',
         builder: (context, state) => const ShippingMethodsScreen(),
       ),
-
       GoRoute(
         path: '/supplier-shipping/create',
         builder: (context, state) => const CreateShippingMethodScreen(),
       ),
-
       GoRoute(
         path: '/supplier-shipping/edit',
         builder: (context, state) {
           final method = state.extra as ShippingMethodEntity;
 
-          return CreateShippingMethodScreen(
-            method: method,
-          );
+          return CreateShippingMethodScreen(method: method);
         },
       ),
       GoRoute(
@@ -279,7 +300,9 @@ class AppRouter {
         ),
       ),
 
-      // Retailer routes
+      // =========================
+      // RETAILER ROUTES
+      // =========================
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
@@ -294,6 +317,7 @@ class AppRouter {
           }
 
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.categories,
             message: l10n.checkConnectionTryAgain,
@@ -329,6 +353,7 @@ class AppRouter {
         path: '/retailer-notifications',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.notifications,
             message: l10n.notificationsComingSoon,
@@ -340,6 +365,7 @@ class AppRouter {
         path: '/retailer-promotions',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.promotions,
             message: l10n.promotionsComingSoon,
@@ -351,6 +377,7 @@ class AppRouter {
         path: '/retailer-top-ranking',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.topRanking,
             message: l10n.topRankingComingSoon,
@@ -362,6 +389,7 @@ class AppRouter {
         path: '/retailer-orders',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.orders,
             message: l10n.ordersComingSoon,
@@ -373,6 +401,7 @@ class AppRouter {
         path: '/retailer-rfq',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.rfq,
             message: l10n.rfqComingSoon,
@@ -384,6 +413,7 @@ class AppRouter {
         path: '/retailer-ai-assistant',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.aiAssistant,
             message: l10n.aiAssistantComingSoon,
@@ -395,6 +425,7 @@ class AppRouter {
         path: '/retailer-loyalty',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.loyaltyPoints,
             message: l10n.loyaltyComingSoon,
@@ -406,6 +437,7 @@ class AppRouter {
         path: '/retailer-wallet',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.walletBalance,
             message: l10n.walletComingSoon,
@@ -417,6 +449,7 @@ class AppRouter {
         path: '/retailer-credit',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.creditBalance,
             message: l10n.creditComingSoon,

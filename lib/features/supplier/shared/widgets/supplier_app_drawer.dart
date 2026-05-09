@@ -15,9 +15,7 @@ class SupplierAppDrawer extends StatelessWidget {
             'Logout',
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
-          content: const Text(
-            'Are you sure you want to logout?',
-          ),
+          content: const Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -26,13 +24,10 @@ class SupplierAppDrawer extends StatelessWidget {
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: AppThemeTokens.error,
                 foregroundColor: Colors.white,
               ),
-              child: const Text(
-                'Logout',
-                style: TextStyle(fontWeight: FontWeight.w800),
-              ),
+              child: const Text('Logout'),
             ),
           ],
         );
@@ -77,6 +72,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-products',
                   ),
                   _DrawerItem(
+                    icon: Icons.category_outlined,
+                    title: 'Catalog',
+                    route: '/supplier-catalog',
+                  ),
+                  _DrawerItem(
                     icon: Icons.location_on_outlined,
                     title: 'Branches',
                     route: '/supplier-branches',
@@ -107,6 +107,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-shipping',
                   ),
                   _DrawerItem(
+                    icon: Icons.percent_outlined,
+                    title: 'Taxes',
+                    route: '/supplier-tax',
+                  ),
+                  _DrawerItem(
                     icon: Icons.settings_outlined,
                     title: 'Settings',
                     route: '/supplier-settings',
@@ -116,11 +121,11 @@ class SupplierAppDrawer extends StatelessWidget {
             ),
             const Divider(height: 1),
             ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
+              leading: const Icon(Icons.logout, color: AppThemeTokens.error),
               title: const Text(
                 'Logout',
                 style: TextStyle(
-                  color: Colors.red,
+                  color: AppThemeTokens.error,
                   fontWeight: FontWeight.w800,
                 ),
               ),
