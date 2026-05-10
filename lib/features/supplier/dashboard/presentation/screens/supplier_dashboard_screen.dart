@@ -291,7 +291,7 @@ class _SupplierDashboardView extends StatelessWidget {
       SupplierQuickActionCard(
         title: 'Shipping Methods',
         icon: Icons.local_shipping_outlined,
-        onTap: () => context.go('/supplier-shipping'),
+        onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
         title: 'Configure Taxes',

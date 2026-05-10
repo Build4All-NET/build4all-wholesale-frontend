@@ -23,8 +23,8 @@ class ShippingMethodsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ShippingMethodsBloc>(
-      create: (_) => sl<ShippingMethodsBloc>()
-        ..add(const LoadShippingMethodsRequested()),
+      create: (_) =>
+          sl<ShippingMethodsBloc>()..add(const LoadShippingMethodsRequested()),
       child: const _ShippingMethodsView(),
     );
   }
@@ -58,13 +58,12 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
       if (query.isEmpty) return true;
 
       return method.name.toLowerCase().contains(query) ||
-          method.methodType.label.toLowerCase().contains(query) ||
-          method.country.toLowerCase().contains(query) ||
-          method.region.toLowerCase().contains(query) ||
-          method.estimatedDeliveryTime.toLowerCase().contains(query) ||
-          method.branchApplicabilityLabel.toLowerCase().contains(query) ||
+          method.methodTypeLabel.toLowerCase().contains(query) ||
+          method.locationLabel.toLowerCase().contains(query) ||
+          method.branchScopeLabel.toLowerCase().contains(query) ||
           method.costLabel.toLowerCase().contains(query) ||
-          method.statusLabel.toLowerCase().contains(query);
+          method.statusLabel.toLowerCase().contains(query) ||
+          (method.notes ?? '').toLowerCase().contains(query);
     }).toList();
   }
 
@@ -216,7 +215,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                           onRetry: () => _refresh(context),
                         )
                       else if (state.methods.isEmpty)
-                        _EmptyMethodsCard(primary: primary)
+                        _EmptyCard(primary: primary)
                       else if (filteredMethods.isEmpty)
                         _NoSearchResultsCard(primary: primary)
                       else
@@ -238,7 +237,9 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                                   extra: method,
                                 );
                               },
-                              onDelete: () => _confirmDelete(context, method),
+                              onDelete: () {
+                                _confirmDelete(context, method);
+                              },
                             );
                           },
                         ),
@@ -311,7 +312,8 @@ class _StatusFilterButton extends StatelessWidget {
           onPressed: onTap,
           style: OutlinedButton.styleFrom(
             elevation: 0,
-            foregroundColor: selected ? Colors.white : AppThemeTokens.textPrimary,
+            foregroundColor:
+                selected ? Colors.white : AppThemeTokens.textPrimary,
             backgroundColor: selected ? primary : AppThemeTokens.surface,
             side: BorderSide(
               color: selected ? primary : AppThemeTokens.border,
@@ -339,9 +341,7 @@ class _StatusFilterButton extends StatelessWidget {
 class _HeaderCard extends StatelessWidget {
   final Color primary;
 
-  const _HeaderCard({
-    required this.primary,
-  });
+  const _HeaderCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +379,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, search, create, edit, and delete delivery or pickup methods created by the supplier.',
+                  'Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -440,9 +440,7 @@ class _SearchField extends StatelessWidget {
 class _SectionHeader extends StatelessWidget {
   final int count;
 
-  const _SectionHeader({
-    required this.count,
-  });
+  const _SectionHeader({required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -550,12 +548,10 @@ class _ErrorCard extends StatelessWidget {
   }
 }
 
-class _EmptyMethodsCard extends StatelessWidget {
+class _EmptyCard extends StatelessWidget {
   final Color primary;
 
-  const _EmptyMethodsCard({
-    required this.primary,
-  });
+  const _EmptyCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -606,9 +602,7 @@ class _EmptyMethodsCard extends StatelessWidget {
 class _NoSearchResultsCard extends StatelessWidget {
   final Color primary;
 
-  const _NoSearchResultsCard({
-    required this.primary,
-  });
+  const _NoSearchResultsCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {

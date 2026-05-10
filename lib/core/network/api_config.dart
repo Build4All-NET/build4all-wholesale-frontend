@@ -23,6 +23,15 @@ class ApiConfig {
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
+    // =========================
+  // Shared Catalog: Countries / Regions
+  // =========================
+  static const String countries = '/countries';
+  static const String regions = '/regions';
+
+  static String regionsByCountry(String countryId) {
+    return '/regions/country/$countryId';
+  }
 
   // =========================
   // Retailer Home

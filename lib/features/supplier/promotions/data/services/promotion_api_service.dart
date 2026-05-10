@@ -12,13 +12,16 @@ class PromotionApiService {
 
   Future<List<PromotionModel>> getPromotions() async {
     try {
-      final response = await apiClient.dio.get(ApiConfig.supplierPromotions);
+      final response = await apiClient.dio.get(
+        ApiConfig.supplierPromotions,
+      );
+
       final data = response.data;
 
       if (data is List) {
         return data
             .map(
-              (item) => PromotionModel.fromBackendJson(
+              (item) => PromotionModel.fromJson(
                 Map<String, dynamic>.from(item as Map),
               ),
             )
@@ -31,14 +34,14 @@ class PromotionApiService {
     }
   }
 
-  Future<PromotionModel> createPromotion(PromotionModel promotion) async {
+  Future<PromotionModel> createPromotion(PromotionModel model) async {
     try {
       final response = await apiClient.dio.post(
         ApiConfig.supplierPromotions,
-        data: promotion.toBackendCreateJson(),
+        data: model.toRequestJson(),
       );
 
-      return PromotionModel.fromBackendJson(
+      return PromotionModel.fromJson(
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
@@ -46,14 +49,14 @@ class PromotionApiService {
     }
   }
 
-  Future<PromotionModel> updatePromotion(PromotionModel promotion) async {
+  Future<PromotionModel> updatePromotion(PromotionModel model) async {
     try {
       final response = await apiClient.dio.put(
-        ApiConfig.supplierPromotionById(promotion.id),
-        data: promotion.toBackendCreateJson(),
+        ApiConfig.supplierPromotionById(model.id),
+        data: model.toRequestJson(),
       );
 
-      return PromotionModel.fromBackendJson(
+      return PromotionModel.fromJson(
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
@@ -61,10 +64,10 @@ class PromotionApiService {
     }
   }
 
-  Future<void> deletePromotion(String promotionId) async {
+  Future<void> deletePromotion(String id) async {
     try {
       await apiClient.dio.delete(
-        ApiConfig.supplierPromotionById(promotionId),
+        ApiConfig.supplierPromotionById(id),
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
