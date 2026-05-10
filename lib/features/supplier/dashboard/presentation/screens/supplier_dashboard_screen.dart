@@ -51,13 +51,20 @@ class _SupplierDashboardView extends StatelessWidget {
           leading: Builder(
             builder: (context) {
               return IconButton(
-                icon: const Icon(Icons.menu, size: 32),
+                tooltip: 'Menu',
+                icon: Icon(
+                  Icons.menu,
+                  size: 32,
+                  color: primary,
+                ),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               );
             },
           ),
           title: Text(
             'Supplier Dashboard',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -66,16 +73,35 @@ class _SupplierDashboardView extends StatelessWidget {
           ),
           actions: [
             IconButton(
+              tooltip: 'Supplier Profile',
+              onPressed: () => context.go('/supplier-profile'),
+              icon: Icon(
+                Icons.person_outline,
+                color: primary,
+                size: 27,
+              ),
+            ),
+            IconButton(
+              tooltip: 'Refresh',
               onPressed: () {
                 context.read<SupplierDashboardBloc>().add(
                       const SupplierDashboardRefreshed(),
                     );
               },
-              icon: const Icon(Icons.refresh_outlined, size: 27),
+              icon: Icon(
+                Icons.refresh_outlined,
+                color: primary,
+                size: 27,
+              ),
             ),
             IconButton(
+              tooltip: 'Settings',
               onPressed: () => context.go('/supplier-settings'),
-              icon: const Icon(Icons.settings_outlined, size: 27),
+              icon: Icon(
+                Icons.settings_outlined,
+                color: primary,
+                size: 27,
+              ),
             ),
             const SizedBox(width: 8),
           ],

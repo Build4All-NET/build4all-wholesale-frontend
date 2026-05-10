@@ -22,6 +22,7 @@ import '../features/retailer_profile/presentation/screens/profile_verification_c
 import '../features/retailer_profile/presentation/screens/retailer_profile_screen.dart';
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
+import '../features/supplier/profile/presentation/screens/supplier_profile_display_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
 import '../features/supplier/excel_import/presentation/screens/supplier_excel_import_screen.dart';
 
@@ -141,6 +142,10 @@ class AppRouter {
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-profile',
+        builder: (context, state) => const SupplierProfileDisplayScreen(),
       ),
       GoRoute(
         path: '/supplier-products',
