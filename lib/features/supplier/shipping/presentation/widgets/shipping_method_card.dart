@@ -34,7 +34,7 @@ class ShippingMethodCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: primary.withOpacity(0.12),
+                backgroundColor: primary.withValues(alpha: 0.12),
                 child: Icon(
                   Icons.local_shipping_outlined,
                   color: primary,
@@ -58,7 +58,7 @@ class ShippingMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      method.deliveryType.label,
+                      method.methodType.label,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,
@@ -77,6 +77,7 @@ class ShippingMethodCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
+              _TextChip(text: method.locationLabel),
               _TextChip(text: 'Cost: ${method.costLabel}'),
               _TextChip(text: 'ETA: ${method.estimatedDeliveryTime}'),
               _TextChip(text: method.minimumOrderLabel),
@@ -108,7 +109,7 @@ class ShippingMethodCard extends StatelessWidget {
                   icon: Icons.edit_outlined,
                   label: 'Edit',
                   onPressed: onEdit,
-                  borderColor: primary.withOpacity(0.35),
+                  borderColor: primary.withValues(alpha: 0.35),
                   textColor: primary,
                 ),
               ),
@@ -118,7 +119,7 @@ class ShippingMethodCard extends StatelessWidget {
                   icon: Icons.delete_outline,
                   label: 'Delete',
                   onPressed: onDelete,
-                  borderColor: Colors.red.withOpacity(0.45),
+                  borderColor: Colors.red.withValues(alpha: 0.45),
                   textColor: Colors.red,
                 ),
               ),
@@ -140,10 +141,7 @@ class _StatusPill extends StatelessWidget {
     final active = status == 'Active';
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: active ? const Color(0xFFE8F7EF) : const Color(0xFFF4E8EE),
         borderRadius: BorderRadius.circular(999),
@@ -169,10 +167,7 @@ class _TextChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(maxWidth: 320),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 11,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(999),
