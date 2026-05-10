@@ -11,11 +11,11 @@ import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
 import '../widgets/categories_grid_section.dart';
 import '../widgets/featured_products_section.dart';
-import '../widgets/group_delivery_card.dart';
 import '../widgets/home_banner_section.dart';
 import '../widgets/quick_actions_section.dart';
 import '../widgets/retailer_home_header.dart';
 import '../widgets/retailer_search_bar.dart';
+import '../widgets/wholesale_opportunities_section.dart';
 
 class RetailerDashboardScreen extends StatelessWidget {
   const RetailerDashboardScreen({super.key});
@@ -54,6 +54,19 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
 
   void _addToCart(HomeProductModel product) {
     context.read<RetailerHomeCubit>().addToCart(product: product);
+  }
+
+  void _openBannerTarget(
+    HomeBannerModel banner,
+    List<HomeProductModel> products,
+  ) {
+    context.push(
+      '/retailer-banner-target',
+      extra: {
+        'banner': banner,
+        'products': products,
+      },
+    );
   }
 
   void _goToBottomTab(int index) {
@@ -173,16 +186,36 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               },
             ),
             const SizedBox(height: 18),
-            RetailerSearchBar(controller: _searchController, onChanged: (_) {}),
+            RetailerSearchBar(
+              controller: _searchController,
+              onChanged: (_) {},
+            ),
             const SizedBox(height: 18),
-            HomeBannerSection(banners: home.banners),
+
+            // Supplier-created banners only.
+            // They appear directly under the search bar.
+            HomeBannerSection(
+              banners: home.banners,
+              onBannerTap: (banner) {
+                _openBannerTarget(banner, home.featuredProducts);
+              },
+            ),
+
+            if (home.banners.isNotEmpty) const SizedBox(height: 18),
+
+            // Bulk Orders + Group Delivery are kept here,
+            // outside the supplier home banner section.
+            WholesaleOpportunitiesSection(
+              groupDelivery: home.groupDelivery,
+            ),
             const SizedBox(height: 18),
-            GroupDeliveryCard(groupDelivery: home.groupDelivery),
-            const SizedBox(height: 18),
+
             QuickActionsSection(actions: home.quickActions),
             const SizedBox(height: 24),
+
             CategoriesGridSection(categories: home.categories),
             const SizedBox(height: 24),
+
             FeaturedProductsSection(
               products: home.featuredProducts,
               addingProductId: state.addingProductId,

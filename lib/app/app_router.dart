@@ -56,19 +56,14 @@ import '../l10n/app_localizations.dart';
 import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
 import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
 import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
+import '../features/dashboard/presentation/screens/retailer_banner_target_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(
-        path: '/',
-        redirect: (context, state) => '/login',
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/', redirect: (context, state) => '/login'),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/signup',
         builder: (context, state) => const RetailerSignupScreen(),
@@ -252,9 +247,7 @@ class AppRouter {
         builder: (context, state) {
           final method = state.extra as ShippingMethodEntity;
 
-          return CreateShippingMethodScreen(
-            method: method,
-          );
+          return CreateShippingMethodScreen(method: method);
         },
       ),
       GoRoute(
@@ -283,6 +276,29 @@ class AppRouter {
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-banner-target',
+        builder: (context, state) {
+          final extra = state.extra;
+
+          if (extra is Map<String, dynamic> &&
+              extra['banner'] is HomeBannerModel &&
+              extra['products'] is List<HomeProductModel>) {
+            return RetailerBannerTargetScreen(
+              banner: extra['banner'] as HomeBannerModel,
+              products: extra['products'] as List<HomeProductModel>,
+            );
+          }
+
+          final l10n = AppLocalizations.of(context)!;
+
+          return RetailerPlaceholderScreen(
+            title: l10n.promotions,
+            message: l10n.checkConnectionTryAgain,
+            icon: Icons.local_offer_outlined,
+          );
+        },
       ),
       GoRoute(
         path: '/retailer-category-products',
