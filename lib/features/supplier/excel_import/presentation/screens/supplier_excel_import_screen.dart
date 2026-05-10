@@ -284,7 +284,7 @@ class _ImportResultCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Imported: \${result.importedCount} / \${result.totalRows}',
+            'Imported: ${result.importedCount} / ${result.totalRows}',
             style: const TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w800,
@@ -381,14 +381,20 @@ class _ImportBottomBar extends StatelessWidget {
                 label: Text(
                   state.isImporting
                       ? 'Importing...'
-                      : 'Import \${state.validRowsCount} Products',
+                      : 'Import ${state.validRowsCount} Products',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primary,
                   foregroundColor: Colors.white,
                   disabledBackgroundColor: AppThemeTokens.border,
                   disabledForegroundColor: AppThemeTokens.textSecondary,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),

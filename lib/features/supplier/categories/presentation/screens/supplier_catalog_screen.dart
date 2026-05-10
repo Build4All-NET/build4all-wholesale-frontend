@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -378,6 +379,23 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
     );
   }
 
+  void _handleBackOrDrawer(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+
+    Scaffold.of(context).openDrawer();
+  }
+
+  IconData _leadingIcon(BuildContext context) {
+    return context.canPop() ? Icons.arrow_back_ios_new_rounded : Icons.menu;
+  }
+
+  String _leadingTooltip(BuildContext context) {
+    return context.canPop() ? 'Back' : 'Menu';
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplierCatalogBloc>.value(
@@ -414,8 +432,9 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                 leading: Builder(
                   builder: (context) {
                     return IconButton(
-                      onPressed: () => Scaffold.of(context).openDrawer(),
-                      icon: const Icon(Icons.menu),
+                      tooltip: _leadingTooltip(context),
+                      onPressed: () => _handleBackOrDrawer(context),
+                      icon: Icon(_leadingIcon(context)),
                     );
                   },
                 ),
@@ -590,4 +609,3 @@ class _SubCategoryDialogResult {
     required this.name,
   });
 }
-

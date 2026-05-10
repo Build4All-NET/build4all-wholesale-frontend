@@ -123,15 +123,57 @@ class SupplierExcelImportBloc
     );
 
     try {
-      final result = await importSupplierExcelProductsUseCase(rows: state.rows);
+      // Always refresh products before import. This prevents duplicate creation
+      // if the same Excel was imported before, or if another screen created
+      // a product while this preview was open.
+      final latestProductsBeforeImport = await getProductsUseCase();
+      final rowsValidatedBeforeImport = _validateRows(
+        state.rows,
+        categories: state.categories,
+        subCategoriesByCategoryId: state.subCategoriesByCategoryId,
+        existingProducts: latestProductsBeforeImport,
+      );
+
+      final validRowsBeforeImport =
+          rowsValidatedBeforeImport.where((row) => row.isValid).length;
+
+      if (validRowsBeforeImport == 0) {
+        emit(
+          state.copyWith(
+            isImporting: false,
+            rows: rowsValidatedBeforeImport,
+            existingProducts: latestProductsBeforeImport,
+            error:
+                'No products can be imported. Some rows already exist or need correction.',
+          ),
+        );
+        return;
+      }
+
+      final result = await importSupplierExcelProductsUseCase(
+        rows: rowsValidatedBeforeImport,
+      );
+
+      // Refresh again after import so imported rows immediately become invalid
+      // as existing products. This disables the button and prevents importing
+      // the same Excel twice from the same preview.
+      final latestProductsAfterImport = await getProductsUseCase();
+      final rowsValidatedAfterImport = _validateRows(
+        rowsValidatedBeforeImport,
+        categories: state.categories,
+        subCategoriesByCategoryId: state.subCategoriesByCategoryId,
+        existingProducts: latestProductsAfterImport,
+      );
 
       final message = result.hasFailures
           ? 'Imported ${result.importedCount} products. ${result.failedCount} rows failed.'
-          : 'Imported ${result.importedCount} products successfully.';
+          : 'Imported ${result.importedCount} products successfully. Existing rows are now protected from duplicate import.';
 
       emit(
         state.copyWith(
           isImporting: false,
+          rows: rowsValidatedAfterImport,
+          existingProducts: latestProductsAfterImport,
           importResult: result,
           successMessage: message,
         ),

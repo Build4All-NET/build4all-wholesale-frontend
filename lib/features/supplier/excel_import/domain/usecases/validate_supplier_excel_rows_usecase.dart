@@ -41,7 +41,7 @@ class ValidateSupplierExcelRowsUseCase {
 
         if (existingProductNames.contains(normalizedProductName)) {
           errors.add(
-            'A product named "$productName" already exists. Remove it from Excel or rename it before importing.',
+            'A product named "$productName" already exists. This row is protected from duplicate import. Remove it from Excel, rename it, or edit the existing product from Product Management.',
           );
         }
       }

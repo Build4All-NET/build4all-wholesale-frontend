@@ -42,7 +42,8 @@ class _SupplierExcelEditRowDialogState
     _moqController = TextEditingController(text: widget.row.moqText);
 
     _selectedCategoryId = widget.row.categoryId ?? _matchCategoryIdByName();
-    _selectedSubCategoryId = widget.row.subCategoryId ?? _matchSubCategoryIdByName();
+    _selectedSubCategoryId =
+        widget.row.subCategoryId ?? _matchSubCategoryIdByName();
     _selectedStatus = _normalizeStatus(widget.row.statusText);
   }
 
@@ -139,10 +140,17 @@ class _SupplierExcelEditRowDialogState
                     .map(
                       (category) => DropdownMenuItem<String>(
                         value: category.id,
-                        child: Text(category.name),
+                        child: Text(
+                          category.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     )
                     .toList(),
+                selectedLabel: _selectedCategoryId == null
+                    ? null
+                    : _findCategoryName(_selectedCategoryId!),
                 onChanged: (value) {
                   setState(() {
                     _selectedCategoryId = value;
@@ -161,15 +169,29 @@ class _SupplierExcelEditRowDialogState
                 items: [
                   const DropdownMenuItem<String?>(
                     value: null,
-                    child: Text('No subcategory'),
+                    child: Text(
+                      'No subcategory',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   ...selectedSubCategories.map(
                     (subCategory) => DropdownMenuItem<String?>(
                       value: subCategory.id,
-                      child: Text(subCategory.name),
+                      child: Text(
+                        subCategory.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ],
+                selectedLabel: _selectedSubCategoryId == null
+                    ? 'No subcategory'
+                    : _findSubCategoryName(
+                        selectedSubCategories,
+                        _selectedSubCategoryId!,
+                      ),
                 onChanged: (value) {
                   setState(() => _selectedSubCategoryId = value);
                 },
@@ -204,9 +226,24 @@ class _SupplierExcelEditRowDialogState
                 icon: Icons.toggle_on_outlined,
                 value: _selectedStatus,
                 items: const [
-                  DropdownMenuItem(value: 'ACTIVE', child: Text('ACTIVE')),
-                  DropdownMenuItem(value: 'INACTIVE', child: Text('INACTIVE')),
+                  DropdownMenuItem(
+                    value: 'ACTIVE',
+                    child: Text(
+                      'ACTIVE',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'INACTIVE',
+                    child: Text(
+                      'INACTIVE',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ],
+                selectedLabel: _selectedStatus,
                 onChanged: (value) {
                   setState(() => _selectedStatus = value ?? 'ACTIVE');
                 },
@@ -235,11 +272,18 @@ class _SupplierExcelEditRowDialogState
                     child: ElevatedButton.icon(
                       onPressed: _save,
                       icon: const Icon(Icons.check),
-                      label: const Text('Save Changes'),
+                      label: const Text(
+                        'Save Changes',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primary,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 10,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -322,6 +366,23 @@ class _SupplierExcelEditRowDialogState
     return null;
   }
 
+  String? _findCategoryName(String categoryId) {
+    for (final category in widget.categories) {
+      if (category.id == categoryId) return category.name;
+    }
+    return null;
+  }
+
+  String? _findSubCategoryName(
+    List<SupplierSubCategoryEntity> subCategories,
+    String subCategoryId,
+  ) {
+    for (final subCategory in subCategories) {
+      if (subCategory.id == subCategoryId) return subCategory.name;
+    }
+    return null;
+  }
+
   String _normalizeStatus(String value) {
     final normalized = value.trim().toUpperCase();
     if (normalized == 'INACTIVE') return 'INACTIVE';
@@ -360,6 +421,10 @@ class _TextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 44,
+          minHeight: 44,
+        ),
         filled: true,
         fillColor: AppThemeTokens.inputFill,
         border: OutlineInputBorder(
@@ -375,6 +440,7 @@ class _DropdownField<T> extends StatelessWidget {
   final IconData icon;
   final T? value;
   final String? hint;
+  final String? selectedLabel;
   final List<DropdownMenuItem<T>> items;
   final ValueChanged<T?> onChanged;
 
@@ -385,6 +451,7 @@ class _DropdownField<T> extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.hint,
+    this.selectedLabel,
   });
 
   @override
@@ -392,11 +459,35 @@ class _DropdownField<T> extends StatelessWidget {
     return DropdownButtonFormField<T>(
       value: value,
       items: items,
+      selectedItemBuilder: selectedLabel == null
+          ? null
+          : (context) {
+              return items.map((_) {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    selectedLabel!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList();
+            },
+      isExpanded: true,
+      menuMaxHeight: 320,
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         prefixIcon: Icon(icon),
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 44,
+          minHeight: 44,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 16,
+        ),
         filled: true,
         fillColor: AppThemeTokens.inputFill,
         border: OutlineInputBorder(
