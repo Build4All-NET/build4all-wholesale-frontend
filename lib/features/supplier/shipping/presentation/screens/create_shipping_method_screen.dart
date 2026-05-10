@@ -52,8 +52,11 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
   late final TextEditingController _freeShippingThresholdController;
   late final TextEditingController _notesController;
 
-  ShippingDeliveryType _deliveryType = ShippingDeliveryType.delivery;
+  ShippingMethodType _methodType = ShippingMethodType.standardDelivery;
   ShippingBranchScope _branchScope = ShippingBranchScope.allBranches;
+
+  String _country = ShippingMethodLocation.lebanon;
+  String _region = ShippingMethodLocation.lebanonRegions.first;
 
   bool _active = true;
   bool _loadingBranches = true;
@@ -66,7 +69,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
   bool get _isEditMode => widget.method != null;
 
-  bool get _isPickup => _deliveryType == ShippingDeliveryType.pickup;
+  bool get _isPickup => _methodType == ShippingMethodType.pickup;
 
   @override
   void initState() {
@@ -75,23 +78,37 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     final method = widget.method;
 
     _nameController = TextEditingController(text: method?.name ?? '');
+
     _costController = TextEditingController(
       text: method == null || method.isPickup ? '' : method.cost.toString(),
     );
+
     _estimatedTimeController = TextEditingController(
       text: method == null || method.isPickup
           ? ''
           : method.estimatedDeliveryTime,
     );
+
     _minimumOrderController = TextEditingController(
       text: method?.minimumOrderAmount?.toString() ?? '',
     );
+
     _freeShippingThresholdController = TextEditingController(
       text: method?.freeShippingThreshold?.toString() ?? '',
     );
+
     _notesController = TextEditingController(text: method?.notes ?? '');
 
-    _deliveryType = method?.deliveryType ?? ShippingDeliveryType.delivery;
+    _methodType = method?.methodType ?? ShippingMethodType.standardDelivery;
+
+    _country = method?.country == ShippingMethodLocation.lebanon
+        ? ShippingMethodLocation.lebanon
+        : ShippingMethodLocation.lebanon;
+
+    _region = ShippingMethodLocation.lebanonRegions.contains(method?.region)
+        ? method!.region
+        : ShippingMethodLocation.lebanonRegions.first;
+
     _branchScope = method?.branchScope ?? ShippingBranchScope.allBranches;
     _active = method?.active ?? true;
 
@@ -195,12 +212,12 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     });
   }
 
-  void _handleDeliveryTypeChanged(ShippingDeliveryType? value) {
+  void _handleMethodTypeChanged(ShippingMethodType? value) {
     if (value == null) return;
 
     setState(() {
       final wasPickup = _isPickup;
-      _deliveryType = value;
+      _methodType = value;
 
       if (_isPickup) {
         _costController.clear();
@@ -231,7 +248,9 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     final method = ShippingMethodEntity(
       id: widget.method?.id ?? '',
       name: _nameController.text.trim(),
-      deliveryType: _deliveryType,
+      methodType: _methodType,
+      country: _country,
+      region: _region,
       cost: _isPickup ? 0 : double.parse(_costController.text.trim()),
       estimatedDeliveryTime: _isPickup
           ? 'Pickup from branch'
@@ -423,22 +442,66 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Delivery Type *'),
-                          _DeliveryTypeDropdown(
-                            value: _deliveryType,
-                            onChanged: _handleDeliveryTypeChanged,
+                          _FieldLabel('Method Type *'),
+                          _MethodTypeDropdown(
+                            value: _methodType,
+                            onChanged: _handleMethodTypeChanged,
                           ),
                           const SizedBox(height: 8),
-                          _DeliveryTypeHelpText(
-                            deliveryType: _deliveryType,
+                          _MethodTypeHelpText(
+                            methodType: _methodType,
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Country *'),
+                          _CountryDropdown(
+                            value: _country,
+                            onChanged: (value) {
+                              if (value == null) return;
+
+                              setState(() {
+                                _country = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'For now, supplier shipping is configured for Lebanon only.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.35,
+                              fontWeight: FontWeight.w600,
+                              color: AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Region *'),
+                          _RegionDropdown(
+                            value: _region,
+                            onChanged: (value) {
+                              if (value == null) return;
+
+                              setState(() {
+                                _region = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Region defines the delivery coverage area for this shipping method.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.35,
+                              fontWeight: FontWeight.w600,
+                              color: AppThemeTokens.textSecondary,
+                            ),
                           ),
                           if (!_isPickup) ...[
                             const _DividerSpace(),
                             _FieldLabel('Shipping Cost *'),
                             _InputField(
                               controller: _costController,
-                              hintText: _deliveryType ==
-                                      ShippingDeliveryType.expressDelivery
+                              hintText: _methodType ==
+                                      ShippingMethodType.expressDelivery
                                   ? '10'
                                   : '5',
                               keyboardType:
@@ -452,12 +515,22 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                 );
                               },
                             ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Shipping cost is treated as a fixed flat rate for this method.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 1.35,
+                                fontWeight: FontWeight.w600,
+                                color: AppThemeTokens.textSecondary,
+                              ),
+                            ),
                             const _DividerSpace(),
                             _FieldLabel('Estimated Delivery Time *'),
                             _InputField(
                               controller: _estimatedTimeController,
-                              hintText: _deliveryType ==
-                                      ShippingDeliveryType.expressDelivery
+                              hintText: _methodType ==
+                                      ShippingMethodType.expressDelivery
                                   ? 'Same day / 24 hours'
                                   : '2-3 business days',
                               validator: (value) {
@@ -537,6 +610,16 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               });
                             },
                           ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Selected branches define which supplier branches support this shipping method.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.35,
+                              fontWeight: FontWeight.w600,
+                              color: AppThemeTokens.textSecondary,
+                            ),
+                          ),
                           if (_branchScope ==
                               ShippingBranchScope.selectedBranches) ...[
                             const _DividerSpace(),
@@ -594,7 +677,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                   return FilterChip(
                                     selected: selected,
                                     label: Text(branch.name),
-                                    selectedColor: primary.withOpacity(0.15),
+                                    selectedColor:
+                                        primary.withValues(alpha: 0.15),
                                     checkmarkColor: primary,
                                     onSelected: (isSelected) {
                                       _toggleBranch(branch, isSelected);
@@ -623,7 +707,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeColor: Colors.white,
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
@@ -658,24 +742,22 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
   }
 }
 
-class _DeliveryTypeHelpText extends StatelessWidget {
-  final ShippingDeliveryType deliveryType;
+class _MethodTypeHelpText extends StatelessWidget {
+  final ShippingMethodType methodType;
 
-  const _DeliveryTypeHelpText({
-    required this.deliveryType,
+  const _MethodTypeHelpText({
+    required this.methodType,
   });
 
   @override
   Widget build(BuildContext context) {
-    final text = switch (deliveryType) {
-      ShippingDeliveryType.delivery =>
-        'General delivery option when the supplier does not want to classify it as standard or express.',
-      ShippingDeliveryType.pickup =>
-        'Pickup means the retailer collects the order from selected branch(es). Shipping cost and delivery time are not entered manually.',
-      ShippingDeliveryType.expressDelivery =>
-        'Express delivery is faster and usually more expensive, such as same-day or 24-hour delivery.',
-      ShippingDeliveryType.standardDelivery =>
+    final text = switch (methodType) {
+      ShippingMethodType.standardDelivery =>
         'Standard delivery is the normal delivery option, usually cheaper and slower, such as 2-3 business days.',
+      ShippingMethodType.expressDelivery =>
+        'Express delivery is faster and usually more expensive, such as same-day or 24-hour delivery.',
+      ShippingMethodType.pickup =>
+        'Pickup means the retailer collects the order from selected branch(es). Shipping cost and delivery time are not entered manually.',
     };
 
     return Text(
@@ -705,9 +787,9 @@ class _InfoBox extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: primary.withOpacity(0.08),
+        color: primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: primary.withOpacity(0.18)),
+        border: Border.all(color: primary.withValues(alpha: 0.18)),
       ),
       child: Text(
         text,
@@ -847,24 +929,86 @@ class _InputField extends StatelessWidget {
   }
 }
 
-class _DeliveryTypeDropdown extends StatelessWidget {
-  final ShippingDeliveryType value;
-  final ValueChanged<ShippingDeliveryType?> onChanged;
+class _MethodTypeDropdown extends StatelessWidget {
+  final ShippingMethodType value;
+  final ValueChanged<ShippingMethodType?> onChanged;
 
-  const _DeliveryTypeDropdown({
+  const _MethodTypeDropdown({
     required this.value,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<ShippingDeliveryType>(
-      value: value,
-      items: ShippingDeliveryType.values
+    return DropdownButtonFormField<ShippingMethodType>(
+      initialValue: value,
+      items: ShippingMethodType.values
           .map(
-            (type) => DropdownMenuItem<ShippingDeliveryType>(
+            (type) => DropdownMenuItem<ShippingMethodType>(
               value: type,
               child: Text(type.label),
+            ),
+          )
+          .toList(),
+      onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+      decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _CountryDropdown extends StatelessWidget {
+  final String value;
+  final ValueChanged<String?> onChanged;
+
+  const _CountryDropdown({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      items: const [
+        DropdownMenuItem<String>(
+          value: ShippingMethodLocation.lebanon,
+          child: Text('Lebanon'),
+        ),
+      ],
+      onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+      decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _RegionDropdown extends StatelessWidget {
+  final String value;
+  final ValueChanged<String?> onChanged;
+
+  const _RegionDropdown({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      items: ShippingMethodLocation.lebanonRegions
+          .map(
+            (region) => DropdownMenuItem<String>(
+              value: region,
+              child: Text(region),
             ),
           )
           .toList(),
@@ -891,7 +1035,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingBranchScope>(
-      value: value,
+      initialValue: value,
       items: ShippingBranchScope.values
           .map(
             (scope) => DropdownMenuItem<ShippingBranchScope>(

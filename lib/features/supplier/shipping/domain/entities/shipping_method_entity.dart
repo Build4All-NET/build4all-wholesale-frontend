@@ -1,52 +1,45 @@
 import 'package:equatable/equatable.dart';
 
-enum ShippingDeliveryType {
-  delivery,
-  pickup,
-  expressDelivery,
+enum ShippingMethodType {
   standardDelivery,
+  expressDelivery,
+  pickup,
 }
 
-extension ShippingDeliveryTypeX on ShippingDeliveryType {
+extension ShippingMethodTypeX on ShippingMethodType {
   String get label {
     switch (this) {
-      case ShippingDeliveryType.delivery:
-        return 'Delivery';
-      case ShippingDeliveryType.pickup:
-        return 'Pickup';
-      case ShippingDeliveryType.expressDelivery:
-        return 'Express Delivery';
-      case ShippingDeliveryType.standardDelivery:
+      case ShippingMethodType.standardDelivery:
         return 'Standard Delivery';
+      case ShippingMethodType.expressDelivery:
+        return 'Express Delivery';
+      case ShippingMethodType.pickup:
+        return 'Pickup from Branch';
     }
   }
 
   String get backendValue {
     switch (this) {
-      case ShippingDeliveryType.delivery:
-        return 'DELIVERY';
-      case ShippingDeliveryType.pickup:
-        return 'PICKUP';
-      case ShippingDeliveryType.expressDelivery:
-        return 'EXPRESS_DELIVERY';
-      case ShippingDeliveryType.standardDelivery:
+      case ShippingMethodType.standardDelivery:
         return 'STANDARD_DELIVERY';
+      case ShippingMethodType.expressDelivery:
+        return 'EXPRESS_DELIVERY';
+      case ShippingMethodType.pickup:
+        return 'PICKUP';
     }
   }
 
-  static ShippingDeliveryType fromBackendValue(dynamic value) {
+  static ShippingMethodType fromBackendValue(dynamic value) {
     final normalized = value?.toString().toUpperCase();
 
     switch (normalized) {
-      case 'PICKUP':
-        return ShippingDeliveryType.pickup;
       case 'EXPRESS_DELIVERY':
-        return ShippingDeliveryType.expressDelivery;
+        return ShippingMethodType.expressDelivery;
+      case 'PICKUP':
+        return ShippingMethodType.pickup;
       case 'STANDARD_DELIVERY':
-        return ShippingDeliveryType.standardDelivery;
-      case 'DELIVERY':
       default:
-        return ShippingDeliveryType.delivery;
+        return ShippingMethodType.standardDelivery;
     }
   }
 }
@@ -67,10 +60,27 @@ extension ShippingBranchScopeX on ShippingBranchScope {
   }
 }
 
+class ShippingMethodLocation {
+  static const String lebanon = 'Lebanon';
+
+  static const List<String> lebanonRegions = [
+    'Beirut',
+    'Mount Lebanon',
+    'North Lebanon',
+    'Akkar',
+    'Baalbek-Hermel',
+    'Bekaa',
+    'South Lebanon',
+    'Nabatieh',
+  ];
+}
+
 class ShippingMethodEntity extends Equatable {
   final String id;
   final String name;
-  final ShippingDeliveryType deliveryType;
+  final ShippingMethodType methodType;
+  final String country;
+  final String region;
   final double cost;
   final String estimatedDeliveryTime;
   final double? minimumOrderAmount;
@@ -86,7 +96,9 @@ class ShippingMethodEntity extends Equatable {
   const ShippingMethodEntity({
     required this.id,
     required this.name,
-    required this.deliveryType,
+    required this.methodType,
+    required this.country,
+    required this.region,
     required this.cost,
     required this.estimatedDeliveryTime,
     this.minimumOrderAmount,
@@ -100,9 +112,11 @@ class ShippingMethodEntity extends Equatable {
     required this.updatedAt,
   });
 
-  bool get isPickup => deliveryType == ShippingDeliveryType.pickup;
+  bool get isPickup => methodType == ShippingMethodType.pickup;
 
   String get statusLabel => active ? 'Active' : 'Inactive';
+
+  String get locationLabel => '$country • $region';
 
   String get costLabel {
     if (cost == 0) return 'Free';
@@ -137,7 +151,9 @@ class ShippingMethodEntity extends Equatable {
   ShippingMethodEntity copyWith({
     String? id,
     String? name,
-    ShippingDeliveryType? deliveryType,
+    ShippingMethodType? methodType,
+    String? country,
+    String? region,
     double? cost,
     String? estimatedDeliveryTime,
     double? minimumOrderAmount,
@@ -153,7 +169,9 @@ class ShippingMethodEntity extends Equatable {
     return ShippingMethodEntity(
       id: id ?? this.id,
       name: name ?? this.name,
-      deliveryType: deliveryType ?? this.deliveryType,
+      methodType: methodType ?? this.methodType,
+      country: country ?? this.country,
+      region: region ?? this.region,
       cost: cost ?? this.cost,
       estimatedDeliveryTime:
           estimatedDeliveryTime ?? this.estimatedDeliveryTime,
@@ -182,7 +200,9 @@ class ShippingMethodEntity extends Equatable {
   List<Object?> get props => [
         id,
         name,
-        deliveryType,
+        methodType,
+        country,
+        region,
         cost,
         estimatedDeliveryTime,
         minimumOrderAmount,

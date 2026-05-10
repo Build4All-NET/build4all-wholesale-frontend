@@ -11,6 +11,12 @@ import '../bloc/shipping_methods_event.dart';
 import '../bloc/shipping_methods_state.dart';
 import '../widgets/shipping_method_card.dart';
 
+enum _ShippingStatusFilter {
+  enabled,
+  disabled,
+  all,
+}
+
 class ShippingMethodsScreen extends StatelessWidget {
   const ShippingMethodsScreen({super.key});
 
@@ -33,17 +39,28 @@ class _ShippingMethodsView extends StatefulWidget {
 
 class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
   String _searchQuery = '';
+  _ShippingStatusFilter _statusFilter = _ShippingStatusFilter.enabled;
 
   List<ShippingMethodEntity> _filteredMethods(
     List<ShippingMethodEntity> methods,
   ) {
     final query = _searchQuery.trim().toLowerCase();
 
-    if (query.isEmpty) return methods;
-
     return methods.where((method) {
+      final matchesStatus = switch (_statusFilter) {
+        _ShippingStatusFilter.enabled => method.active,
+        _ShippingStatusFilter.disabled => !method.active,
+        _ShippingStatusFilter.all => true,
+      };
+
+      if (!matchesStatus) return false;
+
+      if (query.isEmpty) return true;
+
       return method.name.toLowerCase().contains(query) ||
-          method.deliveryType.label.toLowerCase().contains(query) ||
+          method.methodType.label.toLowerCase().contains(query) ||
+          method.country.toLowerCase().contains(query) ||
+          method.region.toLowerCase().contains(query) ||
           method.estimatedDeliveryTime.toLowerCase().contains(query) ||
           method.branchApplicabilityLabel.toLowerCase().contains(query) ||
           method.costLabel.toLowerCase().contains(query) ||
@@ -172,6 +189,15 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                     children: [
                       _HeaderCard(primary: primary),
                       const SizedBox(height: 18),
+                      _StatusFilterBar(
+                        selected: _statusFilter,
+                        onChanged: (value) {
+                          setState(() {
+                            _statusFilter = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 14),
                       _SearchField(
                         onChanged: (value) {
                           setState(() {
@@ -228,6 +254,88 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
   }
 }
 
+class _StatusFilterBar extends StatelessWidget {
+  final _ShippingStatusFilter selected;
+  final ValueChanged<_ShippingStatusFilter> onChanged;
+
+  const _StatusFilterBar({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _StatusFilterButton(
+          label: 'Enabled only',
+          selected: selected == _ShippingStatusFilter.enabled,
+          onTap: () => onChanged(_ShippingStatusFilter.enabled),
+        ),
+        const SizedBox(width: 8),
+        _StatusFilterButton(
+          label: 'Disabled only',
+          selected: selected == _ShippingStatusFilter.disabled,
+          onTap: () => onChanged(_ShippingStatusFilter.disabled),
+        ),
+        const SizedBox(width: 8),
+        _StatusFilterButton(
+          label: 'All',
+          selected: selected == _ShippingStatusFilter.all,
+          onTap: () => onChanged(_ShippingStatusFilter.all),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatusFilterButton extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _StatusFilterButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Expanded(
+      child: SizedBox(
+        height: 44,
+        child: OutlinedButton(
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            elevation: 0,
+            foregroundColor: selected ? Colors.white : AppThemeTokens.textPrimary,
+            backgroundColor: selected ? primary : AppThemeTokens.surface,
+            side: BorderSide(
+              color: selected ? primary : AppThemeTokens.border,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _HeaderCard extends StatelessWidget {
   final Color primary;
 
@@ -249,7 +357,7 @@ class _HeaderCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: primary.withOpacity(0.12),
+            backgroundColor: primary.withValues(alpha: 0.12),
             child: Icon(
               Icons.local_shipping_outlined,
               color: primary,
@@ -271,7 +379,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, search, create, edit, and delete supplier shipping methods saved in the backend.',
+                  'View, search, create, edit, and delete delivery or pickup methods created by the supplier.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -463,7 +571,7 @@ class _EmptyMethodsCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundColor: primary.withOpacity(0.12),
+            backgroundColor: primary.withValues(alpha: 0.12),
             child: Icon(
               Icons.local_shipping_outlined,
               color: primary,
@@ -481,7 +589,7 @@ class _EmptyMethodsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create shipping methods from the supplier dashboard quick action or tap the plus icon above. This page is also for viewing, searching, editing, and deleting created methods.',
+            'Create shipping methods from the supplier dashboard quick action or tap the plus icon above.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
@@ -514,11 +622,7 @@ class _NoSearchResultsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.search_off,
-            color: primary,
-            size: 34,
-          ),
+          Icon(Icons.search_off, color: primary, size: 34),
           const SizedBox(height: 12),
           const Text(
             'No matching shipping methods',

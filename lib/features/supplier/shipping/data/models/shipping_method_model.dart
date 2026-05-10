@@ -4,7 +4,9 @@ class ShippingMethodModel extends ShippingMethodEntity {
   const ShippingMethodModel({
     required super.id,
     required super.name,
-    required super.deliveryType,
+    required super.methodType,
+    required super.country,
+    required super.region,
     required super.cost,
     required super.estimatedDeliveryTime,
     super.minimumOrderAmount,
@@ -22,7 +24,9 @@ class ShippingMethodModel extends ShippingMethodEntity {
     return ShippingMethodModel(
       id: entity.id,
       name: entity.name,
-      deliveryType: entity.deliveryType,
+      methodType: entity.methodType,
+      country: entity.country,
+      region: entity.region,
       cost: entity.cost,
       estimatedDeliveryTime: entity.estimatedDeliveryTime,
       minimumOrderAmount: entity.minimumOrderAmount,
@@ -67,8 +71,12 @@ class ShippingMethodModel extends ShippingMethodEntity {
     return ShippingMethodModel(
       id: json['id']?.toString() ?? '',
       name: json['methodName']?.toString() ?? '',
-      deliveryType:
-          ShippingDeliveryTypeX.fromBackendValue(json['deliveryType']),
+      methodType: ShippingMethodTypeX.fromBackendValue(
+        json['methodType'] ?? json['deliveryType'],
+      ),
+      country: _cleanText(json['country']) ?? ShippingMethodLocation.lebanon,
+      region: _cleanText(json['region']) ??
+          ShippingMethodLocation.lebanonRegions.first,
       cost: _doubleFromJson(json['shippingCost']) ?? 0,
       estimatedDeliveryTime:
           json['estimatedDeliveryTime']?.toString() ?? '',
@@ -80,18 +88,20 @@ class ShippingMethodModel extends ShippingMethodEntity {
       selectedBranchIds: selectedBranchIds,
       selectedBranchNames: selectedBranchNames,
       active: json['active'] != false,
-      notes: json['notes']?.toString(),
+      notes: _cleanText(json['notes']),
       createdAt: _dateFromJson(json['createdAt']),
       updatedAt: _dateFromJson(json['updatedAt']),
     );
   }
 
   Map<String, dynamic> toRequestJson() {
-    final isPickup = deliveryType == ShippingDeliveryType.pickup;
+    final isPickup = methodType == ShippingMethodType.pickup;
 
     return {
       'methodName': name.trim(),
-      'deliveryType': deliveryType.backendValue,
+      'methodType': methodType.backendValue,
+      'country': country.trim(),
+      'region': region.trim(),
       'shippingCost': isPickup ? 0 : cost,
       'estimatedDeliveryTime':
           isPickup ? 'Pickup from branch' : estimatedDeliveryTime.trim(),
@@ -114,7 +124,9 @@ class ShippingMethodModel extends ShippingMethodEntity {
     return ShippingMethodEntity(
       id: id,
       name: name,
-      deliveryType: deliveryType,
+      methodType: methodType,
+      country: country,
+      region: region,
       cost: cost,
       estimatedDeliveryTime: estimatedDeliveryTime,
       minimumOrderAmount: minimumOrderAmount,
@@ -127,6 +139,18 @@ class ShippingMethodModel extends ShippingMethodEntity {
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
+  }
+
+  static String? _cleanText(dynamic value) {
+    if (value == null) return null;
+
+    final text = value.toString().trim();
+
+    if (text.isEmpty || text.toLowerCase() == 'null') {
+      return null;
+    }
+
+    return text;
   }
 
   static double? _doubleFromJson(dynamic value) {
