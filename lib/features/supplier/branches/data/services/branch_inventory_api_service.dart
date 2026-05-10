@@ -2,20 +2,19 @@ import 'package:dio/dio.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/network/api_client.dart';
-import '../../../../../core/network/api_config.dart';
-import '../models/branch_inventory_model.dart';
+import '../models/branch_inventory_item_model.dart';
 
 class BranchInventoryApiService {
   final ApiClient apiClient;
 
   BranchInventoryApiService(this.apiClient);
 
-  Future<List<BranchInventoryModel>> getInventoryByBranch({
+  Future<List<BranchInventoryItemModel>> getInventoryByBranch({
     required String branchId,
   }) async {
     try {
       final response = await apiClient.dio.get(
-        ApiConfig.supplierInventoryByBranch(branchId),
+        '/supplier/branch-inventory/branch/$branchId',
       );
 
       final data = response.data;
@@ -23,8 +22,8 @@ class BranchInventoryApiService {
       if (data is List) {
         return data
             .map(
-              (item) => BranchInventoryModel.fromJson(
-                Map<String, dynamic>.from(item as Map),
+              (item) => BranchInventoryItemModel.fromJson(
+                Map<String, dynamic>.from(item),
               ),
             )
             .toList();
@@ -36,43 +35,69 @@ class BranchInventoryApiService {
     }
   }
 
-  Future<BranchInventoryModel> assignProductToBranch({
+  Future<List<BranchInventoryItemModel>> getInventoryByProduct({
+    required String productId,
+  }) async {
+    try {
+      final response = await apiClient.dio.get(
+        '/supplier/branch-inventory/product/$productId',
+      );
+
+      final data = response.data;
+
+      if (data is List) {
+        return data
+            .map(
+              (item) => BranchInventoryItemModel.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
+            .toList();
+      }
+
+      return [];
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<BranchInventoryItemModel> assignProductToBranch({
     required String branchId,
     required String productId,
     required int stockQuantity,
   }) async {
     try {
       final response = await apiClient.dio.post(
-        ApiConfig.supplierBranchInventory,
+        '/supplier/branch-inventory',
         data: {
-          'branchId': int.tryParse(branchId) ?? branchId,
-          'productId': int.tryParse(productId) ?? productId,
+          'branchId': int.parse(branchId),
+          'productId': int.parse(productId),
           'stockQuantity': stockQuantity,
         },
       );
 
-      return BranchInventoryModel.fromJson(
-        Map<String, dynamic>.from(response.data as Map),
+      return BranchInventoryItemModel.fromJson(
+        Map<String, dynamic>.from(response.data),
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<BranchInventoryModel> updateStock({
+  Future<BranchInventoryItemModel> updateStock({
     required String inventoryId,
     required int stockQuantity,
   }) async {
     try {
       final response = await apiClient.dio.put(
-        ApiConfig.supplierInventoryStockById(inventoryId),
+        '/supplier/branch-inventory/$inventoryId/stock',
         data: {
           'stockQuantity': stockQuantity,
         },
       );
 
-      return BranchInventoryModel.fromJson(
-        Map<String, dynamic>.from(response.data as Map),
+      return BranchInventoryItemModel.fromJson(
+        Map<String, dynamic>.from(response.data),
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
@@ -84,7 +109,7 @@ class BranchInventoryApiService {
   }) async {
     try {
       await apiClient.dio.delete(
-        ApiConfig.supplierInventoryById(inventoryId),
+        '/supplier/branch-inventory/$inventoryId',
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));

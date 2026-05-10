@@ -10,6 +10,9 @@ import 'core/theme/theme_cubit.dart';
 import 'core/theme/locale_cubit.dart';
 import 'core/theme/runtime_theme_service.dart';
 
+// =========================
+// AUTH
+// =========================
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/data/services/auth_service.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
@@ -19,12 +22,18 @@ import 'features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'features/auth/domain/usecases/reset_password_usecase.dart';
 import 'features/auth/presentation/bloc/auth_cubit.dart';
 
+// =========================
+// SUPPLIER PROFILE
+// =========================
 import 'features/supplier_profile/data/repositories/supplier_profile_repository_impl.dart';
 import 'features/supplier_profile/data/services/supplier_profile_service.dart';
 import 'features/supplier_profile/domain/repositories/supplier_profile_repository.dart';
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
 
+// =========================
+// RETAILER HOME / PROFILE / CART
+// =========================
 import 'features/dashboard/data/services/retailer_home_service.dart';
 import 'features/dashboard/data/repositories/retailer_home_repository_impl.dart';
 import 'features/dashboard/domain/repositories/retailer_home_repository.dart';
@@ -38,28 +47,131 @@ import 'features/retailer_profile/presentation/cubit/retailer_profile_cubit.dart
 import 'features/dashboard/data/services/retailer_cart_service.dart';
 import 'features/dashboard/presentation/cubit/retailer_cart_cubit.dart';
 
+// =========================
+// SUPPLIER CATEGORIES
+// =========================
 import 'features/supplier/categories/data/repositories/supplier_category_repository_impl.dart';
 import 'features/supplier/categories/data/services/supplier_category_api_service.dart';
 import 'features/supplier/categories/domain/repositories/supplier_category_repository.dart';
 
-import 'features/supplier/branches/data/repositories/branch_repository_impl.dart';
-import 'features/supplier/branches/data/services/branch_api_service.dart';
-import 'features/supplier/branches/domain/repositories/branch_repository.dart';
+import 'features/supplier/categories/domain/usecases/get_categories_usecase.dart';
+import 'features/supplier/categories/domain/usecases/get_subcategories_by_category_usecase.dart';
+import 'features/supplier/categories/domain/usecases/create_category_usecase.dart';
+import 'features/supplier/categories/domain/usecases/create_subcategory_usecase.dart';
 
+// =========================
+// SUPPLIER BRANCHES
+// =========================
+import 'features/supplier/branches/data/repositories/branch_repository_impl.dart';
+import 'features/supplier/branches/data/repositories/branch_inventory_repository_impl.dart';
+import 'features/supplier/branches/data/services/branch_api_service.dart';
+import 'features/supplier/branches/data/services/branch_inventory_api_service.dart';
+import 'features/supplier/branches/domain/repositories/branch_repository.dart';
+import 'features/supplier/branches/domain/repositories/branch_inventory_repository.dart';
+
+import 'features/supplier/branches/domain/usecases/get_branches_usecase.dart';
+import 'features/supplier/branches/domain/usecases/search_branches_usecase.dart';
+import 'features/supplier/branches/domain/usecases/create_branch_usecase.dart';
+import 'features/supplier/branches/domain/usecases/update_branch_usecase.dart';
+import 'features/supplier/branches/domain/usecases/delete_branch_usecase.dart';
+
+import 'features/supplier/branches/domain/usecases/get_inventory_by_branch_usecase.dart';
+import 'features/supplier/branches/domain/usecases/get_inventory_by_product_usecase.dart';
+import 'features/supplier/branches/domain/usecases/assign_product_to_branch_usecase.dart';
+import 'features/supplier/branches/domain/usecases/update_branch_stock_usecase.dart';
+import 'features/supplier/branches/domain/usecases/delete_inventory_item_usecase.dart';
+
+// =========================
+// SUPPLIER PRODUCTS
+// =========================
 import 'features/supplier/products/data/repositories/product_repository_impl.dart';
 import 'features/supplier/products/data/services/product_api_service.dart';
 import 'features/supplier/products/domain/repositories/product_repository.dart';
 
-import 'features/supplier/branches/data/repositories/branch_inventory_repository_impl.dart';
-import 'features/supplier/branches/data/services/branch_inventory_api_service.dart';
-import 'features/supplier/branches/domain/repositories/branch_inventory_repository.dart';
+import 'features/supplier/products/domain/usecases/get_products_usecase.dart';
+import 'features/supplier/products/domain/usecases/search_products_usecase.dart';
+import 'features/supplier/products/domain/usecases/create_product_usecase.dart';
+import 'features/supplier/products/domain/usecases/update_product_usecase.dart';
+import 'features/supplier/products/domain/usecases/delete_product_usecase.dart';
+
+import 'features/supplier/products/presentation/bloc/product_list/product_list_bloc.dart';
+import 'features/supplier/products/presentation/bloc/product_branch_inventory/product_branch_inventory_bloc.dart';
+
+// =========================
+// SUPPLIER BRANCH BLOCS
+// =========================
+import 'features/supplier/branches/presentation/bloc/branch_list/branch_list_bloc.dart';
+import 'features/supplier/branches/presentation/bloc/branch_inventory/branch_inventory_bloc.dart';
+
+// =========================
+// SUPPLIER COUPONS
+// =========================
+import 'features/supplier/coupons/data/services/coupon_api_service.dart';
+import 'features/supplier/coupons/data/repositories/coupon_repository_impl.dart';
+import 'features/supplier/coupons/domain/repositories/coupon_repository.dart';
+import 'features/supplier/coupons/domain/usecases/create_coupon_usecase.dart';
+import 'features/supplier/coupons/domain/usecases/delete_coupon_usecase.dart';
+import 'features/supplier/coupons/domain/usecases/get_coupons_usecase.dart';
+import 'features/supplier/coupons/domain/usecases/update_coupon_usecase.dart';
+import 'features/supplier/coupons/presentation/bloc/coupons_bloc.dart';
+
+// =========================
+// SUPPLIER PROMOTIONS
+// =========================
+import 'features/supplier/promotions/data/services/promotion_api_service.dart';
+import 'features/supplier/promotions/data/repositories/promotion_repository_impl.dart';
+import 'features/supplier/promotions/domain/repositories/promotion_repository.dart';
+import 'features/supplier/promotions/domain/usecases/create_promotion_usecase.dart';
+import 'features/supplier/promotions/domain/usecases/delete_promotion_usecase.dart';
+import 'features/supplier/promotions/domain/usecases/get_promotions_usecase.dart';
+import 'features/supplier/promotions/domain/usecases/update_promotion_usecase.dart';
+import 'features/supplier/promotions/presentation/bloc/promotions_bloc.dart';
+
+// =========================
+// SUPPLIER BANNERS
+// =========================
+import 'features/supplier/banners/data/services/banner_api_service.dart';
+import 'features/supplier/banners/data/services/banner_image_upload_service.dart';
+import 'features/supplier/banners/data/repositories/banner_repository_impl.dart';
+import 'features/supplier/banners/domain/repositories/banner_repository.dart';
+import 'features/supplier/banners/domain/usecases/create_banner_usecase.dart';
+import 'features/supplier/banners/domain/usecases/delete_banner_usecase.dart';
+import 'features/supplier/banners/domain/usecases/get_banners_usecase.dart';
+import 'features/supplier/banners/domain/usecases/update_banner_usecase.dart';
+import 'features/supplier/banners/presentation/bloc/banners_bloc.dart';
+
+// =========================
+// SUPPLIER SHIPPING
+// =========================
+import 'features/supplier/shipping/data/repositories/shipping_method_repository_impl.dart';
+import 'features/supplier/shipping/data/services/shipping_method_api_service.dart';
+import 'features/supplier/shipping/domain/repositories/shipping_method_repository.dart';
+import 'features/supplier/shipping/domain/usecases/create_shipping_method_usecase.dart';
+import 'features/supplier/shipping/domain/usecases/delete_shipping_method_usecase.dart';
+import 'features/supplier/shipping/domain/usecases/get_shipping_methods_usecase.dart';
+import 'features/supplier/shipping/domain/usecases/update_shipping_method_usecase.dart';
+import 'features/supplier/shipping/presentation/bloc/shipping_methods_bloc.dart';
+
+// =========================
+// SUPPLIER ORDERS
+// =========================
+import 'features/supplier/orders/data/repositories/supplier_order_repository_impl.dart';
+import 'features/supplier/orders/data/services/supplier_order_api_service.dart';
+import 'features/supplier/orders/domain/repositories/supplier_order_repository.dart';
+import 'features/supplier/orders/domain/usecases/get_supplier_orders_usecase.dart';
+import 'features/supplier/orders/domain/usecases/get_supplier_order_details_usecase.dart';
+import 'features/supplier/orders/domain/usecases/update_supplier_order_status_usecase.dart';
+import 'features/supplier/orders/presentation/bloc/supplier_orders/supplier_orders_bloc.dart';
+import 'features/supplier/orders/presentation/bloc/supplier_order_details/supplier_order_details_bloc.dart';
+
+// =========================
+// SUPPLIER DASHBOARD
+// =========================
+import 'features/supplier/dashboard/presentation/bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // =========================
-  // CORE / STORAGE
-  // =========================
   sl.registerLazySingleton<AuthStorage>(() => AuthStorage());
   sl.registerLazySingleton<ThemeStorage>(() => ThemeStorage());
   sl.registerLazySingleton<LocaleStorage>(() => LocaleStorage());
@@ -81,9 +193,7 @@ Future<void> init() async {
   // THEME / LOCALE
   // =========================
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<ThemeStorage>()));
-
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<LocaleStorage>()));
-
   sl.registerLazySingleton<RuntimeThemeService>(() => RuntimeThemeService());
 
   // =========================
@@ -107,8 +217,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<SupplierProfileService>(
-    () =>
-        SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
+    () => SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
   sl.registerLazySingleton<RetailerProfileService>(
@@ -128,12 +237,50 @@ Future<void> init() async {
     () => BranchApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
-  sl.registerLazySingleton<ProductApiService>(
-    () => ProductApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
-  );
-
   sl.registerLazySingleton<BranchInventoryApiService>(
     () => BranchInventoryApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<ProductApiService>(
+    () => ProductApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<CouponApiService>(
+    () => CouponApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<PromotionApiService>(
+    () => PromotionApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<BannerApiService>(
+    () => BannerApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<BannerImageUploadService>(
+    () => BannerImageUploadService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<ShippingMethodApiService>(
+    () => ShippingMethodApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierOrderApiService>(
+    () => SupplierOrderApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
@@ -177,18 +324,50 @@ Future<void> init() async {
     () => BranchRepositoryImpl(apiService: sl<BranchApiService>()),
   );
 
-  sl.registerLazySingleton<ProductRepository>(
-    () => ProductRepositoryImpl(apiService: sl<ProductApiService>()),
-  );
-
   sl.registerLazySingleton<BranchInventoryRepository>(
     () => BranchInventoryRepositoryImpl(
       apiService: sl<BranchInventoryApiService>(),
     ),
   );
 
+  sl.registerLazySingleton<ProductRepository>(
+    () => ProductRepositoryImpl(
+      apiService: sl<ProductApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<CouponRepository>(
+    () => CouponRepositoryImpl(
+      apiService: sl<CouponApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<PromotionRepository>(
+    () => PromotionRepositoryImpl(
+      apiService: sl<PromotionApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<BannerRepository>(
+    () => BannerRepositoryImpl(
+      apiService: sl<BannerApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ShippingMethodRepository>(
+    () => ShippingMethodRepositoryImpl(
+      apiService: sl<ShippingMethodApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierOrderRepository>(
+    () => SupplierOrderRepositoryImpl(
+      apiService: sl<SupplierOrderApiService>(),
+    ),
+  );
+
   // =========================
-  // USE CASES
+  // AUTH USE CASES
   // =========================
   sl.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(sl<AuthRepository>()),
@@ -206,12 +385,194 @@ Future<void> init() async {
     () => ResetPasswordUseCase(sl<AuthRepository>()),
   );
 
+  // =========================
+  // SUPPLIER PROFILE USE CASES
+  // =========================
   sl.registerLazySingleton<CreateSupplierProfileUseCase>(
     () => CreateSupplierProfileUseCase(sl<SupplierProfileRepository>()),
   );
 
   // =========================
-  // CUBITS
+  // SUPPLIER CATEGORY USE CASES
+  // =========================
+  sl.registerLazySingleton<GetCategoriesUseCase>(
+    () => GetCategoriesUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<GetSubCategoriesByCategoryUseCase>(
+    () => GetSubCategoriesByCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateCategoryUseCase>(
+    () => CreateCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateSubCategoryUseCase>(
+    () => CreateSubCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER PRODUCT USE CASES
+  // =========================
+  sl.registerLazySingleton<GetProductsUseCase>(
+    () => GetProductsUseCase(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<SearchProductsUseCase>(
+    () => SearchProductsUseCase(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateProductUseCase>(
+    () => CreateProductUseCase(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateProductUseCase>(
+    () => UpdateProductUseCase(sl<ProductRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteProductUseCase>(
+    () => DeleteProductUseCase(sl<ProductRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER BRANCH USE CASES
+  // =========================
+  sl.registerLazySingleton<GetBranchesUseCase>(
+    () => GetBranchesUseCase(sl<BranchRepository>()),
+  );
+
+  sl.registerLazySingleton<SearchBranchesUseCase>(
+    () => SearchBranchesUseCase(sl<BranchRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateBranchUseCase>(
+    () => CreateBranchUseCase(sl<BranchRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateBranchUseCase>(
+    () => UpdateBranchUseCase(sl<BranchRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteBranchUseCase>(
+    () => DeleteBranchUseCase(sl<BranchRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER BRANCH INVENTORY USE CASES
+  // =========================
+  sl.registerLazySingleton<GetInventoryByBranchUseCase>(
+    () => GetInventoryByBranchUseCase(sl<BranchInventoryRepository>()),
+  );
+
+  sl.registerLazySingleton<GetInventoryByProductUseCase>(
+    () => GetInventoryByProductUseCase(sl<BranchInventoryRepository>()),
+  );
+
+  sl.registerLazySingleton<AssignProductToBranchUseCase>(
+    () => AssignProductToBranchUseCase(sl<BranchInventoryRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateBranchStockUseCase>(
+    () => UpdateBranchStockUseCase(sl<BranchInventoryRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteInventoryItemUseCase>(
+    () => DeleteInventoryItemUseCase(sl<BranchInventoryRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER COUPON USE CASES
+  // =========================
+  sl.registerLazySingleton<GetCouponsUseCase>(
+    () => GetCouponsUseCase(sl<CouponRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateCouponUseCase>(
+    () => CreateCouponUseCase(sl<CouponRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateCouponUseCase>(
+    () => UpdateCouponUseCase(sl<CouponRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteCouponUseCase>(
+    () => DeleteCouponUseCase(sl<CouponRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER PROMOTION USE CASES
+  // =========================
+  sl.registerLazySingleton<GetPromotionsUseCase>(
+    () => GetPromotionsUseCase(sl<PromotionRepository>()),
+  );
+
+  sl.registerLazySingleton<CreatePromotionUseCase>(
+    () => CreatePromotionUseCase(sl<PromotionRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdatePromotionUseCase>(
+    () => UpdatePromotionUseCase(sl<PromotionRepository>()),
+  );
+
+  sl.registerLazySingleton<DeletePromotionUseCase>(
+    () => DeletePromotionUseCase(sl<PromotionRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER BANNER USE CASES
+  // =========================
+  sl.registerLazySingleton<GetBannersUseCase>(
+    () => GetBannersUseCase(sl<BannerRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateBannerUseCase>(
+    () => CreateBannerUseCase(sl<BannerRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateBannerUseCase>(
+    () => UpdateBannerUseCase(sl<BannerRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteBannerUseCase>(
+    () => DeleteBannerUseCase(sl<BannerRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER SHIPPING USE CASES
+  // =========================
+  sl.registerLazySingleton<GetShippingMethodsUseCase>(
+    () => GetShippingMethodsUseCase(sl<ShippingMethodRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateShippingMethodUseCase>(
+    () => CreateShippingMethodUseCase(sl<ShippingMethodRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateShippingMethodUseCase>(
+    () => UpdateShippingMethodUseCase(sl<ShippingMethodRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteShippingMethodUseCase>(
+    () => DeleteShippingMethodUseCase(sl<ShippingMethodRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER ORDER USE CASES
+  // =========================
+  sl.registerLazySingleton<GetSupplierOrdersUseCase>(
+    () => GetSupplierOrdersUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<GetSupplierOrderDetailsUseCase>(
+    () => GetSupplierOrderDetailsUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateSupplierOrderStatusUseCase>(
+    () => UpdateSupplierOrderStatusUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  // =========================
+  // CUBITS / BLOCS
   // =========================
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
@@ -225,6 +586,98 @@ Future<void> init() async {
   sl.registerFactory<SupplierProfileCubit>(
     () => SupplierProfileCubit(
       createSupplierProfileUseCase: sl<CreateSupplierProfileUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<CouponsBloc>(
+    () => CouponsBloc(
+      getCouponsUseCase: sl<GetCouponsUseCase>(),
+      createCouponUseCase: sl<CreateCouponUseCase>(),
+      updateCouponUseCase: sl<UpdateCouponUseCase>(),
+      deleteCouponUseCase: sl<DeleteCouponUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<PromotionsBloc>(
+    () => PromotionsBloc(
+      getPromotionsUseCase: sl<GetPromotionsUseCase>(),
+      createPromotionUseCase: sl<CreatePromotionUseCase>(),
+      updatePromotionUseCase: sl<UpdatePromotionUseCase>(),
+      deletePromotionUseCase: sl<DeletePromotionUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<BannersBloc>(
+    () => BannersBloc(
+      getBannersUseCase: sl<GetBannersUseCase>(),
+      createBannerUseCase: sl<CreateBannerUseCase>(),
+      updateBannerUseCase: sl<UpdateBannerUseCase>(),
+      deleteBannerUseCase: sl<DeleteBannerUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<ShippingMethodsBloc>(
+    () => ShippingMethodsBloc(
+      getShippingMethodsUseCase: sl<GetShippingMethodsUseCase>(),
+      createShippingMethodUseCase: sl<CreateShippingMethodUseCase>(),
+      updateShippingMethodUseCase: sl<UpdateShippingMethodUseCase>(),
+      deleteShippingMethodUseCase: sl<DeleteShippingMethodUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<ProductListBloc>(
+    () => ProductListBloc(
+      getProductsUseCase: sl<GetProductsUseCase>(),
+      searchProductsUseCase: sl<SearchProductsUseCase>(),
+      deleteProductUseCase: sl<DeleteProductUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<BranchListBloc>(
+    () => BranchListBloc(
+      getBranchesUseCase: sl<GetBranchesUseCase>(),
+      searchBranchesUseCase: sl<SearchBranchesUseCase>(),
+      deleteBranchUseCase: sl<DeleteBranchUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<BranchInventoryBloc>(
+    () => BranchInventoryBloc(
+      getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
+      getProductsUseCase: sl<GetProductsUseCase>(),
+      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
+      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
+      deleteInventoryItemUseCase: sl<DeleteInventoryItemUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<ProductBranchInventoryBloc>(
+    () => ProductBranchInventoryBloc(
+      getBranchesUseCase: sl<GetBranchesUseCase>(),
+      getInventoryByProductUseCase: sl<GetInventoryByProductUseCase>(),
+      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
+      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
+      deleteInventoryItemUseCase: sl<DeleteInventoryItemUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierOrdersBloc>(
+    () => SupplierOrdersBloc(
+      getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierOrderDetailsBloc>(
+    () => SupplierOrderDetailsBloc(
+      getSupplierOrderDetailsUseCase: sl<GetSupplierOrderDetailsUseCase>(),
+      updateSupplierOrderStatusUseCase:
+          sl<UpdateSupplierOrderStatusUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierDashboardBloc>(
+    () => SupplierDashboardBloc(
+      getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
     ),
   );
 

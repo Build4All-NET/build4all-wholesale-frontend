@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../data/banner_mock_store.dart';
+import '../../domain/entities/banner_entity.dart';
+import '../bloc/banners_bloc.dart';
+import '../bloc/banners_event.dart';
+import '../bloc/banners_state.dart';
 import '../widgets/banner_card.dart';
 
-class BannersScreen extends StatefulWidget {
+class BannersScreen extends StatelessWidget {
   const BannersScreen({super.key});
 
   @override
-  State<BannersScreen> createState() => _BannersScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<BannersBloc>(
+      create: (_) => sl<BannersBloc>()..add(const LoadBannersRequested()),
+      child: const _BannersView(),
+    );
+  }
 }
 
-class _BannersScreenState extends State<BannersScreen> {
-  Future<void> _confirmDeleteBanner(String id, String title) async {
+class _BannersView extends StatefulWidget {
+  const _BannersView();
+
+  @override
+  State<_BannersView> createState() => _BannersViewState();
+}
+
+class _BannersViewState extends State<_BannersView> {
+  Future<void> _refresh(BuildContext context) async {
+    context.read<BannersBloc>().add(const LoadBannersRequested());
+  }
+
+  Future<void> _confirmDeleteBanner(
+    BuildContext context,
+    BannerEntity banner,
+  ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
@@ -24,7 +48,7 @@ class _BannersScreenState extends State<BannersScreen> {
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete banner "$title"?',
+            'Are you sure you want to delete "${banner.title}"?',
           ),
           actions: [
             TextButton(
@@ -33,9 +57,7 @@ class _BannersScreenState extends State<BannersScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text(
                 'Delete',
                 style: TextStyle(fontWeight: FontWeight.w900),
@@ -46,98 +68,126 @@ class _BannersScreenState extends State<BannersScreen> {
       },
     );
 
-    if (!mounted || shouldDelete != true) return;
+    if (shouldDelete != true || !context.mounted) return;
 
-    BannerMockStore.deleteBanner(id);
-    setState(() {});
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Banner deleted successfully')),
-    );
+    context.read<BannersBloc>().add(
+          DeleteBannerRequested(banner.id),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final banners = BannerMockStore.banners;
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
-      appBar: AppBar(
+    return BlocListener<BannersBloc, BannersState>(
+      listener: (context, state) {
+        final message = state.successMessage ?? state.errorMessage;
+
+        if (message != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+
+          context.read<BannersBloc>().add(
+                const ClearBannerMessageRequested(),
+              );
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        centerTitle: true,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu, size: 30),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            );
-          },
-        ),
-        title: Text(
-          'Home Banners',
-          style: TextStyle(
-            color: primary,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
+        drawer: const SupplierAppDrawer(),
+        appBar: AppBar(
+          backgroundColor: AppThemeTokens.background,
+          elevation: 0,
+          centerTitle: true,
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu, size: 30),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              );
+            },
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            AppThemeTokens.screenHorizontalPadding,
+          title: Text(
+            'Home Banners',
+            style: TextStyle(
+              color: primary,
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _HeaderCard(primary: primary),
-              const SizedBox(height: 20),
+          actions: [
+            IconButton(
+              onPressed: () => _refresh(context),
+              icon: const Icon(Icons.refresh),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: SafeArea(
+          child: BlocBuilder<BannersBloc, BannersState>(
+            builder: (context, state) {
+              return RefreshIndicator(
+                onRefresh: () => _refresh(context),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(
+                    AppThemeTokens.screenHorizontalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _HeaderCard(primary: primary),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Banner List',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (state.loading)
+                        const _LoadingCard()
+                      else if (state.errorMessage != null)
+                        _ErrorCard(
+                          message: state.errorMessage!,
+                          onRetry: () => _refresh(context),
+                        )
+                      else if (state.banners.isEmpty)
+                        _EmptyBannersCard(primary: primary)
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: state.banners.length,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 16);
+                          },
+                          itemBuilder: (context, index) {
+                            final banner = state.banners[index];
 
-              const Text(
-                'Banner List',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppThemeTokens.textPrimary,
+                            return BannerCard(
+                              banner: banner,
+                              onEdit: () {
+                                context.go(
+                                  '/supplier-banners/edit',
+                                  extra: banner,
+                                );
+                              },
+                              onDelete: () {
+                                _confirmDeleteBanner(context, banner);
+                              },
+                            );
+                          },
+                        ),
+                      const SizedBox(height: 28),
+                    ],
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 12),
-
-              if (banners.isEmpty)
-                _EmptyBannersCard(primary: primary)
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: banners.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final banner = banners[index];
-
-                    return BannerCard(
-                      banner: banner,
-                      onEdit: () {
-                        context.go(
-                          '/supplier-banners/edit',
-                          extra: banner,
-                        );
-                      },
-                      onDelete: () {
-                        _confirmDeleteBanner(
-                          banner.id,
-                          banner.title,
-                        );
-                      },
-                    );
-                  },
-                ),
-
-              const SizedBox(height: 28),
-            ],
+              );
+            },
           ),
         ),
       ),
@@ -186,7 +236,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'Create and manage supplier marketing banners that will later appear on the retailer home page.',
+                  'View, edit, and delete supplier banners saved in the backend database. These banners will later appear for retailers on the home screen.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -195,6 +245,85 @@ class _HeaderCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingCard extends StatelessWidget {
+  const _LoadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: const Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class _ErrorCard extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorCard({
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red, size: 34),
+          const SizedBox(height: 12),
+          const Text(
+            'Could not load banners',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppThemeTokens.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 14),
+          ElevatedButton(
+            onPressed: onRetry,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primary,
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
+            child: const Text(
+              'Retry',
+              style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
         ],
@@ -219,7 +348,6 @@ class _EmptyBannersCard extends StatelessWidget {
         border: Border.all(color: AppThemeTokens.border),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             radius: 30,
@@ -237,25 +365,6 @@ class _EmptyBannersCard extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFEF3C7),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Draft',
-              style: TextStyle(
-                color: Color(0xFFD97706),
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-              ),
             ),
           ),
           const SizedBox(height: 10),

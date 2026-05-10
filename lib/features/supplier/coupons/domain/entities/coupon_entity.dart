@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 enum CouponDiscountType {
   percent,
   fixed,
@@ -13,6 +15,29 @@ extension CouponDiscountTypeX on CouponDiscountType {
         return 'Fixed';
       case CouponDiscountType.freeShipping:
         return 'Free Shipping';
+    }
+  }
+
+  String get backendValue {
+    switch (this) {
+      case CouponDiscountType.percent:
+        return 'PERCENT';
+      case CouponDiscountType.fixed:
+        return 'FIXED';
+      case CouponDiscountType.freeShipping:
+        return 'FREE_SHIPPING';
+    }
+  }
+
+  static CouponDiscountType fromBackend(String? value) {
+    switch (value) {
+      case 'FIXED':
+        return CouponDiscountType.fixed;
+      case 'FREE_SHIPPING':
+        return CouponDiscountType.freeShipping;
+      case 'PERCENT':
+      default:
+        return CouponDiscountType.percent;
     }
   }
 }
@@ -33,7 +58,7 @@ extension CouponBranchScopeX on CouponBranchScope {
   }
 }
 
-class CouponEntity {
+class CouponEntity extends Equatable {
   final String id;
   final int ownerProjectId;
   final String code;
@@ -72,6 +97,7 @@ class CouponEntity {
 
   int? get remainingUses {
     if (maxUses == null) return null;
+
     final remaining = maxUses! - usedCount;
     return remaining < 0 ? 0 : remaining;
   }
@@ -100,6 +126,7 @@ class CouponEntity {
     if (!started) return 'SCHEDULED';
     if (expired) return 'EXPIRED';
     if (usageLimitReached) return 'USAGE_LIMIT_REACHED';
+
     return 'ACTIVE';
   }
 
@@ -122,12 +149,37 @@ class CouponEntity {
   String get discountLabel {
     switch (discountType) {
       case CouponDiscountType.percent:
-        return '${discountValue.toStringAsFixed(0)} %';
+        return '${_cleanNumber(discountValue)}% Off';
       case CouponDiscountType.fixed:
-        return discountValue.toStringAsFixed(2);
+        return '\$${_cleanNumber(discountValue)} Off';
       case CouponDiscountType.freeShipping:
         return 'Free Shipping';
     }
+  }
+
+  String get discountTypeLabel {
+    return discountType.label;
+  }
+
+  String get validityLabel {
+    if (expiresAt == null) return 'No expiry date';
+    return 'Expires: ${_formatShortDate(expiresAt!)}';
+  }
+
+  String get branchScopeLabel {
+    if (branchScope == CouponBranchScope.allBranches) {
+      return 'All Branches';
+    }
+
+    if (selectedBranchNames.isEmpty) {
+      return 'Selected Branches';
+    }
+
+    if (selectedBranchNames.length == 1) {
+      return selectedBranchNames.first;
+    }
+
+    return '${selectedBranchNames.length} branches';
   }
 
   String get branchApplicabilityLabel {
@@ -140,6 +192,11 @@ class CouponEntity {
     }
 
     return selectedBranchNames.join(', ');
+  }
+
+  String get usageLabel {
+    if (maxUses == null) return 'Unlimited uses';
+    return '$usedCount/$maxUses used';
   }
 
   CouponEntity copyWith({
@@ -179,4 +236,53 @@ class CouponEntity {
       selectedBranchNames: selectedBranchNames ?? this.selectedBranchNames,
     );
   }
+
+  static String cleanNumber(double value) {
+    if (value == value.roundToDouble()) {
+      return value.toInt().toString();
+    }
+
+    return value.toStringAsFixed(2);
+  }
+
+  String _cleanNumber(double value) => cleanNumber(value);
+
+  String _formatShortDate(DateTime date) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        ownerProjectId,
+        code,
+        description,
+        discountType,
+        discountValue,
+        maxUses,
+        usedCount,
+        minOrderAmount,
+        maxDiscountAmount,
+        startsAt,
+        expiresAt,
+        active,
+        branchScope,
+        selectedBranchIds,
+        selectedBranchNames,
+      ];
 }

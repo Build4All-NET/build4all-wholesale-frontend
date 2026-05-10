@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../injection_container.dart';
+import '../bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
+import '../bloc/supplier_dashboard/supplier_dashboard_event.dart';
+import '../bloc/supplier_dashboard/supplier_dashboard_state.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
@@ -11,104 +16,155 @@ class SupplierDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<SupplierDashboardBloc>(
+      create: (_) =>
+          sl<SupplierDashboardBloc>()..add(const SupplierDashboardStarted()),
+      child: const _SupplierDashboardView(),
+    );
+  }
+}
+
+class _SupplierDashboardView extends StatelessWidget {
+  const _SupplierDashboardView();
+
+  @override
+  Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
-      appBar: AppBar(
+    return BlocListener<SupplierDashboardBloc, SupplierDashboardState>(
+      listenWhen: (previous, current) {
+        return previous.errorMessage != current.errorMessage &&
+            current.errorMessage != null;
+      },
+      listener: (context, state) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(state.errorMessage!)),
+        );
+      },
+      child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        centerTitle: true,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, size: 32),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+        drawer: const SupplierAppDrawer(),
+        appBar: AppBar(
+          backgroundColor: AppThemeTokens.background,
+          elevation: 0,
+          centerTitle: true,
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu, size: 32),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              );
+            },
           ),
+          title: Text(
+            'Supplier Dashboard',
+            style: TextStyle(
+              color: primary,
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                context.read<SupplierDashboardBloc>().add(
+                      const SupplierDashboardRefreshed(),
+                    );
+              },
+              icon: const Icon(Icons.refresh_outlined, size: 27),
+            ),
+            IconButton(
+              onPressed: () => context.go('/supplier-settings'),
+              icon: const Icon(Icons.settings_outlined, size: 27),
+            ),
+            const SizedBox(width: 8),
+          ],
         ),
-        title: Text(
-          'Supplier Dashboard',
-          style: TextStyle(
-            color: primary,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => context.go('/supplier-settings'),
-            icon: const Icon(Icons.settings_outlined, size: 28),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppThemeTokens.screenHorizontalPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildStatsGrid(),
-              const SizedBox(height: 24),
-              _buildFinancialSummary(context),
-              const SizedBox(height: 24),
-              const Text(
-                'Low Stock Alerts',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppThemeTokens.textPrimary,
+        body: BlocBuilder<SupplierDashboardBloc, SupplierDashboardState>(
+          builder: (context, state) {
+            return SafeArea(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<SupplierDashboardBloc>().add(
+                        const SupplierDashboardRefreshed(),
+                      );
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(
+                    AppThemeTokens.screenHorizontalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state.isLoading)
+                        const _DashboardLoadingCard()
+                      else
+                        _buildStatsGrid(state),
+                      const SizedBox(height: 24),
+                      _buildFinancialSummary(context, state),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Low Stock Alerts',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildLowStockAlerts(),
+                      const SizedBox(height: 28),
+                      const Text(
+                        'Quick Actions',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildQuickActions(context),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
-              _buildLowStockAlerts(),
-              const SizedBox(height: 28),
-              const Text(
-                'Quick Actions',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppThemeTokens.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildQuickActions(context),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildStatsGrid() {
+  Widget _buildStatsGrid(SupplierDashboardState state) {
     final cards = [
-      const SupplierDashboardStatCard(
+      SupplierDashboardStatCard(
         title: 'Pending Orders',
-        value: '0',
+        value: state.pendingOrders.toString(),
+        icon: Icons.receipt_long_outlined,
+        iconColor: const Color(0xFFF97316),
+        iconBackgroundColor: const Color(0xFFFFEDD5),
+      ),
+      SupplierDashboardStatCard(
+        title: 'Active Orders',
+        value: state.activeOrders.toString(),
         icon: Icons.inventory_2_outlined,
-        iconColor: Color(0xFFF97316),
-        iconBackgroundColor: Color(0xFFFFEDD5),
+        iconColor: const Color(0xFF2563EB),
+        iconBackgroundColor: const Color(0xFFDBEAFE),
       ),
-      const SupplierDashboardStatCard(
-        title: 'Preparing Orders',
-        value: '0',
-        icon: Icons.local_shipping_outlined,
-        iconColor: Color(0xFF2563EB),
-        iconBackgroundColor: Color(0xFFDBEAFE),
-      ),
-      const SupplierDashboardStatCard(
+      SupplierDashboardStatCard(
         title: 'Shipped Orders',
-        value: '0',
-        icon: Icons.fire_truck_outlined,
-        iconColor: Color(0xFFA855F7),
-        iconBackgroundColor: Color(0xFFF3E8FF),
+        value: state.shippedOrders.toString(),
+        icon: Icons.local_shipping_outlined,
+        iconColor: const Color(0xFFA855F7),
+        iconBackgroundColor: const Color(0xFFF3E8FF),
       ),
-      const SupplierDashboardStatCard(
+      SupplierDashboardStatCard(
         title: 'Completed Orders',
-        value: '0',
+        value: state.completedOrders.toString(),
         icon: Icons.check_circle_outline,
-        iconColor: Color(0xFF16A34A),
-        iconBackgroundColor: Color(0xFFDCFCE7),
+        iconColor: const Color(0xFF16A34A),
+        iconBackgroundColor: const Color(0xFFDCFCE7),
       ),
     ];
 
@@ -126,7 +182,10 @@ class SupplierDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFinancialSummary(BuildContext context) {
+  Widget _buildFinancialSummary(
+    BuildContext context,
+    SupplierDashboardState state,
+  ) {
     final primary = Theme.of(context).colorScheme.primary;
 
     return Container(
@@ -153,21 +212,21 @@ class SupplierDashboardScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: _FinancialItem(
-                  value: '\$0',
-                  label: "Today's Sales",
+                  value: _formatMoney(state.deliveredSales),
+                  label: 'Delivered Sales',
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
-                  value: '\$0',
+                  value: _formatMoney(state.monthlyRevenue),
                   label: 'Monthly Revenue',
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
-                  value: '0',
+                  value: state.totalOrdersToday.toString(),
                   label: 'Orders Today',
                   valueColor: primary,
                 ),
@@ -212,9 +271,9 @@ class SupplierDashboardScreen extends StatelessWidget {
         onTap: () => context.push('/supplier-products/add'),
       ),
       SupplierQuickActionCard(
-        title: 'Create Promotion',
-        icon: Icons.local_offer_outlined,
-        onTap: () => context.go('/supplier-promotions/create'),
+        title: 'Manage Orders',
+        icon: Icons.receipt_long_outlined,
+        onTap: () => context.go('/supplier-orders'),
       ),
       SupplierQuickActionCard(
         title: 'Manage Branches',
@@ -222,9 +281,14 @@ class SupplierDashboardScreen extends StatelessWidget {
         onTap: () => context.go('/supplier-branches'),
       ),
       SupplierQuickActionCard(
-        title: 'Shipping Methods',
+        title: 'Create Promotion',
+        icon: Icons.local_offer_outlined,
+        onTap: () => context.go('/supplier-promotions/create'),
+      ),
+      SupplierQuickActionCard(
+        title: 'Create Shipping Method',
         icon: Icons.local_shipping_outlined,
-        onTap: () => context.go('/supplier-shipping'),
+        onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
         title: 'Configure Taxes',
@@ -237,12 +301,12 @@ class SupplierDashboardScreen extends StatelessWidget {
         onTap: () => context.go('/supplier-excel-import'),
       ),
       SupplierQuickActionCard(
-        title: 'Home Banners',
+        title: 'Create Banner',
         icon: Icons.image_outlined,
         onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Coupons',
+        title: 'Create Coupon',
         icon: Icons.sell_outlined,
         onTap: () => context.go('/supplier-coupons/create'),
       ),
@@ -259,6 +323,42 @@ class SupplierDashboardScreen extends StatelessWidget {
         childAspectRatio: 1.05,
       ),
       itemBuilder: (context, index) => actions[index],
+    );
+  }
+
+  String _formatMoney(double amount) {
+    return '\$${amount.toStringAsFixed(2)}';
+  }
+}
+
+class _DashboardLoadingCard extends StatelessWidget {
+  const _DashboardLoadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: const Center(
+        child: Column(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 14),
+            Text(
+              'Loading dashboard data...',
+              style: TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

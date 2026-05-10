@@ -59,6 +59,29 @@ class RetailerHomeModel {
           .toList(),
     );
   }
+
+  RetailerHomeModel copyWith({
+    String? welcomeName,
+    int? unreadNotificationsCount,
+    int? cartItemsCount,
+    List<HomeBannerModel>? banners,
+    GroupDeliveryModel? groupDelivery,
+    List<QuickActionModel>? quickActions,
+    List<HomeCategoryModel>? categories,
+    List<HomeProductModel>? featuredProducts,
+  }) {
+    return RetailerHomeModel(
+      welcomeName: welcomeName ?? this.welcomeName,
+      unreadNotificationsCount:
+          unreadNotificationsCount ?? this.unreadNotificationsCount,
+      cartItemsCount: cartItemsCount ?? this.cartItemsCount,
+      banners: banners ?? this.banners,
+      groupDelivery: groupDelivery ?? this.groupDelivery,
+      quickActions: quickActions ?? this.quickActions,
+      categories: categories ?? this.categories,
+      featuredProducts: featuredProducts ?? this.featuredProducts,
+    );
+  }
 }
 
 class HomeBannerModel {
@@ -70,6 +93,8 @@ class HomeBannerModel {
   final String bannerType;
   final String? backgroundColorStart;
   final String? backgroundColorEnd;
+  final String targetType;
+  final String? targetValue;
 
   const HomeBannerModel({
     required this.id,
@@ -80,6 +105,8 @@ class HomeBannerModel {
     required this.bannerType,
     required this.backgroundColorStart,
     required this.backgroundColorEnd,
+    required this.targetType,
+    required this.targetValue,
   });
 
   factory HomeBannerModel.fromJson(Map<String, dynamic> json) {
@@ -92,6 +119,8 @@ class HomeBannerModel {
       bannerType: json['bannerType']?.toString() ?? '',
       backgroundColorStart: json['backgroundColorStart']?.toString(),
       backgroundColorEnd: json['backgroundColorEnd']?.toString(),
+      targetType: json['targetType']?.toString() ?? 'NONE',
+      targetValue: json['targetValue']?.toString(),
     );
   }
 }

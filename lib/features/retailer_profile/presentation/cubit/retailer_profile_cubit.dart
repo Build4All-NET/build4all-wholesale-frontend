@@ -27,6 +27,31 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
     }
   }
 
+  Future<bool> validateCurrentPassword({
+    required String currentPassword,
+  }) async {
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
+
+    try {
+      await retailerProfileRepository.validateCurrentPassword(
+        currentPassword: currentPassword,
+      );
+
+      emit(state.copyWith(isSaving: false));
+
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+
+      return false;
+    }
+  }
+
   Future<AccountProfileUpdateResult?> updateAccountInfo({
     required String username,
     required String firstName,
@@ -53,6 +78,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+
       return null;
     }
   }
@@ -96,19 +122,26 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+
       return false;
     }
   }
 
   Future<bool> verifyEmailChange(String code) async {
-    emit(state.copyWith(isSaving: true, clearError: true));
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
 
     try {
       await retailerProfileRepository.verifyEmailChange(code: code);
 
       final profile = await retailerProfileRepository.getProfile();
 
-      emit(state.copyWith(isSaving: false, profile: profile));
+      emit(
+        state.copyWith(
+          isSaving: false,
+          profile: profile,
+          successMessage: 'Email verified successfully',
+        ),
+      );
 
       return true;
     } catch (e) {
@@ -118,16 +151,24 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+
       return false;
     }
   }
 
   Future<bool> resendEmailChangeCode() async {
-    emit(state.copyWith(isSaving: true, clearError: true));
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
 
     try {
       await retailerProfileRepository.resendEmailChangeCode();
-      emit(state.copyWith(isSaving: false));
+
+      emit(
+        state.copyWith(
+          isSaving: false,
+          successMessage: 'Verification code sent',
+        ),
+      );
+
       return true;
     } catch (e) {
       emit(
@@ -136,16 +177,24 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+
       return false;
     }
   }
 
   Future<bool> sendPasswordResetCode({required String email}) async {
-    emit(state.copyWith(isSaving: true, clearError: true));
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
 
     try {
       await retailerProfileRepository.sendPasswordResetCode(email: email);
-      emit(state.copyWith(isSaving: false));
+
+      emit(
+        state.copyWith(
+          isSaving: false,
+          successMessage: 'Password verification code sent',
+        ),
+      );
+
       return true;
     } catch (e) {
       emit(
@@ -154,6 +203,39 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+
+      return false;
+    }
+  }
+
+  Future<bool> verifyPasswordResetCode({
+    required String email,
+    required String code,
+  }) async {
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
+
+    try {
+      await retailerProfileRepository.verifyPasswordResetCode(
+        email: email,
+        code: code,
+      );
+
+      emit(
+        state.copyWith(
+          isSaving: false,
+          successMessage: 'Password verification code confirmed',
+        ),
+      );
+
+      return true;
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isSaving: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+
       return false;
     }
   }
@@ -163,7 +245,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
     required String code,
     required String newPassword,
   }) async {
-    emit(state.copyWith(isSaving: true, clearError: true));
+    emit(state.copyWith(isSaving: true, clearError: true, clearSuccess: true));
 
     try {
       await retailerProfileRepository.updatePasswordWithCode(
@@ -172,7 +254,12 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
         newPassword: newPassword,
       );
 
-      emit(state.copyWith(isSaving: false));
+      emit(
+        state.copyWith(
+          isSaving: false,
+          successMessage: 'Password updated successfully',
+        ),
+      );
 
       return true;
     } catch (e) {
@@ -182,6 +269,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
         ),
       );
+
       return false;
     }
   }
@@ -216,7 +304,9 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
   }
 
   Future<void> logout() async {
-    emit(state.copyWith(isLoggingOut: true, clearError: true));
+    emit(
+      state.copyWith(isLoggingOut: true, clearError: true, clearSuccess: true),
+    );
 
     try {
       await retailerProfileRepository.logout();

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../../branches/data/branch_mock_store.dart';
+import '../../../../../injection_container.dart';
+import '../../../branches/data/services/branch_api_service.dart';
 import '../../../branches/domain/entities/branch_entity.dart';
-import '../../data/coupon_mock_store.dart';
 import '../../domain/entities/coupon_entity.dart';
+import '../bloc/coupons_bloc.dart';
+import '../bloc/coupons_event.dart';
+import '../bloc/coupons_state.dart';
 
-class CreateCouponScreen extends StatefulWidget {
+class CreateCouponScreen extends StatelessWidget {
   final CouponEntity? coupon;
 
   const CreateCouponScreen({
@@ -16,11 +20,29 @@ class CreateCouponScreen extends StatefulWidget {
   });
 
   @override
-  State<CreateCouponScreen> createState() => _CreateCouponScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<CouponsBloc>(
+      create: (_) => sl<CouponsBloc>(),
+      child: _CreateCouponView(coupon: coupon),
+    );
+  }
 }
 
-class _CreateCouponScreenState extends State<CreateCouponScreen> {
+class _CreateCouponView extends StatefulWidget {
+  final CouponEntity? coupon;
+
+  const _CreateCouponView({
+    this.coupon,
+  });
+
+  @override
+  State<_CreateCouponView> createState() => _CreateCouponViewState();
+}
+
+class _CreateCouponViewState extends State<_CreateCouponView> {
   final _formKey = GlobalKey<FormState>();
+
+  final BranchApiService _branchApiService = sl<BranchApiService>();
 
   late final TextEditingController _codeController;
   late final TextEditingController _descriptionController;
@@ -36,20 +58,17 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
   DateTime? _startsAt;
   DateTime? _expiresAt;
   String? _dateError;
-  String? _codeError;
 
+  bool _loadingBranches = true;
+  String? _branchErrorMessage;
+
+  final List<BranchEntity> _availableBranches = [];
   final List<String> _selectedBranchIds = [];
   final List<String> _selectedBranchNames = [];
 
   bool get _isEditMode => widget.coupon != null;
   bool get _isPercent => _discountType == CouponDiscountType.percent;
   bool get _isFreeShipping => _discountType == CouponDiscountType.freeShipping;
-
-  List<BranchEntity> get _availableBranches {
-    return BranchMockStore.branches
-        .where((branch) => branch.status == BranchStatus.active)
-        .toList();
-  }
 
   @override
   void initState() {
@@ -94,15 +113,8 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
       _discountValueController.clear();
     }
 
-    _codeController.addListener(() {
-      if (_codeError != null) {
-        setState(() {
-          _codeError = null;
-        });
-      }
-    });
-
     _validateDates();
+    _loadBranches();
   }
 
   @override
@@ -114,6 +126,37 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
     _minOrderAmountController.dispose();
     _maxDiscountAmountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadBranches() async {
+    setState(() {
+      _loadingBranches = true;
+      _branchErrorMessage = null;
+    });
+
+    try {
+      final branches = await _branchApiService.getBranches();
+
+      if (!mounted) return;
+
+      final activeBranches = branches
+          .where((branch) => branch.status == BranchStatus.active)
+          .toList();
+
+      setState(() {
+        _availableBranches
+          ..clear()
+          ..addAll(activeBranches);
+        _loadingBranches = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _branchErrorMessage = e.toString();
+        _loadingBranches = false;
+      });
+    }
   }
 
   String _formatDateTime(DateTime? date) {
@@ -246,11 +289,7 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
     });
   }
 
-  void _saveCoupon() {
-    setState(() {
-      _codeError = null;
-    });
-
+  void _saveCoupon(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
     if (!_validateDates()) {
@@ -266,26 +305,10 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
       return;
     }
 
-    final normalizedCode = _codeController.text.trim().toUpperCase();
-
-    final duplicateExists = CouponMockStore.codeExists(
-      code: normalizedCode,
-      exceptCouponId: widget.coupon?.id,
-    );
-
-    if (duplicateExists) {
-      setState(() {
-        _codeError = 'Coupon code already exists.';
-      });
-
-      _formKey.currentState!.validate();
-      return;
-    }
-
     final coupon = CouponEntity(
-      id: widget.coupon?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id: widget.coupon?.id ?? '',
       ownerProjectId: widget.coupon?.ownerProjectId ?? 0,
-      code: normalizedCode,
+      code: _codeController.text.trim().toUpperCase(),
       description: _descriptionController.text.trim().isEmpty
           ? null
           : _descriptionController.text.trim(),
@@ -312,21 +335,9 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
     );
 
     if (_isEditMode) {
-      CouponMockStore.updateCoupon(coupon);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Coupon updated successfully')),
-      );
-
-      context.go('/supplier-coupons');
+      context.read<CouponsBloc>().add(UpdateCouponRequested(coupon));
     } else {
-      CouponMockStore.addCoupon(coupon);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Coupon created successfully')),
-      );
-
-      context.go('/supplier-dashboard');
+      context.read<CouponsBloc>().add(CreateCouponRequested(coupon));
     }
   }
 
@@ -341,355 +352,441 @@ class _CreateCouponScreenState extends State<CreateCouponScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final branches = _availableBranches;
 
-    return Scaffold(
-      backgroundColor: AppThemeTokens.background,
-      appBar: AppBar(
-        backgroundColor: AppThemeTokens.background,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 28),
-          onPressed: _cancel,
-        ),
-        title: Text(
-          _isEditMode ? 'Edit Coupon' : 'Create Coupon',
-          style: const TextStyle(
-            color: AppThemeTokens.textPrimary,
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-          decoration: const BoxDecoration(
-            color: AppThemeTokens.surface,
-            border: Border(top: BorderSide(color: AppThemeTokens.border)),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 52,
-                  child: OutlinedButton(
-                    onPressed: _cancel,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppThemeTokens.textPrimary,
-                      backgroundColor: AppThemeTokens.surface,
-                      side: const BorderSide(color: AppThemeTokens.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
+    return BlocListener<CouponsBloc, CouponsState>(
+      listener: (context, state) {
+        if (state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage!)),
+          );
+
+          context.read<CouponsBloc>().add(
+                const ClearCouponMessageRequested(),
+              );
+        }
+
+        if (state.successMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.successMessage!)),
+          );
+
+          context.read<CouponsBloc>().add(
+                const ClearCouponMessageRequested(),
+              );
+
+          if (_isEditMode) {
+            context.go('/supplier-coupons');
+          } else {
+            context.go('/supplier-dashboard');
+          }
+        }
+      },
+      child: BlocBuilder<CouponsBloc, CouponsState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppThemeTokens.background,
+            appBar: AppBar(
+              backgroundColor: AppThemeTokens.background,
+              elevation: 0,
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, size: 28),
+                onPressed: state.saving ? null : _cancel,
+              ),
+              title: Text(
+                _isEditMode ? 'Edit Coupon' : 'Create Coupon',
+                style: const TextStyle(
+                  color: AppThemeTokens.textPrimary,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: SizedBox(
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: _saveCoupon,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      _isEditMode ? 'Update Coupon' : 'Create Coupon',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
+            ),
+            bottomNavigationBar: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+                decoration: const BoxDecoration(
+                  color: AppThemeTokens.surface,
+                  border: Border(top: BorderSide(color: AppThemeTokens.border)),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                _SectionCard(
-                  title: 'Coupon Information',
+                child: Row(
                   children: [
-                    _FieldLabel('Coupon Code *'),
-                    _InputField(
-                      controller: _codeController,
-                      hintText: 'SPRING25',
-                      textCapitalization: TextCapitalization.characters,
-                      validator: (value) {
-                        final error = _required(value, 'Coupon Code');
-
-                        if (error != null) return error;
-
-                        if (_codeError != null) {
-                          return _codeError;
-                        }
-
-                        return null;
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Description'),
-                    _InputField(
-                      controller: _descriptionController,
-                      hintText: 'Describe this coupon',
-                      maxLines: 2,
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Discount Type *'),
-                    _DiscountTypeDropdown(
-                      value: _discountType,
-                      onChanged: (value) {
-                        if (value == null) return;
-
-                        setState(() {
-                          _discountType = value;
-
-                          if (!_isPercent) {
-                            _maxDiscountAmountController.clear();
-                          }
-
-                          if (_isFreeShipping) {
-                            _discountValueController.clear();
-                          }
-                        });
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel(
-                      _isPercent ? 'Discount Value (%) *' : 'Discount Value *',
-                    ),
-                    _InputField(
-                      controller: _discountValueController,
-                      hintText: _isFreeShipping ? 'Not required' : '25',
-                      enabled: !_isFreeShipping,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _numberValidator(value, 'Discount Value');
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Coupon Rules',
-                  children: [
-                    _FieldLabel('Max Uses'),
-                    _InputField(
-                      controller: _maxUsesController,
-                      hintText: '100',
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        return _optionalPositiveInt(value, 'Max Uses');
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Min Order Amount'),
-                    _InputField(
-                      controller: _minOrderAmountController,
-                      hintText: '50',
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _optionalPositiveNumber(
-                          value,
-                          'Min Order Amount',
-                        );
-                      },
-                    ),
-                    const _DividerSpace(),
-                    _FieldLabel('Max Discount Amount'),
-                    _InputField(
-                      controller: _maxDiscountAmountController,
-                      hintText: _isPercent ? '30' : 'Only for percent coupons',
-                      enabled: _isPercent,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (value) {
-                        return _optionalPositiveNumber(
-                          value,
-                          'Max Discount Amount',
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Branch Applicability',
-                  children: [
-                    _FieldLabel('Applies To *'),
-                    _BranchScopeDropdown(
-                      value: _branchScope,
-                      onChanged: (value) {
-                        if (value == null) return;
-
-                        setState(() {
-                          _branchScope = value;
-
-                          if (_branchScope == CouponBranchScope.allBranches) {
-                            _selectedBranchIds.clear();
-                            _selectedBranchNames.clear();
-                          }
-                        });
-                      },
-                    ),
-                    if (_branchScope == CouponBranchScope.selectedBranches) ...[
-                      const _DividerSpace(),
-                      _FieldLabel('Select Branches'),
-                      if (branches.isEmpty)
-                        const Text(
-                          'No active branches available. Add branches from Branch Management first.',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppThemeTokens.textSecondary,
+                    Expanded(
+                      child: SizedBox(
+                        height: 52,
+                        child: OutlinedButton(
+                          onPressed: state.saving ? null : _cancel,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppThemeTokens.textPrimary,
+                            backgroundColor: AppThemeTokens.surface,
+                            side: const BorderSide(
+                              color: AppThemeTokens.border,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                        )
-                      else
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: branches.map((branch) {
-                            final selected =
-                                _selectedBranchIds.contains(branch.id);
-
-                            return FilterChip(
-                              selected: selected,
-                              label: Text(branch.name),
-                              selectedColor: primary.withOpacity(0.15),
-                              checkmarkColor: primary,
-                              onSelected: (isSelected) {
-                                _toggleBranch(branch, isSelected);
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Selected branches are loaded from Branch Management.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppThemeTokens.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 18),
-                _SectionCard(
-                  title: 'Validity',
-                  children: [
-                    _DateTimePickerRow(
-                      label: 'Valid From',
-                      value: _formatDateTime(_startsAt),
-                      onPick: () async {
-                        final picked = await _pickDateTime(_startsAt);
-
-                        if (picked == null) return;
-
-                        setState(() {
-                          _startsAt = picked;
-                          _validateDates();
-                        });
-                      },
-                      onClear: () {
-                        setState(() {
-                          _startsAt = null;
-                          _validateDates();
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _DateTimePickerRow(
-                      label: 'Valid To',
-                      value: _formatDateTime(_expiresAt),
-                      onPick: () async {
-                        final picked = await _pickDateTime(_expiresAt);
-
-                        if (picked == null) return;
-
-                        setState(() {
-                          _expiresAt = picked;
-                          _validateDates();
-                        });
-                      },
-                      onClear: () {
-                        setState(() {
-                          _expiresAt = null;
-                          _validateDates();
-                        });
-                      },
-                    ),
-                    if (_dateError != null) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        _dateError!,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                    const _DividerSpace(),
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'Active',
+                          child: const Text(
+                            'Cancel',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
-                              color: AppThemeTokens.textPrimary,
                             ),
                           ),
                         ),
-                        Switch(
-                          value: _active,
-                          activeColor: Colors.white,
-                          activeTrackColor: primary,
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: const Color(0xFFD1D5DB),
-                          onChanged: (value) {
-                            setState(() {
-                              _active = value;
-                            });
-                          },
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: SizedBox(
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: state.saving
+                              ? null
+                              : () => _saveCoupon(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primary,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: state.saving
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.4,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  _isEditMode
+                                      ? 'Update Coupon'
+                                      : 'Create Coupon',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      _SectionCard(
+                        title: 'Coupon Information',
+                        children: [
+                          _FieldLabel('Coupon Code *'),
+                          _InputField(
+                            controller: _codeController,
+                            hintText: 'SPRING25',
+                            textCapitalization: TextCapitalization.characters,
+                            validator: (value) {
+                              return _required(value, 'Coupon Code');
+                            },
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Description'),
+                          _InputField(
+                            controller: _descriptionController,
+                            hintText: 'Describe this coupon',
+                            maxLines: 2,
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Discount Type *'),
+                          _DiscountTypeDropdown(
+                            value: _discountType,
+                            onChanged: (value) {
+                              if (value == null) return;
+
+                              setState(() {
+                                _discountType = value;
+
+                                if (!_isPercent) {
+                                  _maxDiscountAmountController.clear();
+                                }
+
+                                if (_isFreeShipping) {
+                                  _discountValueController.clear();
+                                }
+                              });
+                            },
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel(
+                            _isPercent
+                                ? 'Discount Value (%) *'
+                                : 'Discount Value *',
+                          ),
+                          _InputField(
+                            controller: _discountValueController,
+                            hintText: _isFreeShipping ? 'Not required' : '25',
+                            enabled: !_isFreeShipping,
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            validator: (value) {
+                              return _numberValidator(
+                                value,
+                                'Discount Value',
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
+                        title: 'Coupon Rules',
+                        children: [
+                          _FieldLabel('Max Uses'),
+                          _InputField(
+                            controller: _maxUsesController,
+                            hintText: '100',
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              return _optionalPositiveInt(
+                                value,
+                                'Max Uses',
+                              );
+                            },
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Min Order Amount'),
+                          _InputField(
+                            controller: _minOrderAmountController,
+                            hintText: '50',
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            validator: (value) {
+                              return _optionalPositiveNumber(
+                                value,
+                                'Min Order Amount',
+                              );
+                            },
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Max Discount Amount'),
+                          _InputField(
+                            controller: _maxDiscountAmountController,
+                            hintText:
+                                _isPercent ? '30' : 'Only for percent coupons',
+                            enabled: _isPercent,
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            validator: (value) {
+                              return _optionalPositiveNumber(
+                                value,
+                                'Max Discount Amount',
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
+                        title: 'Branch Applicability',
+                        children: [
+                          _FieldLabel('Applies To *'),
+                          _BranchScopeDropdown(
+                            value: _branchScope,
+                            onChanged: (value) {
+                              if (value == null) return;
+
+                              setState(() {
+                                _branchScope = value;
+
+                                if (_branchScope ==
+                                    CouponBranchScope.allBranches) {
+                                  _selectedBranchIds.clear();
+                                  _selectedBranchNames.clear();
+                                }
+                              });
+                            },
+                          ),
+                          if (_branchScope ==
+                              CouponBranchScope.selectedBranches) ...[
+                            const _DividerSpace(),
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: _FieldLabel('Select Branches'),
+                                ),
+                                TextButton(
+                                  onPressed: _loadingBranches
+                                      ? null
+                                      : _loadBranches,
+                                  child: const Text(
+                                    'Refresh',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_loadingBranches)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            else if (_branchErrorMessage != null)
+                              Text(
+                                _branchErrorMessage!,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.red,
+                                ),
+                              )
+                            else if (_availableBranches.isEmpty)
+                              const Text(
+                                'No active branches available. Add branches from Branch Management first.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppThemeTokens.textSecondary,
+                                ),
+                              )
+                            else
+                              Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: _availableBranches.map((branch) {
+                                  final selected =
+                                      _selectedBranchIds.contains(branch.id);
+
+                                  return FilterChip(
+                                    selected: selected,
+                                    label: Text(branch.name),
+                                    selectedColor: primary.withOpacity(0.15),
+                                    checkmarkColor: primary,
+                                    onSelected: (isSelected) {
+                                      _toggleBranch(branch, isSelected);
+                                    },
+                                  );
+                                }).toList(),
+                              ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Selected branches are loaded from the backend Branch Management module.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppThemeTokens.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
+                        title: 'Validity',
+                        children: [
+                          _DateTimePickerRow(
+                            label: 'Valid From',
+                            value: _formatDateTime(_startsAt),
+                            onPick: () async {
+                              final picked = await _pickDateTime(_startsAt);
+
+                              if (picked == null) return;
+
+                              setState(() {
+                                _startsAt = picked;
+                                _validateDates();
+                              });
+                            },
+                            onClear: () {
+                              setState(() {
+                                _startsAt = null;
+                                _validateDates();
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _DateTimePickerRow(
+                            label: 'Valid To',
+                            value: _formatDateTime(_expiresAt),
+                            onPick: () async {
+                              final picked = await _pickDateTime(_expiresAt);
+
+                              if (picked == null) return;
+
+                              setState(() {
+                                _expiresAt = picked;
+                                _validateDates();
+                              });
+                            },
+                            onClear: () {
+                              setState(() {
+                                _expiresAt = null;
+                                _validateDates();
+                              });
+                            },
+                          ),
+                          if (_dateError != null) ...[
+                            const SizedBox(height: 10),
+                            Text(
+                              _dateError!,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                          const _DividerSpace(),
+                          Row(
+                            children: [
+                              const Expanded(
+                                child: Text(
+                                  'Active',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    color: AppThemeTokens.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              Switch(
+                                value: _active,
+                                activeColor: Colors.white,
+                                activeTrackColor: primary,
+                                inactiveThumbColor: Colors.white,
+                                inactiveTrackColor: const Color(0xFFD1D5DB),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _active = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

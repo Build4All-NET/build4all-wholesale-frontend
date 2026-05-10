@@ -636,8 +636,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                   const SizedBox(height: 18),
                   _InventoryManagedInfoCard(
-                    isEditMode: widget.isEditMode,
-                  ),
+  isEditMode: widget.isEditMode,
+  product: widget.productToEdit,
+),
+
                 ],
               ),
             ),
@@ -647,9 +649,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
 class _InventoryManagedInfoCard extends StatelessWidget {
   final bool isEditMode;
+  final ProductEntity? product;
 
   const _InventoryManagedInfoCard({
     required this.isEditMode,
+    required this.product,
   });
 
   @override
@@ -680,7 +684,7 @@ class _InventoryManagedInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Branch Inventory',
+                      'Product Branch Stock',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w900,
@@ -690,8 +694,8 @@ class _InventoryManagedInfoCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       isEditMode
-                          ? 'Product details are saved here. Stock is assigned per branch from Branch Inventory.'
-                          : 'Save this product first, then assign its stock per branch from Branch Inventory.',
+                          ? 'Manage this product stock across all branches directly. Stock updates are saved immediately in Branch Inventory.'
+                          : 'Save this product first, then assign its stock per branch from Product Branch Stock.',
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -705,16 +709,19 @@ class _InventoryManagedInfoCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          if (isEditMode)
+          if (isEditMode && product != null)
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  context.push('/supplier-branches');
+                  context.push(
+                    '/supplier-products/branch-stock',
+                    extra: product,
+                  );
                 },
                 icon: const Icon(Icons.store_mall_directory_outlined),
                 label: const Text(
-                  'Manage Branch Inventory',
+                  'Manage Product Branch Stock',
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: OutlinedButton.styleFrom(

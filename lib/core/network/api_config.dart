@@ -4,6 +4,9 @@ class ApiConfig {
   static String get apiBaseUrl => AppConfig.apiBaseUrl;
   static String get projectApiBaseUrl => AppConfig.projectApiBaseUrl;
 
+  // =========================
+  // Build4All / Auth
+  // =========================
   static const String adminLoginFront = '/auth/admin/login/front';
   static const String userLogin = '/auth/user/login';
   static const String sendVerification = '/auth/send-verification';
@@ -14,15 +17,37 @@ class ApiConfig {
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
 
+  // =========================
+  // Profiles
+  // =========================
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
 
-  // Retailer Home endpoints from Wholesale backend
+  // =========================
+  // Retailer Home
+  // =========================
   static const String retailerHome = '/retailer-home';
   static const String retailerHomeAddCartItem = '/retailer-home/cart/items';
 
+  static String retailerHomeCategoryProducts(int categoryId) =>
+      '/retailer-home/categories/$categoryId/products';
+
+  // =========================
+  // Retailer Cart
+  // =========================
+  static const String retailerCart = '/retailer/cart';
+  static const String retailerCartItems = '/retailer/cart/items';
+  static const String retailerBanners = '/retailer/banners';
+
+  static String retailerCartItemById(int cartItemId) =>
+      '/retailer/cart/items/$cartItemId';
+
+  // =========================
+  // Build4All user endpoints
+  // =========================
   static String build4AllUserById(int id) => '/users/$id';
+
   static String build4AllUserProfile(int id) => '/users/$id/profile';
 
   static String build4AllVerifyEmailChange(int id) =>
@@ -42,13 +67,9 @@ class ApiConfig {
 
   static String build4AllDeleteUser(int userId) => '/users/$userId';
 
-  static const String retailerCart = '/retailer/cart';
-  static const String retailerCartItems = '/retailer/cart/items';
-
-  static String retailerCartItemById(int cartItemId) =>
-      '/retailer/cart/items/$cartItemId';
-
+  // =========================
   // Supplier Categories
+  // =========================
   static const String supplierCategories = '/supplier/categories';
   static const String supplierSubCategories = '/supplier/subcategories';
 
@@ -64,7 +85,9 @@ class ApiConfig {
     return '/supplier/subcategories/category/$categoryId';
   }
 
+  // =========================
   // Supplier Branches
+  // =========================
   static const String supplierBranches = '/supplier/branches';
 
   static String supplierBranchById(String id) {
@@ -75,7 +98,9 @@ class ApiConfig {
     return '/supplier/branches/search?query=$query';
   }
 
+  // =========================
   // Supplier Products
+  // =========================
   static const String supplierProducts = '/supplier/products';
 
   static String supplierProductById(String id) {
@@ -86,7 +111,9 @@ class ApiConfig {
     return '/supplier/products/search?query=$query';
   }
 
+  // =========================
   // Supplier Branch Inventory
+  // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';
 
   static String supplierInventoryByBranch(String branchId) {
@@ -113,6 +140,59 @@ class ApiConfig {
     return '/supplier/branch-inventory/product/$productId/summary';
   }
 
-  static String retailerHomeCategoryProducts(int categoryId) =>
-      '/retailer-home/categories/$categoryId/products';
+  // =========================
+  // Supplier Coupons
+  // =========================
+  static const String supplierCoupons = '/supplier/coupons';
+
+  static String supplierCouponById(String id) {
+    return '/supplier/coupons/$id';
+  }
+
+  // =========================
+  // Supplier Promotions
+  // =========================
+  static const String supplierPromotions = '/supplier/promotions';
+
+  static String supplierPromotionById(String id) {
+    return '/supplier/promotions/$id';
+  }
+
+  // =========================
+  // Supplier Home Banners
+  // =========================
+  static const String supplierBanners = '/supplier/banners';
+
+  static const String supplierBannerUploadImage =
+      '/supplier/banners/upload-image';
+
+  static String supplierBannerById(String id) {
+    return '/supplier/banners/$id';
+  }
+
+  // =========================
+  // Supplier Shipping Methods
+  // =========================
+  static const String supplierShippingMethods = '/supplier/shipping-methods';
+
+  static String supplierShippingMethodById(String id) {
+    return '/supplier/shipping-methods/$id';
+  }
+
+  // =========================
+  // Supplier Orders
+  // =========================
+  static const String supplierOrders = '/supplier/orders';
+
+  static String supplierOrdersByStatus(String status) {
+    return '/supplier/orders/status/$status';
+  }
+
+  static String supplierOrderById(String orderId) {
+    return '/supplier/orders/$orderId';
+  }
+
+  static String supplierOrderStatus(String orderId) {
+    return '/supplier/orders/$orderId/status';
+  }
 }
