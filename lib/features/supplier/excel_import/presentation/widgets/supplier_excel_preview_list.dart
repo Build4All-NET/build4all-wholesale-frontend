@@ -6,10 +6,12 @@ import 'supplier_excel_row_card.dart';
 
 class SupplierExcelPreviewList extends StatelessWidget {
   final List<SupplierExcelProductRowEntity> rows;
+  final void Function(SupplierExcelProductRowEntity row) onEditRow;
 
   const SupplierExcelPreviewList({
     super.key,
     required this.rows,
+    required this.onEditRow,
   });
 
   @override
@@ -64,8 +66,22 @@ class SupplierExcelPreviewList extends StatelessWidget {
             fontSize: 18,
           ),
         ),
+        const SizedBox(height: 6),
+        const Text(
+          'Review invalid rows, edit them directly here, or update the Excel file and upload it again.',
+          style: TextStyle(
+            color: AppThemeTokens.textSecondary,
+            fontWeight: FontWeight.w600,
+            height: 1.35,
+          ),
+        ),
         const SizedBox(height: 12),
-        ...rows.map((row) => SupplierExcelRowCard(row: row)),
+        ...rows.map(
+          (row) => SupplierExcelRowCard(
+            row: row,
+            onEdit: () => onEditRow(row),
+          ),
+        ),
       ],
     );
   }

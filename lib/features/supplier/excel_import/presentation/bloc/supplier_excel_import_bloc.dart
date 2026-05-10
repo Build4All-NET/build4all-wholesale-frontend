@@ -1,9 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../categories/domain/entities/supplier_category_entity.dart';
 import '../../../categories/domain/entities/supplier_sub_category_entity.dart';
 import '../../../categories/domain/usecases/get_categories_usecase.dart';
 import '../../../categories/domain/usecases/get_subcategories_by_category_usecase.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/domain/usecases/get_products_usecase.dart';
+import '../../domain/entities/supplier_excel_product_row_entity.dart';
 import '../../domain/usecases/clear_supplier_excel_import_usecase.dart';
 import '../../domain/usecases/import_supplier_excel_products_usecase.dart';
 import '../../domain/usecases/parse_supplier_excel_file_usecase.dart';
@@ -36,6 +39,7 @@ class SupplierExcelImportBloc
     on<SupplierExcelPickFileRequested>(_onPickFileRequested);
     on<SupplierExcelImportRequested>(_onImportRequested);
     on<SupplierExcelClearRequested>(_onClearRequested);
+    on<SupplierExcelRowUpdated>(_onRowUpdated);
   }
 
   Future<void> _onPickFileRequested(
@@ -67,7 +71,6 @@ class SupplierExcelImportBloc
       final parsedFile = await parseSupplierExcelFileUseCase(file: pickedFile);
       final categories = await getCategoriesUseCase();
       final existingProducts = await getProductsUseCase();
-
       final subCategoriesByCategoryId =
           <String, List<SupplierSubCategoryEntity>>{};
 
@@ -76,8 +79,8 @@ class SupplierExcelImportBloc
             await getSubCategoriesByCategoryUseCase(categoryId: category.id);
       }
 
-      final validatedRows = validateSupplierExcelRowsUseCase(
-        rows: parsedFile.rows,
+      final validatedRows = _validateRows(
+        parsedFile.rows,
         categories: categories,
         subCategoriesByCategoryId: subCategoriesByCategoryId,
         existingProducts: existingProducts,
@@ -88,6 +91,9 @@ class SupplierExcelImportBloc
           isPickingOrParsing: false,
           fileName: parsedFile.fileName,
           rows: validatedRows,
+          categories: categories,
+          subCategoriesByCategoryId: subCategoriesByCategoryId,
+          existingProducts: existingProducts,
           clearMessages: true,
           clearImportResult: true,
         ),
@@ -140,11 +146,50 @@ class SupplierExcelImportBloc
     }
   }
 
+  void _onRowUpdated(
+    SupplierExcelRowUpdated event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    final updatedRows = state.rows.map((row) {
+      if (row.rowNumber == event.row.rowNumber) return event.row;
+      return row;
+    }).toList();
+
+    final validatedRows = _validateRows(
+      updatedRows,
+      categories: state.categories,
+      subCategoriesByCategoryId: state.subCategoriesByCategoryId,
+      existingProducts: state.existingProducts,
+    );
+
+    emit(
+      state.copyWith(
+        rows: validatedRows,
+        clearMessages: true,
+        clearImportResult: true,
+      ),
+    );
+  }
+
   void _onClearRequested(
     SupplierExcelClearRequested event,
     Emitter<SupplierExcelImportState> emit,
   ) {
     clearSupplierExcelImportUseCase();
     emit(SupplierExcelImportState.initial());
+  }
+
+  List<SupplierExcelProductRowEntity> _validateRows(
+    List<SupplierExcelProductRowEntity> rows, {
+    required List<SupplierCategoryEntity> categories,
+    required Map<String, List<SupplierSubCategoryEntity>> subCategoriesByCategoryId,
+    required List<ProductEntity> existingProducts,
+  }) {
+    return validateSupplierExcelRowsUseCase(
+      rows: rows,
+      categories: categories,
+      subCategoriesByCategoryId: subCategoriesByCategoryId,
+      existingProducts: existingProducts,
+    );
   }
 }

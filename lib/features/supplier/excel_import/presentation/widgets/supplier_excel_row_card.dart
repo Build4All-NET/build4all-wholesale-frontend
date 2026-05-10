@@ -5,16 +5,20 @@ import '../../domain/entities/supplier_excel_product_row_entity.dart';
 
 class SupplierExcelRowCard extends StatelessWidget {
   final SupplierExcelProductRowEntity row;
+  final VoidCallback onEdit;
 
   const SupplierExcelRowCard({
     super.key,
     required this.row,
+    required this.onEdit,
   });
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final borderColor = row.isValid ? AppThemeTokens.border : AppThemeTokens.error.withOpacity(0.45);
+    final borderColor = row.isValid
+        ? primary.withOpacity(0.35)
+        : AppThemeTokens.error.withOpacity(0.45);
     final badgeColor = row.isValid ? primary : AppThemeTokens.error;
 
     return Container(
@@ -72,7 +76,10 @@ class SupplierExcelRowCard extends StatelessWidget {
             runSpacing: 8,
             children: [
               _InfoChip(label: 'Category', value: row.categoryName),
-              _InfoChip(label: 'SubCategory', value: row.subCategoryName.isEmpty ? '-' : row.subCategoryName),
+              _InfoChip(
+                label: 'SubCategory',
+                value: row.subCategoryName.isEmpty ? '-' : row.subCategoryName,
+              ),
               _InfoChip(label: 'Price', value: row.priceText),
               _InfoChip(label: 'MOQ', value: row.moqText),
               _InfoChip(label: 'Status', value: row.statusText),
@@ -98,6 +105,19 @@ class SupplierExcelRowCard extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit_outlined, size: 18),
+              label: const Text('Edit Row'),
+              style: TextButton.styleFrom(
+                foregroundColor: primary,
+                textStyle: const TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -29,32 +29,38 @@ class ValidateSupplierExcelRowsUseCase {
       final status = _parseStatus(row.statusText);
 
       if (productName.isEmpty) {
-        errors.add('Product Name is required.');
+        errors.add('Enter a product name before importing this row.');
       } else {
         final normalizedProductName = _normalize(productName);
 
         if (duplicateNamesInExcel.contains(normalizedProductName)) {
-          errors.add('Duplicate product name in this Excel file. Keep only one row for "$productName".');
+          errors.add(
+            'This product name appears more than once in the Excel file. Keep one row only for "$productName".',
+          );
         }
 
         if (existingProductNames.contains(normalizedProductName)) {
-          errors.add('Product "$productName" already exists. Rename it or remove this row to avoid duplicates.');
+          errors.add(
+            'A product named "$productName" already exists. Remove it from Excel or rename it before importing.',
+          );
         }
       }
 
       if (description.isEmpty) {
-        errors.add('Description is required.');
+        errors.add('Enter a product description before importing this row.');
       } else if (description.length < 10) {
         errors.add('Description must be at least 10 characters.');
       }
 
       SupplierCategoryEntity? matchedCategory;
       if (categoryName.isEmpty) {
-        errors.add('Category is required.');
+        errors.add('Choose a category for this product.');
       } else {
         matchedCategory = _findCategoryByName(categories, categoryName);
         if (matchedCategory == null) {
-          errors.add('Category "$categoryName" does not exist.');
+          errors.add(
+            'Category "$categoryName" was not found. Create it in Catalog or select an existing category from Edit Row.',
+          );
         }
       }
 
@@ -68,23 +74,19 @@ class ValidateSupplierExcelRowsUseCase {
 
         if (matchedSubCategory == null) {
           errors.add(
-            'SubCategory "$subCategoryName" does not exist under "$categoryName".',
+            'Subcategory "$subCategoryName" was not found under "$categoryName". Create it in Catalog or choose an existing subcategory from Edit Row.',
           );
         }
       }
 
-      if (subCategoryName.isEmpty) {
-        warnings.add('SubCategory is empty. Product will be created without subcategory.');
-      }
-
       if (price == null) {
-        errors.add('Price is required and must be a valid number.');
+        errors.add('Enter a valid product price.');
       } else if (price <= 0) {
         errors.add('Price must be greater than 0.');
       }
 
       if (moq == null) {
-        errors.add('MOQ is required and must be a valid number.');
+        errors.add('Enter a valid MOQ.');
       } else if (moq < 5) {
         errors.add('MOQ must be at least 5.');
       }
@@ -96,10 +98,14 @@ class ValidateSupplierExcelRowsUseCase {
       return row.copyWith(
         categoryId: matchedCategory?.id,
         subCategoryId: matchedSubCategory?.id,
+        clearCategoryId: matchedCategory == null,
         clearSubCategoryId: matchedSubCategory == null,
         price: price,
         minimumOrderQuantity: moq,
         status: status,
+        clearParsedPrice: price == null,
+        clearParsedMoq: moq == null,
+        clearParsedStatus: status == null,
         errors: errors,
         warnings: warnings,
       );
@@ -156,13 +162,13 @@ class ValidateSupplierExcelRowsUseCase {
 
   double? _parseDouble(String value) {
     final normalized = value.trim().replaceAll(',', '.');
-    if (normalized.isEmpty) return null;
+    if (normalized.isEmpty || normalized == '-') return null;
     return double.tryParse(normalized);
   }
 
   int? _parseInt(String value) {
     final normalized = value.trim();
-    if (normalized.isEmpty) return null;
+    if (normalized.isEmpty || normalized == '-') return null;
 
     final intValue = int.tryParse(normalized);
     if (intValue != null) return intValue;

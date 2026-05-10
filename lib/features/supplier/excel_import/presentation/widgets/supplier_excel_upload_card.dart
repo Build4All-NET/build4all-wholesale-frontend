@@ -48,7 +48,7 @@ class SupplierExcelUploadCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            fileName == null ? 'Accepted format: .xlsx or .xls' : fileName!,
+            fileName == null ? 'Accepted format: .xlsx' : fileName!,
             style: TextStyle(
               color: fileName == null ? AppThemeTokens.textSecondary : primary,
               fontWeight: FontWeight.w800,

@@ -38,7 +38,22 @@ class SupplierExcelProductRowEntity {
   bool get isValid => errors.isEmpty;
   bool get hasWarnings => warnings.isNotEmpty;
 
+  bool get hasCatalogError {
+    return errors.any((error) {
+      final lower = error.toLowerCase();
+      return lower.contains('category') || lower.contains('subcategory');
+    });
+  }
+
   SupplierExcelProductRowEntity copyWith({
+    int? rowNumber,
+    String? productName,
+    String? description,
+    String? categoryName,
+    String? subCategoryName,
+    String? priceText,
+    String? moqText,
+    String? statusText,
     String? categoryId,
     String? subCategoryId,
     double? price,
@@ -46,25 +61,29 @@ class SupplierExcelProductRowEntity {
     ProductStatus? status,
     List<String>? errors,
     List<String>? warnings,
+    bool clearCategoryId = false,
     bool clearSubCategoryId = false,
+    bool clearParsedPrice = false,
+    bool clearParsedMoq = false,
+    bool clearParsedStatus = false,
   }) {
     return SupplierExcelProductRowEntity(
-      rowNumber: rowNumber,
-      productName: productName,
-      description: description,
-      categoryName: categoryName,
-      subCategoryName: subCategoryName,
-      priceText: priceText,
-      moqText: moqText,
-      statusText: statusText,
-      categoryId: categoryId ?? this.categoryId,
+      rowNumber: rowNumber ?? this.rowNumber,
+      productName: productName ?? this.productName,
+      description: description ?? this.description,
+      categoryName: categoryName ?? this.categoryName,
+      subCategoryName: subCategoryName ?? this.subCategoryName,
+      priceText: priceText ?? this.priceText,
+      moqText: moqText ?? this.moqText,
+      statusText: statusText ?? this.statusText,
+      categoryId: clearCategoryId ? null : categoryId ?? this.categoryId,
       subCategoryId: clearSubCategoryId
           ? null
           : subCategoryId ?? this.subCategoryId,
-      price: price ?? this.price,
+      price: clearParsedPrice ? null : price ?? this.price,
       minimumOrderQuantity:
-          minimumOrderQuantity ?? this.minimumOrderQuantity,
-      status: status ?? this.status,
+          clearParsedMoq ? null : minimumOrderQuantity ?? this.minimumOrderQuantity,
+      status: clearParsedStatus ? null : status ?? this.status,
       errors: errors ?? this.errors,
       warnings: warnings ?? this.warnings,
     );
