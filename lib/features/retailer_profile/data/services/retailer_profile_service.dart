@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../../../core/config/app_config.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
@@ -13,6 +14,31 @@ class RetailerProfileService {
     required this.centralApiClient,
     required this.projectApiClient,
   });
+
+  Future<void> validateCurrentPassword({
+    required String email,
+    required String currentPassword,
+  }) async {
+    try {
+      final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+
+      if (ownerProjectLinkId == null) {
+        throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
+      }
+
+      await centralApiClient.dio.post(
+        ApiConfig.userLogin,
+        data: {
+          'email': email.trim(),
+          'password': currentPassword,
+          'ownerProjectLinkId': ownerProjectLinkId,
+          'appType': AppConfig.appType,
+        },
+      );
+    } on DioException {
+      throw AppException('Current password is incorrect.');
+    }
+  }
 
   Future<Build4AllUserProfileModel> getBuild4AllUserProfile(int userId) async {
     try {
@@ -34,6 +60,8 @@ class RetailerProfileService {
     required String firstName,
     required String lastName,
     String? changedEmail,
+    String? currentPassword,
+    String? newPassword,
   }) async {
     try {
       final data = <String, dynamic>{
@@ -46,6 +74,11 @@ class RetailerProfileService {
       if (changedEmail != null && changedEmail.trim().isNotEmpty) {
         data['email'] = changedEmail.trim();
       }
+
+      // IMPORTANT:
+      // Do not send currentPassword/newPassword here.
+      // Build4All /users/{id}/profile does not save password.
+      // Password must be saved through /users/update-password.
 
       final formData = FormData.fromMap(data);
 
@@ -70,14 +103,18 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllVerifyEmailChange(userId),
-        data: {'code': code.trim()},
+        data: {
+          'code': code.trim(),
+        },
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<void> resendEmailChangeCode({required int userId}) async {
+  Future<void> resendEmailChangeCode({
+    required int userId,
+  }) async {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllResendEmailChange(userId),
@@ -94,7 +131,27 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllResetPassword(ownerProjectLinkId),
-        data: {'email': email.trim()},
+        data: {
+          'email': email.trim(),
+        },
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<void> verifyPasswordResetCode({
+    required String email,
+    required String code,
+    required int ownerProjectLinkId,
+  }) async {
+    try {
+      await centralApiClient.dio.post(
+        ApiConfig.build4AllVerifyResetCode(ownerProjectLinkId),
+        data: {
+          'email': email.trim(),
+          'code': code.trim(),
+        },
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
@@ -113,7 +170,7 @@ class RetailerProfileService {
         data: {
           'email': email.trim(),
           'code': code.trim(),
-          'newPassword': newPassword,
+          'newPassword': newPassword.trim(),
         },
       );
     } on DioException catch (e) {
@@ -147,7 +204,7 @@ class RetailerProfileService {
       final response = await projectApiClient.dio.put(
         ApiConfig.retailerProfileMe,
         data: {
-          'fullName': fullName,
+          'fullName': fullName.trim(),
           'storeName': storeName.trim(),
           'phoneNumber': phoneNumber.trim(),
           'storeAddress': storeAddress.trim(),
@@ -171,7 +228,9 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.delete(
         ApiConfig.build4AllDeleteUser(userId),
-        data: {'password': password},
+        data: {
+          'password': password,
+        },
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));

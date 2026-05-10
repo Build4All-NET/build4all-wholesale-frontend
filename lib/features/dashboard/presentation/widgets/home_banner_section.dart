@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../../core/config/app_config.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
 
 class HomeBannerSection extends StatelessWidget {
   final List<HomeBannerModel> banners;
+  final void Function(HomeBannerModel banner) onBannerTap;
 
-  const HomeBannerSection({super.key, required this.banners});
+  const HomeBannerSection({
+    super.key,
+    required this.banners,
+    required this.onBannerTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (banners.isEmpty) return const SizedBox.shrink();
 
     return SizedBox(
-      height: 154,
+      height: 172,
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.93),
         itemCount: banners.length,
         itemBuilder: (context, index) {
+          final banner = banners[index];
+
           return Padding(
             padding: const EdgeInsetsDirectional.only(end: 10),
-            child: _HomeBannerCard(banner: banners[index]),
+            child: _HomeBannerCard(
+              banner: banner,
+              onTap: () => onBannerTap(banner),
+            ),
           );
         },
       ),
@@ -31,86 +42,176 @@ class HomeBannerSection extends StatelessWidget {
 
 class _HomeBannerCard extends StatelessWidget {
   final HomeBannerModel banner;
+  final VoidCallback onTap;
 
-  const _HomeBannerCard({required this.banner});
+  const _HomeBannerCard({required this.banner, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final imageUrl = _resolveImageUrl(banner.imageUrl);
     final startColor = _parseColor(banner.backgroundColorStart, primaryColor);
     final endColor = _parseColor(banner.backgroundColorEnd, primaryColor);
 
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [startColor, endColor],
-          begin: AlignmentDirectional.topStart,
-          end: AlignmentDirectional.bottomEnd,
-        ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  banner.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: primaryColor,
+            gradient: imageUrl == null
+                ? LinearGradient(
+                    colors: [startColor, endColor],
+                    begin: AlignmentDirectional.topStart,
+                    end: AlignmentDirectional.bottomEnd,
+                  )
+                : null,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: primaryColor.withValues(alpha: 0.20),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Stack(
+            children: [
+              if (imageUrl != null)
+                Positioned.fill(
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const SizedBox.shrink();
+                    },
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  banner.subtitle,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    height: 1.3,
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        primaryColor.withValues(
+                          alpha: imageUrl == null ? 0.88 : 0.94,
+                        ),
+                        primaryColor.withValues(
+                          alpha: imageUrl == null ? 0.70 : 0.46,
+                        ),
+                      ],
+                      begin: AlignmentDirectional.centerStart,
+                      end: AlignmentDirectional.centerEnd,
+                    ),
                   ),
                 ),
-                const Spacer(),
-                SizedBox(
-                  height: 38,
-                  child: ElevatedButton(
-                    onPressed: () => context.push('/retailer-promotions'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppThemeTokens.textPrimary,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            banner.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              height: 1.05,
+                            ),
+                          ),
+                          if (banner.subtitle.trim().isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              banner.subtitle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                height: 1.30,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                          const Spacer(),
+                          SizedBox(
+                            height: 38,
+                            child: ElevatedButton(
+                              onPressed: onTap,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppThemeTokens.textPrimary,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                              ),
+                              child: Text(
+                                banner.ctaLabel.trim().isEmpty
+                                    ? context.l10n.viewAvailableDeals
+                                    : banner.ctaLabel,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Text(
-                      banner.ctaLabel.isEmpty ? 'Shop Now' : banner.ctaLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    const SizedBox(width: 12),
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const Icon(
+                        Icons.local_offer_outlined,
+                        color: Colors.white,
+                        size: 30,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          const Icon(
-            Icons.shopping_bag_outlined,
-            color: Colors.white,
-            size: 54,
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  String? _resolveImageUrl(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final clean = value.trim();
+
+    if (clean.startsWith('http://') || clean.startsWith('https://')) {
+      return clean;
+    }
+
+    final base = AppConfig.overrideRootUrl.trim().replaceAll(
+      RegExp(r'/+$'),
+      '',
+    );
+    final path = clean.startsWith('/') ? clean : '/$clean';
+
+    return '$base$path';
   }
 
   Color _parseColor(String? hex, Color fallback) {

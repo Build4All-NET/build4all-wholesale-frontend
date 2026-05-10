@@ -25,6 +25,7 @@ class RetailerProfileRepositoryImpl implements RetailerProfileRepository {
 
   Future<Build4AllUserProfileModel> _getCurrentAccount() async {
     final userId = await _requireUserId();
+
     return retailerProfileService.getBuild4AllUserProfile(userId);
   }
 
@@ -33,9 +34,18 @@ class RetailerProfileRepositoryImpl implements RetailerProfileRepository {
     final account = await _getCurrentAccount();
     final business = await retailerProfileService.getRetailerBusinessProfile();
 
-    return RetailerProfileCombinedModel(
-      account: account,
-      business: business,
+    return RetailerProfileCombinedModel(account: account, business: business);
+  }
+
+  @override
+  Future<void> validateCurrentPassword({
+    required String currentPassword,
+  }) async {
+    final account = await _getCurrentAccount();
+
+    await retailerProfileService.validateCurrentPassword(
+      email: account.email,
+      currentPassword: currentPassword,
     );
   }
 
@@ -77,34 +87,39 @@ class RetailerProfileRepositoryImpl implements RetailerProfileRepository {
   }
 
   @override
-  Future<void> verifyEmailChange({
-    required String code,
-  }) async {
+  Future<void> verifyEmailChange({required String code}) async {
     final userId = await _requireUserId();
 
-    return retailerProfileService.verifyEmailChange(
-      userId: userId,
-      code: code,
-    );
+    return retailerProfileService.verifyEmailChange(userId: userId, code: code);
   }
 
   @override
   Future<void> resendEmailChangeCode() async {
     final userId = await _requireUserId();
 
-    return retailerProfileService.resendEmailChangeCode(
-      userId: userId,
-    );
+    return retailerProfileService.resendEmailChangeCode(userId: userId);
   }
 
   @override
-  Future<void> sendPasswordResetCode({
-    required String email,
-  }) async {
+  Future<void> sendPasswordResetCode({required String email}) async {
     final account = await _getCurrentAccount();
 
     return retailerProfileService.sendPasswordResetCode(
       email: email,
+      ownerProjectLinkId: account.ownerProjectLinkId,
+    );
+  }
+
+  @override
+  Future<void> verifyPasswordResetCode({
+    required String email,
+    required String code,
+  }) async {
+    final account = await _getCurrentAccount();
+
+    return retailerProfileService.verifyPasswordResetCode(
+      email: email,
+      code: code,
       ownerProjectLinkId: account.ownerProjectLinkId,
     );
   }
@@ -126,9 +141,7 @@ class RetailerProfileRepositoryImpl implements RetailerProfileRepository {
   }
 
   @override
-  Future<void> deleteAccount({
-    required String password,
-  }) async {
+  Future<void> deleteAccount({required String password}) async {
     final userId = await _requireUserId();
 
     await retailerProfileService.deleteBuild4AllUser(

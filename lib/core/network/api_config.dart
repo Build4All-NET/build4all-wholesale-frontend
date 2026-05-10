@@ -38,6 +38,7 @@ class ApiConfig {
   // =========================
   static const String retailerCart = '/retailer/cart';
   static const String retailerCartItems = '/retailer/cart/items';
+  static const String retailerBanners = '/retailer/banners';
 
   static String retailerCartItemById(int cartItemId) =>
       '/retailer/cart/items/$cartItemId';
