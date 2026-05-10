@@ -38,6 +38,7 @@ class ApiConfig {
   // =========================
   static const String retailerCart = '/retailer/cart';
   static const String retailerCartItems = '/retailer/cart/items';
+  static const String retailerBanners = '/retailer/banners';
 
   static String retailerCartItemById(int cartItemId) =>
       '/retailer/cart/items/$cartItemId';
@@ -127,7 +128,9 @@ static String supplierProductById(String id) {
   // Supplier Branch Inventory
   // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';
+static const String supplierLowStockAlerts =
 
+    '/supplier/branch-inventory/low-stock?threshold=50';
   static String supplierInventoryByBranch(String branchId) {
     return '/supplier/branch-inventory/branch/$branchId';
   }

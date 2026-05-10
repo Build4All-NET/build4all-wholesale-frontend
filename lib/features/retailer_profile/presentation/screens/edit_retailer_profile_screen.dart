@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
@@ -47,13 +50,19 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
   late final TextEditingController _addressController;
   late final TextEditingController _businessTypeController;
 
+  late final TextEditingController _currentPasswordController;
   late final TextEditingController _newPasswordController;
-  late final TextEditingController _confirmPasswordController;
   late final TextEditingController _deletePasswordController;
+
+  final FocusNode _phoneFocusNode = FocusNode();
 
   String? _selectedCity;
   String _originalEmail = '';
+  String _initialCountryCode = 'LB';
+  String _fullPhone = '';
   bool _filledOnce = false;
+  bool _hideCurrentPassword = true;
+  bool _hideNewPassword = true;
 
   final List<SelectOption> _cities = const [
     SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
@@ -82,8 +91,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     _addressController = TextEditingController();
     _businessTypeController = TextEditingController();
 
+    _currentPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
     _deletePasswordController = TextEditingController();
   }
 
@@ -99,9 +108,11 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     _addressController.dispose();
     _businessTypeController.dispose();
 
+    _currentPasswordController.dispose();
     _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
     _deletePasswordController.dispose();
+
+    _phoneFocusNode.dispose();
 
     super.dispose();
   }
@@ -118,9 +129,23 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     _originalEmail = profile.account.email.trim().toLowerCase();
 
     _storeNameController.text = profile.business.storeName;
-    _phoneController.text = profile.business.phoneNumber;
     _addressController.text = profile.business.storeAddress;
     _businessTypeController.text = profile.business.businessType;
+
+    final phone = profile.business.phoneNumber.trim();
+    _fullPhone = phone;
+
+    if (phone.isNotEmpty) {
+      try {
+        final parsed = PhoneNumber.fromCompleteNumber(completeNumber: phone);
+        _initialCountryCode = parsed.countryISOCode;
+        _phoneController.text = parsed.number;
+        _fullPhone = parsed.completeNumber;
+      } catch (_) {
+        _initialCountryCode = 'LB';
+        _phoneController.text = phone.replaceAll('+', '');
+      }
+    }
 
     _selectedCity = profile.business.city.trim().isEmpty
         ? null
@@ -129,21 +154,570 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     _filledOnce = true;
   }
 
-  String? _validateLebanesePhone(String? value) {
-    final l10n = context.l10n;
+  String? _validateName(String? value, String fieldName) {
+    final text = value?.trim() ?? '';
 
-    if (value == null || value.trim().isEmpty) {
-      return '${l10n.phoneNumber} is required';
+    if (text.isEmpty) {
+      return '$fieldName is required';
     }
 
-    final cleaned = value.replaceAll(' ', '');
-    final regex = RegExp(r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$');
+    if (text.length < 2) {
+      return '$fieldName must be at least 2 characters';
+    }
 
-    if (!regex.hasMatch(cleaned)) {
-      return l10n.enterValidLebanesePhone;
+    final validNameRegex = RegExp(r'^[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]+$');
+
+    if (!validNameRegex.hasMatch(text)) {
+      return '$fieldName cannot contain numbers or special characters';
     }
 
     return null;
+  }
+
+  String _normalizePhone(String value) {
+    var cleaned = value.trim();
+
+    cleaned = cleaned
+        .replaceAll(' ', '')
+        .replaceAll('-', '')
+        .replaceAll('(', '')
+        .replaceAll(')', '')
+        .replaceAll('.', '');
+
+    if (cleaned.startsWith('00')) {
+      cleaned = '+${cleaned.substring(2)}';
+    }
+
+    return cleaned;
+  }
+
+  String? _validateInternationalPhone(String? value) {
+    final phone = _normalizePhone(
+      _fullPhone.isNotEmpty ? _fullPhone : value ?? '',
+    );
+
+    if (phone.isEmpty) {
+      return '${context.l10n.phoneNumber} is required';
+    }
+
+    if (!RegExp(r'^\+[1-9]\d{7,14}$').hasMatch(phone)) {
+      return 'Enter a valid phone number with country code';
+    }
+
+    return null;
+  }
+
+  Future<void> _hideKeyboardSafely() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    try {
+      await SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+    } catch (_) {}
+
+    await Future.delayed(const Duration(milliseconds: 220));
+  }
+
+  String _cleanError(Object error, String fallback) {
+    final text = error
+        .toString()
+        .replaceFirst('Exception: ', '')
+        .replaceFirst('AppException: ', '')
+        .trim();
+
+    return text.isEmpty ? fallback : text;
+  }
+
+  Future<bool> _showEmailVerificationSheet({
+    required String email,
+  }) async {
+    final repository =
+        context.read<RetailerProfileCubit>().retailerProfileRepository;
+
+    String codeText = '';
+    String? localError;
+    bool localLoading = false;
+
+    Future<void> closeSheet(BuildContext sheetContext, bool value) async {
+      await _hideKeyboardSafely();
+
+      if (!sheetContext.mounted) return;
+
+      Navigator.of(sheetContext).pop(value);
+    }
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            final colorScheme = Theme.of(sheetContext).colorScheme;
+            final canVerify = codeText.trim().length == 6 && !localLoading;
+
+            return AnimatedPadding(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOut,
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 20,
+                top: 16,
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: colorScheme.primary.withValues(
+                          alpha: 0.12,
+                        ),
+                        child: Icon(
+                          Icons.mark_email_read_outlined,
+                          color: colorScheme.primary,
+                          size: 30,
+                        ),
+                      ),
+                      title: const Text(
+                        'Verify new email',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Text(
+                        email,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      enabled: !localLoading,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      maxLength: 6,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      onChanged: (value) {
+                        if (!sheetContext.mounted) return;
+
+                        setSheetState(() {
+                          codeText = value.trim();
+                          localError = null;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        counterText: '',
+                        hintText: '6-digit code',
+                      ),
+                    ),
+                    if (localError != null &&
+                        localError!.trim().isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          localError!,
+                          style: const TextStyle(
+                            color: AppThemeTokens.error,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: localLoading
+                                ? null
+                                : () async {
+                                    await closeSheet(sheetContext, false);
+                                  },
+                            child: const Text(
+                              'Cancel',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: localLoading
+                                ? null
+                                : () async {
+                                    await _hideKeyboardSafely();
+
+                                    if (!sheetContext.mounted) return;
+
+                                    setSheetState(() {
+                                      localLoading = true;
+                                      localError = null;
+                                    });
+
+                                    try {
+                                      await repository.resendEmailChangeCode();
+
+                                      if (!sheetContext.mounted) return;
+
+                                      setSheetState(() {
+                                        localLoading = false;
+                                        localError = 'Verification code sent.';
+                                      });
+                                    } catch (e) {
+                                      if (!sheetContext.mounted) return;
+
+                                      setSheetState(() {
+                                        localLoading = false;
+                                        localError = _cleanError(
+                                          e,
+                                          'Could not resend code.',
+                                        );
+                                      });
+                                    }
+                                  },
+                            child: const Text(
+                              'Resend',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        onPressed: !canVerify
+                            ? null
+                            : () async {
+                                await _hideKeyboardSafely();
+
+                                if (!sheetContext.mounted) return;
+
+                                setSheetState(() {
+                                  localLoading = true;
+                                  localError = null;
+                                });
+
+                                try {
+                                  await repository.verifyEmailChange(
+                                    code: codeText.trim(),
+                                  );
+
+                                  if (!sheetContext.mounted) return;
+
+                                  await closeSheet(sheetContext, true);
+                                } catch (e) {
+                                  if (!sheetContext.mounted) return;
+
+                                  setSheetState(() {
+                                    localLoading = false;
+                                    localError = _cleanError(
+                                      e,
+                                      'Invalid verification code.',
+                                    );
+                                  });
+                                }
+                              },
+                        child: localLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Verify',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    await _hideKeyboardSafely();
+
+    return result == true;
+  }
+
+  Future<bool> _showPasswordVerificationSheet({
+    required String email,
+    required String newPassword,
+  }) async {
+    final repository =
+        context.read<RetailerProfileCubit>().retailerProfileRepository;
+
+    String codeText = '';
+    String? localError;
+    bool localLoading = false;
+
+    Future<void> closeSheet(BuildContext sheetContext, bool value) async {
+      await _hideKeyboardSafely();
+
+      if (!sheetContext.mounted) return;
+
+      Navigator.of(sheetContext).pop(value);
+    }
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            final colorScheme = Theme.of(sheetContext).colorScheme;
+            final canVerify = codeText.trim().length == 6 && !localLoading;
+
+            return AnimatedPadding(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOut,
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 20,
+                top: 16,
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: colorScheme.primary.withValues(
+                          alpha: 0.12,
+                        ),
+                        child: Icon(
+                          Icons.lock_reset_outlined,
+                          color: colorScheme.primary,
+                          size: 30,
+                        ),
+                      ),
+                      title: const Text(
+                        'Verify password change',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Enter the 6-digit code sent to $email',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      enabled: !localLoading,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      maxLength: 6,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      onChanged: (value) {
+                        if (!sheetContext.mounted) return;
+
+                        setSheetState(() {
+                          codeText = value.trim();
+                          localError = null;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        counterText: '',
+                        hintText: '6-digit code',
+                      ),
+                    ),
+                    if (localError != null &&
+                        localError!.trim().isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          localError!,
+                          style: const TextStyle(
+                            color: AppThemeTokens.error,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: localLoading
+                                ? null
+                                : () async {
+                                    await closeSheet(sheetContext, false);
+                                  },
+                            child: const Text(
+                              'Cancel',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: localLoading
+                                ? null
+                                : () async {
+                                    await _hideKeyboardSafely();
+
+                                    if (!sheetContext.mounted) return;
+
+                                    setSheetState(() {
+                                      localLoading = true;
+                                      localError = null;
+                                    });
+
+                                    try {
+                                      await repository.sendPasswordResetCode(
+                                        email: email,
+                                      );
+
+                                      if (!sheetContext.mounted) return;
+
+                                      setSheetState(() {
+                                        localLoading = false;
+                                        localError =
+                                            'Password verification code sent.';
+                                      });
+                                    } catch (e) {
+                                      if (!sheetContext.mounted) return;
+
+                                      setSheetState(() {
+                                        localLoading = false;
+                                        localError = _cleanError(
+                                          e,
+                                          'Could not resend code.',
+                                        );
+                                      });
+                                    }
+                                  },
+                            child: const Text(
+                              'Resend',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        onPressed: !canVerify
+                            ? null
+                            : () async {
+                                await _hideKeyboardSafely();
+
+                                if (!sheetContext.mounted) return;
+
+                                setSheetState(() {
+                                  localLoading = true;
+                                  localError = null;
+                                });
+
+                                try {
+                                  final code = codeText.trim();
+
+                                  await repository.verifyPasswordResetCode(
+                                    email: email,
+                                    code: code,
+                                  );
+
+                                  await repository.updatePasswordWithCode(
+                                    email: email,
+                                    code: code,
+                                    newPassword: newPassword,
+                                  );
+
+                                  if (!sheetContext.mounted) return;
+
+                                  await closeSheet(sheetContext, true);
+                                } catch (e) {
+                                  if (!sheetContext.mounted) return;
+
+                                  setSheetState(() {
+                                    localLoading = false;
+                                    localError = _cleanError(
+                                      e,
+                                      'Could not update password.',
+                                    );
+                                  });
+                                }
+                              },
+                        child: localLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Verify',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    await _hideKeyboardSafely();
+
+    return result == true;
   }
 
   Future<void> _save() async {
@@ -160,21 +734,68 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     final currentEmail = _emailController.text.trim();
     final emailChanged = currentEmail.toLowerCase() != _originalEmail;
 
+    final currentPassword = _currentPasswordController.text.trim();
     final newPassword = _newPasswordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
+
     final passwordRequested =
-        newPassword.isNotEmpty || confirmPassword.isNotEmpty;
+        currentPassword.isNotEmpty || newPassword.isNotEmpty;
 
     if (passwordRequested) {
+      if (currentPassword.isEmpty) {
+        _showMessage(l10n.currentPasswordRequired);
+        return;
+      }
+
+      if (newPassword.isEmpty) {
+        _showMessage('${l10n.newPassword} is required');
+        return;
+      }
+
       if (newPassword.length < 6) {
         _showMessage(l10n.passwordMinLength);
         return;
       }
 
-      if (newPassword != confirmPassword) {
-        _showMessage(l10n.passwordsDoNotMatch);
+      final currentPasswordOk = await cubit.validateCurrentPassword(
+        currentPassword: currentPassword,
+      );
+
+      if (!mounted) return;
+
+      if (!currentPasswordOk) {
+        _showCubitError(cubit);
         return;
       }
+
+      final sent = await cubit.sendPasswordResetCode(
+        email: _originalEmail,
+      );
+
+      if (!mounted) return;
+
+      if (!sent) {
+        _showCubitError(cubit);
+        return;
+      }
+
+      _showMessage('Password verification code sent');
+
+      final passwordVerified = await _showPasswordVerificationSheet(
+        email: _originalEmail,
+        newPassword: newPassword,
+      );
+
+      if (!mounted) return;
+
+      if (!passwordVerified) {
+        _showMessage(
+          'Password was not updated because the verification code was not confirmed.',
+        );
+        return;
+      }
+
+      _currentPasswordController.clear();
+      _newPasswordController.clear();
     }
 
     final accountResult = await cubit.updateAccountInfo(
@@ -191,21 +812,37 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       return;
     }
 
-    if (emailChanged && accountResult.emailVerificationRequired) {
-      final verified = await context.push<bool>(
-        '/retailer-profile/verify-code',
-        extra: {'mode': 'email', 'email': currentEmail, 'newPassword': null},
+    if (emailChanged) {
+      if (!accountResult.emailVerificationRequired) {
+        _showMessage(
+          'Email verification is required before updating the email.',
+        );
+        return;
+      }
+
+      _showMessage('Verification code sent');
+
+      final verified = await _showEmailVerificationSheet(
+        email: currentEmail,
       );
 
       if (!mounted) return;
 
-      if (verified != true) {
-        _showMessage(l10n.emailVerificationRequired);
+      if (!verified) {
+        _emailController.text = _originalEmail;
+
+        await cubit.loadProfile();
+
+        if (!mounted) return;
+
+        _showMessage(
+          'Email was not updated because the verification code was not confirmed.',
+        );
+
         return;
       }
 
       _originalEmail = currentEmail.toLowerCase();
-      _showMessage(l10n.emailUpdatedSuccessfully);
     }
 
     final fullName =
@@ -215,7 +852,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     final businessUpdated = await cubit.updateBusinessInfo(
       fullName: fullName,
       storeName: _storeNameController.text.trim(),
-      phoneNumber: _phoneController.text.trim(),
+      phoneNumber: _normalizePhone(_fullPhone),
       storeAddress: _addressController.text.trim(),
       city: _selectedCity!,
       businessType: _businessTypeController.text.trim(),
@@ -228,40 +865,6 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       _showCubitError(cubit);
       return;
     }
-
-    if (passwordRequested) {
-      final sent = await cubit.sendPasswordResetCode(email: currentEmail);
-
-      if (!mounted) return;
-
-      if (!sent) {
-        _showCubitError(cubit);
-        return;
-      }
-
-      final passwordUpdated = await context.push<bool>(
-        '/retailer-profile/verify-code',
-        extra: {
-          'mode': 'password',
-          'email': currentEmail,
-          'newPassword': newPassword,
-        },
-      );
-
-      if (!mounted) return;
-
-      if (passwordUpdated != true) {
-        _showMessage(l10n.passwordVerificationCodeSent);
-        return;
-      }
-
-      _newPasswordController.clear();
-      _confirmPasswordController.clear();
-
-      _showMessage(l10n.passwordUpdatedSuccessfully);
-    }
-
-    if (!mounted) return;
 
     _showMessage(l10n.profileUpdatedSuccessfully);
 
@@ -284,10 +887,19 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
   void _showMessage(String message) {
     if (!mounted || message.trim().isEmpty) return;
 
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (messenger == null) return;
+
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+    });
   }
 
   Future<void> _deleteAccount() async {
@@ -327,7 +939,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     if (!mounted || confirmed != true) return;
 
-    final deleted = await cubit.deleteAccount(password: password);
+    final deleted = await cubit.deleteAccount(
+      password: password,
+    );
 
     if (!mounted) return;
 
@@ -371,7 +985,6 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                       children: [
                         _SectionTitle(title: l10n.accountInformation),
                         const SizedBox(height: 12),
-
                         PrimaryTextField(
                           controller: _usernameController,
                           hintText: l10n.username,
@@ -382,7 +995,6 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           ),
                         ),
                         const SizedBox(height: 12),
-
                         Row(
                           children: [
                             Expanded(
@@ -390,10 +1002,15 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                 controller: _firstNameController,
                                 hintText: l10n.firstName,
                                 prefixIcon: const Icon(Icons.person_outline),
-                                validator: (value) => Validators.requiredField(
-                                  value,
-                                  fieldName: l10n.firstName,
-                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                      r'[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]',
+                                    ),
+                                  ),
+                                ],
+                                validator: (value) =>
+                                    _validateName(value, l10n.firstName),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -402,16 +1019,20 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                 controller: _lastNameController,
                                 hintText: l10n.lastName,
                                 prefixIcon: const Icon(Icons.person_outline),
-                                validator: (value) => Validators.requiredField(
-                                  value,
-                                  fieldName: l10n.lastName,
-                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                      r'[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]',
+                                    ),
+                                  ),
+                                ],
+                                validator: (value) =>
+                                    _validateName(value, l10n.lastName),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 12),
-
                         PrimaryTextField(
                           controller: _emailController,
                           hintText: l10n.email,
@@ -419,11 +1040,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           keyboardType: TextInputType.emailAddress,
                           validator: Validators.email,
                         ),
-
                         const SizedBox(height: 24),
                         _SectionTitle(title: l10n.businessInformation),
                         const SizedBox(height: 12),
-
                         PrimaryTextField(
                           controller: _storeNameController,
                           hintText: l10n.storeName,
@@ -434,16 +1053,30 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           ),
                         ),
                         const SizedBox(height: 12),
-
-                        PrimaryTextField(
+                        IntlPhoneField(
                           controller: _phoneController,
-                          hintText: '+961 70 123 456',
-                          prefixIcon: const Icon(Icons.phone_outlined),
+                          focusNode: _phoneFocusNode,
+                          initialCountryCode: _initialCountryCode,
+                          disableLengthCheck: false,
                           keyboardType: TextInputType.phone,
-                          validator: _validateLebanesePhone,
+                          decoration: InputDecoration(
+                            hintText: l10n.phoneNumber,
+                            prefixIcon: const Icon(Icons.phone_outlined),
+                          ),
+                          validator: (phone) {
+                            final value = phone?.completeNumber ?? _fullPhone;
+                            return _validateInternationalPhone(value);
+                          },
+                          onChanged: (phone) {
+                            _fullPhone = phone.number.trim().isEmpty
+                                ? ''
+                                : phone.completeNumber;
+                          },
+                          onCountryChanged: (_) {
+                            _fullPhone = '';
+                          },
                         ),
                         const SizedBox(height: 12),
-
                         PrimaryDropdownField<String>(
                           value: _selectedCity,
                           hintText: l10n.selectCity,
@@ -451,7 +1084,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                               .map(
                                 (city) => DropdownMenuItem<String>(
                                   value: city.value,
-                                  child: Text(context.trOption(city.labelKey)),
+                                  child: Text(
+                                    context.trOption(city.labelKey),
+                                  ),
                                 ),
                               )
                               .toList(),
@@ -466,7 +1101,6 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           },
                         ),
                         const SizedBox(height: 12),
-
                         PrimaryTextField(
                           controller: _businessTypeController,
                           hintText: l10n.businessType,
@@ -479,7 +1113,6 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           ),
                         ),
                         const SizedBox(height: 12),
-
                         PrimaryTextField(
                           controller: _addressController,
                           hintText: l10n.address,
@@ -489,35 +1122,54 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                             fieldName: l10n.address,
                           ),
                         ),
-
                         const SizedBox(height: 24),
                         _SectionTitle(title: l10n.changePasswordOptional),
                         const SizedBox(height: 12),
-
+                        PrimaryTextField(
+                          controller: _currentPasswordController,
+                          hintText: l10n.currentPassword,
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          obscureText: _hideCurrentPassword,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(
+                                () => _hideCurrentPassword =
+                                    !_hideCurrentPassword,
+                              );
+                            },
+                            icon: Icon(
+                              _hideCurrentPassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
                         PrimaryTextField(
                           controller: _newPasswordController,
                           hintText: l10n.newPassword,
                           prefixIcon: const Icon(Icons.lock_outline),
-                          obscureText: true,
+                          obscureText: _hideNewPassword,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(
+                                () => _hideNewPassword = !_hideNewPassword,
+                              );
+                            },
+                            icon: Icon(
+                              _hideNewPassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 12),
-
-                        PrimaryTextField(
-                          controller: _confirmPasswordController,
-                          hintText: l10n.confirmPassword,
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          obscureText: true,
-                        ),
-
                         const SizedBox(height: 28),
                         PrimaryButton(
                           text: l10n.saveChanges,
                           isLoading: state.isSaving,
                           onPressed: _save,
                         ),
-
                         const SizedBox(height: 28),
-
                         _DangerZoneSection(
                           passwordController: _deletePasswordController,
                           isDeleting: state.isDeletingAccount,
@@ -536,7 +1188,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 class _SectionTitle extends StatelessWidget {
   final String title;
 
-  const _SectionTitle({required this.title});
+  const _SectionTitle({
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,7 @@ import '../features/auth/presentation/screens/complete_retailer_profile_screen.d
 
 import '../features/dashboard/data/models/retailer_home_model.dart';
 import '../features/dashboard/presentation/screens/retailer_all_categories_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_banner_target_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
@@ -22,6 +23,7 @@ import '../features/retailer_profile/presentation/screens/retailer_profile_scree
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
+import '../features/supplier/excel_import/presentation/screens/supplier_excel_import_screen.dart';
 
 import '../features/supplier/products/domain/entities/product_entity.dart';
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
@@ -164,13 +166,10 @@ class AppRouter {
           return ProductBranchInventoryScreen(product: product);
         },
       ),
-
-      // Catalog Management
       GoRoute(
         path: '/supplier-catalog',
         builder: (context, state) => const SupplierCatalogScreen(),
       ),
-
       GoRoute(
         path: '/supplier-branches',
         builder: (context, state) => const BranchManagementScreen(),
@@ -294,10 +293,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-excel-import',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Import Excel',
-          icon: Icons.upload_outlined,
-        ),
+        builder: (context, state) => const SupplierExcelImportScreen(),
       ),
 
       // =========================
@@ -306,6 +302,29 @@ class AppRouter {
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-banner-target',
+        builder: (context, state) {
+          final extra = state.extra;
+
+          if (extra is Map<String, dynamic> &&
+              extra['banner'] is HomeBannerModel &&
+              extra['products'] is List<HomeProductModel>) {
+            return RetailerBannerTargetScreen(
+              banner: extra['banner'] as HomeBannerModel,
+              products: extra['products'] as List<HomeProductModel>,
+            );
+          }
+
+          final l10n = AppLocalizations.of(context)!;
+
+          return RetailerPlaceholderScreen(
+            title: l10n.promotions,
+            message: l10n.checkConnectionTryAgain,
+            icon: Icons.local_offer_outlined,
+          );
+        },
       ),
       GoRoute(
         path: '/retailer-category-products',

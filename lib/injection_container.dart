@@ -163,6 +163,19 @@ import 'features/supplier/shipping/domain/usecases/update_shipping_method_usecas
 import 'features/supplier/shipping/presentation/bloc/shipping_methods_bloc.dart';
 
 // =========================
+// SUPPLIER EXCEL IMPORT
+// =========================
+import 'features/supplier/excel_import/data/repositories/supplier_excel_import_repository_impl.dart';
+import 'features/supplier/excel_import/data/services/supplier_excel_reader_service.dart';
+import 'features/supplier/excel_import/domain/repositories/supplier_excel_import_repository.dart';
+import 'features/supplier/excel_import/domain/usecases/clear_supplier_excel_import_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/import_supplier_excel_products_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/parse_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/pick_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/validate_supplier_excel_rows_usecase.dart';
+import 'features/supplier/excel_import/presentation/bloc/supplier_excel_import_bloc.dart';
+
+// =========================
 // SUPPLIER ORDERS
 // =========================
 import 'features/supplier/orders/data/repositories/supplier_order_repository_impl.dart';
@@ -174,6 +187,13 @@ import 'features/supplier/orders/domain/usecases/update_supplier_order_status_us
 import 'features/supplier/orders/presentation/bloc/supplier_orders/supplier_orders_bloc.dart';
 import 'features/supplier/orders/presentation/bloc/supplier_order_details/supplier_order_details_bloc.dart';
 
+// =========================
+// SUPPLIER DASHBOARD
+// =========================
+import 'features/supplier/dashboard/data/repositories/supplier_dashboard_repository_impl.dart';
+import 'features/supplier/dashboard/data/services/supplier_dashboard_api_service.dart';
+import 'features/supplier/dashboard/domain/repositories/supplier_dashboard_repository.dart';
+import 'features/supplier/dashboard/domain/usecases/get_supplier_low_stock_alerts_usecase.dart';
 import 'features/supplier/dashboard/presentation/bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 
 final sl = GetIt.instance;
@@ -189,8 +209,6 @@ Future<void> init() async {
   // =========================
   // CORE / NETWORK
   // =========================
-
-  // Build4All central backend client
   sl.registerLazySingleton<ApiClient>(
     () => ApiClient(
       sl<AuthStorage>(),
@@ -199,7 +217,6 @@ Future<void> init() async {
     instanceName: 'centralApiClient',
   );
 
-  // Wholesale project backend client
   sl.registerLazySingleton<ApiClient>(
     () => ApiClient(
       sl<AuthStorage>(),
@@ -226,7 +243,6 @@ Future<void> init() async {
   // =========================
   // SERVICES
   // =========================
-
   sl.registerLazySingleton<AuthService>(
     () => AuthService(
       centralApiClient: sl<ApiClient>(instanceName: 'centralApiClient'),
@@ -277,6 +293,10 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierExcelReaderService>(
+    () => SupplierExcelReaderService(),
+  );
+
   sl.registerLazySingleton<BranchInventoryApiService>(
     () => BranchInventoryApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
@@ -319,10 +339,15 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierDashboardApiService>(
+    () => SupplierDashboardApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   // =========================
   // REPOSITORIES
   // =========================
-
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       authService: sl<AuthService>(),
@@ -367,6 +392,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierExcelImportRepository>(
+    () => SupplierExcelImportRepositoryImpl(
+      readerService: sl<SupplierExcelReaderService>(),
+    ),
+  );
+
   sl.registerLazySingleton<BranchInventoryRepository>(
     () => BranchInventoryRepositoryImpl(
       apiService: sl<BranchInventoryApiService>(),
@@ -403,10 +434,15 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierDashboardRepository>(
+    () => SupplierDashboardRepositoryImpl(
+      apiService: sl<SupplierDashboardApiService>(),
+    ),
+  );
+
   // =========================
   // AUTH USE CASES
   // =========================
-
   sl.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(sl<AuthRepository>()),
   );
@@ -426,7 +462,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER PROFILE USE CASES
   // =========================
-
   sl.registerLazySingleton<CreateSupplierProfileUseCase>(
     () => CreateSupplierProfileUseCase(sl<SupplierProfileRepository>()),
   );
@@ -434,7 +469,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER CATEGORY / CATALOG USE CASES
   // =========================
-
   sl.registerLazySingleton<GetCategoriesUseCase>(
     () => GetCategoriesUseCase(sl<SupplierCategoryRepository>()),
   );
@@ -488,7 +522,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER PRODUCT USE CASES
   // =========================
-
   sl.registerLazySingleton<GetProductsUseCase>(
     () => GetProductsUseCase(sl<ProductRepository>()),
   );
@@ -510,9 +543,33 @@ Future<void> init() async {
   );
 
   // =========================
+  // SUPPLIER EXCEL IMPORT USE CASES
+  // =========================
+  sl.registerLazySingleton<PickSupplierExcelFileUseCase>(
+    () => PickSupplierExcelFileUseCase(sl<SupplierExcelImportRepository>()),
+  );
+
+  sl.registerLazySingleton<ParseSupplierExcelFileUseCase>(
+    () => ParseSupplierExcelFileUseCase(sl<SupplierExcelImportRepository>()),
+  );
+
+  sl.registerLazySingleton<ValidateSupplierExcelRowsUseCase>(
+    () => ValidateSupplierExcelRowsUseCase(),
+  );
+
+  sl.registerLazySingleton<ImportSupplierExcelProductsUseCase>(
+    () => ImportSupplierExcelProductsUseCase(
+      createProductUseCase: sl<CreateProductUseCase>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ClearSupplierExcelImportUseCase>(
+    () => const ClearSupplierExcelImportUseCase(),
+  );
+
+  // =========================
   // SUPPLIER BRANCH USE CASES
   // =========================
-
   sl.registerLazySingleton<GetBranchesUseCase>(
     () => GetBranchesUseCase(sl<BranchRepository>()),
   );
@@ -536,7 +593,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER BRANCH INVENTORY USE CASES
   // =========================
-
   sl.registerLazySingleton<GetInventoryByBranchUseCase>(
     () => GetInventoryByBranchUseCase(sl<BranchInventoryRepository>()),
   );
@@ -560,7 +616,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER COUPON USE CASES
   // =========================
-
   sl.registerLazySingleton<GetCouponsUseCase>(
     () => GetCouponsUseCase(sl<CouponRepository>()),
   );
@@ -580,7 +635,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER PROMOTION USE CASES
   // =========================
-
   sl.registerLazySingleton<GetPromotionsUseCase>(
     () => GetPromotionsUseCase(sl<PromotionRepository>()),
   );
@@ -600,7 +654,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER BANNER USE CASES
   // =========================
-
   sl.registerLazySingleton<GetBannersUseCase>(
     () => GetBannersUseCase(sl<BannerRepository>()),
   );
@@ -620,7 +673,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER SHIPPING METHOD USE CASES
   // =========================
-
   sl.registerLazySingleton<GetShippingMethodsUseCase>(
     () => GetShippingMethodsUseCase(sl<ShippingMethodRepository>()),
   );
@@ -640,7 +692,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER ORDER USE CASES
   // =========================
-
   sl.registerLazySingleton<GetSupplierOrdersUseCase>(
     () => GetSupplierOrdersUseCase(sl<SupplierOrderRepository>()),
   );
@@ -654,9 +705,17 @@ Future<void> init() async {
   );
 
   // =========================
-  // CUBITS
+  // SUPPLIER DASHBOARD USE CASES
   // =========================
+  sl.registerLazySingleton<GetSupplierLowStockAlertsUseCase>(
+    () => GetSupplierLowStockAlertsUseCase(
+      sl<SupplierDashboardRepository>(),
+    ),
+  );
 
+  // =========================
+  // CUBITS / BLOCS
+  // =========================
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
       loginUseCase: sl<LoginUseCase>(),
@@ -675,7 +734,6 @@ Future<void> init() async {
   // =========================
   // SUPPLIER BLOCS
   // =========================
-
   sl.registerFactory<ProductListBloc>(
     () => ProductListBloc(
       getProductsUseCase: sl<GetProductsUseCase>(),
@@ -763,6 +821,21 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory<SupplierExcelImportBloc>(
+    () => SupplierExcelImportBloc(
+      pickSupplierExcelFileUseCase: sl<PickSupplierExcelFileUseCase>(),
+      parseSupplierExcelFileUseCase: sl<ParseSupplierExcelFileUseCase>(),
+      validateSupplierExcelRowsUseCase: sl<ValidateSupplierExcelRowsUseCase>(),
+      importSupplierExcelProductsUseCase:
+          sl<ImportSupplierExcelProductsUseCase>(),
+      clearSupplierExcelImportUseCase: sl<ClearSupplierExcelImportUseCase>(),
+      getCategoriesUseCase: sl<GetCategoriesUseCase>(),
+      getSubCategoriesByCategoryUseCase:
+          sl<GetSubCategoriesByCategoryUseCase>(),
+      getProductsUseCase: sl<GetProductsUseCase>(),
+    ),
+  );
+
   sl.registerFactory<SupplierOrdersBloc>(
     () => SupplierOrdersBloc(
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
@@ -780,13 +853,14 @@ Future<void> init() async {
   sl.registerFactory<SupplierDashboardBloc>(
     () => SupplierDashboardBloc(
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
+      getSupplierLowStockAlertsUseCase:
+          sl<GetSupplierLowStockAlertsUseCase>(),
     ),
   );
 
   // =========================
   // RETAILER CUBITS
   // =========================
-
   sl.registerFactory<RetailerHomeCubit>(
     () => RetailerHomeCubit(
       retailerHomeRepository: sl<RetailerHomeRepository>(),
