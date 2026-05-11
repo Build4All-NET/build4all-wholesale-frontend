@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
-import '../../domain/entities/shipping_method_entity.dart';
+import '../../domain/entities/tax_rule_entity.dart';
 
-class ShippingMethodCard extends StatelessWidget {
-  final ShippingMethodEntity method;
+class TaxRuleCard extends StatelessWidget {
+  final TaxRuleEntity rule;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const ShippingMethodCard({
+  const TaxRuleCard({
     super.key,
-    required this.method,
+    required this.rule,
     this.onEdit,
     this.onDelete,
   });
@@ -36,9 +36,7 @@ class ShippingMethodCard extends StatelessWidget {
                 radius: 28,
                 backgroundColor: primary.withValues(alpha: 0.12),
                 child: Icon(
-                  method.isPickup
-                      ? Icons.storefront_outlined
-                      : Icons.local_shipping_outlined,
+                  Icons.percent_outlined,
                   color: primary,
                   size: 28,
                 ),
@@ -49,7 +47,7 @@ class ShippingMethodCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      method.name,
+                      rule.ruleName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -60,7 +58,7 @@ class ShippingMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${method.methodTypeLabel} • ${method.costLabel}',
+                      '${rule.rateLabel} • ${rule.scopeLabel}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -73,13 +71,13 @@ class ShippingMethodCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StatusPill(status: method.statusLabel),
+              _StatusPill(status: rule.statusLabel),
             ],
           ),
-          if (method.notes != null && method.notes!.trim().isNotEmpty) ...[
+          if (rule.notes != null && rule.notes!.trim().isNotEmpty) ...[
             const SizedBox(height: 14),
             Text(
-              method.notes!,
+              rule.notes!,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -95,11 +93,9 @@ class ShippingMethodCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _TextChip(text: method.locationLabel),
-              _TextChip(text: method.estimatedDeliveryTime),
-              _TextChip(text: method.minimumOrderLabel),
-              _TextChip(text: method.freeShippingLabel),
-              _TextChip(text: 'Branches: ${method.branchScopeLabel}'),
+              _TextChip(text: rule.locationLabel),
+              _TextChip(text: rule.shippingTaxLabel),
+              _TextChip(text: 'Order-level tax'),
             ],
           ),
           const SizedBox(height: 16),

@@ -5,8 +5,13 @@ class ShippingMethodModel extends ShippingMethodEntity {
     required super.id,
     required super.name,
     required super.methodType,
-    required super.country,
-    required super.region,
+    super.countryId,
+    super.countryName,
+    super.countryIso2Code,
+    super.countryIso3Code,
+    super.regionId,
+    super.regionName,
+    super.regionCode,
     required super.cost,
     required super.estimatedDeliveryTime,
     super.minimumOrderAmount,
@@ -15,6 +20,7 @@ class ShippingMethodModel extends ShippingMethodEntity {
     super.selectedBranchIds,
     super.selectedBranchNames,
     required super.active,
+    super.status,
     super.notes,
     required super.createdAt,
     required super.updatedAt,
@@ -25,8 +31,13 @@ class ShippingMethodModel extends ShippingMethodEntity {
       id: entity.id,
       name: entity.name,
       methodType: entity.methodType,
-      country: entity.country,
-      region: entity.region,
+      countryId: entity.countryId,
+      countryName: entity.countryName,
+      countryIso2Code: entity.countryIso2Code,
+      countryIso3Code: entity.countryIso3Code,
+      regionId: entity.regionId,
+      regionName: entity.regionName,
+      regionCode: entity.regionCode,
       cost: entity.cost,
       estimatedDeliveryTime: entity.estimatedDeliveryTime,
       minimumOrderAmount: entity.minimumOrderAmount,
@@ -35,6 +46,7 @@ class ShippingMethodModel extends ShippingMethodEntity {
       selectedBranchIds: entity.selectedBranchIds,
       selectedBranchNames: entity.selectedBranchNames,
       active: entity.active,
+      status: entity.status,
       notes: entity.notes,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
@@ -53,11 +65,11 @@ class ShippingMethodModel extends ShippingMethodEntity {
           final id = branch['id']?.toString();
           final name = branch['name']?.toString();
 
-          if (id != null && id.isNotEmpty) {
+          if (id != null && id.trim().isNotEmpty) {
             selectedBranchIds.add(id);
           }
 
-          if (name != null && name.isNotEmpty) {
+          if (name != null && name.trim().isNotEmpty) {
             selectedBranchNames.add(name);
           }
         }
@@ -68,18 +80,28 @@ class ShippingMethodModel extends ShippingMethodEntity {
         json['appliesToAllBranches'] == null ||
             json['appliesToAllBranches'] == true;
 
+    final countryName = _cleanText(json['countryName']) ??
+        _cleanText(json['country']);
+
+    final regionName = _cleanText(json['regionName']) ??
+        _cleanText(json['region']);
+
     return ShippingMethodModel(
       id: json['id']?.toString() ?? '',
-      name: json['methodName']?.toString() ?? '',
+      name: _cleanText(json['methodName']) ?? '',
       methodType: ShippingMethodTypeX.fromBackendValue(
         json['methodType'] ?? json['deliveryType'],
       ),
-      country: _cleanText(json['country']) ?? ShippingMethodLocation.lebanon,
-      region: _cleanText(json['region']) ??
-          ShippingMethodLocation.lebanonRegions.first,
+      countryId: json['countryId']?.toString(),
+      countryName: countryName,
+      countryIso2Code: _cleanText(json['countryIso2Code']),
+      countryIso3Code: _cleanText(json['countryIso3Code']),
+      regionId: json['regionId']?.toString(),
+      regionName: regionName,
+      regionCode: _cleanText(json['regionCode']),
       cost: _doubleFromJson(json['shippingCost']) ?? 0,
       estimatedDeliveryTime:
-          json['estimatedDeliveryTime']?.toString() ?? '',
+          _cleanText(json['estimatedDeliveryTime']) ?? '',
       minimumOrderAmount: _doubleFromJson(json['minimumOrderAmount']),
       freeShippingThreshold: _doubleFromJson(json['freeShippingThreshold']),
       branchScope: appliesToAllBranches
@@ -88,28 +110,30 @@ class ShippingMethodModel extends ShippingMethodEntity {
       selectedBranchIds: selectedBranchIds,
       selectedBranchNames: selectedBranchNames,
       active: json['active'] != false,
+      status: _cleanText(json['status']),
       notes: _cleanText(json['notes']),
-      createdAt: _dateFromJson(json['createdAt']),
-      updatedAt: _dateFromJson(json['updatedAt']),
+      createdAt: _dateFromJson(json['createdAt']) ?? DateTime.now(),
+      updatedAt: _dateFromJson(json['updatedAt']) ?? DateTime.now(),
     );
   }
 
   Map<String, dynamic> toRequestJson() {
     final isPickup = methodType == ShippingMethodType.pickup;
+    final appliesToAllBranches =
+        branchScope == ShippingBranchScope.allBranches;
 
     return {
       'methodName': name.trim(),
       'methodType': methodType.backendValue,
-      'country': country.trim(),
-      'region': region.trim(),
+      'countryId': int.tryParse(countryId ?? ''),
+      'regionId': int.tryParse(regionId ?? ''),
       'shippingCost': isPickup ? 0 : cost,
       'estimatedDeliveryTime':
           isPickup ? 'Pickup from branch' : estimatedDeliveryTime.trim(),
       'minimumOrderAmount': minimumOrderAmount,
       'freeShippingThreshold': isPickup ? null : freeShippingThreshold,
-      'appliesToAllBranches':
-          branchScope == ShippingBranchScope.allBranches,
-      'selectedBranchIds': branchScope == ShippingBranchScope.allBranches
+      'appliesToAllBranches': appliesToAllBranches,
+      'selectedBranchIds': appliesToAllBranches
           ? <int>[]
           : selectedBranchIds
               .map((id) => int.tryParse(id))
@@ -125,8 +149,13 @@ class ShippingMethodModel extends ShippingMethodEntity {
       id: id,
       name: name,
       methodType: methodType,
-      country: country,
-      region: region,
+      countryId: countryId,
+      countryName: countryName,
+      countryIso2Code: countryIso2Code,
+      countryIso3Code: countryIso3Code,
+      regionId: regionId,
+      regionName: regionName,
+      regionCode: regionCode,
       cost: cost,
       estimatedDeliveryTime: estimatedDeliveryTime,
       minimumOrderAmount: minimumOrderAmount,
@@ -135,6 +164,7 @@ class ShippingMethodModel extends ShippingMethodEntity {
       selectedBranchIds: selectedBranchIds,
       selectedBranchNames: selectedBranchNames,
       active: active,
+      status: status,
       notes: notes,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -159,8 +189,8 @@ class ShippingMethodModel extends ShippingMethodEntity {
     return double.tryParse(value.toString());
   }
 
-  static DateTime _dateFromJson(dynamic value) {
-    if (value == null) return DateTime.now();
-    return DateTime.tryParse(value.toString()) ?? DateTime.now();
+  static DateTime? _dateFromJson(dynamic value) {
+    if (value == null) return null;
+    return DateTime.tryParse(value.toString());
   }
 }

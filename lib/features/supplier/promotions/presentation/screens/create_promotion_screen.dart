@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/network/api_client.dart';
+import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
-import '../../../branches/data/services/branch_api_service.dart';
-import '../../../branches/domain/entities/branch_entity.dart';
 import '../../domain/entities/promotion_entity.dart';
 import '../bloc/promotions_bloc.dart';
 import '../bloc/promotions_event.dart';
@@ -42,7 +42,9 @@ class _CreatePromotionView extends StatefulWidget {
 class _CreatePromotionViewState extends State<_CreatePromotionView> {
   final _formKey = GlobalKey<FormState>();
 
-  final BranchApiService _branchApiService = sl<BranchApiService>();
+  final _lookupService = _PromotionLookupService(
+    sl<ApiClient>(instanceName: 'projectApiClient'),
+  );
 
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
@@ -51,25 +53,36 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
   late final TextEditingController _maxDiscountAmountController;
 
   PromotionDiscountType _discountType = PromotionDiscountType.percent;
+  PromotionTargetType _targetType = PromotionTargetType.allProducts;
   PromotionBranchScope _branchScope = PromotionBranchScope.allBranches;
 
+  String? _selectedTargetId;
+  String? _selectedTargetName;
+  String? _selectedTargetCategoryId;
+
+  DateTime? _startDate;
+  DateTime? _endDate;
+  String? _dateError;
+
   bool _active = true;
+
+  bool _loadingTargets = true;
   bool _loadingBranches = true;
 
-  String? _dateError;
+  String? _targetErrorMessage;
   String? _branchErrorMessage;
 
-  DateTime? _startsAt;
-  DateTime? _expiresAt;
+  final List<_PromotionLookupOption> _products = [];
+  final List<_PromotionLookupOption> _categories = [];
+  final List<_PromotionLookupOption> _subCategories = [];
+  final List<_PromotionLookupOption> _branches = [];
 
-  final List<BranchEntity> _availableBranches = [];
   final List<String> _selectedBranchIds = [];
   final List<String> _selectedBranchNames = [];
 
   bool get _isEditMode => widget.promotion != null;
+
   bool get _isPercent => _discountType == PromotionDiscountType.percent;
-  bool get _isFreeShipping =>
-      _discountType == PromotionDiscountType.freeShipping;
 
   @override
   void initState() {
@@ -81,28 +94,26 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     _descriptionController = TextEditingController(
       text: promotion?.description ?? '',
     );
-
     _discountValueController = TextEditingController(
-      text: promotion == null ||
-              promotion.discountType == PromotionDiscountType.freeShipping
-          ? ''
-          : promotion.discountValue.toString(),
+      text: promotion == null ? '' : promotion.discountValue.toString(),
     );
-
     _minOrderAmountController = TextEditingController(
       text: promotion?.minOrderAmount?.toString() ?? '',
     );
-
     _maxDiscountAmountController = TextEditingController(
       text: promotion?.maxDiscountAmount?.toString() ?? '',
     );
 
     _discountType = promotion?.discountType ?? PromotionDiscountType.percent;
+    _targetType = promotion?.targetType ?? PromotionTargetType.allProducts;
+    _selectedTargetId = promotion?.targetId;
+    _selectedTargetName = promotion?.targetName;
+
     _branchScope = promotion?.branchScope ?? PromotionBranchScope.allBranches;
     _active = promotion?.active ?? true;
 
-    _startsAt = promotion?.startsAt;
-    _expiresAt = promotion?.expiresAt;
+    _startDate = promotion?.startDate;
+    _endDate = promotion?.endDate;
 
     _selectedBranchIds.addAll(promotion?.selectedBranchIds ?? []);
     _selectedBranchNames.addAll(promotion?.selectedBranchNames ?? []);
@@ -111,12 +122,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       _maxDiscountAmountController.clear();
     }
 
-    if (_isFreeShipping) {
-      _discountValueController.clear();
-    }
-
     _validateDates();
-    _loadBranches();
+    _loadLookups();
   }
 
   @override
@@ -129,6 +136,54 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     super.dispose();
   }
 
+  Future<void> _loadLookups() async {
+    await Future.wait([
+      _loadTargets(),
+      _loadBranches(),
+    ]);
+  }
+
+  Future<void> _loadTargets() async {
+    setState(() {
+      _loadingTargets = true;
+      _targetErrorMessage = null;
+    });
+
+    try {
+      final results = await Future.wait([
+        _lookupService.getProducts(),
+        _lookupService.getCategories(),
+        _lookupService.getSubCategories(),
+      ]);
+
+      if (!mounted) return;
+
+      setState(() {
+        _products
+          ..clear()
+          ..addAll(results[0]);
+
+        _categories
+          ..clear()
+          ..addAll(results[1]);
+
+        _subCategories
+          ..clear()
+          ..addAll(results[2]);
+
+        _syncEditSubCategoryParent();
+        _loadingTargets = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _targetErrorMessage = e.toString();
+        _loadingTargets = false;
+      });
+    }
+  }
+
   Future<void> _loadBranches() async {
     setState(() {
       _loadingBranches = true;
@@ -136,19 +191,14 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     });
 
     try {
-      final branches = await _branchApiService.getBranches();
+      final branches = await _lookupService.getBranches();
 
       if (!mounted) return;
 
-      final activeBranches = branches
-          .where((branch) => branch.status == BranchStatus.active)
-          .toList();
-
       setState(() {
-        _availableBranches
+        _branches
           ..clear()
-          ..addAll(activeBranches);
-
+          ..addAll(branches);
         _loadingBranches = false;
       });
     } catch (e) {
@@ -159,6 +209,124 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
         _loadingBranches = false;
       });
     }
+  }
+
+  void _syncEditSubCategoryParent() {
+    if (_targetType != PromotionTargetType.subcategory ||
+        _selectedTargetId == null) {
+      return;
+    }
+
+    final selectedSubCategory = _subCategories.where(
+      (item) => item.id == _selectedTargetId,
+    );
+
+    if (selectedSubCategory.isNotEmpty) {
+      _selectedTargetCategoryId = selectedSubCategory.first.categoryId;
+    }
+  }
+
+  String? _required(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+
+    return null;
+  }
+
+  String? _requiredPositiveNumber(String? value, String fieldName) {
+    final requiredError = _required(value, fieldName);
+    if (requiredError != null) return requiredError;
+
+    final parsed = double.tryParse(value!.trim());
+
+    if (parsed == null || parsed <= 0) {
+      return '$fieldName must be greater than 0';
+    }
+
+    return null;
+  }
+
+  String? _optionalNonNegativeNumber(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final parsed = double.tryParse(value.trim());
+
+    if (parsed == null || parsed < 0) {
+      return '$fieldName must be a valid number';
+    }
+
+    return null;
+  }
+
+  String? _discountValueValidator(String? value) {
+    final baseError = _requiredPositiveNumber(value, 'Discount Value');
+    if (baseError != null) return baseError;
+
+    final parsed = double.tryParse(value!.trim()) ?? 0;
+
+    if (_discountType == PromotionDiscountType.percent && parsed > 100) {
+      return 'Percent discount cannot be greater than 100';
+    }
+
+    return null;
+  }
+
+  double? _parseOptionalDouble(String value) {
+    if (value.trim().isEmpty) return null;
+    return double.tryParse(value.trim());
+  }
+
+  void _handleDiscountTypeChanged(PromotionDiscountType? value) {
+    if (value == null) return;
+
+    setState(() {
+      _discountType = value;
+
+      if (!_isPercent) {
+        _maxDiscountAmountController.clear();
+      }
+    });
+  }
+
+  void _handleTargetTypeChanged(PromotionTargetType? value) {
+    if (value == null) return;
+
+    setState(() {
+      _targetType = value;
+      _selectedTargetId = null;
+      _selectedTargetName = null;
+      _selectedTargetCategoryId = null;
+    });
+  }
+
+  void _handleTargetSelected(_PromotionLookupOption? option) {
+    setState(() {
+      _selectedTargetId = option?.id;
+      _selectedTargetName = option?.label;
+    });
+  }
+
+  void _handleSubCategoryParentSelected(String? categoryId) {
+    setState(() {
+      _selectedTargetCategoryId = categoryId;
+      _selectedTargetId = null;
+      _selectedTargetName = null;
+    });
+  }
+
+  void _toggleBranch(_PromotionLookupOption branch, bool selected) {
+    setState(() {
+      if (selected) {
+        if (!_selectedBranchIds.contains(branch.id)) {
+          _selectedBranchIds.add(branch.id);
+          _selectedBranchNames.add(branch.label);
+        }
+      } else {
+        _selectedBranchIds.remove(branch.id);
+        _selectedBranchNames.remove(branch.label);
+      }
+    });
   }
 
   String _formatDateTime(DateTime? date) {
@@ -181,17 +349,17 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       context: context,
       initialDate: base,
       firstDate: DateTime(now.year - 1),
-      lastDate: DateTime(now.year + 10),
+      lastDate: DateTime(now.year + 5),
     );
 
-    if (!mounted || pickedDate == null) return null;
+    if (pickedDate == null || !mounted) return null;
 
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
     );
 
-    if (!mounted || pickedTime == null) return null;
+    if (pickedTime == null) return null;
 
     return DateTime(
       pickedDate.year,
@@ -202,91 +370,67 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     );
   }
 
-  bool _validateDates() {
-    if (_startsAt != null &&
-        _expiresAt != null &&
-        _startsAt!.isAfter(_expiresAt!)) {
-      _dateError = 'Valid From must be before Valid To';
+  void _validateDates() {
+    if (_startDate != null &&
+        _endDate != null &&
+        _startDate!.isAfter(_endDate!)) {
+      _dateError = 'End date must be after start date';
+    } else {
+      _dateError = null;
+    }
+  }
+
+  List<_PromotionLookupOption> get _filteredSubCategories {
+    if (_selectedTargetCategoryId == null) return [];
+
+    return _subCategories
+        .where((item) => item.categoryId == _selectedTargetCategoryId)
+        .toList();
+  }
+
+  bool _validateTargetSelection(BuildContext context) {
+    if (_targetType == PromotionTargetType.allProducts) return true;
+
+    if (_targetType == PromotionTargetType.subcategory &&
+        _selectedTargetCategoryId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a category first')),
+      );
       return false;
     }
 
-    _dateError = null;
+    if (_selectedTargetId == null || _selectedTargetId!.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select ${_targetType.label}')),
+      );
+      return false;
+    }
+
     return true;
-  }
-
-  double? _parseDouble(String value) {
-    if (value.trim().isEmpty) return null;
-    return double.tryParse(value.trim());
-  }
-
-  String? _required(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
-    }
-
-    return null;
-  }
-
-  String? _discountValueValidator(String? value) {
-    if (_isFreeShipping) return null;
-
-    final requiredError = _required(value, 'Discount Value');
-    if (requiredError != null) return requiredError;
-
-    final parsed = double.tryParse(value!.trim());
-
-    if (parsed == null || parsed <= 0) {
-      return 'Discount Value must be greater than 0';
-    }
-
-    if (_isPercent && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
-    }
-
-    return null;
-  }
-
-  String? _optionalPositiveNumber(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) return null;
-
-    final parsed = double.tryParse(value.trim());
-
-    if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
-    }
-
-    return null;
-  }
-
-  void _toggleBranch(BranchEntity branch, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        if (!_selectedBranchIds.contains(branch.id)) {
-          _selectedBranchIds.add(branch.id);
-          _selectedBranchNames.add(branch.name);
-        }
-      } else {
-        _selectedBranchIds.remove(branch.id);
-        _selectedBranchNames.remove(branch.name);
-      }
-    });
   }
 
   void _savePromotion(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!_validateDates()) {
+    _validateDates();
+    if (_dateError != null) {
       setState(() {});
       return;
     }
 
+    if (!_validateTargetSelection(context)) return;
+
     if (_branchScope == PromotionBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one branch')),
+        const SnackBar(
+          content: Text('Please select at least one branch'),
+        ),
       );
       return;
     }
+
+    final now = DateTime.now();
 
     final promotion = PromotionEntity(
       id: widget.promotion?.id ?? '',
@@ -295,16 +439,23 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
           ? null
           : _descriptionController.text.trim(),
       discountType: _discountType,
-      discountValue: _isFreeShipping
-          ? 0
-          : double.parse(_discountValueController.text.trim()),
-      minOrderAmount: _parseDouble(_minOrderAmountController.text),
+      discountValue: double.parse(_discountValueController.text.trim()),
+      targetType: _targetType,
+      targetId: _targetType == PromotionTargetType.allProducts
+          ? null
+          : _selectedTargetId,
+      targetName: _targetType == PromotionTargetType.allProducts
+          ? 'All Products'
+          : _selectedTargetName,
+      minOrderAmount: _parseOptionalDouble(_minOrderAmountController.text),
       maxDiscountAmount: _isPercent
-          ? _parseDouble(_maxDiscountAmountController.text)
+          ? _parseOptionalDouble(_maxDiscountAmountController.text)
           : null,
-      startsAt: _startsAt,
-      expiresAt: _expiresAt,
+      startDate: _startDate,
+      endDate: _endDate,
       active: _active,
+      status: widget.promotion?.status,
+      currentlyValid: widget.promotion?.currentlyValid ?? false,
       branchScope: _branchScope,
       selectedBranchIds: _branchScope == PromotionBranchScope.allBranches
           ? []
@@ -312,6 +463,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       selectedBranchNames: _branchScope == PromotionBranchScope.allBranches
           ? []
           : List.unmodifiable(_selectedBranchNames),
+      createdAt: widget.promotion?.createdAt ?? now,
+      updatedAt: now,
     );
 
     if (_isEditMode) {
@@ -374,14 +527,14 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
               elevation: 0,
               centerTitle: true,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back, size: 28),
                 onPressed: state.saving ? null : _cancel,
+                icon: const Icon(Icons.arrow_back, size: 28),
               ),
               title: Text(
                 _isEditMode ? 'Edit Promotion' : 'Create Promotion',
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
-                  fontSize: 24,
+                  fontSize: 22,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -474,7 +627,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           _FieldLabel('Promotion Title *'),
                           _InputField(
                             controller: _titleController,
-                            hintText: 'Ramadan Wholesale Deal',
+                            hintText: 'Food category wholesale deal',
                             validator: (value) {
                               return _required(value, 'Promotion Title');
                             },
@@ -483,39 +636,32 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           _FieldLabel('Description'),
                           _InputField(
                             controller: _descriptionController,
-                            hintText: 'Describe this promotion',
-                            maxLines: 2,
+                            hintText:
+                                'Short description shown later to retailer side',
+                            maxLines: 3,
                           ),
-                          const _DividerSpace(),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
+                        title: 'Discount',
+                        children: [
                           _FieldLabel('Discount Type *'),
                           _DiscountTypeDropdown(
                             value: _discountType,
-                            onChanged: (value) {
-                              if (value == null) return;
-
-                              setState(() {
-                                _discountType = value;
-
-                                if (!_isPercent) {
-                                  _maxDiscountAmountController.clear();
-                                }
-
-                                if (_isFreeShipping) {
-                                  _discountValueController.clear();
-                                }
-                              });
-                            },
+                            onChanged: _handleDiscountTypeChanged,
+                          ),
+                          const SizedBox(height: 8),
+                          _HelpText(
+                            text: _isPercent
+                                ? 'Percent discount means percentage off, for example 10% off. Maximum discount amount can limit supplier loss.'
+                                : 'Fixed discount means a fixed amount off, for example \$20 off.',
                           ),
                           const _DividerSpace(),
-                          _FieldLabel(
-                            _isPercent
-                                ? 'Discount Value (%) *'
-                                : 'Discount Value *',
-                          ),
+                          _FieldLabel('Discount Value *'),
                           _InputField(
                             controller: _discountValueController,
-                            hintText: _isFreeShipping ? 'Not required' : '15',
-                            enabled: !_isFreeShipping,
+                            hintText: _isPercent ? '10' : '20',
                             keyboardType:
                                 const TextInputType.numberWithOptions(
                               decimal: true,
@@ -526,9 +672,52 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
+                        title: 'Promotion Target',
+                        children: [
+                          _FieldLabel('Applies To *'),
+                          _TargetTypeDropdown(
+                            value: _targetType,
+                            onChanged: _handleTargetTypeChanged,
+                          ),
+                          const SizedBox(height: 8),
+                          const _HelpText(
+                            text:
+                                'The target defines which products are included in the promotion. Branch availability is selected separately below.',
+                          ),
+                          if (_targetType != PromotionTargetType.allProducts)
+                            ...[
+                              const _DividerSpace(),
+                              if (_loadingTargets)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              else if (_targetErrorMessage != null)
+                                _ErrorText(message: _targetErrorMessage!)
+                              else
+                                _TargetSelectionSection(
+                                  targetType: _targetType,
+                                  products: _products,
+                                  categories: _categories,
+                                  subCategories: _subCategories,
+                                  selectedTargetId: _selectedTargetId,
+                                  selectedCategoryId: _selectedTargetCategoryId,
+                                  filteredSubCategories: _filteredSubCategories,
+                                  onRefresh: _loadTargets,
+                                  onTargetSelected: _handleTargetSelected,
+                                  onCategoryForSubCategorySelected:
+                                      _handleSubCategoryParentSelected,
+                                ),
+                            ],
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
                         title: 'Promotion Rules',
                         children: [
-                          _FieldLabel('Min Order Amount'),
+                          _FieldLabel('Minimum Order Amount'),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '100',
@@ -537,30 +726,35 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               decimal: true,
                             ),
                             validator: (value) {
-                              return _optionalPositiveNumber(
+                              return _optionalNonNegativeNumber(
                                 value,
-                                'Min Order Amount',
+                                'Minimum Order Amount',
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Max Discount Amount'),
+                          _FieldLabel('Maximum Discount Amount'),
                           _InputField(
                             controller: _maxDiscountAmountController,
-                            hintText: _isPercent
-                                ? '50'
-                                : 'Only for percent promotions',
+                            hintText:
+                                _isPercent ? '50' : 'Only for percent discounts',
                             enabled: _isPercent,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
                               decimal: true,
                             ),
                             validator: (value) {
-                              return _optionalPositiveNumber(
+                              return _optionalNonNegativeNumber(
                                 value,
-                                'Max Discount Amount',
+                                'Maximum Discount Amount',
                               );
                             },
+                          ),
+                          const SizedBox(height: 8),
+                          _HelpText(
+                            text: _isPercent
+                                ? 'Optional. It limits the total discount when using percent promotions.'
+                                : 'Maximum discount amount is not needed for fixed promotions.',
                           ),
                         ],
                       ),
@@ -584,6 +778,11 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                 }
                               });
                             },
+                          ),
+                          const SizedBox(height: 8),
+                          const _HelpText(
+                            text:
+                                'Branches define where the promotion is valid. Product/category selection above is not filtered by branch.',
                           ),
                           if (_branchScope ==
                               PromotionBranchScope.selectedBranches) ...[
@@ -614,15 +813,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                 ),
                               )
                             else if (_branchErrorMessage != null)
-                              Text(
-                                _branchErrorMessage!,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.red,
-                                ),
-                              )
-                            else if (_availableBranches.isEmpty)
+                              _ErrorText(message: _branchErrorMessage!)
+                            else if (_branches.isEmpty)
                               const Text(
                                 'No active branches available. Add branches from Branch Management first.',
                                 style: TextStyle(
@@ -635,14 +827,15 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
-                                children: _availableBranches.map((branch) {
+                                children: _branches.map((branch) {
                                   final selected =
                                       _selectedBranchIds.contains(branch.id);
 
                                   return FilterChip(
                                     selected: selected,
-                                    label: Text(branch.name),
-                                    selectedColor: primary.withOpacity(0.15),
+                                    label: Text(branch.label),
+                                    selectedColor:
+                                        primary.withValues(alpha: 0.15),
                                     checkmarkColor: primary,
                                     onSelected: (isSelected) {
                                       _toggleBranch(branch, isSelected);
@@ -650,72 +843,57 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                   );
                                 }).toList(),
                               ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'Selected branches are loaded from the backend Branch Management module.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: AppThemeTokens.textSecondary,
-                              ),
-                            ),
                           ],
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Validity',
+                        title: 'Schedule & Status',
                         children: [
                           _DateTimePickerRow(
-                            label: 'Valid From',
-                            value: _formatDateTime(_startsAt),
+                            label: 'Start Date',
+                            value: _formatDateTime(_startDate),
                             onPick: () async {
-                              final picked = await _pickDateTime(_startsAt);
+                              final picked = await _pickDateTime(_startDate);
 
                               if (picked == null) return;
 
                               setState(() {
-                                _startsAt = picked;
+                                _startDate = picked;
                                 _validateDates();
                               });
                             },
                             onClear: () {
                               setState(() {
-                                _startsAt = null;
+                                _startDate = null;
                                 _validateDates();
                               });
                             },
                           ),
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
-                            label: 'Valid To',
-                            value: _formatDateTime(_expiresAt),
+                            label: 'End Date',
+                            value: _formatDateTime(_endDate),
                             onPick: () async {
-                              final picked = await _pickDateTime(_expiresAt);
+                              final picked = await _pickDateTime(_endDate);
 
                               if (picked == null) return;
 
                               setState(() {
-                                _expiresAt = picked;
+                                _endDate = picked;
                                 _validateDates();
                               });
                             },
                             onClear: () {
                               setState(() {
-                                _expiresAt = null;
+                                _endDate = null;
                                 _validateDates();
                               });
                             },
                           ),
                           if (_dateError != null) ...[
                             const SizedBox(height: 10),
-                            Text(
-                              _dateError!,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
+                            _ErrorText(message: _dateError!),
                           ],
                           const _DividerSpace(),
                           Row(
@@ -732,7 +910,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeColor: Colors.white,
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
@@ -754,6 +932,182 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
           );
         },
       ),
+    );
+  }
+}
+
+class _TargetSelectionSection extends StatelessWidget {
+  final PromotionTargetType targetType;
+  final List<_PromotionLookupOption> products;
+  final List<_PromotionLookupOption> categories;
+  final List<_PromotionLookupOption> subCategories;
+  final List<_PromotionLookupOption> filteredSubCategories;
+  final String? selectedTargetId;
+  final String? selectedCategoryId;
+  final VoidCallback onRefresh;
+  final ValueChanged<_PromotionLookupOption?> onTargetSelected;
+  final ValueChanged<String?> onCategoryForSubCategorySelected;
+
+  const _TargetSelectionSection({
+    required this.targetType,
+    required this.products,
+    required this.categories,
+    required this.subCategories,
+    required this.filteredSubCategories,
+    required this.selectedTargetId,
+    required this.selectedCategoryId,
+    required this.onRefresh,
+    required this.onTargetSelected,
+    required this.onCategoryForSubCategorySelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (targetType == PromotionTargetType.product) {
+      return _LookupDropdownBlock(
+        label: 'Select Product *',
+        emptyText: 'No active products available.',
+        options: products,
+        selectedId: selectedTargetId,
+        onRefresh: onRefresh,
+        onChanged: onTargetSelected,
+      );
+    }
+
+    if (targetType == PromotionTargetType.category) {
+      return _LookupDropdownBlock(
+        label: 'Select Category *',
+        emptyText: 'No active categories available.',
+        options: categories,
+        selectedId: selectedTargetId,
+        onRefresh: onRefresh,
+        onChanged: onTargetSelected,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _FieldLabel('Select Category *'),
+        _SimpleStringDropdown(
+          value: _safeSelectedId(selectedCategoryId, categories),
+          hintText: 'Choose category',
+          items: categories
+              .map(
+                (category) => DropdownMenuItem<String>(
+                  value: category.id,
+                  child: Text(category.label),
+                ),
+              )
+              .toList(),
+          onChanged: onCategoryForSubCategorySelected,
+        ),
+        const SizedBox(height: 12),
+        _LookupDropdownBlock(
+          label: 'Select SubCategory *',
+          emptyText: selectedCategoryId == null
+              ? 'Select a category first.'
+              : 'No active subcategories for this category.',
+          options: filteredSubCategories,
+          selectedId: selectedTargetId,
+          onRefresh: onRefresh,
+          onChanged: onTargetSelected,
+        ),
+      ],
+    );
+  }
+
+  static String? _safeSelectedId(
+    String? selectedId,
+    List<_PromotionLookupOption> options,
+  ) {
+    if (selectedId == null) return null;
+
+    return options.any((item) => item.id == selectedId) ? selectedId : null;
+  }
+}
+
+class _LookupDropdownBlock extends StatelessWidget {
+  final String label;
+  final String emptyText;
+  final List<_PromotionLookupOption> options;
+  final String? selectedId;
+  final VoidCallback onRefresh;
+  final ValueChanged<_PromotionLookupOption?> onChanged;
+
+  const _LookupDropdownBlock({
+    required this.label,
+    required this.emptyText,
+    required this.options,
+    required this.selectedId,
+    required this.onRefresh,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final safeSelectedId =
+        options.any((item) => item.id == selectedId) ? selectedId : null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(child: _FieldLabel(label)),
+            TextButton(
+              onPressed: onRefresh,
+              child: const Text(
+                'Refresh',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        ),
+        if (options.isEmpty)
+          Text(
+            emptyText,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppThemeTokens.textSecondary,
+            ),
+          )
+        else
+          DropdownButtonFormField<String>(
+            initialValue: safeSelectedId,
+            items: options
+                .map(
+                  (option) => DropdownMenuItem<String>(
+                    value: option.id,
+                    child: Text(
+                      option.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              final selected = options.where((item) => item.id == value);
+
+              onChanged(selected.isEmpty ? null : selected.first);
+            },
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return label.replaceAll('*', '').trim() + ' is required';
+              }
+
+              return null;
+            },
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppThemeTokens.textPrimary,
+            ),
+            decoration: _dropdownDecoration(context),
+          ),
+      ],
     );
   }
 }
@@ -899,10 +1253,42 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionDiscountType>(
-      value: value,
+      initialValue: value,
       items: PromotionDiscountType.values
           .map(
             (type) => DropdownMenuItem<PromotionDiscountType>(
+              value: type,
+              child: Text(type.label),
+            ),
+          )
+          .toList(),
+      onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+      decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _TargetTypeDropdown extends StatelessWidget {
+  final PromotionTargetType value;
+  final ValueChanged<PromotionTargetType?> onChanged;
+
+  const _TargetTypeDropdown({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<PromotionTargetType>(
+      initialValue: value,
+      items: PromotionTargetType.values
+          .map(
+            (type) => DropdownMenuItem<PromotionTargetType>(
               value: type,
               child: Text(type.label),
             ),
@@ -931,7 +1317,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionBranchScope>(
-      value: value,
+      initialValue: value,
       items: PromotionBranchScope.values
           .map(
             (scope) => DropdownMenuItem<PromotionBranchScope>(
@@ -947,6 +1333,186 @@ class _BranchScopeDropdown extends StatelessWidget {
         color: AppThemeTokens.textPrimary,
       ),
       decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _SimpleStringDropdown extends StatelessWidget {
+  final String? value;
+  final String hintText;
+  final List<DropdownMenuItem<String>> items;
+  final ValueChanged<String?> onChanged;
+
+  const _SimpleStringDropdown({
+    required this.value,
+    required this.hintText,
+    required this.items,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      items: items,
+      onChanged: onChanged,
+      validator: (selectedValue) {
+        if (selectedValue == null || selectedValue.trim().isEmpty) {
+          return hintText;
+        }
+
+        return null;
+      },
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+      decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _DateTimePickerRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final VoidCallback onPick;
+  final VoidCallback onClear;
+
+  const _DateTimePickerRow({
+    required this.label,
+    required this.value,
+    required this.onPick,
+    required this.onClear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppThemeTokens.border),
+        color: AppThemeTokens.surface,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              color: AppThemeTokens.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 44,
+                  child: OutlinedButton(
+                    onPressed: onClear,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppThemeTokens.textPrimary,
+                      side: const BorderSide(color: AppThemeTokens.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Clear',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SizedBox(
+                  height: 44,
+                  child: ElevatedButton(
+                    onPressed: onPick,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      minimumSize: const Size(0, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Pick',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HelpText extends StatelessWidget {
+  final String text;
+
+  const _HelpText({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 12,
+        height: 1.35,
+        fontWeight: FontWeight.w600,
+        color: AppThemeTokens.textSecondary,
+      ),
+    );
+  }
+}
+
+class _ErrorText extends StatelessWidget {
+  final String message;
+
+  const _ErrorText({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      message,
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        color: Colors.red,
+      ),
+    );
+  }
+}
+
+class _DividerSpace extends StatelessWidget {
+  const _DividerSpace();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 14),
+      child: Divider(height: 1, color: AppThemeTokens.border),
     );
   }
 }
@@ -971,80 +1537,159 @@ InputDecoration _dropdownDecoration(BuildContext context) {
     focusedBorder: border(
       color: Theme.of(context).colorScheme.primary,
     ),
+    errorBorder: border(color: Colors.red),
+    focusedErrorBorder: border(color: Colors.red),
   );
 }
 
-class _DateTimePickerRow extends StatelessWidget {
+class _PromotionLookupOption {
+  final String id;
   final String label;
-  final String value;
-  final VoidCallback onPick;
-  final VoidCallback onClear;
+  final String? categoryId;
+  final String? categoryName;
 
-  const _DateTimePickerRow({
+  const _PromotionLookupOption({
+    required this.id,
     required this.label,
-    required this.value,
-    required this.onPick,
-    required this.onClear,
+    this.categoryId,
+    this.categoryName,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: onPick,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppThemeTokens.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppThemeTokens.border),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear),
-        ),
-      ],
+  factory _PromotionLookupOption.fromJson(
+    Map<String, dynamic> json, {
+    required String fallbackPrefix,
+  }) {
+    final id = _firstNonEmpty(json, [
+      'id',
+      'productId',
+      'categoryId',
+      'subCategoryId',
+      'subcategoryId',
+    ]);
+
+    final name = _firstNonEmpty(json, [
+      'name',
+      'productName',
+      'categoryName',
+      'subCategoryName',
+      'subcategoryName',
+      'title',
+    ]);
+
+    final categoryId = _firstNonEmpty(json, [
+      'categoryId',
+      'parentCategoryId',
+    ]);
+
+    final categoryName = _firstNonEmpty(json, [
+      'categoryName',
+      'parentCategoryName',
+    ]);
+
+    return _PromotionLookupOption(
+      id: id,
+      label: name.isEmpty ? '$fallbackPrefix #$id' : name,
+      categoryId: categoryId.isEmpty ? null : categoryId,
+      categoryName: categoryName.isEmpty ? null : categoryName,
     );
+  }
+
+  static String _firstNonEmpty(
+    Map<String, dynamic> json,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final value = json[key];
+
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    }
+
+    return '';
   }
 }
 
-class _DividerSpace extends StatelessWidget {
-  const _DividerSpace();
+class _PromotionLookupService {
+  final ApiClient apiClient;
 
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 14),
-      child: Divider(height: 1, color: AppThemeTokens.border),
+  _PromotionLookupService(this.apiClient);
+
+  Future<List<_PromotionLookupOption>> getProducts() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierProducts);
+
+    return _parseList(
+      response.data,
+      fallbackPrefix: 'Product',
     );
+  }
+
+  Future<List<_PromotionLookupOption>> getCategories() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierCategories);
+
+    return _parseList(
+      response.data,
+      fallbackPrefix: 'Category',
+    );
+  }
+
+  Future<List<_PromotionLookupOption>> getSubCategories() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierSubCategories);
+
+    return _parseList(
+      response.data,
+      fallbackPrefix: 'SubCategory',
+    );
+  }
+
+  Future<List<_PromotionLookupOption>> getBranches() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierBranches);
+
+    final rawOptions = _parseList(
+      response.data,
+      fallbackPrefix: 'Branch',
+    );
+
+    if (response.data is List) {
+      final filtered = <_PromotionLookupOption>[];
+
+      for (final item in response.data as List) {
+        if (item is! Map) continue;
+
+        final json = Map<String, dynamic>.from(item);
+        final status = json['status']?.toString().toUpperCase();
+
+        if (status == null || status == 'ACTIVE') {
+          filtered.add(
+            _PromotionLookupOption.fromJson(
+              json,
+              fallbackPrefix: 'Branch',
+            ),
+          );
+        }
+      }
+
+      return filtered;
+    }
+
+    return rawOptions;
+  }
+
+  List<_PromotionLookupOption> _parseList(
+    dynamic data, {
+    required String fallbackPrefix,
+  }) {
+    if (data is! List) return [];
+
+    return data
+        .whereType<Map>()
+        .map(
+          (item) => _PromotionLookupOption.fromJson(
+            Map<String, dynamic>.from(item),
+            fallbackPrefix: fallbackPrefix,
+          ),
+        )
+        .where((item) => item.id.trim().isNotEmpty)
+        .toList();
   }
 }

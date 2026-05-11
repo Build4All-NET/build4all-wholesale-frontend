@@ -317,12 +317,12 @@ class _SupplierDashboardView extends StatelessWidget {
       SupplierQuickActionCard(
         title: 'Shipping Methods',
         icon: Icons.local_shipping_outlined,
-        onTap: () => context.go('/supplier-shipping'),
+        onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
         title: 'Configure Taxes',
-        icon: Icons.attach_money,
-        onTap: () => context.go('/supplier-tax'),
+        icon: Icons.percent_outlined,
+        onTap: () => context.go('/supplier-tax-rules/create'),
       ),
       SupplierQuickActionCard(
         title: 'Import Excel',

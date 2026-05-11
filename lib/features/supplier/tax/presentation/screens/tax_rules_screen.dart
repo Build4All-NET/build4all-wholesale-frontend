@@ -5,88 +5,83 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
-import '../../domain/entities/shipping_method_entity.dart';
-import '../bloc/shipping_methods_bloc.dart';
-import '../bloc/shipping_methods_event.dart';
-import '../bloc/shipping_methods_state.dart';
-import '../widgets/shipping_method_card.dart';
+import '../../domain/entities/tax_rule_entity.dart';
+import '../bloc/tax_rules_bloc.dart';
+import '../bloc/tax_rules_event.dart';
+import '../bloc/tax_rules_state.dart';
+import '../widgets/tax_rule_card.dart';
 
-enum _ShippingStatusFilter {
+enum _TaxStatusFilter {
   enabled,
   disabled,
   all,
 }
 
-class ShippingMethodsScreen extends StatelessWidget {
-  const ShippingMethodsScreen({super.key});
+class TaxRulesScreen extends StatelessWidget {
+  const TaxRulesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ShippingMethodsBloc>(
-      create: (_) =>
-          sl<ShippingMethodsBloc>()..add(const LoadShippingMethodsRequested()),
-      child: const _ShippingMethodsView(),
+    return BlocProvider<TaxRulesBloc>(
+      create: (_) => sl<TaxRulesBloc>()..add(const LoadTaxRulesRequested()),
+      child: const _TaxRulesView(),
     );
   }
 }
 
-class _ShippingMethodsView extends StatefulWidget {
-  const _ShippingMethodsView();
+class _TaxRulesView extends StatefulWidget {
+  const _TaxRulesView();
 
   @override
-  State<_ShippingMethodsView> createState() => _ShippingMethodsViewState();
+  State<_TaxRulesView> createState() => _TaxRulesViewState();
 }
 
-class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
+class _TaxRulesViewState extends State<_TaxRulesView> {
   String _searchQuery = '';
-  _ShippingStatusFilter _statusFilter = _ShippingStatusFilter.enabled;
+  _TaxStatusFilter _statusFilter = _TaxStatusFilter.enabled;
 
-  List<ShippingMethodEntity> _filteredMethods(
-    List<ShippingMethodEntity> methods,
-  ) {
+  List<TaxRuleEntity> _filteredRules(List<TaxRuleEntity> rules) {
     final query = _searchQuery.trim().toLowerCase();
 
-    return methods.where((method) {
+    return rules.where((rule) {
       final matchesStatus = switch (_statusFilter) {
-        _ShippingStatusFilter.enabled => method.active,
-        _ShippingStatusFilter.disabled => !method.active,
-        _ShippingStatusFilter.all => true,
+        _TaxStatusFilter.enabled => rule.active,
+        _TaxStatusFilter.disabled => !rule.active,
+        _TaxStatusFilter.all => true,
       };
 
       if (!matchesStatus) return false;
 
       if (query.isEmpty) return true;
 
-      return method.name.toLowerCase().contains(query) ||
-          method.methodTypeLabel.toLowerCase().contains(query) ||
-          method.locationLabel.toLowerCase().contains(query) ||
-          method.branchScopeLabel.toLowerCase().contains(query) ||
-          method.costLabel.toLowerCase().contains(query) ||
-          method.statusLabel.toLowerCase().contains(query) ||
-          (method.notes ?? '').toLowerCase().contains(query);
+      return rule.ruleName.toLowerCase().contains(query) ||
+          rule.rateLabel.toLowerCase().contains(query) ||
+          rule.locationLabel.toLowerCase().contains(query) ||
+          rule.scopeLabel.toLowerCase().contains(query) ||
+          rule.shippingTaxLabel.toLowerCase().contains(query) ||
+          rule.statusLabel.toLowerCase().contains(query) ||
+          (rule.notes ?? '').toLowerCase().contains(query);
     }).toList();
   }
 
   Future<void> _refresh(BuildContext context) async {
-    context.read<ShippingMethodsBloc>().add(
-          const LoadShippingMethodsRequested(),
-        );
+    context.read<TaxRulesBloc>().add(const LoadTaxRulesRequested());
   }
 
   Future<void> _confirmDelete(
     BuildContext context,
-    ShippingMethodEntity method,
+    TaxRuleEntity rule,
   ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text(
-            'Delete Shipping Method',
+            'Delete Tax Rule',
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete "${method.name}"?',
+            'Are you sure you want to delete "${rule.ruleName}"?',
           ),
           actions: [
             TextButton(
@@ -108,16 +103,14 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
 
     if (shouldDelete != true || !context.mounted) return;
 
-    context.read<ShippingMethodsBloc>().add(
-          DeleteShippingMethodRequested(method.id),
-        );
+    context.read<TaxRulesBloc>().add(DeleteTaxRuleRequested(rule.id));
   }
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    return BlocListener<ShippingMethodsBloc, ShippingMethodsState>(
+    return BlocListener<TaxRulesBloc, TaxRulesState>(
       listener: (context, state) {
         final message = state.successMessage ?? state.errorMessage;
 
@@ -126,8 +119,8 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
             SnackBar(content: Text(message)),
           );
 
-          context.read<ShippingMethodsBloc>().add(
-                const ClearShippingMethodMessageRequested(),
+          context.read<TaxRulesBloc>().add(
+                const ClearTaxRuleMessageRequested(),
               );
         }
       },
@@ -147,7 +140,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
             },
           ),
           title: Text(
-            'Shipping Methods',
+            'Tax Configuration',
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -156,8 +149,8 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
           ),
           actions: [
             IconButton(
-              tooltip: 'Create Shipping Method',
-              onPressed: () => context.go('/supplier-shipping/create'),
+              tooltip: 'Create Tax Rule',
+              onPressed: () => context.go('/supplier-tax-rules/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
@@ -169,9 +162,9 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
           ],
         ),
         body: SafeArea(
-          child: BlocBuilder<ShippingMethodsBloc, ShippingMethodsState>(
+          child: BlocBuilder<TaxRulesBloc, TaxRulesState>(
             builder: (context, state) {
-              final filteredMethods = _filteredMethods(state.methods);
+              final filteredRules = _filteredRules(state.rules);
 
               return RefreshIndicator(
                 onRefresh: () => _refresh(context),
@@ -205,7 +198,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      _SectionHeader(count: filteredMethods.length),
+                      _SectionHeader(count: filteredRules.length),
                       const SizedBox(height: 12),
                       if (state.loading)
                         const _LoadingCard()
@@ -214,31 +207,31 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                           message: state.errorMessage!,
                           onRetry: () => _refresh(context),
                         )
-                      else if (state.methods.isEmpty)
+                      else if (state.rules.isEmpty)
                         _EmptyCard(primary: primary)
-                      else if (filteredMethods.isEmpty)
+                      else if (filteredRules.isEmpty)
                         _NoSearchResultsCard(primary: primary)
                       else
                         ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: filteredMethods.length,
+                          itemCount: filteredRules.length,
                           separatorBuilder: (context, index) {
                             return const SizedBox(height: 16);
                           },
                           itemBuilder: (context, index) {
-                            final method = filteredMethods[index];
+                            final rule = filteredRules[index];
 
-                            return ShippingMethodCard(
-                              method: method,
+                            return TaxRuleCard(
+                              rule: rule,
                               onEdit: () {
                                 context.go(
-                                  '/supplier-shipping/edit',
-                                  extra: method,
+                                  '/supplier-tax-rules/edit',
+                                  extra: rule,
                                 );
                               },
                               onDelete: () {
-                                _confirmDelete(context, method);
+                                _confirmDelete(context, rule);
                               },
                             );
                           },
@@ -256,8 +249,8 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
 }
 
 class _StatusFilterBar extends StatelessWidget {
-  final _ShippingStatusFilter selected;
-  final ValueChanged<_ShippingStatusFilter> onChanged;
+  final _TaxStatusFilter selected;
+  final ValueChanged<_TaxStatusFilter> onChanged;
 
   const _StatusFilterBar({
     required this.selected,
@@ -270,20 +263,20 @@ class _StatusFilterBar extends StatelessWidget {
       children: [
         _StatusFilterButton(
           label: 'Enabled only',
-          selected: selected == _ShippingStatusFilter.enabled,
-          onTap: () => onChanged(_ShippingStatusFilter.enabled),
+          selected: selected == _TaxStatusFilter.enabled,
+          onTap: () => onChanged(_TaxStatusFilter.enabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
           label: 'Disabled only',
-          selected: selected == _ShippingStatusFilter.disabled,
-          onTap: () => onChanged(_ShippingStatusFilter.disabled),
+          selected: selected == _TaxStatusFilter.disabled,
+          onTap: () => onChanged(_TaxStatusFilter.disabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
           label: 'All',
-          selected: selected == _ShippingStatusFilter.all,
-          onTap: () => onChanged(_ShippingStatusFilter.all),
+          selected: selected == _TaxStatusFilter.all,
+          onTap: () => onChanged(_TaxStatusFilter.all),
         ),
       ],
     );
@@ -359,7 +352,7 @@ class _HeaderCard extends StatelessWidget {
             radius: 28,
             backgroundColor: primary.withValues(alpha: 0.12),
             child: Icon(
-              Icons.local_shipping_outlined,
+              Icons.percent_outlined,
               color: primary,
               size: 30,
             ),
@@ -370,7 +363,7 @@ class _HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Shipping Methods',
+                  'Manage Tax Rules',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -379,7 +372,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.',
+                  'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -409,7 +402,7 @@ class _SearchField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: 'Search shipping methods',
+        hintText: 'Search tax rules',
         hintStyle: const TextStyle(
           color: AppThemeTokens.textSecondary,
           fontWeight: FontWeight.w600,
@@ -448,7 +441,7 @@ class _SectionHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Shipping Method List',
+          'Tax Rule List',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
@@ -457,7 +450,7 @@ class _SectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '$count method${count == 1 ? '' : 's'} shown',
+          '$count rule${count == 1 ? '' : 's'} shown',
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
@@ -513,7 +506,7 @@ class _ErrorCard extends StatelessWidget {
           const Icon(Icons.error_outline, color: Colors.red, size: 34),
           const SizedBox(height: 12),
           const Text(
-            'Could not load shipping methods',
+            'Could not load tax rules',
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
@@ -569,14 +562,14 @@ class _EmptyCard extends StatelessWidget {
             radius: 30,
             backgroundColor: primary.withValues(alpha: 0.12),
             child: Icon(
-              Icons.local_shipping_outlined,
+              Icons.percent_outlined,
               color: primary,
               size: 30,
             ),
           ),
           const SizedBox(height: 14),
           const Text(
-            'No shipping methods yet',
+            'No tax rules yet',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -585,7 +578,7 @@ class _EmptyCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create shipping methods from the supplier dashboard quick action or tap the plus icon above.',
+            'Create tax rules from the supplier dashboard quick action or tap the plus icon above.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
@@ -619,7 +612,7 @@ class _NoSearchResultsCard extends StatelessWidget {
           Icon(Icons.search_off, color: primary, size: 34),
           const SizedBox(height: 12),
           const Text(
-            'No matching shipping methods',
+            'No matching tax rules',
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
