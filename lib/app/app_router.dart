@@ -11,6 +11,7 @@ import '../features/auth/presentation/screens/complete_retailer_profile_screen.d
 
 import '../features/dashboard/data/models/retailer_home_model.dart';
 import '../features/dashboard/presentation/screens/retailer_all_categories_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_banner_target_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
@@ -22,11 +23,14 @@ import '../features/retailer_profile/presentation/screens/retailer_profile_scree
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
+import '../features/supplier/excel_import/presentation/screens/supplier_excel_import_screen.dart';
 
 import '../features/supplier/products/domain/entities/product_entity.dart';
 import '../features/supplier/products/presentation/screens/add_product_screen.dart';
 import '../features/supplier/products/presentation/screens/product_branch_inventory_screen.dart';
 import '../features/supplier/products/presentation/screens/product_management_screen.dart';
+
+import '../features/supplier/categories/presentation/screens/supplier_catalog_screen.dart';
 
 import '../features/supplier/branches/domain/entities/branch_entity.dart';
 import '../features/supplier/branches/presentation/screens/add_branch_screen.dart';
@@ -45,6 +49,14 @@ import '../features/supplier/banners/domain/entities/banner_entity.dart';
 import '../features/supplier/banners/presentation/screens/banners_screen.dart';
 import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
 
+import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
+import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
+import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
+
+import '../features/supplier/tax/domain/entities/tax_rule_entity.dart';
+import '../features/supplier/tax/presentation/screens/create_tax_rule_screen.dart';
+import '../features/supplier/tax/presentation/screens/tax_rules_screen.dart';
+
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
@@ -53,17 +65,22 @@ import '../features/supplier_profile/presentation/screens/complete_supplier_prof
 
 import '../l10n/app_localizations.dart';
 
-import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
-import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
-import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
-import '../features/dashboard/presentation/screens/retailer_banner_target_screen.dart';
-
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(path: '/', redirect: (context, state) => '/login'),
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/',
+        redirect: (context, state) => '/login',
+      ),
+
+      // =========================
+      // AUTH ROUTES
+      // =========================
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
       GoRoute(
         path: '/signup',
         builder: (context, state) => const RetailerSignupScreen(),
@@ -101,7 +118,9 @@ class AppRouter {
           final extra = state.extra;
 
           if (extra is Map<String, dynamic>) {
-            return ResetPasswordScreen(email: extra['email']?.toString() ?? '');
+            return ResetPasswordScreen(
+              email: extra['email']?.toString() ?? '',
+            );
           }
 
           if (extra is String) {
@@ -120,7 +139,9 @@ class AppRouter {
         builder: (context, state) => const CompleteRetailerProfileScreen(),
       ),
 
-      // Supplier routes
+      // =========================
+      // SUPPLIER ROUTES
+      // =========================
       GoRoute(
         path: '/supplier-dashboard',
         builder: (context, state) => const SupplierDashboardScreen(),
@@ -137,6 +158,7 @@ class AppRouter {
         path: '/supplier-products/edit',
         builder: (context, state) {
           final product = state.extra as ProductEntity;
+
           return AddProductScreen(productToEdit: product);
         },
       ),
@@ -144,8 +166,13 @@ class AppRouter {
         path: '/supplier-products/branch-stock',
         builder: (context, state) {
           final product = state.extra as ProductEntity;
+
           return ProductBranchInventoryScreen(product: product);
         },
+      ),
+      GoRoute(
+        path: '/supplier-catalog',
+        builder: (context, state) => const SupplierCatalogScreen(),
       ),
       GoRoute(
         path: '/supplier-branches',
@@ -159,6 +186,7 @@ class AppRouter {
         path: '/supplier-branches/edit',
         builder: (context, state) {
           final branch = state.extra as BranchEntity;
+
           return AddBranchScreen(branchToEdit: branch);
         },
       ),
@@ -166,6 +194,7 @@ class AppRouter {
         path: '/supplier-branches/inventory',
         builder: (context, state) {
           final branch = state.extra as BranchEntity;
+
           return BranchInventoryScreen(branch: branch);
         },
       ),
@@ -184,6 +213,7 @@ class AppRouter {
         path: '/supplier-orders/details',
         builder: (context, state) {
           final order = state.extra as SupplierOrderEntity;
+
           return SupplierOrderDetailsScreen(order: order);
         },
       ),
@@ -199,6 +229,7 @@ class AppRouter {
         path: '/supplier-promotions/edit',
         builder: (context, state) {
           final promotion = state.extra as PromotionEntity;
+
           return CreatePromotionScreen(promotion: promotion);
         },
       ),
@@ -214,6 +245,7 @@ class AppRouter {
         path: '/supplier-coupons/edit',
         builder: (context, state) {
           final coupon = state.extra as CouponEntity;
+
           return CreateCouponScreen(coupon: coupon);
         },
       ),
@@ -229,6 +261,7 @@ class AppRouter {
         path: '/supplier-banners/edit',
         builder: (context, state) {
           final banner = state.extra as BannerEntity;
+
           return CreateBannerScreen(banner: banner);
         },
       ),
@@ -236,12 +269,10 @@ class AppRouter {
         path: '/supplier-shipping',
         builder: (context, state) => const ShippingMethodsScreen(),
       ),
-
       GoRoute(
         path: '/supplier-shipping/create',
         builder: (context, state) => const CreateShippingMethodScreen(),
       ),
-
       GoRoute(
         path: '/supplier-shipping/edit',
         builder: (context, state) {
@@ -250,13 +281,40 @@ class AppRouter {
           return CreateShippingMethodScreen(method: method);
         },
       ),
+
+      // =========================
+      // SUPPLIER TAX ROUTES
+      // Dashboard quick action -> create
+      // Drawer/sidebar -> list
+      // =========================
+      GoRoute(
+        path: '/supplier-tax-rules',
+        builder: (context, state) => const TaxRulesScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-tax-rules/create',
+        builder: (context, state) => const CreateTaxRuleScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-tax-rules/edit',
+        builder: (context, state) {
+          final rule = state.extra as TaxRuleEntity?;
+
+          if (rule == null) {
+            return const TaxRulesScreen();
+          }
+
+          return CreateTaxRuleScreen(rule: rule);
+        },
+      ),
+
+      // Keep old supplier-tax route as a safe redirect
+      // so any old button/link does not break.
       GoRoute(
         path: '/supplier-tax',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Tax Configuration',
-          icon: Icons.percent_outlined,
-        ),
+        redirect: (context, state) => '/supplier-tax-rules',
       ),
+
       GoRoute(
         path: '/supplier-settings',
         builder: (context, state) => const SupplierComingSoonScreen(
@@ -266,13 +324,12 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-excel-import',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Import Excel',
-          icon: Icons.upload_outlined,
-        ),
+        builder: (context, state) => const SupplierExcelImportScreen(),
       ),
 
-      // Retailer routes
+      // =========================
+      // RETAILER ROUTES
+      // =========================
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
@@ -310,6 +367,7 @@ class AppRouter {
           }
 
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.categories,
             message: l10n.checkConnectionTryAgain,
@@ -345,6 +403,7 @@ class AppRouter {
         path: '/retailer-notifications',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.notifications,
             message: l10n.notificationsComingSoon,
@@ -356,6 +415,7 @@ class AppRouter {
         path: '/retailer-promotions',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.promotions,
             message: l10n.promotionsComingSoon,
@@ -367,6 +427,7 @@ class AppRouter {
         path: '/retailer-top-ranking',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.topRanking,
             message: l10n.topRankingComingSoon,
@@ -378,6 +439,7 @@ class AppRouter {
         path: '/retailer-orders',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.orders,
             message: l10n.ordersComingSoon,
@@ -389,6 +451,7 @@ class AppRouter {
         path: '/retailer-rfq',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.rfq,
             message: l10n.rfqComingSoon,
@@ -400,6 +463,7 @@ class AppRouter {
         path: '/retailer-ai-assistant',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.aiAssistant,
             message: l10n.aiAssistantComingSoon,
@@ -411,6 +475,7 @@ class AppRouter {
         path: '/retailer-loyalty',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.loyaltyPoints,
             message: l10n.loyaltyComingSoon,
@@ -422,6 +487,7 @@ class AppRouter {
         path: '/retailer-wallet',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.walletBalance,
             message: l10n.walletComingSoon,
@@ -433,6 +499,7 @@ class AppRouter {
         path: '/retailer-credit',
         builder: (context, state) {
           final l10n = AppLocalizations.of(context)!;
+
           return RetailerPlaceholderScreen(
             title: l10n.creditBalance,
             message: l10n.creditComingSoon,

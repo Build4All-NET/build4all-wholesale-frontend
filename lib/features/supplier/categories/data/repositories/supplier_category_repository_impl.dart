@@ -16,6 +16,11 @@ class SupplierCategoryRepositoryImpl implements SupplierCategoryRepository {
   }
 
   @override
+  Future<List<SupplierCategoryEntity>> getAllCategories() {
+    return apiService.getAllCategories();
+  }
+
+  @override
   Future<SupplierCategoryEntity> createCategory({
     required String name,
   }) {
@@ -34,6 +39,17 @@ class SupplierCategoryRepositoryImpl implements SupplierCategoryRepository {
   }
 
   @override
+  Future<SupplierCategoryEntity> updateCategoryStatus({
+    required String categoryId,
+    required SupplierCatalogStatus status,
+  }) {
+    return apiService.updateCategoryStatus(
+      categoryId: categoryId,
+      status: status,
+    );
+  }
+
+  @override
   Future<void> deleteCategory({
     required String categoryId,
   }) {
@@ -43,6 +59,11 @@ class SupplierCategoryRepositoryImpl implements SupplierCategoryRepository {
   @override
   Future<List<SupplierSubCategoryEntity>> getSubCategories() {
     return apiService.getSubCategories();
+  }
+
+  @override
+  Future<List<SupplierSubCategoryEntity>> getAllSubCategories() {
+    return apiService.getAllSubCategories();
   }
 
   @override
@@ -71,6 +92,17 @@ class SupplierCategoryRepositoryImpl implements SupplierCategoryRepository {
     return apiService.updateSubCategory(
       subCategoryId: subCategoryId,
       name: name,
+    );
+  }
+
+  @override
+  Future<SupplierSubCategoryEntity> updateSubCategoryStatus({
+    required String subCategoryId,
+    required SupplierCatalogStatus status,
+  }) {
+    return apiService.updateSubCategoryStatus(
+      subCategoryId: subCategoryId,
+      status: status,
     );
   }
 

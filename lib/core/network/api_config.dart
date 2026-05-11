@@ -23,6 +23,15 @@ class ApiConfig {
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
+    // =========================
+  // Shared Catalog: Countries / Regions
+  // =========================
+  static const String countries = '/countries';
+  static const String regions = '/regions';
+
+  static String regionsByCountry(String countryId) {
+    return '/regions/country/$countryId';
+  }
 
   // =========================
   // Retailer Home
@@ -67,23 +76,33 @@ class ApiConfig {
 
   static String build4AllDeleteUser(int userId) => '/users/$userId';
 
-  // =========================
+ 
   // Supplier Categories
-  // =========================
   static const String supplierCategories = '/supplier/categories';
+  static const String supplierCategoriesAll = '/supplier/categories/all';
   static const String supplierSubCategories = '/supplier/subcategories';
+  static const String supplierSubCategoriesAll = '/supplier/subcategories/all';
 
   static String supplierCategoryById(String id) {
     return '/supplier/categories/$id';
+  }
+
+  static String supplierCategoryStatus(String id, String status) {
+    return '/supplier/categories/$id/status?status=$status';
   }
 
   static String supplierSubCategoryById(String id) {
     return '/supplier/subcategories/$id';
   }
 
+  static String supplierSubCategoryStatus(String id, String status) {
+    return '/supplier/subcategories/$id/status?status=$status';
+  }
+
   static String supplierSubCategoriesByCategory(String categoryId) {
     return '/supplier/subcategories/category/$categoryId';
   }
+
 
   // =========================
   // Supplier Branches
@@ -102,10 +121,13 @@ class ApiConfig {
   // Supplier Products
   // =========================
   static const String supplierProducts = '/supplier/products';
+static const String supplierProductImageUpload = '/supplier/products/image';
 
-  static String supplierProductById(String id) {
-    return '/supplier/products/$id';
-  }
+static String supplierProductById(String id) {
+  return '/supplier/products/$id';
+}
+
+  
 
   static String supplierProductsSearch(String query) {
     return '/supplier/products/search?query=$query';
@@ -115,7 +137,9 @@ class ApiConfig {
   // Supplier Branch Inventory
   // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';
+static const String supplierLowStockAlerts =
 
+    '/supplier/branch-inventory/low-stock?threshold=50';
   static String supplierInventoryByBranch(String branchId) {
     return '/supplier/branch-inventory/branch/$branchId';
   }
@@ -178,6 +202,16 @@ class ApiConfig {
   static String supplierShippingMethodById(String id) {
     return '/supplier/shipping-methods/$id';
   }
+    // =========================
+  // SUPPLIER TAX RULES
+  // =========================
+  static const String supplierTaxRules = '/supplier/tax-rules';
+
+  static String supplierTaxRuleById(String id) {
+    return '/supplier/tax-rules/$id';
+  }
+
+  static const String supplierTaxPreview = '/supplier/tax-rules/preview';
 
   // =========================
   // Supplier Orders

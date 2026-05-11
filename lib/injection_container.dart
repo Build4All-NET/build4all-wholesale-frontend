@@ -48,32 +48,46 @@ import 'features/dashboard/data/services/retailer_cart_service.dart';
 import 'features/dashboard/presentation/cubit/retailer_cart_cubit.dart';
 
 // =========================
-// SUPPLIER CATEGORIES
+// SUPPLIER CATEGORIES / CATALOG
 // =========================
 import 'features/supplier/categories/data/repositories/supplier_category_repository_impl.dart';
 import 'features/supplier/categories/data/services/supplier_category_api_service.dart';
 import 'features/supplier/categories/domain/repositories/supplier_category_repository.dart';
 
 import 'features/supplier/categories/domain/usecases/get_categories_usecase.dart';
+import 'features/supplier/categories/domain/usecases/get_all_categories_usecase.dart';
 import 'features/supplier/categories/domain/usecases/get_subcategories_by_category_usecase.dart';
+import 'features/supplier/categories/domain/usecases/get_all_subcategories_usecase.dart';
 import 'features/supplier/categories/domain/usecases/create_category_usecase.dart';
+import 'features/supplier/categories/domain/usecases/update_category_usecase.dart';
+import 'features/supplier/categories/domain/usecases/update_category_status_usecase.dart';
+import 'features/supplier/categories/domain/usecases/delete_category_usecase.dart';
 import 'features/supplier/categories/domain/usecases/create_subcategory_usecase.dart';
+import 'features/supplier/categories/domain/usecases/update_subcategory_usecase.dart';
+import 'features/supplier/categories/domain/usecases/update_subcategory_status_usecase.dart';
+import 'features/supplier/categories/domain/usecases/delete_subcategory_usecase.dart';
+
+import 'features/supplier/categories/presentation/bloc/supplier_catalog/supplier_catalog_bloc.dart';
 
 // =========================
 // SUPPLIER BRANCHES
 // =========================
 import 'features/supplier/branches/data/repositories/branch_repository_impl.dart';
-import 'features/supplier/branches/data/repositories/branch_inventory_repository_impl.dart';
 import 'features/supplier/branches/data/services/branch_api_service.dart';
-import 'features/supplier/branches/data/services/branch_inventory_api_service.dart';
 import 'features/supplier/branches/domain/repositories/branch_repository.dart';
-import 'features/supplier/branches/domain/repositories/branch_inventory_repository.dart';
 
 import 'features/supplier/branches/domain/usecases/get_branches_usecase.dart';
 import 'features/supplier/branches/domain/usecases/search_branches_usecase.dart';
 import 'features/supplier/branches/domain/usecases/create_branch_usecase.dart';
 import 'features/supplier/branches/domain/usecases/update_branch_usecase.dart';
 import 'features/supplier/branches/domain/usecases/delete_branch_usecase.dart';
+
+// =========================
+// SUPPLIER BRANCH INVENTORY
+// =========================
+import 'features/supplier/branches/data/repositories/branch_inventory_repository_impl.dart';
+import 'features/supplier/branches/data/services/branch_inventory_api_service.dart';
+import 'features/supplier/branches/domain/repositories/branch_inventory_repository.dart';
 
 import 'features/supplier/branches/domain/usecases/get_inventory_by_branch_usecase.dart';
 import 'features/supplier/branches/domain/usecases/get_inventory_by_product_usecase.dart';
@@ -95,19 +109,15 @@ import 'features/supplier/products/domain/usecases/update_product_usecase.dart';
 import 'features/supplier/products/domain/usecases/delete_product_usecase.dart';
 
 import 'features/supplier/products/presentation/bloc/product_list/product_list_bloc.dart';
-import 'features/supplier/products/presentation/bloc/product_branch_inventory/product_branch_inventory_bloc.dart';
-
-// =========================
-// SUPPLIER BRANCH BLOCS
-// =========================
 import 'features/supplier/branches/presentation/bloc/branch_list/branch_list_bloc.dart';
 import 'features/supplier/branches/presentation/bloc/branch_inventory/branch_inventory_bloc.dart';
+import 'features/supplier/products/presentation/bloc/product_branch_inventory/product_branch_inventory_bloc.dart';
 
 // =========================
 // SUPPLIER COUPONS
 // =========================
-import 'features/supplier/coupons/data/services/coupon_api_service.dart';
 import 'features/supplier/coupons/data/repositories/coupon_repository_impl.dart';
+import 'features/supplier/coupons/data/services/coupon_api_service.dart';
 import 'features/supplier/coupons/domain/repositories/coupon_repository.dart';
 import 'features/supplier/coupons/domain/usecases/create_coupon_usecase.dart';
 import 'features/supplier/coupons/domain/usecases/delete_coupon_usecase.dart';
@@ -118,8 +128,8 @@ import 'features/supplier/coupons/presentation/bloc/coupons_bloc.dart';
 // =========================
 // SUPPLIER PROMOTIONS
 // =========================
-import 'features/supplier/promotions/data/services/promotion_api_service.dart';
 import 'features/supplier/promotions/data/repositories/promotion_repository_impl.dart';
+import 'features/supplier/promotions/data/services/promotion_api_service.dart';
 import 'features/supplier/promotions/domain/repositories/promotion_repository.dart';
 import 'features/supplier/promotions/domain/usecases/create_promotion_usecase.dart';
 import 'features/supplier/promotions/domain/usecases/delete_promotion_usecase.dart';
@@ -130,9 +140,9 @@ import 'features/supplier/promotions/presentation/bloc/promotions_bloc.dart';
 // =========================
 // SUPPLIER BANNERS
 // =========================
+import 'features/supplier/banners/data/repositories/banner_repository_impl.dart';
 import 'features/supplier/banners/data/services/banner_api_service.dart';
 import 'features/supplier/banners/data/services/banner_image_upload_service.dart';
-import 'features/supplier/banners/data/repositories/banner_repository_impl.dart';
 import 'features/supplier/banners/domain/repositories/banner_repository.dart';
 import 'features/supplier/banners/domain/usecases/create_banner_usecase.dart';
 import 'features/supplier/banners/domain/usecases/delete_banner_usecase.dart';
@@ -141,7 +151,7 @@ import 'features/supplier/banners/domain/usecases/update_banner_usecase.dart';
 import 'features/supplier/banners/presentation/bloc/banners_bloc.dart';
 
 // =========================
-// SUPPLIER SHIPPING
+// SUPPLIER SHIPPING METHODS
 // =========================
 import 'features/supplier/shipping/data/repositories/shipping_method_repository_impl.dart';
 import 'features/supplier/shipping/data/services/shipping_method_api_service.dart';
@@ -151,6 +161,32 @@ import 'features/supplier/shipping/domain/usecases/delete_shipping_method_usecas
 import 'features/supplier/shipping/domain/usecases/get_shipping_methods_usecase.dart';
 import 'features/supplier/shipping/domain/usecases/update_shipping_method_usecase.dart';
 import 'features/supplier/shipping/presentation/bloc/shipping_methods_bloc.dart';
+
+// =========================
+// SUPPLIER TAX
+// =========================
+import 'features/supplier/tax/data/repositories/tax_rule_repository_impl.dart';
+import 'features/supplier/tax/data/services/tax_rule_api_service.dart';
+import 'features/supplier/tax/domain/repositories/tax_rule_repository.dart';
+import 'features/supplier/tax/domain/usecases/create_tax_rule_usecase.dart';
+import 'features/supplier/tax/domain/usecases/delete_tax_rule_usecase.dart';
+import 'features/supplier/tax/domain/usecases/get_tax_rules_usecase.dart';
+import 'features/supplier/tax/domain/usecases/preview_tax_usecase.dart';
+import 'features/supplier/tax/domain/usecases/update_tax_rule_usecase.dart';
+import 'features/supplier/tax/presentation/bloc/tax_rules_bloc.dart';
+
+// =========================
+// SUPPLIER EXCEL IMPORT
+// =========================
+import 'features/supplier/excel_import/data/repositories/supplier_excel_import_repository_impl.dart';
+import 'features/supplier/excel_import/data/services/supplier_excel_reader_service.dart';
+import 'features/supplier/excel_import/domain/repositories/supplier_excel_import_repository.dart';
+import 'features/supplier/excel_import/domain/usecases/clear_supplier_excel_import_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/import_supplier_excel_products_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/parse_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/pick_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/validate_supplier_excel_rows_usecase.dart';
+import 'features/supplier/excel_import/presentation/bloc/supplier_excel_import_bloc.dart';
 
 // =========================
 // SUPPLIER ORDERS
@@ -167,11 +203,18 @@ import 'features/supplier/orders/presentation/bloc/supplier_order_details/suppli
 // =========================
 // SUPPLIER DASHBOARD
 // =========================
+import 'features/supplier/dashboard/data/repositories/supplier_dashboard_repository_impl.dart';
+import 'features/supplier/dashboard/data/services/supplier_dashboard_api_service.dart';
+import 'features/supplier/dashboard/domain/repositories/supplier_dashboard_repository.dart';
+import 'features/supplier/dashboard/domain/usecases/get_supplier_low_stock_alerts_usecase.dart';
 import 'features/supplier/dashboard/presentation/bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // =========================
+  // CORE / STORAGE
+  // =========================
   sl.registerLazySingleton<AuthStorage>(() => AuthStorage());
   sl.registerLazySingleton<ThemeStorage>(() => ThemeStorage());
   sl.registerLazySingleton<LocaleStorage>(() => LocaleStorage());
@@ -180,21 +223,35 @@ Future<void> init() async {
   // CORE / NETWORK
   // =========================
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.apiBaseUrl),
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.apiBaseUrl,
+    ),
     instanceName: 'centralApiClient',
   );
 
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.projectApiBaseUrl),
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.projectApiBaseUrl,
+    ),
     instanceName: 'projectApiClient',
   );
 
   // =========================
   // THEME / LOCALE
   // =========================
-  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<ThemeStorage>()));
-  sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<LocaleStorage>()));
-  sl.registerLazySingleton<RuntimeThemeService>(() => RuntimeThemeService());
+  sl.registerLazySingleton<ThemeCubit>(
+    () => ThemeCubit(sl<ThemeStorage>()),
+  );
+
+  sl.registerLazySingleton<LocaleCubit>(
+    () => LocaleCubit(sl<LocaleStorage>()),
+  );
+
+  sl.registerLazySingleton<RuntimeThemeService>(
+    () => RuntimeThemeService(),
+  );
 
   // =========================
   // SERVICES
@@ -207,7 +264,9 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<RetailerHomeService>(
-    () => RetailerHomeService(sl<ApiClient>(instanceName: 'projectApiClient')),
+    () => RetailerHomeService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<RetailerCartService>(
@@ -217,7 +276,9 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<SupplierProfileService>(
-    () => SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
+    () => SupplierProfileService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<RetailerProfileService>(
@@ -234,17 +295,23 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<BranchApiService>(
-    () => BranchApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
-  );
-
-  sl.registerLazySingleton<BranchInventoryApiService>(
-    () => BranchInventoryApiService(
+    () => BranchApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
 
   sl.registerLazySingleton<ProductApiService>(
     () => ProductApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierExcelReaderService>(
+    () => SupplierExcelReaderService(),
+  );
+
+  sl.registerLazySingleton<BranchInventoryApiService>(
+    () => BranchInventoryApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
@@ -279,8 +346,20 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<TaxRuleApiService>(
+    () => TaxRuleApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierOrderApiService>(
     () => SupplierOrderApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierDashboardApiService>(
+    () => SupplierDashboardApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
@@ -321,18 +400,26 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<BranchRepository>(
-    () => BranchRepositoryImpl(apiService: sl<BranchApiService>()),
-  );
-
-  sl.registerLazySingleton<BranchInventoryRepository>(
-    () => BranchInventoryRepositoryImpl(
-      apiService: sl<BranchInventoryApiService>(),
+    () => BranchRepositoryImpl(
+      apiService: sl<BranchApiService>(),
     ),
   );
 
   sl.registerLazySingleton<ProductRepository>(
     () => ProductRepositoryImpl(
       apiService: sl<ProductApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierExcelImportRepository>(
+    () => SupplierExcelImportRepositoryImpl(
+      readerService: sl<SupplierExcelReaderService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<BranchInventoryRepository>(
+    () => BranchInventoryRepositoryImpl(
+      apiService: sl<BranchInventoryApiService>(),
     ),
   );
 
@@ -360,9 +447,21 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<TaxRuleRepository>(
+    () => TaxRuleRepositoryImpl(
+      apiService: sl<TaxRuleApiService>(),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierOrderRepository>(
     () => SupplierOrderRepositoryImpl(
       apiService: sl<SupplierOrderApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierDashboardRepository>(
+    () => SupplierDashboardRepositoryImpl(
+      apiService: sl<SupplierDashboardApiService>(),
     ),
   );
 
@@ -393,22 +492,56 @@ Future<void> init() async {
   );
 
   // =========================
-  // SUPPLIER CATEGORY USE CASES
+  // SUPPLIER CATEGORY / CATALOG USE CASES
   // =========================
   sl.registerLazySingleton<GetCategoriesUseCase>(
     () => GetCategoriesUseCase(sl<SupplierCategoryRepository>()),
   );
 
+  sl.registerLazySingleton<GetAllCategoriesUseCase>(
+    () => GetAllCategoriesUseCase(sl<SupplierCategoryRepository>()),
+  );
+
   sl.registerLazySingleton<GetSubCategoriesByCategoryUseCase>(
-    () => GetSubCategoriesByCategoryUseCase(sl<SupplierCategoryRepository>()),
+    () => GetSubCategoriesByCategoryUseCase(
+      sl<SupplierCategoryRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton<GetAllSubCategoriesUseCase>(
+    () => GetAllSubCategoriesUseCase(sl<SupplierCategoryRepository>()),
   );
 
   sl.registerLazySingleton<CreateCategoryUseCase>(
     () => CreateCategoryUseCase(sl<SupplierCategoryRepository>()),
   );
 
+  sl.registerLazySingleton<UpdateCategoryUseCase>(
+    () => UpdateCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateCategoryStatusUseCase>(
+    () => UpdateCategoryStatusUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteCategoryUseCase>(
+    () => DeleteCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
   sl.registerLazySingleton<CreateSubCategoryUseCase>(
     () => CreateSubCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateSubCategoryUseCase>(
+    () => UpdateSubCategoryUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateSubCategoryStatusUseCase>(
+    () => UpdateSubCategoryStatusUseCase(sl<SupplierCategoryRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteSubCategoryUseCase>(
+    () => DeleteSubCategoryUseCase(sl<SupplierCategoryRepository>()),
   );
 
   // =========================
@@ -432,6 +565,31 @@ Future<void> init() async {
 
   sl.registerLazySingleton<DeleteProductUseCase>(
     () => DeleteProductUseCase(sl<ProductRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER EXCEL IMPORT USE CASES
+  // =========================
+  sl.registerLazySingleton<PickSupplierExcelFileUseCase>(
+    () => PickSupplierExcelFileUseCase(sl<SupplierExcelImportRepository>()),
+  );
+
+  sl.registerLazySingleton<ParseSupplierExcelFileUseCase>(
+    () => ParseSupplierExcelFileUseCase(sl<SupplierExcelImportRepository>()),
+  );
+
+  sl.registerLazySingleton<ValidateSupplierExcelRowsUseCase>(
+    () => ValidateSupplierExcelRowsUseCase(),
+  );
+
+  sl.registerLazySingleton<ImportSupplierExcelProductsUseCase>(
+    () => ImportSupplierExcelProductsUseCase(
+      createProductUseCase: sl<CreateProductUseCase>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ClearSupplierExcelImportUseCase>(
+    () => const ClearSupplierExcelImportUseCase(),
   );
 
   // =========================
@@ -538,7 +696,7 @@ Future<void> init() async {
   );
 
   // =========================
-  // SUPPLIER SHIPPING USE CASES
+  // SUPPLIER SHIPPING METHOD USE CASES
   // =========================
   sl.registerLazySingleton<GetShippingMethodsUseCase>(
     () => GetShippingMethodsUseCase(sl<ShippingMethodRepository>()),
@@ -557,6 +715,29 @@ Future<void> init() async {
   );
 
   // =========================
+  // SUPPLIER TAX RULE USE CASES
+  // =========================
+  sl.registerLazySingleton<GetTaxRulesUseCase>(
+    () => GetTaxRulesUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateTaxRuleUseCase>(
+    () => CreateTaxRuleUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateTaxRuleUseCase>(
+    () => UpdateTaxRuleUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteTaxRuleUseCase>(
+    () => DeleteTaxRuleUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<PreviewTaxUseCase>(
+    () => PreviewTaxUseCase(sl<TaxRuleRepository>()),
+  );
+
+  // =========================
   // SUPPLIER ORDER USE CASES
   // =========================
   sl.registerLazySingleton<GetSupplierOrdersUseCase>(
@@ -569,6 +750,15 @@ Future<void> init() async {
 
   sl.registerLazySingleton<UpdateSupplierOrderStatusUseCase>(
     () => UpdateSupplierOrderStatusUseCase(sl<SupplierOrderRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER DASHBOARD USE CASES
+  // =========================
+  sl.registerLazySingleton<GetSupplierLowStockAlertsUseCase>(
+    () => GetSupplierLowStockAlertsUseCase(
+      sl<SupplierDashboardRepository>(),
+    ),
   );
 
   // =========================
@@ -586,6 +776,60 @@ Future<void> init() async {
   sl.registerFactory<SupplierProfileCubit>(
     () => SupplierProfileCubit(
       createSupplierProfileUseCase: sl<CreateSupplierProfileUseCase>(),
+    ),
+  );
+
+  // =========================
+  // SUPPLIER BLOCS
+  // =========================
+  sl.registerFactory<ProductListBloc>(
+    () => ProductListBloc(
+      getProductsUseCase: sl<GetProductsUseCase>(),
+      searchProductsUseCase: sl<SearchProductsUseCase>(),
+      deleteProductUseCase: sl<DeleteProductUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierCatalogBloc>(
+    () => SupplierCatalogBloc(
+      getAllCategoriesUseCase: sl<GetAllCategoriesUseCase>(),
+      getAllSubCategoriesUseCase: sl<GetAllSubCategoriesUseCase>(),
+      createCategoryUseCase: sl<CreateCategoryUseCase>(),
+      updateCategoryUseCase: sl<UpdateCategoryUseCase>(),
+      updateCategoryStatusUseCase: sl<UpdateCategoryStatusUseCase>(),
+      deleteCategoryUseCase: sl<DeleteCategoryUseCase>(),
+      createSubCategoryUseCase: sl<CreateSubCategoryUseCase>(),
+      updateSubCategoryUseCase: sl<UpdateSubCategoryUseCase>(),
+      updateSubCategoryStatusUseCase: sl<UpdateSubCategoryStatusUseCase>(),
+      deleteSubCategoryUseCase: sl<DeleteSubCategoryUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<BranchListBloc>(
+    () => BranchListBloc(
+      getBranchesUseCase: sl<GetBranchesUseCase>(),
+      searchBranchesUseCase: sl<SearchBranchesUseCase>(),
+      deleteBranchUseCase: sl<DeleteBranchUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<BranchInventoryBloc>(
+    () => BranchInventoryBloc(
+      getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
+      getProductsUseCase: sl<GetProductsUseCase>(),
+      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
+      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
+      deleteInventoryItemUseCase: sl<DeleteInventoryItemUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<ProductBranchInventoryBloc>(
+    () => ProductBranchInventoryBloc(
+      getBranchesUseCase: sl<GetBranchesUseCase>(),
+      getInventoryByProductUseCase: sl<GetInventoryByProductUseCase>(),
+      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
+      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
+      deleteInventoryItemUseCase: sl<DeleteInventoryItemUseCase>(),
     ),
   );
 
@@ -625,39 +869,27 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory<ProductListBloc>(
-    () => ProductListBloc(
+  sl.registerFactory<TaxRulesBloc>(
+    () => TaxRulesBloc(
+      getTaxRulesUseCase: sl<GetTaxRulesUseCase>(),
+      createTaxRuleUseCase: sl<CreateTaxRuleUseCase>(),
+      updateTaxRuleUseCase: sl<UpdateTaxRuleUseCase>(),
+      deleteTaxRuleUseCase: sl<DeleteTaxRuleUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierExcelImportBloc>(
+    () => SupplierExcelImportBloc(
+      pickSupplierExcelFileUseCase: sl<PickSupplierExcelFileUseCase>(),
+      parseSupplierExcelFileUseCase: sl<ParseSupplierExcelFileUseCase>(),
+      validateSupplierExcelRowsUseCase: sl<ValidateSupplierExcelRowsUseCase>(),
+      importSupplierExcelProductsUseCase:
+          sl<ImportSupplierExcelProductsUseCase>(),
+      clearSupplierExcelImportUseCase: sl<ClearSupplierExcelImportUseCase>(),
+      getCategoriesUseCase: sl<GetCategoriesUseCase>(),
+      getSubCategoriesByCategoryUseCase:
+          sl<GetSubCategoriesByCategoryUseCase>(),
       getProductsUseCase: sl<GetProductsUseCase>(),
-      searchProductsUseCase: sl<SearchProductsUseCase>(),
-      deleteProductUseCase: sl<DeleteProductUseCase>(),
-    ),
-  );
-
-  sl.registerFactory<BranchListBloc>(
-    () => BranchListBloc(
-      getBranchesUseCase: sl<GetBranchesUseCase>(),
-      searchBranchesUseCase: sl<SearchBranchesUseCase>(),
-      deleteBranchUseCase: sl<DeleteBranchUseCase>(),
-    ),
-  );
-
-  sl.registerFactory<BranchInventoryBloc>(
-    () => BranchInventoryBloc(
-      getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
-      getProductsUseCase: sl<GetProductsUseCase>(),
-      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
-      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
-      deleteInventoryItemUseCase: sl<DeleteInventoryItemUseCase>(),
-    ),
-  );
-
-  sl.registerFactory<ProductBranchInventoryBloc>(
-    () => ProductBranchInventoryBloc(
-      getBranchesUseCase: sl<GetBranchesUseCase>(),
-      getInventoryByProductUseCase: sl<GetInventoryByProductUseCase>(),
-      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
-      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
-      deleteInventoryItemUseCase: sl<DeleteInventoryItemUseCase>(),
     ),
   );
 
@@ -678,16 +910,24 @@ Future<void> init() async {
   sl.registerFactory<SupplierDashboardBloc>(
     () => SupplierDashboardBloc(
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
+      getSupplierLowStockAlertsUseCase:
+          sl<GetSupplierLowStockAlertsUseCase>(),
     ),
   );
 
+  // =========================
+  // RETAILER CUBITS
+  // =========================
   sl.registerFactory<RetailerHomeCubit>(
-    () =>
-        RetailerHomeCubit(retailerHomeRepository: sl<RetailerHomeRepository>()),
+    () => RetailerHomeCubit(
+      retailerHomeRepository: sl<RetailerHomeRepository>(),
+    ),
   );
 
   sl.registerFactory<RetailerCartCubit>(
-    () => RetailerCartCubit(retailerCartService: sl<RetailerCartService>()),
+    () => RetailerCartCubit(
+      retailerCartService: sl<RetailerCartService>(),
+    ),
   );
 
   sl.registerFactory<RetailerProfileCubit>(

@@ -5,14 +5,14 @@ import '../../domain/entities/shipping_method_entity.dart';
 
 class ShippingMethodCard extends StatelessWidget {
   final ShippingMethodEntity method;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const ShippingMethodCard({
     super.key,
     required this.method,
-    required this.onEdit,
-    required this.onDelete,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -34,9 +34,11 @@ class ShippingMethodCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: primary.withOpacity(0.12),
+                backgroundColor: primary.withValues(alpha: 0.12),
                 child: Icon(
-                  Icons.local_shipping_outlined,
+                  method.isPickup
+                      ? Icons.storefront_outlined
+                      : Icons.local_shipping_outlined,
                   color: primary,
                   size: 28,
                 ),
@@ -58,7 +60,9 @@ class ShippingMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      method.deliveryType.label,
+                      '${method.methodTypeLabel} • ${method.costLabel}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,
@@ -70,18 +74,6 @@ class ShippingMethodCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               _StatusPill(status: method.statusLabel),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _TextChip(text: 'Cost: ${method.costLabel}'),
-              _TextChip(text: 'ETA: ${method.estimatedDeliveryTime}'),
-              _TextChip(text: method.minimumOrderLabel),
-              _TextChip(text: method.freeShippingThresholdLabel),
-              _TextChip(text: 'Branches: ${method.branchShortLabel}'),
             ],
           ),
           if (method.notes != null && method.notes!.trim().isNotEmpty) ...[
@@ -98,30 +90,45 @@ class ShippingMethodCard extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _TextChip(text: method.locationLabel),
+              _TextChip(text: method.estimatedDeliveryTime),
+              _TextChip(text: method.minimumOrderLabel),
+              _TextChip(text: method.freeShippingLabel),
+              _TextChip(text: 'Branches: ${method.branchScopeLabel}'),
+            ],
+          ),
           const SizedBox(height: 16),
           const Divider(height: 1, color: AppThemeTokens.border),
           const SizedBox(height: 14),
           Row(
             children: [
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.edit_outlined,
-                  label: 'Edit',
-                  onPressed: onEdit,
-                  borderColor: primary.withOpacity(0.35),
-                  textColor: primary,
+              if (onEdit != null) ...[
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.edit_outlined,
+                    label: 'Edit',
+                    onPressed: onEdit!,
+                    borderColor: primary.withValues(alpha: 0.35),
+                    textColor: primary,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.delete_outline,
-                  label: 'Delete',
-                  onPressed: onDelete,
-                  borderColor: Colors.red.withOpacity(0.45),
-                  textColor: Colors.red,
+                const SizedBox(width: 10),
+              ],
+              if (onDelete != null)
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.delete_outline,
+                    label: 'Delete',
+                    onPressed: onDelete!,
+                    borderColor: Colors.red.withValues(alpha: 0.45),
+                    textColor: Colors.red,
+                  ),
                 ),
-              ),
             ],
           ),
         ],
@@ -137,13 +144,10 @@ class _StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final active = status == 'Active';
+    final active = status.toLowerCase() == 'active';
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: active ? const Color(0xFFE8F7EF) : const Color(0xFFF4E8EE),
         borderRadius: BorderRadius.circular(999),
@@ -169,10 +173,7 @@ class _TextChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(maxWidth: 320),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 11,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(999),

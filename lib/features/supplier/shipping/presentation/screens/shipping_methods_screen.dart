@@ -11,14 +11,20 @@ import '../bloc/shipping_methods_event.dart';
 import '../bloc/shipping_methods_state.dart';
 import '../widgets/shipping_method_card.dart';
 
+enum _ShippingStatusFilter {
+  enabled,
+  disabled,
+  all,
+}
+
 class ShippingMethodsScreen extends StatelessWidget {
   const ShippingMethodsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ShippingMethodsBloc>(
-      create: (_) => sl<ShippingMethodsBloc>()
-        ..add(const LoadShippingMethodsRequested()),
+      create: (_) =>
+          sl<ShippingMethodsBloc>()..add(const LoadShippingMethodsRequested()),
       child: const _ShippingMethodsView(),
     );
   }
@@ -33,21 +39,31 @@ class _ShippingMethodsView extends StatefulWidget {
 
 class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
   String _searchQuery = '';
+  _ShippingStatusFilter _statusFilter = _ShippingStatusFilter.enabled;
 
   List<ShippingMethodEntity> _filteredMethods(
     List<ShippingMethodEntity> methods,
   ) {
     final query = _searchQuery.trim().toLowerCase();
 
-    if (query.isEmpty) return methods;
-
     return methods.where((method) {
+      final matchesStatus = switch (_statusFilter) {
+        _ShippingStatusFilter.enabled => method.active,
+        _ShippingStatusFilter.disabled => !method.active,
+        _ShippingStatusFilter.all => true,
+      };
+
+      if (!matchesStatus) return false;
+
+      if (query.isEmpty) return true;
+
       return method.name.toLowerCase().contains(query) ||
-          method.deliveryType.label.toLowerCase().contains(query) ||
-          method.estimatedDeliveryTime.toLowerCase().contains(query) ||
-          method.branchApplicabilityLabel.toLowerCase().contains(query) ||
+          method.methodTypeLabel.toLowerCase().contains(query) ||
+          method.locationLabel.toLowerCase().contains(query) ||
+          method.branchScopeLabel.toLowerCase().contains(query) ||
           method.costLabel.toLowerCase().contains(query) ||
-          method.statusLabel.toLowerCase().contains(query);
+          method.statusLabel.toLowerCase().contains(query) ||
+          (method.notes ?? '').toLowerCase().contains(query);
     }).toList();
   }
 
@@ -140,6 +156,11 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
           ),
           actions: [
             IconButton(
+              tooltip: 'Create Shipping Method',
+              onPressed: () => context.go('/supplier-shipping/create'),
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+            IconButton(
               tooltip: 'Refresh',
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
@@ -167,6 +188,15 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                     children: [
                       _HeaderCard(primary: primary),
                       const SizedBox(height: 18),
+                      _StatusFilterBar(
+                        selected: _statusFilter,
+                        onChanged: (value) {
+                          setState(() {
+                            _statusFilter = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 14),
                       _SearchField(
                         onChanged: (value) {
                           setState(() {
@@ -185,7 +215,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                           onRetry: () => _refresh(context),
                         )
                       else if (state.methods.isEmpty)
-                        _EmptyMethodsCard(primary: primary)
+                        _EmptyCard(primary: primary)
                       else if (filteredMethods.isEmpty)
                         _NoSearchResultsCard(primary: primary)
                       else
@@ -207,7 +237,9 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                                   extra: method,
                                 );
                               },
-                              onDelete: () => _confirmDelete(context, method),
+                              onDelete: () {
+                                _confirmDelete(context, method);
+                              },
                             );
                           },
                         ),
@@ -223,12 +255,93 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
   }
 }
 
+class _StatusFilterBar extends StatelessWidget {
+  final _ShippingStatusFilter selected;
+  final ValueChanged<_ShippingStatusFilter> onChanged;
+
+  const _StatusFilterBar({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _StatusFilterButton(
+          label: 'Enabled only',
+          selected: selected == _ShippingStatusFilter.enabled,
+          onTap: () => onChanged(_ShippingStatusFilter.enabled),
+        ),
+        const SizedBox(width: 8),
+        _StatusFilterButton(
+          label: 'Disabled only',
+          selected: selected == _ShippingStatusFilter.disabled,
+          onTap: () => onChanged(_ShippingStatusFilter.disabled),
+        ),
+        const SizedBox(width: 8),
+        _StatusFilterButton(
+          label: 'All',
+          selected: selected == _ShippingStatusFilter.all,
+          onTap: () => onChanged(_ShippingStatusFilter.all),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatusFilterButton extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _StatusFilterButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Expanded(
+      child: SizedBox(
+        height: 44,
+        child: OutlinedButton(
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            elevation: 0,
+            foregroundColor:
+                selected ? Colors.white : AppThemeTokens.textPrimary,
+            backgroundColor: selected ? primary : AppThemeTokens.surface,
+            side: BorderSide(
+              color: selected ? primary : AppThemeTokens.border,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _HeaderCard extends StatelessWidget {
   final Color primary;
 
-  const _HeaderCard({
-    required this.primary,
-  });
+  const _HeaderCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +357,7 @@ class _HeaderCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: primary.withOpacity(0.12),
+            backgroundColor: primary.withValues(alpha: 0.12),
             child: Icon(
               Icons.local_shipping_outlined,
               color: primary,
@@ -266,7 +379,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, search, edit, and delete supplier shipping methods saved in the backend.',
+                  'Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.',
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -327,9 +440,7 @@ class _SearchField extends StatelessWidget {
 class _SectionHeader extends StatelessWidget {
   final int count;
 
-  const _SectionHeader({
-    required this.count,
-  });
+  const _SectionHeader({required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -437,12 +548,10 @@ class _ErrorCard extends StatelessWidget {
   }
 }
 
-class _EmptyMethodsCard extends StatelessWidget {
+class _EmptyCard extends StatelessWidget {
   final Color primary;
 
-  const _EmptyMethodsCard({
-    required this.primary,
-  });
+  const _EmptyCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -458,7 +567,7 @@ class _EmptyMethodsCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundColor: primary.withOpacity(0.12),
+            backgroundColor: primary.withValues(alpha: 0.12),
             child: Icon(
               Icons.local_shipping_outlined,
               color: primary,
@@ -476,7 +585,7 @@ class _EmptyMethodsCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Create shipping methods from the supplier dashboard quick action. This page is only for viewing, searching, editing, and deleting created methods.',
+            'Create shipping methods from the supplier dashboard quick action or tap the plus icon above.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
@@ -493,9 +602,7 @@ class _EmptyMethodsCard extends StatelessWidget {
 class _NoSearchResultsCard extends StatelessWidget {
   final Color primary;
 
-  const _NoSearchResultsCard({
-    required this.primary,
-  });
+  const _NoSearchResultsCard({required this.primary});
 
   @override
   Widget build(BuildContext context) {
@@ -509,11 +616,7 @@ class _NoSearchResultsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.search_off,
-            color: primary,
-            size: 34,
-          ),
+          Icon(Icons.search_off, color: primary, size: 34),
           const SizedBox(height: 12),
           const Text(
             'No matching shipping methods',

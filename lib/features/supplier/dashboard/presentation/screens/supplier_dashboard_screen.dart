@@ -113,7 +113,7 @@ class _SupplierDashboardView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      _buildLowStockAlerts(),
+                      _buildLowStockAlerts(state),
                       const SizedBox(height: 28),
                       const Text(
                         'Quick Actions',
@@ -212,8 +212,8 @@ class _SupplierDashboardView extends StatelessWidget {
             children: [
               Expanded(
                 child: _FinancialItem(
-                  value: _formatMoney(state.deliveredSales),
-                  label: 'Delivered Sales',
+                  value: _formatMoney(state.todaysSales),
+                  label: "Today's Sales",
                   valueColor: primary,
                 ),
               ),
@@ -238,28 +238,36 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildLowStockAlerts() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      child: const Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 18),
-          child: Text(
-            'No low stock alerts',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppThemeTokens.textSecondary,
-              fontWeight: FontWeight.w700,
+  Widget _buildLowStockAlerts(SupplierDashboardState state) {
+    if (state.lowStockAlerts.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: AppThemeTokens.surface,
+          borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+          border: Border.all(color: AppThemeTokens.border),
+        ),
+        child: const Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 18),
+            child: Text(
+              'No low stock alerts',
+              style: TextStyle(
+                fontSize: 16,
+                color: AppThemeTokens.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
-      ),
+      );
+    }
+
+    return Column(
+      children: state.lowStockAlerts.map((alert) {
+        return _LowStockAlertCard(alert: alert);
+      }).toList(),
     );
   }
 
@@ -271,9 +279,9 @@ class _SupplierDashboardView extends StatelessWidget {
         onTap: () => context.push('/supplier-products/add'),
       ),
       SupplierQuickActionCard(
-        title: 'Manage Orders',
-        icon: Icons.receipt_long_outlined,
-        onTap: () => context.go('/supplier-orders'),
+        title: 'Create Promotion',
+        icon: Icons.local_offer_outlined,
+        onTap: () => context.go('/supplier-promotions/create'),
       ),
       SupplierQuickActionCard(
         title: 'Manage Branches',
@@ -281,32 +289,27 @@ class _SupplierDashboardView extends StatelessWidget {
         onTap: () => context.go('/supplier-branches'),
       ),
       SupplierQuickActionCard(
-        title: 'Create Promotion',
-        icon: Icons.local_offer_outlined,
-        onTap: () => context.go('/supplier-promotions/create'),
-      ),
-      SupplierQuickActionCard(
-        title: 'Create Shipping Method',
+        title: 'Shipping Methods',
         icon: Icons.local_shipping_outlined,
         onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
         title: 'Configure Taxes',
-        icon: Icons.attach_money,
-        onTap: () => context.go('/supplier-tax'),
+        icon: Icons.percent_outlined,
+        onTap: () => context.go('/supplier-tax-rules/create'),
       ),
       SupplierQuickActionCard(
         title: 'Import Excel',
-        icon: Icons.upload_outlined,
+        icon: Icons.upload_file_outlined,
         onTap: () => context.go('/supplier-excel-import'),
       ),
       SupplierQuickActionCard(
-        title: 'Create Banner',
+        title: 'Home Banners',
         icon: Icons.image_outlined,
         onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Create Coupon',
+        title: 'Coupons',
         icon: Icons.sell_outlined,
         onTap: () => context.go('/supplier-coupons/create'),
       ),
@@ -400,5 +403,156 @@ class _FinancialItem extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _LowStockAlertCard extends StatelessWidget {
+  final dynamic alert;
+
+  const _LowStockAlertCard({
+    required this.alert,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final productName = _readProductName();
+    final branchName = _readBranchName();
+    final currentStock = _readCurrentStock();
+    final minimumStock = _readMinimumStock();
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFFEDD5),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.warning_amber_rounded,
+              color: Color(0xFFF97316),
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  productName,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  branchName.isEmpty ? 'Low stock item' : branchName,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Current stock: $currentStock | Minimum: $minimumStock',
+                  style: const TextStyle(
+                    color: AppThemeTokens.error,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _readProductName() {
+    try {
+      final value = alert.productName;
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    } catch (_) {}
+
+    try {
+      final value = alert.name;
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    } catch (_) {}
+
+    return 'Low stock product';
+  }
+
+  String _readBranchName() {
+    try {
+      final value = alert.branchName;
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    } catch (_) {}
+
+    try {
+      final value = alert.warehouseName;
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    } catch (_) {}
+
+    return '';
+  }
+
+  String _readCurrentStock() {
+    try {
+      final value = alert.currentStock;
+      if (value != null) return value.toString();
+    } catch (_) {}
+
+    try {
+      final value = alert.stockQuantity;
+      if (value != null) return value.toString();
+    } catch (_) {}
+
+    try {
+      final value = alert.quantity;
+      if (value != null) return value.toString();
+    } catch (_) {}
+
+    return '0';
+  }
+
+  String _readMinimumStock() {
+    try {
+      final value = alert.minimumStock;
+      if (value != null) return value.toString();
+    } catch (_) {}
+
+    try {
+      final value = alert.minimumStockLevel;
+      if (value != null) return value.toString();
+    } catch (_) {}
+
+    try {
+      final value = alert.threshold;
+      if (value != null) return value.toString();
+    } catch (_) {}
+
+    return '0';
   }
 }

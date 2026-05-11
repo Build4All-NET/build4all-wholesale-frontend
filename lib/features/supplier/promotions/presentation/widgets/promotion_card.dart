@@ -35,8 +35,8 @@ class PromotionCard extends StatelessWidget {
           Row(
             children: [
               _PromotionBadge(
-                title: promotion.title,
                 primary: primary,
+                discountLabel: promotion.discountLabel,
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -87,32 +87,15 @@ class PromotionCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 14),
-          Text(
-            promotion.validityLabel,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: AppThemeTokens.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 14),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              _AmountChip(
-                label: 'Min order',
-                value: promotion.minOrderAmount,
-                emptyValue: '—',
-              ),
-              _AmountChip(
-                label: 'Max discount',
-                value: promotion.maxDiscountAmount,
-                emptyValue: '—',
-              ),
-              _TextChip(
-                text: 'Branches: ${promotion.branchScopeLabel}',
-              ),
+              _TextChip(text: promotion.targetLabel),
+              _TextChip(text: promotion.validityLabel),
+              _TextChip(text: promotion.minOrderLabel),
+              _TextChip(text: promotion.maxDiscountLabel),
+              _TextChip(text: 'Branches: ${promotion.branchScopeLabel}'),
               _TextChip(
                 text: 'Valid now: ${promotion.currentlyValid ? 'Yes' : 'No'}',
               ),
@@ -123,35 +106,40 @@ class PromotionCard extends StatelessWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.copy,
-                  label: 'Copy',
-                  onPressed: onCopy,
-                  borderColor: AppThemeTokens.border,
-                  textColor: AppThemeTokens.textPrimary,
+              if (onCopy != null) ...[
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.copy_outlined,
+                    label: 'Copy',
+                    onPressed: onCopy!,
+                    borderColor: AppThemeTokens.border,
+                    textColor: AppThemeTokens.textPrimary,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.edit_outlined,
-                  label: 'Edit',
-                  onPressed: onEdit,
-                  borderColor: primary.withOpacity(0.35),
-                  textColor: primary,
+                const SizedBox(width: 10),
+              ],
+              if (onEdit != null) ...[
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.edit_outlined,
+                    label: 'Edit',
+                    onPressed: onEdit!,
+                    borderColor: primary.withValues(alpha: 0.35),
+                    textColor: primary,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.delete_outline,
-                  label: 'Delete',
-                  onPressed: onDelete,
-                  borderColor: Colors.red.withOpacity(0.45),
-                  textColor: Colors.red,
+                const SizedBox(width: 10),
+              ],
+              if (onDelete != null)
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.delete_outline,
+                    label: 'Delete',
+                    onPressed: onDelete!,
+                    borderColor: Colors.red.withValues(alpha: 0.45),
+                    textColor: Colors.red,
+                  ),
                 ),
-              ),
             ],
           ),
         ],
@@ -161,42 +149,23 @@ class PromotionCard extends StatelessWidget {
 }
 
 class _PromotionBadge extends StatelessWidget {
-  final String title;
   final Color primary;
+  final String discountLabel;
 
   const _PromotionBadge({
-    required this.title,
     required this.primary,
+    required this.discountLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    final text = title.trim().isEmpty
-        ? 'PROMO'
-        : title.trim().split(RegExp(r'\s+')).take(2).join(' ').toUpperCase();
-
-    return Container(
-      width: 86,
-      height: 58,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: primary.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: primary,
-          width: 1.4,
-        ),
-      ),
-      child: Text(
-        text,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w900,
-          color: primary,
-        ),
+    return CircleAvatar(
+      radius: 28,
+      backgroundColor: primary.withValues(alpha: 0.12),
+      child: Icon(
+        Icons.local_offer_outlined,
+        color: primary,
+        size: 28,
       ),
     );
   }
@@ -209,43 +178,43 @@ class _StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final normalized = status.toLowerCase();
+
+    final active = normalized == 'active';
+    final scheduled = normalized == 'scheduled';
+    final expired = normalized == 'expired';
+
+    final background = active
+        ? const Color(0xFFE8F7EF)
+        : scheduled
+            ? const Color(0xFFEFF6FF)
+            : expired
+                ? const Color(0xFFFFF7ED)
+                : const Color(0xFFF4E8EE);
+
+    final textColor = active
+        ? const Color(0xFF15803D)
+        : scheduled
+            ? const Color(0xFF1D4ED8)
+            : expired
+                ? const Color(0xFFC2410C)
+                : const Color(0xFF9B4D6D);
+
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4E8EE),
+        color: background,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         status,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w900,
-          color: Color(0xFF9B4D6D),
+          color: textColor,
         ),
       ),
     );
-  }
-}
-
-class _AmountChip extends StatelessWidget {
-  final String label;
-  final double? value;
-  final String emptyValue;
-
-  const _AmountChip({
-    required this.label,
-    required this.value,
-    required this.emptyValue,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final displayValue = value == null ? emptyValue : value!.toStringAsFixed(2);
-
-    return _TextChip(text: '$label: $displayValue');
   }
 }
 
@@ -257,10 +226,8 @@ class _TextChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 11,
-        vertical: 7,
-      ),
+      constraints: const BoxConstraints(maxWidth: 320),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(999),
@@ -268,6 +235,8 @@ class _TextChip extends StatelessWidget {
       ),
       child: Text(
         text,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w900,
@@ -281,7 +250,7 @@ class _TextChip extends StatelessWidget {
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final Color borderColor;
   final Color textColor;
 
@@ -297,18 +266,35 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 46,
-      child: OutlinedButton.icon(
+      child: OutlinedButton(
         onPressed: onPressed,
-        icon: Icon(icon, size: 18),
-        label: Text(label),
         style: OutlinedButton.styleFrom(
           foregroundColor: textColor,
           side: BorderSide(color: borderColor),
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          minimumSize: const Size(0, 46),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w900,
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 17),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                maxLines: 1,
+                softWrap: false,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
           ),
         ),
       ),
