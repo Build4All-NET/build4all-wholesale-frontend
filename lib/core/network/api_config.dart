@@ -202,6 +202,16 @@ static const String supplierLowStockAlerts =
   static String supplierShippingMethodById(String id) {
     return '/supplier/shipping-methods/$id';
   }
+    // =========================
+  // SUPPLIER TAX RULES
+  // =========================
+  static const String supplierTaxRules = '/supplier/tax-rules';
+
+  static String supplierTaxRuleById(String id) {
+    return '/supplier/tax-rules/$id';
+  }
+
+  static const String supplierTaxPreview = '/supplier/tax-rules/preview';
 
   // =========================
   // Supplier Orders

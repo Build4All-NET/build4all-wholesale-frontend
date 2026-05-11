@@ -109,7 +109,7 @@ class SupplierAppDrawer extends StatelessWidget {
                   _DrawerItem(
                     icon: Icons.percent_outlined,
                     title: 'Taxes',
-                    route: '/supplier-tax',
+                    route: '/supplier-tax-rules',
                   ),
                   _DrawerItem(
                     icon: Icons.settings_outlined,

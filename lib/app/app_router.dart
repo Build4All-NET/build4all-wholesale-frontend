@@ -53,6 +53,10 @@ import '../features/supplier/shipping/domain/entities/shipping_method_entity.dar
 import '../features/supplier/shipping/presentation/screens/create_shipping_method_screen.dart';
 import '../features/supplier/shipping/presentation/screens/shipping_methods_screen.dart';
 
+import '../features/supplier/tax/domain/entities/tax_rule_entity.dart';
+import '../features/supplier/tax/presentation/screens/create_tax_rule_screen.dart';
+import '../features/supplier/tax/presentation/screens/tax_rules_screen.dart';
+
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
@@ -277,13 +281,40 @@ class AppRouter {
           return CreateShippingMethodScreen(method: method);
         },
       ),
+
+      // =========================
+      // SUPPLIER TAX ROUTES
+      // Dashboard quick action -> create
+      // Drawer/sidebar -> list
+      // =========================
+      GoRoute(
+        path: '/supplier-tax-rules',
+        builder: (context, state) => const TaxRulesScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-tax-rules/create',
+        builder: (context, state) => const CreateTaxRuleScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-tax-rules/edit',
+        builder: (context, state) {
+          final rule = state.extra as TaxRuleEntity?;
+
+          if (rule == null) {
+            return const TaxRulesScreen();
+          }
+
+          return CreateTaxRuleScreen(rule: rule);
+        },
+      ),
+
+      // Keep old supplier-tax route as a safe redirect
+      // so any old button/link does not break.
       GoRoute(
         path: '/supplier-tax',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Tax Configuration',
-          icon: Icons.percent_outlined,
-        ),
+        redirect: (context, state) => '/supplier-tax-rules',
       ),
+
       GoRoute(
         path: '/supplier-settings',
         builder: (context, state) => const SupplierComingSoonScreen(

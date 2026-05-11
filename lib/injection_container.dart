@@ -163,6 +163,19 @@ import 'features/supplier/shipping/domain/usecases/update_shipping_method_usecas
 import 'features/supplier/shipping/presentation/bloc/shipping_methods_bloc.dart';
 
 // =========================
+// SUPPLIER TAX
+// =========================
+import 'features/supplier/tax/data/repositories/tax_rule_repository_impl.dart';
+import 'features/supplier/tax/data/services/tax_rule_api_service.dart';
+import 'features/supplier/tax/domain/repositories/tax_rule_repository.dart';
+import 'features/supplier/tax/domain/usecases/create_tax_rule_usecase.dart';
+import 'features/supplier/tax/domain/usecases/delete_tax_rule_usecase.dart';
+import 'features/supplier/tax/domain/usecases/get_tax_rules_usecase.dart';
+import 'features/supplier/tax/domain/usecases/preview_tax_usecase.dart';
+import 'features/supplier/tax/domain/usecases/update_tax_rule_usecase.dart';
+import 'features/supplier/tax/presentation/bloc/tax_rules_bloc.dart';
+
+// =========================
 // SUPPLIER EXCEL IMPORT
 // =========================
 import 'features/supplier/excel_import/data/repositories/supplier_excel_import_repository_impl.dart';
@@ -333,6 +346,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<TaxRuleApiService>(
+    () => TaxRuleApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierOrderApiService>(
     () => SupplierOrderApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
@@ -425,6 +444,12 @@ Future<void> init() async {
   sl.registerLazySingleton<ShippingMethodRepository>(
     () => ShippingMethodRepositoryImpl(
       apiService: sl<ShippingMethodApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<TaxRuleRepository>(
+    () => TaxRuleRepositoryImpl(
+      apiService: sl<TaxRuleApiService>(),
     ),
   );
 
@@ -690,6 +715,29 @@ Future<void> init() async {
   );
 
   // =========================
+  // SUPPLIER TAX RULE USE CASES
+  // =========================
+  sl.registerLazySingleton<GetTaxRulesUseCase>(
+    () => GetTaxRulesUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<CreateTaxRuleUseCase>(
+    () => CreateTaxRuleUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateTaxRuleUseCase>(
+    () => UpdateTaxRuleUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<DeleteTaxRuleUseCase>(
+    () => DeleteTaxRuleUseCase(sl<TaxRuleRepository>()),
+  );
+
+  sl.registerLazySingleton<PreviewTaxUseCase>(
+    () => PreviewTaxUseCase(sl<TaxRuleRepository>()),
+  );
+
+  // =========================
   // SUPPLIER ORDER USE CASES
   // =========================
   sl.registerLazySingleton<GetSupplierOrdersUseCase>(
@@ -818,6 +866,15 @@ Future<void> init() async {
       createShippingMethodUseCase: sl<CreateShippingMethodUseCase>(),
       updateShippingMethodUseCase: sl<UpdateShippingMethodUseCase>(),
       deleteShippingMethodUseCase: sl<DeleteShippingMethodUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<TaxRulesBloc>(
+    () => TaxRulesBloc(
+      getTaxRulesUseCase: sl<GetTaxRulesUseCase>(),
+      createTaxRuleUseCase: sl<CreateTaxRuleUseCase>(),
+      updateTaxRuleUseCase: sl<UpdateTaxRuleUseCase>(),
+      deleteTaxRuleUseCase: sl<DeleteTaxRuleUseCase>(),
     ),
   );
 

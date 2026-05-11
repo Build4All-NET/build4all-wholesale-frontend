@@ -295,8 +295,8 @@ class _SupplierDashboardView extends StatelessWidget {
       ),
       SupplierQuickActionCard(
         title: 'Configure Taxes',
-        icon: Icons.attach_money,
-        onTap: () => context.go('/supplier-tax'),
+        icon: Icons.percent_outlined,
+        onTap: () => context.go('/supplier-tax-rules/create'),
       ),
       SupplierQuickActionCard(
         title: 'Import Excel',
