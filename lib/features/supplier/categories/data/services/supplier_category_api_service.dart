@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
+import '../../domain/entities/supplier_category_entity.dart';
 import '../models/supplier_category_model.dart';
 import '../models/supplier_sub_category_model.dart';
 
@@ -12,9 +13,16 @@ class SupplierCategoryApiService {
   SupplierCategoryApiService(this.apiClient);
 
   Future<List<SupplierCategoryModel>> getCategories() async {
-    try {
-      final response = await apiClient.dio.get(ApiConfig.supplierCategories);
+    return _getCategoryList(ApiConfig.supplierCategories);
+  }
 
+  Future<List<SupplierCategoryModel>> getAllCategories() async {
+    return _getCategoryList(ApiConfig.supplierCategoriesAll);
+  }
+
+  Future<List<SupplierCategoryModel>> _getCategoryList(String path) async {
+    try {
+      final response = await apiClient.dio.get(path);
       final data = response.data;
 
       if (data is List) {
@@ -39,9 +47,7 @@ class SupplierCategoryApiService {
     try {
       final response = await apiClient.dio.post(
         ApiConfig.supplierCategories,
-        data: {
-          'name': name.trim(),
-        },
+        data: {'name': name.trim()},
       );
 
       return SupplierCategoryModel.fromJson(
@@ -59,9 +65,27 @@ class SupplierCategoryApiService {
     try {
       final response = await apiClient.dio.put(
         ApiConfig.supplierCategoryById(categoryId),
-        data: {
-          'name': name.trim(),
-        },
+        data: {'name': name.trim()},
+      );
+
+      return SupplierCategoryModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<SupplierCategoryModel> updateCategoryStatus({
+    required String categoryId,
+    required SupplierCatalogStatus status,
+  }) async {
+    try {
+      final response = await apiClient.dio.put(
+        ApiConfig.supplierCategoryStatus(
+          categoryId,
+          status == SupplierCatalogStatus.active ? 'ACTIVE' : 'INACTIVE',
+        ),
       );
 
       return SupplierCategoryModel.fromJson(
@@ -85,9 +109,16 @@ class SupplierCategoryApiService {
   }
 
   Future<List<SupplierSubCategoryModel>> getSubCategories() async {
-    try {
-      final response = await apiClient.dio.get(ApiConfig.supplierSubCategories);
+    return _getSubCategoryList(ApiConfig.supplierSubCategories);
+  }
 
+  Future<List<SupplierSubCategoryModel>> getAllSubCategories() async {
+    return _getSubCategoryList(ApiConfig.supplierSubCategoriesAll);
+  }
+
+  Future<List<SupplierSubCategoryModel>> _getSubCategoryList(String path) async {
+    try {
+      final response = await apiClient.dio.get(path);
       final data = response.data;
 
       if (data is List) {
@@ -160,9 +191,27 @@ class SupplierCategoryApiService {
     try {
       final response = await apiClient.dio.put(
         ApiConfig.supplierSubCategoryById(subCategoryId),
-        data: {
-          'name': name.trim(),
-        },
+        data: {'name': name.trim()},
+      );
+
+      return SupplierSubCategoryModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<SupplierSubCategoryModel> updateSubCategoryStatus({
+    required String subCategoryId,
+    required SupplierCatalogStatus status,
+  }) async {
+    try {
+      final response = await apiClient.dio.put(
+        ApiConfig.supplierSubCategoryStatus(
+          subCategoryId,
+          status == SupplierCatalogStatus.active ? 'ACTIVE' : 'INACTIVE',
+        ),
       );
 
       return SupplierSubCategoryModel.fromJson(

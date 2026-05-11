@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/network/api_client.dart';
+import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
-import '../../../branches/data/services/branch_api_service.dart';
-import '../../../branches/domain/entities/branch_entity.dart';
+import '../../data/models/shipping_location_model.dart';
+import '../../data/services/shipping_location_api_service.dart';
 import '../../domain/entities/shipping_method_entity.dart';
 import '../bloc/shipping_methods_bloc.dart';
 import '../bloc/shipping_methods_event.dart';
@@ -43,47 +45,75 @@ class _CreateShippingMethodView extends StatefulWidget {
 class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
   final _formKey = GlobalKey<FormState>();
 
-  final BranchApiService _branchApiService = sl<BranchApiService>();
+  final ApiClient _projectApiClient =
+      sl<ApiClient>(instanceName: 'projectApiClient');
 
-  late final TextEditingController _nameController;
-  late final TextEditingController _costController;
-  late final TextEditingController _estimatedTimeController;
-  late final TextEditingController _minimumOrderController;
+  late final ShippingLocationApiService _locationApiService;
+
+  late final TextEditingController _methodNameController;
+  late final TextEditingController _shippingCostController;
+  late final TextEditingController _estimatedDeliveryTimeController;
+  late final TextEditingController _minimumOrderAmountController;
   late final TextEditingController _freeShippingThresholdController;
   late final TextEditingController _notesController;
 
-  ShippingDeliveryType _deliveryType = ShippingDeliveryType.delivery;
+  ShippingMethodType _methodType = ShippingMethodType.standardDelivery;
   ShippingBranchScope _branchScope = ShippingBranchScope.allBranches;
 
+  String? _selectedCountryId;
+  String? _selectedRegionId;
+
   bool _active = true;
+
+  bool _loadingCountries = true;
+  bool _loadingRegions = false;
   bool _loadingBranches = true;
 
+  String? _countryErrorMessage;
+  String? _regionErrorMessage;
   String? _branchErrorMessage;
 
-  final List<BranchEntity> _availableBranches = [];
+  final List<ShippingCountryModel> _countries = [];
+  final List<ShippingRegionModel> _regions = [];
+  final List<_ShippingBranchOption> _branches = [];
+
   final List<String> _selectedBranchIds = [];
   final List<String> _selectedBranchNames = [];
 
   bool get _isEditMode => widget.method != null;
 
-  bool get _isPickup => _deliveryType == ShippingDeliveryType.pickup;
+  bool get _isPickup => _methodType == ShippingMethodType.pickup;
+
+  ShippingCountryModel? get _selectedCountry {
+    if (_selectedCountryId == null) return null;
+
+    final matches = _countries.where(
+      (country) => country.id == _selectedCountryId,
+    );
+
+    return matches.isEmpty ? null : matches.first;
+  }
+
+  bool get _selectedCountryIsLebanon {
+    return _selectedCountry?.isLebanon == true;
+  }
 
   @override
   void initState() {
     super.initState();
 
+    _locationApiService = ShippingLocationApiService(_projectApiClient);
+
     final method = widget.method;
 
-    _nameController = TextEditingController(text: method?.name ?? '');
-    _costController = TextEditingController(
+    _methodNameController = TextEditingController(text: method?.name ?? '');
+    _shippingCostController = TextEditingController(
       text: method == null || method.isPickup ? '' : method.cost.toString(),
     );
-    _estimatedTimeController = TextEditingController(
-      text: method == null || method.isPickup
-          ? ''
-          : method.estimatedDeliveryTime,
+    _estimatedDeliveryTimeController = TextEditingController(
+      text: method?.estimatedDeliveryTime ?? '',
     );
-    _minimumOrderController = TextEditingController(
+    _minimumOrderAmountController = TextEditingController(
       text: method?.minimumOrderAmount?.toString() ?? '',
     );
     _freeShippingThresholdController = TextEditingController(
@@ -91,25 +121,151 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     );
     _notesController = TextEditingController(text: method?.notes ?? '');
 
-    _deliveryType = method?.deliveryType ?? ShippingDeliveryType.delivery;
+    _methodType = method?.methodType ?? ShippingMethodType.standardDelivery;
     _branchScope = method?.branchScope ?? ShippingBranchScope.allBranches;
+
+    _selectedCountryId = method?.countryId;
+    _selectedRegionId = method?.regionId;
+
     _active = method?.active ?? true;
 
     _selectedBranchIds.addAll(method?.selectedBranchIds ?? []);
     _selectedBranchNames.addAll(method?.selectedBranchNames ?? []);
 
-    _loadBranches();
+    if (_isPickup) {
+      _shippingCostController.clear();
+      _freeShippingThresholdController.clear();
+
+      if (_estimatedDeliveryTimeController.text.trim().isEmpty) {
+        _estimatedDeliveryTimeController.text = 'Pickup from branch';
+      }
+    }
+
+    _loadInitialLookups();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _costController.dispose();
-    _estimatedTimeController.dispose();
-    _minimumOrderController.dispose();
+    _methodNameController.dispose();
+    _shippingCostController.dispose();
+    _estimatedDeliveryTimeController.dispose();
+    _minimumOrderAmountController.dispose();
     _freeShippingThresholdController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadInitialLookups() async {
+    await Future.wait([
+      _loadCountries(),
+      _loadBranches(),
+    ]);
+  }
+
+  Future<void> _loadCountries() async {
+    setState(() {
+      _loadingCountries = true;
+      _countryErrorMessage = null;
+    });
+
+    try {
+      final countries = await _locationApiService.getCountries();
+
+      if (!mounted) return;
+
+      setState(() {
+        _countries
+          ..clear()
+          ..addAll(countries);
+
+        if (_selectedCountryId == null || _selectedCountryId!.isEmpty) {
+          final lebanon = countries.where((country) => country.isLebanon);
+
+          if (lebanon.isNotEmpty) {
+            _selectedCountryId = lebanon.first.id;
+          } else if (countries.isNotEmpty) {
+            _selectedCountryId = countries.first.id;
+          }
+        } else {
+          final exists = countries.any(
+            (country) => country.id == _selectedCountryId,
+          );
+
+          if (!exists) {
+            _selectedCountryId = null;
+            _selectedRegionId = null;
+          }
+        }
+
+        _loadingCountries = false;
+      });
+
+      if (_selectedCountryId != null) {
+        await _loadRegionsForSelectedCountry(resetRegionIfNeeded: false);
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _countryErrorMessage = e.toString();
+        _loadingCountries = false;
+      });
+    }
+  }
+
+  Future<void> _loadRegionsForSelectedCountry({
+    bool resetRegionIfNeeded = true,
+  }) async {
+    final countryId = _selectedCountryId;
+
+    if (countryId == null || countryId.isEmpty) {
+      setState(() {
+        _regions.clear();
+        _selectedRegionId = null;
+      });
+      return;
+    }
+
+    setState(() {
+      _loadingRegions = true;
+      _regionErrorMessage = null;
+    });
+
+    try {
+      final regions = await _locationApiService.getRegionsByCountry(countryId);
+
+      if (!mounted) return;
+
+      setState(() {
+        _regions
+          ..clear()
+          ..addAll(regions);
+
+        if (resetRegionIfNeeded) {
+          _selectedRegionId = null;
+        }
+
+        if (_selectedRegionId != null &&
+            !_regions.any((region) => region.id == _selectedRegionId)) {
+          _selectedRegionId = null;
+        }
+
+        if (_selectedCountryIsLebanon &&
+            _selectedRegionId == null &&
+            _regions.isNotEmpty) {
+          _selectedRegionId = _regions.first.id;
+        }
+
+        _loadingRegions = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _regionErrorMessage = e.toString();
+        _loadingRegions = false;
+      });
+    }
   }
 
   Future<void> _loadBranches() async {
@@ -119,18 +275,38 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     });
 
     try {
-      final branches = await _branchApiService.getBranches();
+      final response = await _projectApiClient.dio.get(
+        ApiConfig.supplierBranches,
+      );
+
+      final data = response.data;
+      final branches = <_ShippingBranchOption>[];
+
+      if (data is List) {
+        for (final item in data) {
+          if (item is! Map) continue;
+
+          final json = Map<String, dynamic>.from(item);
+          final status = json['status']?.toString().toUpperCase();
+
+          if (status != null && status != 'ACTIVE') {
+            continue;
+          }
+
+          final branch = _ShippingBranchOption.fromJson(json);
+
+          if (branch.id.isNotEmpty) {
+            branches.add(branch);
+          }
+        }
+      }
 
       if (!mounted) return;
 
-      final activeBranches = branches
-          .where((branch) => branch.status == BranchStatus.active)
-          .toList();
-
       setState(() {
-        _availableBranches
+        _branches
           ..clear()
-          ..addAll(activeBranches);
+          ..addAll(branches);
         _loadingBranches = false;
       });
     } catch (e) {
@@ -143,6 +319,51 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     }
   }
 
+  void _handleMethodTypeChanged(ShippingMethodType? value) {
+    if (value == null) return;
+
+    setState(() {
+      _methodType = value;
+
+      if (_isPickup) {
+        _shippingCostController.clear();
+        _freeShippingThresholdController.clear();
+
+        if (_estimatedDeliveryTimeController.text.trim().isEmpty ||
+            _estimatedDeliveryTimeController.text.trim() !=
+                'Pickup from branch') {
+          _estimatedDeliveryTimeController.text = 'Pickup from branch';
+        }
+      }
+    });
+  }
+
+  Future<void> _handleCountryChanged(String? countryId) async {
+    if (countryId == null || countryId.trim().isEmpty) return;
+
+    setState(() {
+      _selectedCountryId = countryId;
+      _selectedRegionId = null;
+      _regions.clear();
+    });
+
+    await _loadRegionsForSelectedCountry(resetRegionIfNeeded: true);
+  }
+
+  void _toggleBranch(_ShippingBranchOption branch, bool selected) {
+    setState(() {
+      if (selected) {
+        if (!_selectedBranchIds.contains(branch.id)) {
+          _selectedBranchIds.add(branch.id);
+          _selectedBranchNames.add(branch.label);
+        }
+      } else {
+        _selectedBranchIds.remove(branch.id);
+        _selectedBranchNames.remove(branch.label);
+      }
+    });
+  }
+
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
@@ -151,20 +372,20 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     return null;
   }
 
-  String? _requiredNonNegativeNumber(String? value, String fieldName) {
+  String? _requiredPositiveOrZeroNumber(String? value, String fieldName) {
     final requiredError = _required(value, fieldName);
     if (requiredError != null) return requiredError;
 
     final parsed = double.tryParse(value!.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return '$fieldName must be greater than or equal to 0';
     }
 
     return null;
   }
 
-  String? _optionalNonNegativeNumber(String? value, String fieldName) {
+  String? _optionalPositiveOrZeroNumber(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) return null;
 
     final parsed = double.tryParse(value.trim());
@@ -181,47 +402,34 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     return double.tryParse(value.trim());
   }
 
-  void _toggleBranch(BranchEntity branch, bool selected) {
-    setState(() {
-      if (selected) {
-        if (!_selectedBranchIds.contains(branch.id)) {
-          _selectedBranchIds.add(branch.id);
-          _selectedBranchNames.add(branch.name);
-        }
-      } else {
-        _selectedBranchIds.remove(branch.id);
-        _selectedBranchNames.remove(branch.name);
-      }
-    });
+  bool _validateLocation(BuildContext context) {
+    if (_selectedCountryId == null || _selectedCountryId!.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a country')),
+      );
+      return false;
+    }
+
+    if (_selectedCountryIsLebanon &&
+        (_selectedRegionId == null || _selectedRegionId!.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a region for Lebanon')),
+      );
+      return false;
+    }
+
+    return true;
   }
 
-  void _handleDeliveryTypeChanged(ShippingDeliveryType? value) {
-    if (value == null) return;
-
-    setState(() {
-      final wasPickup = _isPickup;
-      _deliveryType = value;
-
-      if (_isPickup) {
-        _costController.clear();
-        _estimatedTimeController.clear();
-        _freeShippingThresholdController.clear();
-      } else if (wasPickup) {
-        _costController.clear();
-        _estimatedTimeController.clear();
-      }
-    });
-  }
-
-  void _saveMethod(BuildContext context) {
+  void _saveShippingMethod(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
+
+    if (!_validateLocation(context)) return;
 
     if (_branchScope == ShippingBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select at least one branch'),
-        ),
+        const SnackBar(content: Text('Please select at least one branch')),
       );
       return;
     }
@@ -230,13 +438,33 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
     final method = ShippingMethodEntity(
       id: widget.method?.id ?? '',
-      name: _nameController.text.trim(),
-      deliveryType: _deliveryType,
-      cost: _isPickup ? 0 : double.parse(_costController.text.trim()),
+      name: _methodNameController.text.trim(),
+      methodType: _methodType,
+      countryId: _selectedCountryId,
+      countryName: _selectedCountry?.name,
+      countryIso2Code: _selectedCountry?.iso2Code,
+      countryIso3Code: _selectedCountry?.iso3Code,
+      regionId: _selectedRegionId,
+      regionName: _selectedRegionId == null
+          ? null
+          : _regions
+              .where((region) => region.id == _selectedRegionId)
+              .map((region) => region.name)
+              .firstOrNull,
+      regionCode: _selectedRegionId == null
+          ? null
+          : _regions
+              .where((region) => region.id == _selectedRegionId)
+              .map((region) => region.code)
+              .firstOrNull,
+      cost: _isPickup
+          ? 0
+          : double.tryParse(_shippingCostController.text.trim()) ?? 0,
       estimatedDeliveryTime: _isPickup
           ? 'Pickup from branch'
-          : _estimatedTimeController.text.trim(),
-      minimumOrderAmount: _parseOptionalDouble(_minimumOrderController.text),
+          : _estimatedDeliveryTimeController.text.trim(),
+      minimumOrderAmount:
+          _parseOptionalDouble(_minimumOrderAmountController.text),
       freeShippingThreshold: _isPickup
           ? null
           : _parseOptionalDouble(_freeShippingThresholdController.text),
@@ -248,6 +476,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
           ? []
           : List.unmodifiable(_selectedBranchNames),
       active: _active,
+      status: widget.method?.status,
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
@@ -319,7 +548,9 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                 icon: const Icon(Icons.arrow_back, size: 28),
               ),
               title: Text(
-                _isEditMode ? 'Edit Shipping Method' : 'Create Shipping Method',
+                _isEditMode
+                    ? 'Edit Shipping Method'
+                    : 'Create Shipping Method',
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 22,
@@ -368,7 +599,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                         child: ElevatedButton(
                           onPressed: state.saving
                               ? null
-                              : () => _saveMethod(context),
+                              : () => _saveShippingMethod(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primary,
                             foregroundColor: Colors.white,
@@ -410,110 +641,195 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Shipping Method Information',
+                        title: 'Method Information',
                         children: [
                           _FieldLabel('Method Name *'),
                           _InputField(
-                            controller: _nameController,
-                            hintText: _isPickup
-                                ? 'Pickup from branch'
-                                : 'Standard Delivery',
+                            controller: _methodNameController,
+                            hintText: 'Beirut Standard Delivery',
                             validator: (value) {
                               return _required(value, 'Method Name');
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Delivery Type *'),
-                          _DeliveryTypeDropdown(
-                            value: _deliveryType,
-                            onChanged: _handleDeliveryTypeChanged,
+                          _FieldLabel('Method Type *'),
+                          _MethodTypeDropdown(
+                            value: _methodType,
+                            onChanged: _handleMethodTypeChanged,
                           ),
                           const SizedBox(height: 8),
-                          _DeliveryTypeHelpText(
-                            deliveryType: _deliveryType,
-                          ),
-                          if (!_isPickup) ...[
-                            const _DividerSpace(),
-                            _FieldLabel('Shipping Cost *'),
-                            _InputField(
-                              controller: _costController,
-                              hintText: _deliveryType ==
-                                      ShippingDeliveryType.expressDelivery
-                                  ? '10'
-                                  : '5',
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              validator: (value) {
-                                return _requiredNonNegativeNumber(
-                                  value,
-                                  'Shipping Cost',
-                                );
-                              },
-                            ),
-                            const _DividerSpace(),
-                            _FieldLabel('Estimated Delivery Time *'),
-                            _InputField(
-                              controller: _estimatedTimeController,
-                              hintText: _deliveryType ==
-                                      ShippingDeliveryType.expressDelivery
-                                  ? 'Same day / 24 hours'
-                                  : '2-3 business days',
-                              validator: (value) {
-                                return _required(
-                                  value,
-                                  'Estimated Delivery Time',
-                                );
-                              },
-                            ),
-                          ] else ...[
-                            const _DividerSpace(),
-                            _InfoBox(
-                              primary: primary,
-                              text:
-                                  'Pickup is collected from a supplier branch, so shipping cost and estimated delivery time are not entered manually. The backend saves pickup cost as 0 automatically.',
-                            ),
-                          ],
+                          _HelpText(text: _methodType.description),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Rules',
+                        title: 'Location',
                         children: [
+                          Row(
+                            children: [
+                              const Expanded(
+                                child: _FieldLabel('Country *'),
+                              ),
+                              TextButton(
+                                onPressed:
+                                    _loadingCountries ? null : _loadCountries,
+                                child: const Text(
+                                  'Refresh',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_loadingCountries)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (_countryErrorMessage != null)
+                            _ErrorText(message: _countryErrorMessage!)
+                          else
+                            _CountryDropdown(
+                              countries: _countries,
+                              selectedCountryId: _selectedCountryId,
+                              onChanged: _handleCountryChanged,
+                            ),
+                          const SizedBox(height: 8),
+                          const _HelpText(
+                            text:
+                                'Country and region are used later by retailer checkout to show the correct shipping options.',
+                          ),
+                          const _DividerSpace(),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _FieldLabel(
+                                  _selectedCountryIsLebanon
+                                      ? 'Region *'
+                                      : 'Region',
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: _selectedCountryId == null ||
+                                        _loadingRegions
+                                    ? null
+                                    : () => _loadRegionsForSelectedCountry(
+                                          resetRegionIfNeeded: false,
+                                        ),
+                                child: const Text(
+                                  'Refresh',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_loadingRegions)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (_regionErrorMessage != null)
+                            _ErrorText(message: _regionErrorMessage!)
+                          else if (_regions.isEmpty)
+                            const Text(
+                              'No regions available for this country.',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: AppThemeTokens.textSecondary,
+                              ),
+                            )
+                          else
+                            _RegionDropdown(
+                              regions: _regions,
+                              selectedRegionId: _selectedRegionId,
+                              required: _selectedCountryIsLebanon,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedRegionId = value;
+                                });
+                              },
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
+                        title: 'Pricing & Timing',
+                        children: [
+                          _FieldLabel('Shipping Cost'),
+                          _InputField(
+                            controller: _shippingCostController,
+                            hintText: _isPickup ? 'Pickup is free' : '5',
+                            enabled: !_isPickup,
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            validator: (value) {
+                              if (_isPickup) return null;
+
+                              return _requiredPositiveOrZeroNumber(
+                                value,
+                                'Shipping Cost',
+                              );
+                            },
+                          ),
+                          const _DividerSpace(),
+                          _FieldLabel('Estimated Delivery Time'),
+                          _InputField(
+                            controller: _estimatedDeliveryTimeController,
+                            hintText: _isPickup
+                                ? 'Pickup from branch'
+                                : '2-3 business days',
+                            enabled: !_isPickup,
+                            validator: (value) {
+                              if (_isPickup) return null;
+
+                              return _required(
+                                value,
+                                'Estimated Delivery Time',
+                              );
+                            },
+                          ),
+                          const _DividerSpace(),
                           _FieldLabel('Minimum Order Amount'),
                           _InputField(
-                            controller: _minimumOrderController,
+                            controller: _minimumOrderAmountController,
                             hintText: '50',
                             keyboardType:
                                 const TextInputType.numberWithOptions(
                               decimal: true,
                             ),
                             validator: (value) {
-                              return _optionalNonNegativeNumber(
+                              return _optionalPositiveOrZeroNumber(
                                 value,
                                 'Minimum Order Amount',
                               );
                             },
                           ),
-                          if (!_isPickup) ...[
-                            const _DividerSpace(),
-                            _FieldLabel('Free Shipping Threshold'),
-                            _InputField(
-                              controller: _freeShippingThresholdController,
-                              hintText: '150',
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              validator: (value) {
-                                return _optionalNonNegativeNumber(
-                                  value,
-                                  'Free Shipping Threshold',
-                                );
-                              },
+                          const _DividerSpace(),
+                          _FieldLabel('Free Shipping Threshold'),
+                          _InputField(
+                            controller: _freeShippingThresholdController,
+                            hintText:
+                                _isPickup ? 'Pickup only' : '200',
+                            enabled: !_isPickup,
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                              decimal: true,
                             ),
-                          ],
+                            validator: (value) {
+                              if (_isPickup) return null;
+
+                              return _optionalPositiveOrZeroNumber(
+                                value,
+                                'Free Shipping Threshold',
+                              );
+                            },
+                          ),
                         ],
                       ),
                       const SizedBox(height: 18),
@@ -537,6 +853,11 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               });
                             },
                           ),
+                          const SizedBox(height: 8),
+                          const _HelpText(
+                            text:
+                                'Branches define where this shipping method is valid. Retailer checkout will later match shipping with fulfillment branch.',
+                          ),
                           if (_branchScope ==
                               ShippingBranchScope.selectedBranches) ...[
                             const _DividerSpace(),
@@ -546,9 +867,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                   child: _FieldLabel('Select Branches'),
                                 ),
                                 TextButton(
-                                  onPressed: _loadingBranches
-                                      ? null
-                                      : _loadBranches,
+                                  onPressed:
+                                      _loadingBranches ? null : _loadBranches,
                                   child: const Text(
                                     'Refresh',
                                     style: TextStyle(
@@ -566,15 +886,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                 ),
                               )
                             else if (_branchErrorMessage != null)
-                              Text(
-                                _branchErrorMessage!,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.red,
-                                ),
-                              )
-                            else if (_availableBranches.isEmpty)
+                              _ErrorText(message: _branchErrorMessage!)
+                            else if (_branches.isEmpty)
                               const Text(
                                 'No active branches available. Add branches from Branch Management first.',
                                 style: TextStyle(
@@ -587,14 +900,15 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
-                                children: _availableBranches.map((branch) {
+                                children: _branches.map((branch) {
                                   final selected =
                                       _selectedBranchIds.contains(branch.id);
 
                                   return FilterChip(
                                     selected: selected,
-                                    label: Text(branch.name),
-                                    selectedColor: primary.withOpacity(0.15),
+                                    label: Text(branch.label),
+                                    selectedColor:
+                                        primary.withValues(alpha: 0.15),
                                     checkmarkColor: primary,
                                     onSelected: (isSelected) {
                                       _toggleBranch(branch, isSelected);
@@ -623,7 +937,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeColor: Colors.white,
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
@@ -639,9 +953,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                           _FieldLabel('Notes'),
                           _InputField(
                             controller: _notesController,
-                            hintText: _isPickup
-                                ? 'Example: Pickup available from selected branch during working hours'
-                                : 'Optional notes for this shipping method',
+                            hintText:
+                                'Optional notes about this shipping method',
                             maxLines: 3,
                           ),
                         ],
@@ -653,70 +966,6 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _DeliveryTypeHelpText extends StatelessWidget {
-  final ShippingDeliveryType deliveryType;
-
-  const _DeliveryTypeHelpText({
-    required this.deliveryType,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final text = switch (deliveryType) {
-      ShippingDeliveryType.delivery =>
-        'General delivery option when the supplier does not want to classify it as standard or express.',
-      ShippingDeliveryType.pickup =>
-        'Pickup means the retailer collects the order from selected branch(es). Shipping cost and delivery time are not entered manually.',
-      ShippingDeliveryType.expressDelivery =>
-        'Express delivery is faster and usually more expensive, such as same-day or 24-hour delivery.',
-      ShippingDeliveryType.standardDelivery =>
-        'Standard delivery is the normal delivery option, usually cheaper and slower, such as 2-3 business days.',
-    };
-
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 12,
-        height: 1.35,
-        fontWeight: FontWeight.w600,
-        color: AppThemeTokens.textSecondary,
-      ),
-    );
-  }
-}
-
-class _InfoBox extends StatelessWidget {
-  final Color primary;
-  final String text;
-
-  const _InfoBox({
-    required this.primary,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: primary.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: primary.withOpacity(0.18)),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          height: 1.4,
-          fontWeight: FontWeight.w700,
-          color: AppThemeTokens.textSecondary,
-        ),
       ),
     );
   }
@@ -793,6 +1042,7 @@ class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType? keyboardType;
+  final bool enabled;
   final int maxLines;
   final String? Function(String?)? validator;
 
@@ -800,6 +1050,7 @@ class _InputField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     this.keyboardType,
+    this.enabled = true,
     this.maxLines = 1,
     this.validator,
   });
@@ -808,6 +1059,7 @@ class _InputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      enabled: enabled,
       maxLines: maxLines,
       keyboardType: keyboardType,
       validator: validator,
@@ -823,13 +1075,14 @@ class _InputField extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
         filled: true,
-        fillColor: AppThemeTokens.surface,
+        fillColor: enabled ? AppThemeTokens.surface : const Color(0xFFF3F4F6),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 13,
         ),
         border: _border(),
         enabledBorder: _border(),
+        disabledBorder: _border(color: const Color(0xFFE5E7EB)),
         focusedBorder: _border(
           color: Theme.of(context).colorScheme.primary,
         ),
@@ -847,22 +1100,22 @@ class _InputField extends StatelessWidget {
   }
 }
 
-class _DeliveryTypeDropdown extends StatelessWidget {
-  final ShippingDeliveryType value;
-  final ValueChanged<ShippingDeliveryType?> onChanged;
+class _MethodTypeDropdown extends StatelessWidget {
+  final ShippingMethodType value;
+  final ValueChanged<ShippingMethodType?> onChanged;
 
-  const _DeliveryTypeDropdown({
+  const _MethodTypeDropdown({
     required this.value,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<ShippingDeliveryType>(
-      value: value,
-      items: ShippingDeliveryType.values
+    return DropdownButtonFormField<ShippingMethodType>(
+      initialValue: value,
+      items: ShippingMethodType.values
           .map(
-            (type) => DropdownMenuItem<ShippingDeliveryType>(
+            (type) => DropdownMenuItem<ShippingMethodType>(
               value: type,
               child: Text(type.label),
             ),
@@ -891,7 +1144,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingBranchScope>(
-      value: value,
+      initialValue: value,
       items: ShippingBranchScope.values
           .map(
             (scope) => DropdownMenuItem<ShippingBranchScope>(
@@ -907,6 +1160,161 @@ class _BranchScopeDropdown extends StatelessWidget {
         color: AppThemeTokens.textPrimary,
       ),
       decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _CountryDropdown extends StatelessWidget {
+  final List<ShippingCountryModel> countries;
+  final String? selectedCountryId;
+  final ValueChanged<String?> onChanged;
+
+  const _CountryDropdown({
+    required this.countries,
+    required this.selectedCountryId,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final safeSelectedId = countries.any(
+      (country) => country.id == selectedCountryId,
+    )
+        ? selectedCountryId
+        : null;
+
+    return DropdownButtonFormField<String>(
+      initialValue: safeSelectedId,
+      items: countries
+          .map(
+            (country) => DropdownMenuItem<String>(
+              value: country.id,
+              child: Text(
+                country.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: onChanged,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'Country is required';
+        }
+
+        return null;
+      },
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+      decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _RegionDropdown extends StatelessWidget {
+  final List<ShippingRegionModel> regions;
+  final String? selectedRegionId;
+  final bool required;
+  final ValueChanged<String?> onChanged;
+
+  const _RegionDropdown({
+    required this.regions,
+    required this.selectedRegionId,
+    required this.required,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final safeSelectedId = regions.any(
+      (region) => region.id == selectedRegionId,
+    )
+        ? selectedRegionId
+        : null;
+
+    return DropdownButtonFormField<String>(
+      initialValue: safeSelectedId,
+      items: regions
+          .map(
+            (region) => DropdownMenuItem<String>(
+              value: region.id,
+              child: Text(
+                region.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: onChanged,
+      validator: (value) {
+        if (!required) return null;
+
+        if (value == null || value.trim().isEmpty) {
+          return 'Region is required for Lebanon';
+        }
+
+        return null;
+      },
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+      decoration: _dropdownDecoration(context),
+    );
+  }
+}
+
+class _HelpText extends StatelessWidget {
+  final String text;
+
+  const _HelpText({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 12,
+        height: 1.35,
+        fontWeight: FontWeight.w600,
+        color: AppThemeTokens.textSecondary,
+      ),
+    );
+  }
+}
+
+class _ErrorText extends StatelessWidget {
+  final String message;
+
+  const _ErrorText({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      message,
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        color: Colors.red,
+      ),
+    );
+  }
+}
+
+class _DividerSpace extends StatelessWidget {
+  const _DividerSpace();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 14),
+      child: Divider(height: 1, color: AppThemeTokens.border),
     );
   }
 }
@@ -936,14 +1344,37 @@ InputDecoration _dropdownDecoration(BuildContext context) {
   );
 }
 
-class _DividerSpace extends StatelessWidget {
-  const _DividerSpace();
+class _ShippingBranchOption {
+  final String id;
+  final String label;
 
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 14),
-      child: Divider(height: 1, color: AppThemeTokens.border),
+  const _ShippingBranchOption({
+    required this.id,
+    required this.label,
+  });
+
+  factory _ShippingBranchOption.fromJson(Map<String, dynamic> json) {
+    final id = _firstNonEmpty(json, ['id', 'branchId']);
+    final name = _firstNonEmpty(json, ['name', 'branchName', 'title']);
+    final city = _firstNonEmpty(json, ['city']);
+
+    final label = city.isEmpty ? name : '$name • $city';
+
+    return _ShippingBranchOption(
+      id: id,
+      label: label.trim().isEmpty ? 'Branch #$id' : label,
     );
+  }
+
+  static String _firstNonEmpty(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    }
+
+    return '';
   }
 }

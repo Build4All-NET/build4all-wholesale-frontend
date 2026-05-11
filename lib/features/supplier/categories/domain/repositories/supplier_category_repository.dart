@@ -4,6 +4,8 @@ import '../entities/supplier_sub_category_entity.dart';
 abstract class SupplierCategoryRepository {
   Future<List<SupplierCategoryEntity>> getCategories();
 
+  Future<List<SupplierCategoryEntity>> getAllCategories();
+
   Future<SupplierCategoryEntity> createCategory({
     required String name,
   });
@@ -13,11 +15,18 @@ abstract class SupplierCategoryRepository {
     required String name,
   });
 
+  Future<SupplierCategoryEntity> updateCategoryStatus({
+    required String categoryId,
+    required SupplierCatalogStatus status,
+  });
+
   Future<void> deleteCategory({
     required String categoryId,
   });
 
   Future<List<SupplierSubCategoryEntity>> getSubCategories();
+
+  Future<List<SupplierSubCategoryEntity>> getAllSubCategories();
 
   Future<List<SupplierSubCategoryEntity>> getSubCategoriesByCategory({
     required String categoryId,
@@ -31,6 +40,11 @@ abstract class SupplierCategoryRepository {
   Future<SupplierSubCategoryEntity> updateSubCategory({
     required String subCategoryId,
     required String name,
+  });
+
+  Future<SupplierSubCategoryEntity> updateSubCategoryStatus({
+    required String subCategoryId,
+    required SupplierCatalogStatus status,
   });
 
   Future<void> deleteSubCategory({
