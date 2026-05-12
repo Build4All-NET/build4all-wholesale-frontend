@@ -35,7 +35,7 @@ class QuickActionsSection extends StatelessWidget {
         icon: Icons.description_outlined,
         iconColor: const Color(0xFFEC4899),
         iconBackgroundColor: const Color(0xFFFFE4EF),
-        route: '/retailer-rfq',
+        route: '/retailer-rfqs/create',
       ),
       _RetailerQuickActionUiModel(
         title: l10n.loyaltyPoints,

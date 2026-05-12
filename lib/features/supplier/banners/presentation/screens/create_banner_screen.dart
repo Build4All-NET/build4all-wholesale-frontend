@@ -760,7 +760,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeColor: Colors.white,
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
@@ -1071,7 +1071,7 @@ class _TargetTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<BannerTargetType>(
-      value: value,
+      initialValue: value,
       items: BannerTargetType.values
           .map(
             (type) => DropdownMenuItem<BannerTargetType>(
@@ -1113,7 +1113,7 @@ class _TargetOptionDropdown extends StatelessWidget {
         : null;
 
     return DropdownButtonFormField<String>(
-      value: safeValue,
+      initialValue: safeValue,
       items: options
           .map(
             (option) => DropdownMenuItem<String>(

@@ -65,23 +65,21 @@ import '../features/supplier/orders/presentation/screens/supplier_orders_screen.
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
 import '../l10n/app_localizations.dart';
+import '../features/retailer/rfq/presentation/screens/create_retailer_rfq_screen.dart';
+import '../features/retailer/rfq/presentation/screens/retailer_rfq_details_screen.dart';
+import '../features/retailer/rfq/presentation/screens/retailer_rfq_list_screen.dart';
+import '../features/retailer/rfq/presentation/screens/edit_retailer_rfq_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(
-        path: '/',
-        redirect: (context, state) => '/login',
-      ),
+      GoRoute(path: '/', redirect: (context, state) => '/login'),
 
       // =========================
       // AUTH ROUTES
       // =========================
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/signup',
         builder: (context, state) => const RetailerSignupScreen(),
@@ -119,9 +117,7 @@ class AppRouter {
           final extra = state.extra;
 
           if (extra is Map<String, dynamic>) {
-            return ResetPasswordScreen(
-              email: extra['email']?.toString() ?? '',
-            );
+            return ResetPasswordScreen(email: extra['email']?.toString() ?? '');
           }
 
           if (extra is String) {
@@ -454,16 +450,33 @@ class AppRouter {
       ),
       GoRoute(
         path: '/retailer-rfq',
+        redirect: (context, state) => '/retailer-rfqs',
+      ),
+      GoRoute(
+        path: '/retailer-rfqs',
+        builder: (context, state) => const RetailerRfqListScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-rfqs/create',
+        builder: (context, state) => const CreateRetailerRfqScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-rfqs/:rfqId',
         builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
+          final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
 
-          return RetailerPlaceholderScreen(
-            title: l10n.rfq,
-            message: l10n.rfqComingSoon,
-            icon: Icons.description_outlined,
-          );
+          if (rfqId == null) {
+            return const RetailerPlaceholderScreen(
+              title: 'RFQ not found',
+              message: 'The selected RFQ could not be opened.',
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return RetailerRfqDetailsScreen(rfqId: rfqId);
         },
       ),
+
       GoRoute(
         path: '/retailer-ai-assistant',
         builder: (context, state) {
@@ -522,6 +535,22 @@ class AppRouter {
           }
 
           return const RetailerAllCategoriesScreen(categories: []);
+        },
+      ),
+      GoRoute(
+        path: '/retailer-rfqs/:rfqId/edit',
+        builder: (context, state) {
+          final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
+
+          if (rfqId == null) {
+            return const RetailerPlaceholderScreen(
+              title: 'RFQ not found',
+              message: 'The selected RFQ could not be opened for editing.',
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return EditRetailerRfqScreen(rfqId: rfqId);
         },
       ),
     ],
