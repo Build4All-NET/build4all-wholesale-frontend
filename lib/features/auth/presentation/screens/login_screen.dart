@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Image.asset(
               'assets/branding/logo.png',
               fit: BoxFit.contain,
-              errorBuilder: (_, error, __) {
+              errorBuilder: (_, error, _) {
                 debugPrint('LOGIN LOGO ASSET ERROR: $error');
 
                 return Icon(

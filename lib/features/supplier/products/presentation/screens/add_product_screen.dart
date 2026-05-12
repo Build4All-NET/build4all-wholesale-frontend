@@ -973,7 +973,7 @@ class _CategorySelector extends StatelessWidget {
     return _DropdownSection(
       label: 'Category *',
       dropdown: DropdownButtonFormField<String>(
-        value: safeSelectedCategoryId,
+        initialValue: safeSelectedCategoryId,
         items: categories.map((category) {
           return DropdownMenuItem<String>(
             value: category.id,
@@ -1034,7 +1034,7 @@ class _SubCategorySelector extends StatelessWidget {
     return _DropdownSection(
       label: 'Sub Category',
       dropdown: DropdownButtonFormField<String>(
-        value: safeSelectedSubCategoryId,
+        initialValue: safeSelectedSubCategoryId,
         items: subCategories.map((subCategory) {
           return DropdownMenuItem<String>(
             value: subCategory.id,
@@ -1092,7 +1092,7 @@ class _StatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<ProductStatus>(
-            value: selectedStatus,
+            initialValue: selectedStatus,
             items: const [
               DropdownMenuItem(
                 value: ProductStatus.active,

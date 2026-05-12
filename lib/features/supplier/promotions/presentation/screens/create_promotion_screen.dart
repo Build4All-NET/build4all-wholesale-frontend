@@ -1095,7 +1095,7 @@ class _LookupDropdownBlock extends StatelessWidget {
             },
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return label.replaceAll('*', '').trim() + ' is required';
+                return '${label.replaceAll('*', '').trim()} is required';
               }
 
               return null;
