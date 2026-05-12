@@ -7,6 +7,10 @@ class BranchModel extends BranchEntity {
   const BranchModel({
     required super.id,
     required super.name,
+    super.countryCode = '',
+    super.countryName = '',
+    super.regionId,
+    super.regionName = '',
     required super.city,
     required super.address,
     required super.phoneNumber,
@@ -19,6 +23,10 @@ class BranchModel extends BranchEntity {
     return BranchModel(
       id: json['id'].toString(),
       name: json['name']?.toString() ?? '',
+      countryCode: json['countryCode']?.toString().toUpperCase() ?? '',
+      countryName: json['countryName']?.toString() ?? '',
+      regionId: int.tryParse(json['regionId']?.toString() ?? ''),
+      regionName: json['regionName']?.toString() ?? '',
       city: json['city']?.toString() ?? '',
       address: json['address']?.toString() ?? '',
       phoneNumber: json['phoneNumber']?.toString() ?? '',
@@ -32,6 +40,10 @@ class BranchModel extends BranchEntity {
     return {
       'id': id,
       'name': name,
+      'countryCode': countryCode,
+      'countryName': countryName,
+      'regionId': regionId,
+      'regionName': regionName,
       'city': city,
       'address': address,
       'phoneNumber': phoneNumber,

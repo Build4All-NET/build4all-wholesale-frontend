@@ -9,6 +9,8 @@ abstract class BranchRepository {
 
   Future<BranchEntity> createBranch({
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,
@@ -18,6 +20,8 @@ abstract class BranchRepository {
   Future<BranchEntity> updateBranch({
     required String branchId,
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,

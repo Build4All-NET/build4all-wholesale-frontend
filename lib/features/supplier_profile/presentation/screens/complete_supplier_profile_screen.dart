@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/extensions/select_option_l10n_extension.dart';
+import '../../../../core/location/data/models/country_model.dart';
+import '../../../../core/location/data/models/region_model.dart';
+import '../../../../core/location/location_hint_helper.dart';
+import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/models/select_option.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
 import '../bloc/supplier_profile_cubit.dart';
@@ -30,24 +39,22 @@ class _CompleteSupplierProfileScreenState
   late final TextEditingController _companyNameController;
   late final TextEditingController _companyAddressController;
   late final TextEditingController _phoneNumberController;
+  late final TextEditingController _cityController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _logoUrlController;
+  late final LocationApiService _locationApiService;
 
-  String? _selectedCity;
+  List<CountryModel> _countries = [];
+  List<RegionModel> _regions = [];
+  CountryModel? _selectedCountry;
+  RegionModel? _selectedRegion;
   String? _selectedBusinessType;
 
-  final List<SelectOption> _cities = const [
-    SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
-    SelectOption(value: 'Tripoli', labelKey: 'cityTripoli'),
-    SelectOption(value: 'Sidon', labelKey: 'citySidon'),
-    SelectOption(value: 'Tyre', labelKey: 'cityTyre'),
-    SelectOption(value: 'Zahle', labelKey: 'cityZahle'),
-    SelectOption(value: 'Jounieh', labelKey: 'cityJounieh'),
-    SelectOption(value: 'Nabatieh', labelKey: 'cityNabatieh'),
-    SelectOption(value: 'Byblos', labelKey: 'cityByblos'),
-    SelectOption(value: 'Aley', labelKey: 'cityAley'),
-    SelectOption(value: 'Baalbek', labelKey: 'cityBaalbek'),
-  ];
+  bool _isLoadingCountries = true;
+  bool _isLoadingRegions = false;
+  String? _locationError;
+  String _phoneIso2Code = 'LB';
+  String _completePhoneNumber = '';
 
   final List<SelectOption> _businessTypes = const [
     SelectOption(
@@ -81,8 +88,13 @@ class _CompleteSupplierProfileScreenState
     _companyNameController = TextEditingController();
     _companyAddressController = TextEditingController();
     _phoneNumberController = TextEditingController();
+    _cityController = TextEditingController();
     _descriptionController = TextEditingController();
     _logoUrlController = TextEditingController();
+    _locationApiService = LocationApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    );
+    _loadCountries();
   }
 
   @override
@@ -90,25 +102,93 @@ class _CompleteSupplierProfileScreenState
     _companyNameController.dispose();
     _companyAddressController.dispose();
     _phoneNumberController.dispose();
+    _cityController.dispose();
     _descriptionController.dispose();
     _logoUrlController.dispose();
     super.dispose();
   }
 
-  String? _validateLebanesePhone(String? value) {
-    final l10n = context.l10n;
+  Future<void> _loadCountries() async {
+    setState(() {
+      _isLoadingCountries = true;
+      _locationError = null;
+    });
 
-    if (value == null || value.trim().isEmpty) {
-      return '${l10n.phoneNumber} is required';
+    try {
+      final countries = await _locationApiService.getCountries();
+      if (!mounted) return;
+      setState(() {
+        _countries = countries;
+        _isLoadingCountries = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _countries = [];
+        _regions = [];
+        _selectedCountry = null;
+        _selectedRegion = null;
+        _isLoadingCountries = false;
+        _locationError = _messageFromError(e);
+      });
+    }
+  }
+
+  Future<void> _loadRegionsForCountry(CountryModel country) async {
+    setState(() {
+      _isLoadingRegions = true;
+      _regions = [];
+      _selectedRegion = null;
+      _locationError = null;
+    });
+
+    try {
+      final regions = await _locationApiService.getRegionsByCountry(country.id);
+      if (!mounted) return;
+      setState(() {
+        _regions = regions;
+        _isLoadingRegions = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _regions = [];
+        _selectedRegion = null;
+        _isLoadingRegions = false;
+        _locationError = _messageFromError(e);
+      });
+    }
+  }
+
+  String _messageFromError(Object error) {
+    if (error is AppException) return error.message;
+    return error.toString().replaceFirst('Exception: ', '');
+  }
+
+  String? _validatePhone(PhoneNumber? phone) {
+    final country = _selectedCountry;
+    final rawLocalNumber = phone?.number.trim() ?? _phoneNumberController.text.trim();
+    final localDigits = rawLocalNumber.replaceAll(RegExp(r'[^0-9]'), '');
+    final phoneCountryIso = phone?.countryISOCode.toUpperCase();
+
+    if (localDigits.isEmpty) {
+      return '${context.l10n.phoneNumber} is required';
     }
 
-    final cleaned = value.replaceAll(' ', '');
-    final lebanesePhoneRegex = RegExp(
-      r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$',
-    );
+    if (country == null) {
+      return 'Please select a country first';
+    }
 
-    if (!lebanesePhoneRegex.hasMatch(cleaned)) {
-      return l10n.enterValidLebanesePhone;
+    if (phoneCountryIso != null && phoneCountryIso != country.iso2Code) {
+      return 'Phone country must match the selected country';
+    }
+
+    if (country.iso2Code == 'LB' && localDigits.length != 8) {
+      return 'Lebanese phone numbers must contain 8 digits after +961';
+    }
+
+    if (localDigits.length < 6 || localDigits.length > 15) {
+      return 'Enter a valid phone number for the selected country';
     }
 
     return null;
@@ -126,16 +206,30 @@ class _CompleteSupplierProfileScreenState
       return;
     }
 
+    final country = _selectedCountry;
+    if (country == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a country.')),
+      );
+      return;
+    }
+
+    final phoneNumber = _completePhoneNumber.trim().isNotEmpty
+        ? _completePhoneNumber.trim()
+        : _phoneNumberController.text.trim();
+
     context.read<SupplierProfileCubit>().createSupplierProfile(
-      userId: 0,
-      companyName: _companyNameController.text.trim(),
-      companyAddress: _companyAddressController.text.trim(),
-      phoneNumber: _phoneNumberController.text.trim(),
-      city: _selectedCity!,
-      businessType: _selectedBusinessType!,
-      description: _descriptionController.text.trim(),
-      logoUrl: _logoUrlController.text.trim(),
-    );
+          userId: 0,
+          companyName: _companyNameController.text.trim(),
+          companyAddress: _companyAddressController.text.trim(),
+          phoneNumber: phoneNumber,
+          countryCode: country.iso2Code,
+          regionId: _selectedRegion?.id,
+          city: _cityController.text.trim(),
+          businessType: _selectedBusinessType!,
+          description: _descriptionController.text.trim(),
+          logoUrl: _logoUrlController.text.trim(),
+        );
   }
 
   @override
@@ -233,6 +327,14 @@ class _CompleteSupplierProfileScreenState
                               ),
                               const SizedBox(height: 28),
 
+                              if (_locationError != null) ...[
+                                _ErrorBox(
+                                  message: _locationError!,
+                                  onRetry: _loadCountries,
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+
                               Text(l10n.companyName),
                               const SizedBox(height: 8),
                               PrimaryTextField(
@@ -259,43 +361,101 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              Text(l10n.phoneNumber),
+                              const Text('Country'),
                               const SizedBox(height: 8),
-                              PrimaryTextField(
-                                controller: _phoneNumberController,
-                                hintText: '+961 70 123 456',
-                                keyboardType: TextInputType.phone,
-                                validator: _validateLebanesePhone,
+                              _CountryDropdown(
+                                isLoading: _isLoadingCountries,
+                                countries: _countries,
+                                selectedCountry: _selectedCountry,
+                                onChanged: (country) {
+                                  if (country == null) return;
+                                  setState(() {
+                                    _selectedCountry = country;
+                                    _selectedRegion = null;
+                                    _regions = [];
+                                    _phoneIso2Code = country.iso2Code;
+                                    _completePhoneNumber = '';
+                                  });
+                                  _loadRegionsForCountry(country);
+                                },
                               ),
 
                               const SizedBox(height: 16),
 
-                              Text(l10n.city),
+                              const Text('Region / State'),
                               const SizedBox(height: 8),
-                              PrimaryDropdownField<String>(
-                                value: _selectedCity,
-                                hintText: l10n.selectCity,
-                                items: _cities
-                                    .map(
-                                      (city) => DropdownMenuItem<String>(
-                                        value: city.value,
-                                        child: Text(
-                                          context.trOption(city.labelKey),
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: (value) {
+                              _RegionDropdown(
+                                isLoading: _isLoadingRegions,
+                                regions: _regions,
+                                selectedRegion: _selectedRegion,
+                                countrySelected: _selectedCountry != null,
+                                onChanged: (region) {
                                   setState(() {
-                                    _selectedCity = value;
+                                    _selectedRegion = region;
                                   });
                                 },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return '${l10n.city} is required';
-                                  }
-                                  return null;
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              const Text('City / Area'),
+                              const SizedBox(height: 8),
+                              PrimaryTextField(
+                                controller: _cityController,
+                                hintText: LocationHintHelper.cityAreaHint(
+                                  countryIso2: _selectedCountry?.iso2Code,
+                                  regionName: _selectedRegion?.name,
+                                ),
+                                validator: (value) => Validators.requiredField(
+                                  value,
+                                  fieldName: 'City / Area',
+                                ),
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              Text(l10n.phoneNumber),
+                              const SizedBox(height: 8),
+                              IntlPhoneField(
+                                key: ValueKey('profile-phone-$_phoneIso2Code'),
+                                controller: _phoneNumberController,
+                                initialCountryCode: _phoneIso2Code,
+                                keyboardType: TextInputType.phone,
+                                validator: _validatePhone,
+                                onChanged: (phone) {
+                                  _completePhoneNumber = phone.completeNumber;
                                 },
+                                decoration: InputDecoration(
+                                  hintText: 'Enter phone number',
+                                  filled: true,
+                                  fillColor: AppThemeTokens.inputFill,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppThemeTokens.radiusSmall,
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppThemeTokens.radiusSmall,
+                                    ),
+                                    borderSide: const BorderSide(
+                                      color: AppThemeTokens.error,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppThemeTokens.radiusSmall,
+                                    ),
+                                    borderSide: const BorderSide(
+                                      color: AppThemeTokens.error,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 14,
+                                  ),
+                                ),
                               ),
 
                               const SizedBox(height: 16),
@@ -370,6 +530,119 @@ class _CompleteSupplierProfileScreenState
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _CountryDropdown extends StatelessWidget {
+  final bool isLoading;
+  final List<CountryModel> countries;
+  final CountryModel? selectedCountry;
+  final ValueChanged<CountryModel?> onChanged;
+
+  const _CountryDropdown({
+    required this.isLoading,
+    required this.countries,
+    required this.selectedCountry,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchableSelectionField<CountryModel>(
+      label: 'Country *',
+      hintText: isLoading ? 'Loading countries...' : 'Select country',
+      searchHintText: 'Search country...',
+      items: countries,
+      value: selectedCountry,
+      isLoading: isLoading,
+      enabled: !isLoading && countries.isNotEmpty,
+      emptyText: 'No countries found',
+      itemLabel: (country) => country.name,
+      onSelected: (country) => onChanged(country),
+      validator: (value) {
+        if (value == null) return 'Country is required';
+        return null;
+      },
+    );
+  }
+}
+
+class _RegionDropdown extends StatelessWidget {
+  final bool isLoading;
+  final List<RegionModel> regions;
+  final RegionModel? selectedRegion;
+  final bool countrySelected;
+  final ValueChanged<RegionModel?> onChanged;
+
+  const _RegionDropdown({
+    required this.isLoading,
+    required this.regions,
+    required this.selectedRegion,
+    required this.countrySelected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final disabled = !countrySelected || isLoading || regions.isEmpty;
+
+    return SearchableSelectionField<RegionModel>(
+      label: 'Region / State',
+      hintText: !countrySelected
+          ? 'Select country first'
+          : isLoading
+              ? 'Loading regions...'
+              : regions.isEmpty
+                  ? 'No predefined regions, continue with city/area'
+                  : 'Select region / state',
+      searchHintText: 'Search region / state...',
+      items: regions,
+      value: selectedRegion,
+      isLoading: isLoading,
+      enabled: !disabled,
+      emptyText: 'No regions found for your search',
+      itemLabel: (region) => region.name,
+      onSelected: (region) => onChanged(region),
+    );
+  }
+}
+
+class _ErrorBox extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorBox({
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.error.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
+        border: Border.all(color: AppThemeTokens.error.withValues(alpha: 0.22)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.error_outline, color: AppThemeTokens.error),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: AppThemeTokens.error,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          TextButton(onPressed: onRetry, child: const Text('Retry')),
+        ],
       ),
     );
   }

@@ -61,7 +61,7 @@ class BranchCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      branch.city,
+                      branch.locationLabel,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
