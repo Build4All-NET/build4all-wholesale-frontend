@@ -23,7 +23,7 @@ class ApiConfig {
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
-    // =========================
+  // =========================
   // Shared Catalog: Countries / Regions
   // =========================
   static const String countries = '/countries';
@@ -76,7 +76,6 @@ class ApiConfig {
 
   static String build4AllDeleteUser(int userId) => '/users/$userId';
 
- 
   // Supplier Categories
   static const String supplierCategories = '/supplier/categories';
   static const String supplierCategoriesAll = '/supplier/categories/all';
@@ -103,7 +102,6 @@ class ApiConfig {
     return '/supplier/subcategories/category/$categoryId';
   }
 
-
   // =========================
   // Supplier Branches
   // =========================
@@ -121,13 +119,11 @@ class ApiConfig {
   // Supplier Products
   // =========================
   static const String supplierProducts = '/supplier/products';
-static const String supplierProductImageUpload = '/supplier/products/image';
+  static const String supplierProductImageUpload = '/supplier/products/image';
 
-static String supplierProductById(String id) {
-  return '/supplier/products/$id';
-}
-
-  
+  static String supplierProductById(String id) {
+    return '/supplier/products/$id';
+  }
 
   static String supplierProductsSearch(String query) {
     return '/supplier/products/search?query=$query';
@@ -137,9 +133,8 @@ static String supplierProductById(String id) {
   // Supplier Branch Inventory
   // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';
-static const String supplierLowStockAlerts =
-
-    '/supplier/branch-inventory/low-stock?threshold=50';
+  static const String supplierLowStockAlerts =
+      '/supplier/branch-inventory/low-stock?threshold=50';
   static String supplierInventoryByBranch(String branchId) {
     return '/supplier/branch-inventory/branch/$branchId';
   }
@@ -202,7 +197,8 @@ static const String supplierLowStockAlerts =
   static String supplierShippingMethodById(String id) {
     return '/supplier/shipping-methods/$id';
   }
-    // =========================
+
+  // =========================
   // SUPPLIER TAX RULES
   // =========================
   static const String supplierTaxRules = '/supplier/tax-rules';
@@ -228,5 +224,31 @@ static const String supplierLowStockAlerts =
 
   static String supplierOrderStatus(String orderId) {
     return '/supplier/orders/$orderId/status';
+  }
+
+  // =========================
+  // Retailer RFQ
+  // =========================
+  static const String retailerRfqs = '/retailer/rfqs';
+  static const String retailerRfqImageUpload = '/retailer/rfqs/image';
+
+  static String retailerRfqById(int rfqId) {
+    return '/retailer/rfqs/$rfqId';
+  }
+
+  static String submitRetailerRfq(int rfqId) {
+    return '/retailer/rfqs/$rfqId/submit';
+  }
+
+  static String cancelRetailerRfq(int rfqId) {
+    return '/retailer/rfqs/$rfqId/cancel';
+  }
+
+  static String retailerRfqQuotations(int rfqId) {
+    return '/retailer/rfqs/$rfqId/quotations';
+  }
+
+  static String acceptRetailerRfqQuotation(int rfqId, int quotationId) {
+    return '/retailer/rfqs/$rfqId/quotations/$quotationId/accept';
   }
 }

@@ -69,7 +69,7 @@ class _AuthHeaderState extends State<AuthHeader> {
               ? Image.network(
                   _logoUrl!,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Icon(
+                  errorBuilder: (_, _, _) => Icon(
                     widget.icon,
                     size: 38,
                     color: widget.iconColor,

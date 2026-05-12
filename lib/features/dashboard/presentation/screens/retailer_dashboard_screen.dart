@@ -62,10 +62,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
   ) {
     context.push(
       '/retailer-banner-target',
-      extra: {
-        'banner': banner,
-        'products': products,
-      },
+      extra: {'banner': banner, 'products': products},
     );
   }
 
@@ -85,7 +82,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
         context.push('/retailer-orders');
         break;
       case 3:
-        context.push('/retailer-rfq');
+        context.push('/retailer-rfqs');
         break;
       case 4:
         context.go('/retailer-profile');
@@ -186,10 +183,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               },
             ),
             const SizedBox(height: 18),
-            RetailerSearchBar(
-              controller: _searchController,
-              onChanged: (_) {},
-            ),
+            RetailerSearchBar(controller: _searchController, onChanged: (_) {}),
             const SizedBox(height: 18),
 
             // Supplier-created banners only.
@@ -205,9 +199,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
 
             // Bulk Orders + Group Delivery are kept here,
             // outside the supplier home banner section.
-            WholesaleOpportunitiesSection(
-              groupDelivery: home.groupDelivery,
-            ),
+            WholesaleOpportunitiesSection(groupDelivery: home.groupDelivery),
             const SizedBox(height: 18),
 
             QuickActionsSection(actions: home.quickActions),
