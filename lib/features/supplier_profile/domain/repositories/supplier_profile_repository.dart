@@ -6,10 +6,11 @@ abstract class SupplierProfileRepository {
     required String companyName,
     required String companyAddress,
     required String phoneNumber,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String businessType,
     required String description,
     required String logoUrl,
   });
 }
-

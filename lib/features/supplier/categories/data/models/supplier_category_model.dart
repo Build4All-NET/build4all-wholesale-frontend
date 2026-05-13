@@ -1,7 +1,7 @@
 import '../../domain/entities/supplier_category_entity.dart';
 
 class SupplierCategoryModel extends SupplierCategoryEntity {
-  const SupplierCategoryModel({
+  SupplierCategoryModel({
     required super.id,
     required super.name,
     super.status,

@@ -11,7 +11,7 @@ class SupplierCategoryEntity {
   final int subCategoryCount;
   final bool canDelete;
 
-  const SupplierCategoryEntity({
+  SupplierCategoryEntity({
     required this.id,
     required this.name,
     this.status = SupplierCatalogStatus.active,

@@ -67,6 +67,8 @@ class BranchApiService {
 
   Future<BranchModel> createBranch({
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,
@@ -77,6 +79,8 @@ class BranchApiService {
         ApiConfig.supplierBranches,
         data: {
           'name': name.trim(),
+          'countryCode': countryCode.trim().toUpperCase(),
+          'regionId': regionId,
           'city': city.trim(),
           'address': address.trim(),
           'phoneNumber': phoneNumber.trim(),
@@ -95,6 +99,8 @@ class BranchApiService {
   Future<BranchModel> updateBranch({
     required String branchId,
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,
@@ -105,6 +111,8 @@ class BranchApiService {
         ApiConfig.supplierBranchById(branchId),
         data: {
           'name': name.trim(),
+          'countryCode': countryCode.trim().toUpperCase(),
+          'regionId': regionId,
           'city': city.trim(),
           'address': address.trim(),
           'phoneNumber': phoneNumber.trim(),

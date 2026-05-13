@@ -24,6 +24,8 @@ class BranchRepositoryImpl implements BranchRepository {
   @override
   Future<BranchEntity> createBranch({
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,
@@ -31,6 +33,8 @@ class BranchRepositoryImpl implements BranchRepository {
   }) {
     return apiService.createBranch(
       name: name,
+      countryCode: countryCode,
+      regionId: regionId,
       city: city,
       address: address,
       phoneNumber: phoneNumber,
@@ -42,6 +46,8 @@ class BranchRepositoryImpl implements BranchRepository {
   Future<BranchEntity> updateBranch({
     required String branchId,
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,
@@ -50,6 +56,8 @@ class BranchRepositoryImpl implements BranchRepository {
     return apiService.updateBranch(
       branchId: branchId,
       name: name,
+      countryCode: countryCode,
+      regionId: regionId,
       city: city,
       address: address,
       phoneNumber: phoneNumber,

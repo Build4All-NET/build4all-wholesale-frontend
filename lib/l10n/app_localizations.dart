@@ -1197,6 +1197,2055 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Product added to cart'**
   String get productAddedToCart;
+
+  /// No description provided for @supplierDashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Dashboard'**
+  String get supplierDashboardTitle;
+
+  /// No description provided for @supplierDashboardMenuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get supplierDashboardMenuTooltip;
+
+  /// No description provided for @supplierDashboardRefreshTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get supplierDashboardRefreshTooltip;
+
+  /// No description provided for @supplierDashboardSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get supplierDashboardSettingsTooltip;
+
+  /// No description provided for @supplierDashboardLowStockAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock Alerts'**
+  String get supplierDashboardLowStockAlerts;
+
+  /// No description provided for @supplierDashboardQuickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get supplierDashboardQuickActions;
+
+  /// No description provided for @supplierPendingOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Orders'**
+  String get supplierPendingOrders;
+
+  /// No description provided for @supplierActiveOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Orders'**
+  String get supplierActiveOrders;
+
+  /// No description provided for @supplierShippedOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipped Orders'**
+  String get supplierShippedOrders;
+
+  /// No description provided for @supplierCompletedOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed Orders'**
+  String get supplierCompletedOrders;
+
+  /// No description provided for @supplierFinancialSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Summary'**
+  String get supplierFinancialSummary;
+
+  /// No description provided for @supplierTodaySales.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Sales'**
+  String get supplierTodaySales;
+
+  /// No description provided for @supplierMonthlyRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Revenue'**
+  String get supplierMonthlyRevenue;
+
+  /// No description provided for @supplierOrdersToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders Today'**
+  String get supplierOrdersToday;
+
+  /// No description provided for @supplierNoLowStockAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'No low stock alerts'**
+  String get supplierNoLowStockAlerts;
+
+  /// No description provided for @supplierAddProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get supplierAddProduct;
+
+  /// No description provided for @supplierCreatePromotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Promotion'**
+  String get supplierCreatePromotion;
+
+  /// No description provided for @supplierManageBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Branches'**
+  String get supplierManageBranches;
+
+  /// No description provided for @supplierShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Methods'**
+  String get supplierShippingMethods;
+
+  /// No description provided for @supplierConfigureTaxes.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Taxes'**
+  String get supplierConfigureTaxes;
+
+  /// No description provided for @supplierImportExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Excel'**
+  String get supplierImportExcel;
+
+  /// No description provided for @supplierHomeBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Banners'**
+  String get supplierHomeBanners;
+
+  /// No description provided for @supplierCoupons.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupons'**
+  String get supplierCoupons;
+
+  /// No description provided for @supplierLoadingDashboardData.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading dashboard data...'**
+  String get supplierLoadingDashboardData;
+
+  /// No description provided for @supplierLowStockItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Low stock item'**
+  String get supplierLowStockItem;
+
+  /// No description provided for @supplierLowStockProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Low stock product'**
+  String get supplierLowStockProduct;
+
+  /// No description provided for @supplierCurrentMinimumStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Current stock: {currentStock} | Minimum: {minimumStock}'**
+  String supplierCurrentMinimumStock(Object currentStock, Object minimumStock);
+
+  /// No description provided for @supplierLogoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get supplierLogoutTitle;
+
+  /// No description provided for @supplierLogoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get supplierLogoutConfirmation;
+
+  /// No description provided for @supplierDrawerDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get supplierDrawerDashboard;
+
+  /// No description provided for @supplierDrawerProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get supplierDrawerProfile;
+
+  /// No description provided for @supplierDrawerProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get supplierDrawerProducts;
+
+  /// No description provided for @supplierDrawerCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog'**
+  String get supplierDrawerCatalog;
+
+  /// No description provided for @supplierDrawerBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get supplierDrawerBranches;
+
+  /// No description provided for @supplierDrawerOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get supplierDrawerOrders;
+
+  /// No description provided for @supplierDrawerPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions'**
+  String get supplierDrawerPromotions;
+
+  /// No description provided for @supplierDrawerCoupons.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupons'**
+  String get supplierDrawerCoupons;
+
+  /// No description provided for @supplierDrawerHomeBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Banners'**
+  String get supplierDrawerHomeBanners;
+
+  /// No description provided for @supplierDrawerShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Methods'**
+  String get supplierDrawerShippingMethods;
+
+  /// No description provided for @supplierDrawerTaxes.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxes'**
+  String get supplierDrawerTaxes;
+
+  /// No description provided for @supplierDrawerSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get supplierDrawerSettings;
+
+  /// No description provided for @supplierProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Profile'**
+  String get supplierProfileTitle;
+
+  /// No description provided for @supplierProfileRefreshTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get supplierProfileRefreshTooltip;
+
+  /// No description provided for @supplierProfileNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplier profile data found'**
+  String get supplierProfileNoData;
+
+  /// No description provided for @supplierProfileInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Information'**
+  String get supplierProfileInformation;
+
+  /// No description provided for @supplierFullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get supplierFullNameLabel;
+
+  /// No description provided for @supplierUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get supplierUsernameLabel;
+
+  /// No description provided for @supplierEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get supplierEmailLabel;
+
+  /// No description provided for @supplierPhoneNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get supplierPhoneNumberLabel;
+
+  /// No description provided for @supplierAccountTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Type'**
+  String get supplierAccountTypeLabel;
+
+  /// No description provided for @supplierOwnerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get supplierOwnerLabel;
+
+  /// No description provided for @supplierUnableToLoadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load supplier profile'**
+  String get supplierUnableToLoadProfile;
+
+  /// No description provided for @supplierTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get supplierTryAgain;
+
+  /// No description provided for @supplierNotProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'Not provided'**
+  String get supplierNotProvided;
+
+  /// No description provided for @branchManagementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch\nManagement'**
+  String get branchManagementTitle;
+
+  /// No description provided for @addBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Branch'**
+  String get addBranchTitle;
+
+  /// No description provided for @editBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Branch'**
+  String get editBranchTitle;
+
+  /// No description provided for @updateBranchButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Branch'**
+  String get updateBranchButton;
+
+  /// No description provided for @saveBranchButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Branch'**
+  String get saveBranchButton;
+
+  /// No description provided for @branchInformationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Information'**
+  String get branchInformationTitle;
+
+  /// No description provided for @branchInformationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a supplier branch or warehouse used later for inventory and stock allocation.'**
+  String get branchInformationSubtitle;
+
+  /// No description provided for @branchNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Name *'**
+  String get branchNameLabel;
+
+  /// No description provided for @branchNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Main Warehouse'**
+  String get branchNameHint;
+
+  /// No description provided for @branchNameRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name is required'**
+  String get branchNameRequiredError;
+
+  /// No description provided for @branchNameMinError.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name must be at least 3 characters'**
+  String get branchNameMinError;
+
+  /// No description provided for @branchNameTooLongError.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name is too long'**
+  String get branchNameTooLongError;
+
+  /// No description provided for @cityAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City / Area *'**
+  String get cityAreaLabel;
+
+  /// No description provided for @cityAreaRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'City / Area is required'**
+  String get cityAreaRequiredError;
+
+  /// No description provided for @cityAreaMinError.
+  ///
+  /// In en, this message translates to:
+  /// **'City / Area must be at least 2 characters'**
+  String get cityAreaMinError;
+
+  /// No description provided for @cityAreaTooLongError.
+  ///
+  /// In en, this message translates to:
+  /// **'City / Area is too long'**
+  String get cityAreaTooLongError;
+
+  /// No description provided for @fullAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Address *'**
+  String get fullAddressLabel;
+
+  /// No description provided for @fullAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Building, street, industrial area'**
+  String get fullAddressHint;
+
+  /// No description provided for @addressRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Address is required'**
+  String get addressRequiredError;
+
+  /// No description provided for @addressSpecificError.
+  ///
+  /// In en, this message translates to:
+  /// **'Address must be more specific'**
+  String get addressSpecificError;
+
+  /// No description provided for @addressTooLongError.
+  ///
+  /// In en, this message translates to:
+  /// **'Address is too long'**
+  String get addressTooLongError;
+
+  /// No description provided for @branchCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country *'**
+  String get branchCountryLabel;
+
+  /// No description provided for @loadingCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading countries...'**
+  String get loadingCountries;
+
+  /// No description provided for @selectCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Select country'**
+  String get selectCountry;
+
+  /// No description provided for @searchCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country...'**
+  String get searchCountry;
+
+  /// No description provided for @noCountriesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No countries found'**
+  String get noCountriesFound;
+
+  /// No description provided for @countryRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Country is required'**
+  String get countryRequiredError;
+
+  /// No description provided for @branchRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region / State'**
+  String get branchRegionLabel;
+
+  /// No description provided for @selectCountryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select country first'**
+  String get selectCountryFirst;
+
+  /// No description provided for @loadingRegions.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading regions...'**
+  String get loadingRegions;
+
+  /// No description provided for @noPredefinedRegions.
+  ///
+  /// In en, this message translates to:
+  /// **'No predefined regions, continue with city/area'**
+  String get noPredefinedRegions;
+
+  /// No description provided for @selectRegionState.
+  ///
+  /// In en, this message translates to:
+  /// **'Select region / state'**
+  String get selectRegionState;
+
+  /// No description provided for @searchRegionState.
+  ///
+  /// In en, this message translates to:
+  /// **'Search region / state...'**
+  String get searchRegionState;
+
+  /// No description provided for @noRegionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No regions found for your search'**
+  String get noRegionsFound;
+
+  /// No description provided for @branchPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number *'**
+  String get branchPhoneLabel;
+
+  /// No description provided for @enterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get enterPhoneNumber;
+
+  /// No description provided for @branchStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Status *'**
+  String get branchStatusLabel;
+
+  /// No description provided for @activeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activeStatus;
+
+  /// No description provided for @inactiveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactiveStatus;
+
+  /// No description provided for @selectStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Select status'**
+  String get selectStatus;
+
+  /// No description provided for @pleaseSelectCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a country'**
+  String get pleaseSelectCountry;
+
+  /// No description provided for @phoneRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required'**
+  String get phoneRequiredError;
+
+  /// No description provided for @phoneSelectCountryFirstError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a country first'**
+  String get phoneSelectCountryFirstError;
+
+  /// No description provided for @phoneCountryMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone country must match the selected country'**
+  String get phoneCountryMismatchError;
+
+  /// No description provided for @lebanesePhoneDigitsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Lebanese phone numbers must contain 8 digits after +961'**
+  String get lebanesePhoneDigitsError;
+
+  /// No description provided for @validPhoneForSelectedCountryError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number for the selected country'**
+  String get validPhoneForSelectedCountryError;
+
+  /// No description provided for @deleteBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Branch'**
+  String get deleteBranchTitle;
+
+  /// No description provided for @deleteBranchConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {branchName}?'**
+  String deleteBranchConfirmation(Object branchName);
+
+  /// No description provided for @searchBranchesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search branches...'**
+  String get searchBranchesHint;
+
+  /// No description provided for @noBranchesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No branches found'**
+  String get noBranchesFound;
+
+  /// No description provided for @addBranchesEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add branches to manage stock and inventory by location.'**
+  String get addBranchesEmptyMessage;
+
+  /// No description provided for @editButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editButton;
+
+  /// No description provided for @totalProductsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Products'**
+  String get totalProductsLabel;
+
+  /// No description provided for @totalStockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Stock'**
+  String get totalStockLabel;
+
+  /// No description provided for @viewInventoryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'View Inventory'**
+  String get viewInventoryButton;
+
+  /// No description provided for @branchInventoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{branchName} Inventory'**
+  String branchInventoryTitle(Object branchName);
+
+  /// No description provided for @allProductsAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'All available products are already assigned to this branch'**
+  String get allProductsAssigned;
+
+  /// No description provided for @assignProductToBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Product to Branch'**
+  String get assignProductToBranchTitle;
+
+  /// No description provided for @productLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get productLabel;
+
+  /// No description provided for @stockQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Quantity'**
+  String get stockQuantityLabel;
+
+  /// No description provided for @stockQuantityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., 100'**
+  String get stockQuantityHint;
+
+  /// No description provided for @inventoryRecordNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This creates an inventory record for this branch and product.'**
+  String get inventoryRecordNote;
+
+  /// No description provided for @assignButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign'**
+  String get assignButton;
+
+  /// No description provided for @updateStockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Stock'**
+  String get updateStockTitle;
+
+  /// No description provided for @stockQuantityFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock quantity'**
+  String get stockQuantityFieldLabel;
+
+  /// No description provided for @stockQuantityUpdateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., 500'**
+  String get stockQuantityUpdateHint;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateButton;
+
+  /// No description provided for @removeProductFromBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Product from Branch'**
+  String get removeProductFromBranchTitle;
+
+  /// No description provided for @removeProductFromBranchConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove {productName} from {branchName} inventory?'**
+  String removeProductFromBranchConfirmation(
+    Object productName,
+    Object branchName,
+  );
+
+  /// No description provided for @removeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeButton;
+
+  /// No description provided for @noInventoryFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No inventory found'**
+  String get noInventoryFound;
+
+  /// No description provided for @assignProductsToBranchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign products to this branch to start tracking stock.'**
+  String get assignProductsToBranchEmpty;
+
+  /// No description provided for @assignProductButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Product'**
+  String get assignProductButton;
+
+  /// No description provided for @stockWithQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock: {quantity}'**
+  String stockWithQuantity(Object quantity);
+
+  /// No description provided for @catalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog Management'**
+  String get catalogTitle;
+
+  /// No description provided for @searchCatalogHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories or subcategories...'**
+  String get searchCatalogHint;
+
+  /// No description provided for @noCatalogItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No catalog items found'**
+  String get noCatalogItems;
+
+  /// No description provided for @addCatalogFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Add categories and subcategories to organize supplier products.'**
+  String get addCatalogFirst;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryLabel;
+
+  /// No description provided for @subCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SubCategory'**
+  String get subCategoryLabel;
+
+  /// No description provided for @addCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get addCategoryTitle;
+
+  /// No description provided for @editCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editCategoryTitle;
+
+  /// No description provided for @addSubCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add SubCategory'**
+  String get addSubCategoryTitle;
+
+  /// No description provided for @editSubCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit SubCategory'**
+  String get editSubCategoryTitle;
+
+  /// No description provided for @categoryNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name'**
+  String get categoryNameLabel;
+
+  /// No description provided for @subCategoryNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SubCategory Name'**
+  String get subCategoryNameLabel;
+
+  /// No description provided for @parentCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent Category'**
+  String get parentCategoryLabel;
+
+  /// No description provided for @categoryRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Category is required'**
+  String get categoryRequiredError;
+
+  /// No description provided for @subCategoryRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'SubCategory is required'**
+  String get subCategoryRequiredError;
+
+  /// No description provided for @activateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get activateButton;
+
+  /// No description provided for @deactivateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivateButton;
+
+  /// No description provided for @productManagementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Product\nManagement'**
+  String get productManagementTitle;
+
+  /// No description provided for @searchProductsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get searchProductsHint;
+
+  /// No description provided for @noProductsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found'**
+  String get noProductsFound;
+
+  /// No description provided for @addProductsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add products to start building your supplier catalog.'**
+  String get addProductsEmptyMessage;
+
+  /// No description provided for @productNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Name'**
+  String get productNameLabel;
+
+  /// No description provided for @productNameRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name is required'**
+  String get productNameRequiredError;
+
+  /// No description provided for @productNameMinError.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name must be at least 3 characters'**
+  String get productNameMinError;
+
+  /// No description provided for @productNameTooLongError.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name is too long'**
+  String get productNameTooLongError;
+
+  /// No description provided for @productDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get productDescriptionLabel;
+
+  /// No description provided for @productDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Product details, packaging, notes...'**
+  String get productDescriptionHint;
+
+  /// No description provided for @productPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get productPriceLabel;
+
+  /// No description provided for @productPriceRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Price is required'**
+  String get productPriceRequiredError;
+
+  /// No description provided for @productPriceInvalidError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid price'**
+  String get productPriceInvalidError;
+
+  /// No description provided for @minimumOrderQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Order Quantity'**
+  String get minimumOrderQuantityLabel;
+
+  /// No description provided for @minimumOrderQuantityRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum order quantity is required'**
+  String get minimumOrderQuantityRequiredError;
+
+  /// No description provided for @minimumOrderQuantityInvalidError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid minimum order quantity'**
+  String get minimumOrderQuantityInvalidError;
+
+  /// No description provided for @productStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Status'**
+  String get productStatusLabel;
+
+  /// No description provided for @productImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Image'**
+  String get productImageLabel;
+
+  /// No description provided for @uploadImageButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Image'**
+  String get uploadImageButton;
+
+  /// No description provided for @changeImageButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Image'**
+  String get changeImageButton;
+
+  /// No description provided for @categoryDropdownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryDropdownLabel;
+
+  /// No description provided for @subCategoryDropdownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SubCategory'**
+  String get subCategoryDropdownLabel;
+
+  /// No description provided for @selectCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select category'**
+  String get selectCategoryHint;
+
+  /// No description provided for @selectSubCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select subcategory'**
+  String get selectSubCategoryHint;
+
+  /// No description provided for @addProductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get addProductTitle;
+
+  /// No description provided for @editProductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Product'**
+  String get editProductTitle;
+
+  /// No description provided for @saveProductButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Product'**
+  String get saveProductButton;
+
+  /// No description provided for @updateProductButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Product'**
+  String get updateProductButton;
+
+  /// No description provided for @deleteProductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Product'**
+  String get deleteProductTitle;
+
+  /// No description provided for @deleteProductConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {productName}?'**
+  String deleteProductConfirmation(Object productName);
+
+  /// No description provided for @manageStockButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Stock'**
+  String get manageStockButton;
+
+  /// No description provided for @priceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get priceLabel;
+
+  /// No description provided for @moqLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MOQ'**
+  String get moqLabel;
+
+  /// No description provided for @statusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get statusLabel;
+
+  /// No description provided for @productBranchStockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Product Branch Stock'**
+  String get productBranchStockTitle;
+
+  /// No description provided for @branchStockCardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Stock'**
+  String get branchStockCardsTitle;
+
+  /// No description provided for @totalStockForProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Total stock: {quantity}'**
+  String totalStockForProduct(Object quantity);
+
+  /// No description provided for @noBranchStockFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No branch stock found'**
+  String get noBranchStockFound;
+
+  /// No description provided for @assignStockToBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign stock to a branch to start selling this product.'**
+  String get assignStockToBranch;
+
+  /// No description provided for @removeStockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Stock'**
+  String get removeStockTitle;
+
+  /// No description provided for @removeStockConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove stock for {branchName}?'**
+  String removeStockConfirmation(Object branchName);
+
+  /// No description provided for @supplierOrdersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders Management'**
+  String get supplierOrdersTitle;
+
+  /// No description provided for @orderDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get orderDetailsTitle;
+
+  /// No description provided for @searchOrdersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search orders...'**
+  String get searchOrdersHint;
+
+  /// No description provided for @noOrdersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders found'**
+  String get noOrdersFound;
+
+  /// No description provided for @orderNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order #{orderId}'**
+  String orderNumberLabel(Object orderId);
+
+  /// No description provided for @customerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get customerLabel;
+
+  /// No description provided for @retailerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailer'**
+  String get retailerLabel;
+
+  /// No description provided for @orderItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Items'**
+  String get orderItemsLabel;
+
+  /// No description provided for @orderTimelineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Timeline'**
+  String get orderTimelineLabel;
+
+  /// No description provided for @orderStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get orderStatusPending;
+
+  /// No description provided for @orderStatusAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get orderStatusAccepted;
+
+  /// No description provided for @orderStatusPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing'**
+  String get orderStatusPreparing;
+
+  /// No description provided for @orderStatusShipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipped'**
+  String get orderStatusShipped;
+
+  /// No description provided for @orderStatusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get orderStatusDelivered;
+
+  /// No description provided for @orderStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orderStatusCancelled;
+
+  /// No description provided for @acceptOrderButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept Order'**
+  String get acceptOrderButton;
+
+  /// No description provided for @markPreparingButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark Preparing'**
+  String get markPreparingButton;
+
+  /// No description provided for @shipOrderButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Ship Order'**
+  String get shipOrderButton;
+
+  /// No description provided for @markDeliveredButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark Delivered'**
+  String get markDeliveredButton;
+
+  /// No description provided for @cancelOrderButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Order'**
+  String get cancelOrderButton;
+
+  /// No description provided for @orderTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Total'**
+  String get orderTotalLabel;
+
+  /// No description provided for @orderDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Date'**
+  String get orderDateLabel;
+
+  /// No description provided for @deliveryAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Address'**
+  String get deliveryAddressLabel;
+
+  /// No description provided for @paymentStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Status'**
+  String get paymentStatusLabel;
+
+  /// No description provided for @quantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantityLabel;
+
+  /// No description provided for @importExcelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Excel'**
+  String get importExcelTitle;
+
+  /// No description provided for @uploadExcelFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Excel File'**
+  String get uploadExcelFile;
+
+  /// No description provided for @acceptedExcelFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted format: .xlsx'**
+  String get acceptedExcelFormat;
+
+  /// No description provided for @readingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading file...'**
+  String get readingFile;
+
+  /// No description provided for @selectExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Excel'**
+  String get selectExcel;
+
+  /// No description provided for @clearButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearButton;
+
+  /// No description provided for @expectedColumnsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected Columns'**
+  String get expectedColumnsTitle;
+
+  /// No description provided for @importProductInfoOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Import product information only'**
+  String get importProductInfoOnly;
+
+  /// No description provided for @excelImportExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'This import creates supplier products in bulk. Branch stock is not imported here because stock belongs to Branch Inventory.'**
+  String get excelImportExplanation;
+
+  /// No description provided for @excelCreateCategoriesFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Create categories and subcategories first, then upload the Excel file so rows can be matched safely.'**
+  String get excelCreateCategoriesFirst;
+
+  /// No description provided for @noRowsToPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'No rows to preview yet'**
+  String get noRowsToPreview;
+
+  /// No description provided for @selectExcelToPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an Excel file to preview and validate products.'**
+  String get selectExcelToPreview;
+
+  /// No description provided for @previewRowsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Rows'**
+  String get previewRowsTitle;
+
+  /// No description provided for @previewRowsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Review invalid rows, edit them directly here, or update the Excel file and upload it again.'**
+  String get previewRowsHelp;
+
+  /// No description provided for @unnamedProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed product'**
+  String get unnamedProduct;
+
+  /// No description provided for @editRowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Row'**
+  String get editRowButton;
+
+  /// No description provided for @rowsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows'**
+  String get rowsLabel;
+
+  /// No description provided for @validLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid'**
+  String get validLabel;
+
+  /// No description provided for @errorsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Errors'**
+  String get errorsLabel;
+
+  /// No description provided for @warningsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Warnings'**
+  String get warningsLabel;
+
+  /// No description provided for @duplicateProductWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate product warning'**
+  String get duplicateProductWarning;
+
+  /// No description provided for @supplierComingSoonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This supplier module will be implemented step by step.'**
+  String get supplierComingSoonMessage;
+
+  /// No description provided for @addButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addButton;
+
+  /// No description provided for @backButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backButton;
+
+  /// No description provided for @menuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menuTooltip;
+
+  /// No description provided for @categoriesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoriesTab;
+
+  /// No description provided for @subCategoriesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub Categories'**
+  String get subCategoriesTab;
+
+  /// No description provided for @categoryNameFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category name'**
+  String get categoryNameFieldLabel;
+
+  /// No description provided for @categoryNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Clothing'**
+  String get categoryNameHint;
+
+  /// No description provided for @subCategoryNameFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub category name'**
+  String get subCategoryNameFieldLabel;
+
+  /// No description provided for @subCategoryNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Women Clothing'**
+  String get subCategoryNameHint;
+
+  /// No description provided for @createActiveCategoryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an active category first'**
+  String get createActiveCategoryFirst;
+
+  /// No description provided for @deactivateCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Category'**
+  String get deactivateCategoryTitle;
+
+  /// No description provided for @activateCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Category'**
+  String get activateCategoryTitle;
+
+  /// No description provided for @deactivateCategoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This category will no longer appear when adding new products. Existing products will not be affected.'**
+  String get deactivateCategoryMessage;
+
+  /// No description provided for @activateCategoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This category will appear again when adding new products.'**
+  String get activateCategoryMessage;
+
+  /// No description provided for @deactivateSubCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Sub Category'**
+  String get deactivateSubCategoryTitle;
+
+  /// No description provided for @activateSubCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Sub Category'**
+  String get activateSubCategoryTitle;
+
+  /// No description provided for @deactivateSubCategoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This sub category will no longer appear when adding new products. Existing products will not be affected.'**
+  String get deactivateSubCategoryMessage;
+
+  /// No description provided for @activateSubCategoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This sub category will appear again when adding new products.'**
+  String get activateSubCategoryMessage;
+
+  /// No description provided for @deleteCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Category'**
+  String get deleteCategoryTitle;
+
+  /// No description provided for @deleteSubCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Sub Category'**
+  String get deleteSubCategoryTitle;
+
+  /// No description provided for @deleteCategoryPermanentConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{categoryName}\" permanently? This is allowed only if it is not linked to products or sub categories.'**
+  String deleteCategoryPermanentConfirmation(Object categoryName);
+
+  /// No description provided for @deleteSubCategoryPermanentConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{subCategoryName}\" permanently? This is allowed only if it is not linked to products.'**
+  String deleteSubCategoryPermanentConfirmation(Object subCategoryName);
+
+  /// No description provided for @noCategoriesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories found'**
+  String get noCategoriesFound;
+
+  /// No description provided for @noSubCategoriesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No sub categories found'**
+  String get noSubCategoriesFound;
+
+  /// No description provided for @searchCategoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories...'**
+  String get searchCategoriesHint;
+
+  /// No description provided for @searchSubCategoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search sub categories...'**
+  String get searchSubCategoriesHint;
+
+  /// No description provided for @categoryStats.
+  ///
+  /// In en, this message translates to:
+  /// **'{productCount} products • {subCategoryCount} sub categories'**
+  String categoryStats(Object productCount, Object subCategoryCount);
+
+  /// No description provided for @subCategoryStats.
+  ///
+  /// In en, this message translates to:
+  /// **'{categoryName} • {productCount} products'**
+  String subCategoryStats(Object categoryName, Object productCount);
+
+  /// No description provided for @linkedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get linkedLabel;
+
+  /// No description provided for @productInformationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Information'**
+  String get productInformationTitle;
+
+  /// No description provided for @productDescriptionRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get productDescriptionRequiredError;
+
+  /// No description provided for @productDescriptionMinError.
+  ///
+  /// In en, this message translates to:
+  /// **'Description must be at least 10 characters'**
+  String get productDescriptionMinError;
+
+  /// No description provided for @productDescriptionTooLongError.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is too long'**
+  String get productDescriptionTooLongError;
+
+  /// No description provided for @pricePerUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Unit *'**
+  String get pricePerUnitLabel;
+
+  /// No description provided for @priceGreaterThanZeroError.
+  ///
+  /// In en, this message translates to:
+  /// **'Price must be greater than 0'**
+  String get priceGreaterThanZeroError;
+
+  /// No description provided for @priceTooHighError.
+  ///
+  /// In en, this message translates to:
+  /// **'Price is too high'**
+  String get priceTooHighError;
+
+  /// No description provided for @quantityInvalidError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid quantity'**
+  String get quantityInvalidError;
+
+  /// No description provided for @moqWholesaleMinError.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum order quantity must be at least 5 for wholesale'**
+  String get moqWholesaleMinError;
+
+  /// No description provided for @moqTooHighError.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum order quantity is too high'**
+  String get moqTooHighError;
+
+  /// No description provided for @productBranchStockSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Branch Stock'**
+  String get productBranchStockSectionTitle;
+
+  /// No description provided for @manageProductStockSavedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage this product stock across all branches directly. Stock updates are saved immediately in Branch Inventory.'**
+  String get manageProductStockSavedNote;
+
+  /// No description provided for @manageProductStockAfterSaveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this product first, then assign its stock per branch from Product Branch Stock.'**
+  String get manageProductStockAfterSaveNote;
+
+  /// No description provided for @branchStockAfterSaveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch stock becomes available after saving the product.'**
+  String get branchStockAfterSaveNote;
+
+  /// No description provided for @addingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding...'**
+  String get addingLabel;
+
+  /// No description provided for @deletingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting...'**
+  String get deletingLabel;
+
+  /// No description provided for @deleteSelectedCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Selected Category'**
+  String get deleteSelectedCategory;
+
+  /// No description provided for @deleteSelectedSubCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Selected Sub Category'**
+  String get deleteSelectedSubCategory;
+
+  /// No description provided for @loadingSubCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading sub categories...'**
+  String get loadingSubCategories;
+
+  /// No description provided for @selectSubCategoryIfNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Select sub category if needed'**
+  String get selectSubCategoryIfNeeded;
+
+  /// No description provided for @selectProductStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Select product status'**
+  String get selectProductStatus;
+
+  /// No description provided for @uploadImagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Images'**
+  String get uploadImagesTitle;
+
+  /// No description provided for @tapToUploadProductImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to upload product image'**
+  String get tapToUploadProductImage;
+
+  /// No description provided for @imageFormatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG, JPG up to 10MB'**
+  String get imageFormatHint;
+
+  /// No description provided for @selectCategoryFirstMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a category first'**
+  String get selectCategoryFirstMessage;
+
+  /// No description provided for @selectedCategoryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected category was not found'**
+  String get selectedCategoryNotFound;
+
+  /// No description provided for @selectedSubCategoryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected sub category was not found'**
+  String get selectedSubCategoryNotFound;
+
+  /// No description provided for @selectSubCategoryFirstMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a sub category first'**
+  String get selectSubCategoryFirstMessage;
+
+  /// No description provided for @categoryAddedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{categoryName} added'**
+  String categoryAddedMessage(Object categoryName);
+
+  /// No description provided for @subCategoryAddedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{subCategoryName} added'**
+  String subCategoryAddedMessage(Object subCategoryName);
+
+  /// No description provided for @categoryDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{categoryName} deleted'**
+  String categoryDeletedMessage(Object categoryName);
+
+  /// No description provided for @subCategoryDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{subCategoryName} deleted'**
+  String subCategoryDeletedMessage(Object subCategoryName);
+
+  /// No description provided for @deleteCategoryHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'If this category is already used by products or subcategories, the backend may prevent deleting it.'**
+  String get deleteCategoryHelp;
+
+  /// No description provided for @deleteSubCategoryHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'If this sub category is already used by products, the backend may prevent deleting it.'**
+  String get deleteSubCategoryHelp;
+
+  /// No description provided for @updateBranchStockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Branch Stock'**
+  String get updateBranchStockTitle;
+
+  /// No description provided for @assignStockToBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Stock to Branch'**
+  String get assignStockToBranchTitle;
+
+  /// No description provided for @branchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get branchLabel;
+
+  /// No description provided for @stockSavedToBranchInventoryNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock is saved directly in Branch Inventory. You do not need to update the product details again.'**
+  String get stockSavedToBranchInventoryNote;
+
+  /// No description provided for @stockByBranchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock by Branch'**
+  String get stockByBranchTitle;
+
+  /// No description provided for @productBranchStockExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Update this product stock directly per branch. This saves to Branch Inventory, not Product details.'**
+  String get productBranchStockExplanation;
+
+  /// No description provided for @branchesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get branchesLabel;
+
+  /// No description provided for @notAssignedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not assigned yet'**
+  String get notAssignedYet;
+
+  /// No description provided for @createBranchFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a branch first, then assign product stock.'**
+  String get createBranchFirst;
+
+  /// No description provided for @totalBranchStockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Branch Stock: {quantity}'**
+  String totalBranchStockLabel(Object quantity);
+
+  /// No description provided for @noBranchStockAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'No branch stock assigned'**
+  String get noBranchStockAssigned;
+
+  /// No description provided for @viewDetailsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get viewDetailsButton;
+
+  /// No description provided for @itemsCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items'**
+  String itemsCountLabel(Object count);
+
+  /// No description provided for @allLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allLabel;
+
+  /// No description provided for @incomingOrdersEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming retailer orders will appear here.'**
+  String get incomingOrdersEmptyMessage;
+
+  /// No description provided for @orderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Order not found'**
+  String get orderNotFound;
+
+  /// No description provided for @paymentMethodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethodLabel;
+
+  /// No description provided for @totalAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get totalAmountLabel;
+
+  /// No description provided for @orderCancelledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This order was cancelled.'**
+  String get orderCancelledMessage;
+
+  /// No description provided for @productsOrderedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Products Ordered'**
+  String get productsOrderedTitle;
+
+  /// No description provided for @unitsTimesPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'{quantity} units × {price}'**
+  String unitsTimesPrice(Object quantity, Object price);
+
+  /// No description provided for @deliveryInformationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Information'**
+  String get deliveryInformationTitle;
+
+  /// No description provided for @retailerPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailer Phone'**
+  String get retailerPhoneLabel;
+
+  /// No description provided for @branchLabelPlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get branchLabelPlain;
+
+  /// No description provided for @orderNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Notes'**
+  String get orderNotesTitle;
+
+  /// No description provided for @noMoreStatusActions.
+  ///
+  /// In en, this message translates to:
+  /// **'No more status actions available for this order.'**
+  String get noMoreStatusActions;
+
+  /// No description provided for @rejectOrderButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject Order'**
+  String get rejectOrderButton;
+
+  /// No description provided for @manageCategoriesTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Categories'**
+  String get manageCategoriesTooltip;
+
+  /// No description provided for @someRowsNeedAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Some rows need attention'**
+  String get someRowsNeedAttention;
+
+  /// No description provided for @allRowsReady.
+  ///
+  /// In en, this message translates to:
+  /// **'All rows are ready to import'**
+  String get allRowsReady;
+
+  /// No description provided for @excelAttentionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit invalid rows inside this screen, fix the Excel file and upload it again, or manage missing categories first.'**
+  String get excelAttentionHelp;
+
+  /// No description provided for @manageCategoriesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Categories'**
+  String get manageCategoriesButton;
+
+  /// No description provided for @importResultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Result'**
+  String get importResultTitle;
+
+  /// No description provided for @importedRowsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported: {importedCount} / {totalRows}'**
+  String importedRowsSummary(Object importedCount, Object totalRows);
+
+  /// No description provided for @resetButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get resetButton;
+
+  /// No description provided for @importingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing...'**
+  String get importingLabel;
+
+  /// No description provided for @importProductsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {count} Products'**
+  String importProductsButton(Object count);
+
+  /// No description provided for @editRowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Row {rowNumber}'**
+  String editRowTitle(Object rowNumber);
+
+  /// No description provided for @editRowHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct the product information before importing. This updates the preview only; it does not change the Excel file on your phone.'**
+  String get editRowHelp;
+
+  /// No description provided for @saveChangesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChangesButton;
+
+  /// No description provided for @noSubcategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No subcategory'**
+  String get noSubcategory;
+
+  /// No description provided for @noSubcategoriesForCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No subcategories for this category'**
+  String get noSubcategoriesForCategory;
+
+  /// No description provided for @selectCategoryWithCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Select category ({categoryName})'**
+  String selectCategoryWithCurrent(Object categoryName);
+
+  /// No description provided for @rowNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Row {rowNumber}'**
+  String rowNumberLabel(Object rowNumber);
+
+  /// No description provided for @productNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box'**
+  String get productNameHint;
 }
 
 class _AppLocalizationsDelegate

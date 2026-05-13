@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../widgets/supplier_app_drawer.dart';
@@ -7,7 +8,7 @@ class SupplierComingSoonScreen extends StatelessWidget {
   final String title;
   final IconData icon;
 
-  const SupplierComingSoonScreen({
+  SupplierComingSoonScreen({
     super.key,
     required this.title,
     required this.icon,
@@ -17,19 +18,19 @@ class SupplierComingSoonScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
-      drawer: const SupplierAppDrawer(),
+      drawer: SupplierAppDrawer(),
       appBar: AppBar(
         title: Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.w800),
+          style: TextStyle(fontWeight: FontWeight.w800),
         ),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
       ),
       body: Center(
         child: Container(
-          margin: const EdgeInsets.all(20),
-          padding: const EdgeInsets.all(24),
+          margin: EdgeInsets.all(20),
+          padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppThemeTokens.surface,
             borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -43,19 +44,19 @@ class SupplierComingSoonScreen extends StatelessWidget {
                 size: 56,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
                   color: AppThemeTokens.textPrimary,
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'This supplier module will be implemented step by step.',
+              SizedBox(height: 8),
+              Text(
+                context.l10n.supplierComingSoonMessage,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppThemeTokens.textSecondary,

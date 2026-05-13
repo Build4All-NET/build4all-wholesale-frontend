@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -15,7 +16,7 @@ import '../widgets/catalog_search_box.dart';
 import '../widgets/empty_catalog_message.dart';
 
 class SupplierCatalogScreen extends StatefulWidget {
-  const SupplierCatalogScreen({super.key});
+  SupplierCatalogScreen({super.key});
 
   @override
   State<SupplierCatalogScreen> createState() => _SupplierCatalogScreenState();
@@ -46,7 +47,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
       }
     });
 
-    _catalogBloc.add(const LoadSupplierCatalog());
+    _catalogBloc.add(LoadSupplierCatalog());
   }
 
   @override
@@ -94,21 +95,21 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(
-            isEdit ? 'Edit Category' : 'Add Category',
-            style: const TextStyle(fontWeight: FontWeight.w900),
+            isEdit ? context.l10n.editCategoryTitle : context.l10n.addCategoryTitle,
+            style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: TextField(
             controller: controller,
             autofocus: true,
-            decoration: const InputDecoration(
-              labelText: 'Category name',
-              hintText: 'Example: Clothing',
+            decoration: InputDecoration(
+              labelText: context.l10n.categoryNameFieldLabel,
+              hintText: context.l10n.categoryNameHint,
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -118,7 +119,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
 
                 Navigator.of(dialogContext).pop(value);
               },
-              child: Text(isEdit ? 'Update' : 'Add'),
+              child: Text(isEdit ? context.l10n.updateButton : context.l10n.addButton),
             ),
           ],
         );
@@ -150,9 +151,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
 
     if (activeCategories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Create an active category first'),
-        ),
+        SnackBar(content: Text(context.l10n.createActiveCategoryFirst)),
       );
       return;
     }
@@ -171,8 +170,8 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
           builder: (dialogContext, setDialogState) {
             return AlertDialog(
               title: Text(
-                isEdit ? 'Edit Sub Category' : 'Add Sub Category',
-                style: const TextStyle(fontWeight: FontWeight.w900),
+                isEdit ? context.l10n.editSubCategoryTitle : context.l10n.addSubCategoryTitle,
+                style: TextStyle(fontWeight: FontWeight.w900),
               ),
               content: SingleChildScrollView(
                 child: Column(
@@ -195,17 +194,17 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                                 selectedCategoryId = value;
                               });
                             },
-                      decoration: const InputDecoration(
-                        labelText: 'Parent category',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.parentCategoryLabel,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14),
                     TextField(
                       controller: controller,
                       autofocus: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Sub category name',
-                        hintText: 'Example: Women Clothing',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.subCategoryNameFieldLabel,
+                        hintText: context.l10n.subCategoryNameHint,
                       ),
                     ),
                   ],
@@ -214,7 +213,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(context.l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -229,7 +228,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                       ),
                     );
                   },
-                  child: Text(isEdit ? 'Update' : 'Add'),
+                  child: Text(isEdit ? context.l10n.updateButton : context.l10n.addButton),
                 ),
               ],
             );
@@ -265,11 +264,11 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         : SupplierCatalogStatus.active;
 
     final shouldContinue = await _confirmAction(
-      title: category.isActive ? 'Deactivate Category' : 'Activate Category',
+      title: category.isActive ? context.l10n.deactivateCategoryTitle : context.l10n.activateCategoryTitle,
       message: category.isActive
-          ? 'This category will no longer appear when adding new products. Existing products will not be affected.'
-          : 'This category will appear again when adding new products.',
-      confirmText: category.isActive ? 'Deactivate' : 'Activate',
+          ? context.l10n.deactivateCategoryMessage
+          : context.l10n.activateCategoryMessage,
+      confirmText: category.isActive ? context.l10n.deactivateButton : context.l10n.activateButton,
     );
 
     if (shouldContinue != true) return;
@@ -291,12 +290,12 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
 
     final shouldContinue = await _confirmAction(
       title: subCategory.isActive
-          ? 'Deactivate Sub Category'
-          : 'Activate Sub Category',
+          ? context.l10n.deactivateSubCategoryTitle
+          : context.l10n.activateSubCategoryTitle,
       message: subCategory.isActive
-          ? 'This sub category will no longer appear when adding new products. Existing products will not be affected.'
-          : 'This sub category will appear again when adding new products.',
-      confirmText: subCategory.isActive ? 'Deactivate' : 'Activate',
+          ? context.l10n.deactivateSubCategoryMessage
+          : context.l10n.activateSubCategoryMessage,
+      confirmText: subCategory.isActive ? context.l10n.deactivateButton : context.l10n.activateButton,
     );
 
     if (shouldContinue != true) return;
@@ -311,10 +310,10 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
 
   Future<void> _deleteCategory(SupplierCategoryEntity category) async {
     final shouldDelete = await _confirmAction(
-      title: 'Delete Category',
+      title: context.l10n.deleteCategoryTitle,
       message:
-          'Delete "${category.name}" permanently? This is allowed only if it is not linked to products or sub categories.',
-      confirmText: 'Delete',
+          context.l10n.deleteCategoryPermanentConfirmation(category.name),
+      confirmText: context.l10n.delete,
       isDanger: true,
     );
 
@@ -329,10 +328,10 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
     SupplierSubCategoryEntity subCategory,
   ) async {
     final shouldDelete = await _confirmAction(
-      title: 'Delete Sub Category',
+      title: context.l10n.deleteSubCategoryTitle,
       message:
-          'Delete "${subCategory.name}" permanently? This is allowed only if it is not linked to products.',
-      confirmText: 'Delete',
+          context.l10n.deleteSubCategoryPermanentConfirmation(subCategory.name),
+      confirmText: context.l10n.delete,
       isDanger: true,
     );
 
@@ -355,13 +354,13 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         return AlertDialog(
           title: Text(
             title,
-            style: const TextStyle(fontWeight: FontWeight.w900),
+            style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -393,7 +392,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
   }
 
   String _leadingTooltip(BuildContext context) {
-    return context.canPop() ? 'Back' : 'Menu';
+    return context.canPop() ? context.l10n.backButton : context.l10n.menuTooltip;
   }
 
   @override
@@ -425,7 +424,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
 
             return Scaffold(
               backgroundColor: AppThemeTokens.background,
-              drawer: const SupplierAppDrawer(),
+              drawer: SupplierAppDrawer(),
               appBar: AppBar(
                 backgroundColor: AppThemeTokens.background,
                 elevation: 0,
@@ -438,8 +437,8 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                     );
                   },
                 ),
-                title: const Text(
-                  'Catalog Management',
+                title: Text(
+                  context.l10n.catalogTitle,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     color: AppThemeTokens.textPrimary,
@@ -450,25 +449,25 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                     onPressed: state.isLoading || state.isSaving
                         ? null
                         : () => _catalogBloc.add(
-                              const RefreshSupplierCatalog(),
+                              RefreshSupplierCatalog(),
                             ),
                     icon: Icon(Icons.refresh, color: primaryColor),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                 ],
                 bottom: TabBar(
                   controller: _tabController,
                   labelColor: primaryColor,
                   unselectedLabelColor: AppThemeTokens.textSecondary,
                   indicatorColor: primaryColor,
-                  tabs: const [
-                    Tab(text: 'Categories'),
-                    Tab(text: 'Sub Categories'),
+                  tabs: [
+                    Tab(text: context.l10n.categoriesTab),
+                    Tab(text: context.l10n.subCategoriesTab),
                   ],
                 ),
               ),
               body: state.isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CircularProgressIndicator())
                   : Stack(
                       children: [
                         TabBarView(
@@ -479,7 +478,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                           ],
                         ),
                         if (state.isSaving)
-                          const Positioned.fill(
+                          Positioned.fill(
                             child: ColoredBox(
                               color: Color(0x22000000),
                               child: Center(
@@ -501,11 +500,11 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                           );
                         }
                       },
-                icon: const Icon(Icons.add),
+                icon: Icon(Icons.add),
                 label: Text(
                   _tabController.index == 0
-                      ? 'Add Category'
-                      : 'Add Sub Category',
+                      ? context.l10n.addCategoryTitle
+                      : context.l10n.addSubCategoryTitle,
                 ),
               ),
             );
@@ -522,7 +521,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
       children: [
         CatalogSearchBox(
           controller: _categorySearchController,
-          hintText: 'Search categories...',
+          hintText: context.l10n.searchCategoriesHint,
           onChanged: (value) {
             setState(() {
               _categoryQuery = value;
@@ -531,9 +530,9 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         ),
         Expanded(
           child: categories.isEmpty
-              ? const EmptyCatalogMessage(message: 'No categories found')
+              ? EmptyCatalogMessage(message: context.l10n.noCategoriesFound)
               : ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
                     final category = categories[index];
@@ -541,7 +540,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                     return CatalogCard(
                       title: category.name,
                       subtitle:
-                          '${category.productCount} products • ${category.subCategoryCount} sub categories',
+                          context.l10n.categoryStats(category.productCount, category.subCategoryCount),
                       isActive: category.isActive,
                       canDelete: category.canDelete,
                       onEdit: () => _showCategoryDialog(category: category),
@@ -562,7 +561,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
       children: [
         CatalogSearchBox(
           controller: _subCategorySearchController,
-          hintText: 'Search sub categories...',
+          hintText: context.l10n.searchSubCategoriesHint,
           onChanged: (value) {
             setState(() {
               _subCategoryQuery = value;
@@ -571,9 +570,9 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         ),
         Expanded(
           child: subCategories.isEmpty
-              ? const EmptyCatalogMessage(message: 'No sub categories found')
+              ? EmptyCatalogMessage(message: context.l10n.noSubCategoriesFound)
               : ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
                   itemCount: subCategories.length,
                   itemBuilder: (context, index) {
                     final subCategory = subCategories[index];
@@ -581,7 +580,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                     return CatalogCard(
                       title: subCategory.name,
                       subtitle:
-                          '${subCategory.categoryName} • ${subCategory.productCount} products',
+                          context.l10n.subCategoryStats(subCategory.categoryName, subCategory.productCount),
                       isActive: subCategory.isActive,
                       canDelete: subCategory.canDelete,
                       onEdit: () => _showSubCategoryDialog(
@@ -604,7 +603,7 @@ class _SubCategoryDialogResult {
   final String categoryId;
   final String name;
 
-  const _SubCategoryDialogResult({
+  _SubCategoryDialogResult({
     required this.categoryId,
     required this.name,
   });

@@ -2,7 +2,7 @@ import '../../domain/entities/low_stock_alert_entity.dart';
 import '../../../products/domain/entities/product_entity.dart';
 
 class LowStockAlertModel extends LowStockAlertEntity {
-  const LowStockAlertModel({
+  LowStockAlertModel({
     required super.inventoryId,
     required super.branchId,
     required super.branchName,

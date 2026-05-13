@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../categories/domain/entities/supplier_category_entity.dart';
@@ -10,7 +11,7 @@ class SupplierExcelEditRowDialog extends StatefulWidget {
   final List<SupplierCategoryEntity> categories;
   final Map<String, List<SupplierSubCategoryEntity>> subCategoriesByCategoryId;
 
-  const SupplierExcelEditRowDialog({
+  SupplierExcelEditRowDialog({
     super.key,
     required this.row,
     required this.categories,
@@ -69,11 +70,11 @@ class _SupplierExcelEditRowDialogState
     }
 
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
       child: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18),
+          padding: EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -88,11 +89,11 @@ class _SupplierExcelEditRowDialogState
                     ),
                     child: Icon(Icons.edit_outlined, color: primary),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Edit Row ${widget.row.rowNumber}',
-                      style: const TextStyle(
+                      context.l10n.editRowTitle(widget.row.rowNumber),
+                      style: TextStyle(
                         color: AppThemeTokens.textPrimary,
                         fontWeight: FontWeight.w900,
                         fontSize: 19,
@@ -101,41 +102,41 @@ class _SupplierExcelEditRowDialogState
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
+                    icon: Icon(Icons.close),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Correct the product information before importing. This updates the preview only; it does not change the Excel file on your phone.',
+              SizedBox(height: 8),
+              Text(
+                context.l10n.editRowHelp,
                 style: TextStyle(
                   color: AppThemeTokens.textSecondary,
                   fontWeight: FontWeight.w600,
                   height: 1.35,
                 ),
               ),
-              const SizedBox(height: 18),
+              SizedBox(height: 18),
               _TextField(
                 controller: _nameController,
-                label: 'Product Name',
+                label: context.l10n.productNameLabel,
                 icon: Icons.inventory_2_outlined,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               _TextField(
                 controller: _descriptionController,
-                label: 'Description',
+                label: context.l10n.productDescriptionLabel,
                 icon: Icons.description_outlined,
                 minLines: 2,
                 maxLines: 4,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               _DropdownField<String>(
-                label: 'Category',
+                label: context.l10n.categoryLabel,
                 icon: Icons.category_outlined,
                 value: _selectedCategoryId,
                 hint: widget.row.categoryName.isEmpty
-                    ? 'Select category'
-                    : 'Select category (${widget.row.categoryName})',
+                    ? context.l10n.selectCategoryHint
+                    : context.l10n.selectCategoryWithCurrent(widget.row.categoryName),
                 items: widget.categories
                     .map(
                       (category) => DropdownMenuItem<String>(
@@ -158,19 +159,19 @@ class _SupplierExcelEditRowDialogState
                   });
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               _DropdownField<String?>(
-                label: 'SubCategory (optional)',
+                label: context.l10n.subCategoryLabel,
                 icon: Icons.account_tree_outlined,
                 value: _selectedSubCategoryId,
                 hint: selectedSubCategories.isEmpty
-                    ? 'No subcategories for this category'
-                    : 'Select subcategory',
+                    ? context.l10n.noSubcategoriesForCategory
+                    : context.l10n.selectSubCategoryHint,
                 items: [
-                  const DropdownMenuItem<String?>(
+                  DropdownMenuItem<String?>(
                     value: null,
                     child: Text(
-                      'No subcategory',
+                      context.l10n.noSubcategory,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -187,7 +188,7 @@ class _SupplierExcelEditRowDialogState
                   ),
                 ],
                 selectedLabel: _selectedSubCategoryId == null
-                    ? 'No subcategory'
+                    ? context.l10n.noSubcategory
                     : _findSubCategoryName(
                         selectedSubCategories,
                         _selectedSubCategoryId!,
@@ -196,36 +197,36 @@ class _SupplierExcelEditRowDialogState
                   setState(() => _selectedSubCategoryId = value);
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: _TextField(
                       controller: _priceController,
-                      label: 'Price',
+                      label: context.l10n.priceLabel,
                       icon: Icons.attach_money,
-                      keyboardType: const TextInputType.numberWithOptions(
+                      keyboardType: TextInputType.numberWithOptions(
                         decimal: true,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: _TextField(
                       controller: _moqController,
-                      label: 'MOQ',
+                      label: context.l10n.moqLabel,
                       icon: Icons.format_list_numbered,
                       keyboardType: TextInputType.number,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               _DropdownField<String>(
-                label: 'Status',
+                label: context.l10n.statusLabel,
                 icon: Icons.toggle_on_outlined,
                 value: _selectedStatus,
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: 'ACTIVE',
                     child: Text(
@@ -248,39 +249,39 @@ class _SupplierExcelEditRowDialogState
                   setState(() => _selectedStatus = value ?? 'ACTIVE');
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      child: const Text(
-                        'Cancel',
+                      child: Text(
+                        context.l10n.cancel,
                         style: TextStyle(fontWeight: FontWeight.w900),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     flex: 2,
                     child: ElevatedButton.icon(
                       onPressed: _save,
-                      icon: const Icon(Icons.check),
-                      label: const Text(
-                        'Save Changes',
+                      icon: Icon(Icons.check),
+                      label: Text(
+                        context.l10n.saveChangesButton,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primary,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           vertical: 14,
                           horizontal: 10,
                         ),
@@ -331,8 +332,8 @@ class _SupplierExcelEditRowDialogState
       clearParsedPrice: true,
       clearParsedMoq: true,
       clearParsedStatus: true,
-      errors: const [],
-      warnings: const [],
+      errors: [],
+      warnings: [],
     );
 
     Navigator.of(context).pop(updatedRow);
@@ -402,7 +403,7 @@ class _TextField extends StatelessWidget {
   final int maxLines;
   final TextInputType? keyboardType;
 
-  const _TextField({
+  _TextField({
     required this.controller,
     required this.label,
     required this.icon,
@@ -421,7 +422,7 @@ class _TextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
-        prefixIconConstraints: const BoxConstraints(
+        prefixIconConstraints: BoxConstraints(
           minWidth: 44,
           minHeight: 44,
         ),
@@ -444,7 +445,7 @@ class _DropdownField<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
   final ValueChanged<T?> onChanged;
 
-  const _DropdownField({
+  _DropdownField({
     required this.label,
     required this.icon,
     required this.value,
@@ -480,11 +481,11 @@ class _DropdownField<T> extends StatelessWidget {
         labelText: label,
         hintText: hint,
         prefixIcon: Icon(icon),
-        prefixIconConstraints: const BoxConstraints(
+        prefixIconConstraints: BoxConstraints(
           minWidth: 44,
           minHeight: 44,
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 16,
         ),

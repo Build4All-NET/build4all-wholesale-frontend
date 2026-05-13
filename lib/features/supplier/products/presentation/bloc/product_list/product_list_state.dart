@@ -9,7 +9,7 @@ class ProductListState extends Equatable {
   final String? error;
   final String? successMessage;
 
-  const ProductListState({
+  ProductListState({
     required this.isLoading,
     required this.isDeleting,
     required this.products,
@@ -18,7 +18,7 @@ class ProductListState extends Equatable {
   });
 
   factory ProductListState.initial() {
-    return const ProductListState(
+    return ProductListState(
       isLoading: false,
       isDeleting: false,
       products: [],

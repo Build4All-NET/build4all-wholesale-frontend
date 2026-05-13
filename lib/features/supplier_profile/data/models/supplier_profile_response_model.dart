@@ -7,6 +7,10 @@ class SupplierProfileResponseModel extends SupplierProfileEntity {
     required super.companyName,
     required super.companyAddress,
     required super.phoneNumber,
+    super.countryCode = '',
+    super.countryName = '',
+    super.regionId,
+    super.regionName = '',
     required super.city,
     required super.businessType,
     required super.description,
@@ -15,16 +19,19 @@ class SupplierProfileResponseModel extends SupplierProfileEntity {
 
   factory SupplierProfileResponseModel.fromJson(Map<String, dynamic> json) {
     return SupplierProfileResponseModel(
-      id: json['id'],
-      userId: json['userId'] ?? 0,
-      companyName: json['companyName'] ?? '',
-      companyAddress: json['companyAddress'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? '',
-      city: json['city'] ?? '',
-      businessType: json['businessType'] ?? '',
-      description: json['description'] ?? '',
-      logoUrl: json['logoUrl'] ?? '',
+      id: int.tryParse(json['id']?.toString() ?? ''),
+      userId: int.tryParse(json['userId']?.toString() ?? '0') ?? 0,
+      companyName: json['companyName']?.toString() ?? '',
+      companyAddress: json['companyAddress']?.toString() ?? '',
+      phoneNumber: json['phoneNumber']?.toString() ?? '',
+      countryCode: json['countryCode']?.toString().toUpperCase() ?? '',
+      countryName: json['countryName']?.toString() ?? '',
+      regionId: int.tryParse(json['regionId']?.toString() ?? ''),
+      regionName: json['regionName']?.toString() ?? '',
+      city: json['city']?.toString() ?? '',
+      businessType: json['businessType']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      logoUrl: json['logoUrl']?.toString() ?? '',
     );
   }
 }
-

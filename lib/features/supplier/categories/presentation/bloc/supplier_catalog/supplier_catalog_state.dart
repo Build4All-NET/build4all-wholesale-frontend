@@ -13,7 +13,7 @@ class SupplierCatalogState extends Equatable {
   final String? error;
   final String? successMessage;
 
-  const SupplierCatalogState({
+  SupplierCatalogState({
     required this.isLoading,
     required this.isSaving,
     required this.categories,
@@ -23,7 +23,7 @@ class SupplierCatalogState extends Equatable {
   });
 
   factory SupplierCatalogState.initial() {
-    return const SupplierCatalogState(
+    return SupplierCatalogState(
       isLoading: false,
       isSaving: false,
       categories: [],

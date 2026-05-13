@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 
 class SupplierExcelInstructionCard extends StatelessWidget {
-  const SupplierExcelInstructionCard({super.key});
+  SupplierExcelInstructionCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class SupplierExcelInstructionCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: primary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -29,15 +30,15 @@ class SupplierExcelInstructionCard extends StatelessWidget {
                   color: primary,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.upload_file_outlined,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 12),
-              const Expanded(
+              SizedBox(width: 12),
+              Expanded(
                 child: Text(
-                  'Import product information only',
+                  context.l10n.importProductInfoOnly,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
@@ -47,18 +48,18 @@ class SupplierExcelInstructionCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          const Text(
-            'This import creates supplier products in bulk. Branch stock is not imported here because stock belongs to Branch Inventory.',
+          SizedBox(height: 12),
+          Text(
+            context.l10n.excelImportExplanation,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
               height: 1.5,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 10),
-          const Text(
-            'Create categories and subcategories first, then upload the Excel file so rows can be matched safely.',
+          SizedBox(height: 10),
+          Text(
+            context.l10n.excelCreateCategoriesFirst,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
               height: 1.5,

@@ -4,7 +4,7 @@ class SupplierPickedExcelFileEntity {
   final String fileName;
   final Uint8List bytes;
 
-  const SupplierPickedExcelFileEntity({
+  SupplierPickedExcelFileEntity({
     required this.fileName,
     required this.bytes,
   });

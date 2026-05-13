@@ -1,7 +1,7 @@
 import '../../domain/entities/supplier_excel_product_row_entity.dart';
 
 class SupplierExcelProductRowModel extends SupplierExcelProductRowEntity {
-  const SupplierExcelProductRowModel({
+  SupplierExcelProductRowModel({
     required super.rowNumber,
     required super.productName,
     required super.description,

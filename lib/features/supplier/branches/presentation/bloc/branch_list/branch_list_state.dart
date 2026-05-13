@@ -9,7 +9,7 @@ class BranchListState extends Equatable {
   final String? error;
   final String? successMessage;
 
-  const BranchListState({
+  BranchListState({
     required this.isLoading,
     required this.isDeleting,
     required this.branches,
@@ -18,7 +18,7 @@ class BranchListState extends Equatable {
   });
 
   factory BranchListState.initial() {
-    return const BranchListState(
+    return BranchListState(
       isLoading: false,
       isDeleting: false,
       branches: [],

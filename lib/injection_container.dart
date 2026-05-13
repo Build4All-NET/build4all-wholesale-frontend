@@ -31,6 +31,16 @@ import 'features/supplier_profile/domain/repositories/supplier_profile_repositor
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
 
+
+// =========================
+// SUPPLIER PROFILE DISPLAY - BUILD4ALL READ ONLY
+// =========================
+import 'features/supplier/profile/data/repositories/supplier_profile_display_repository_impl.dart';
+import 'features/supplier/profile/data/services/supplier_profile_display_api_service.dart';
+import 'features/supplier/profile/domain/repositories/supplier_profile_display_repository.dart';
+import 'features/supplier/profile/domain/usecases/get_supplier_profile_display_usecase.dart';
+import 'features/supplier/profile/presentation/bloc/supplier_profile_display_bloc.dart';
+
 // =========================
 // RETAILER HOME / PROFILE / CART
 // =========================
@@ -285,6 +295,12 @@ Future<void> init() async {
         SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
+  sl.registerLazySingleton<SupplierProfileDisplayApiService>(
+    () => SupplierProfileDisplayApiService(
+      sl<ApiClient>(instanceName: 'centralApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<RetailerProfileService>(
     () => RetailerProfileService(
       centralApiClient: sl<ApiClient>(instanceName: 'centralApiClient'),
@@ -369,6 +385,12 @@ Future<void> init() async {
   sl.registerLazySingleton<SupplierProfileRepository>(
     () => SupplierProfileRepositoryImpl(
       supplierProfileService: sl<SupplierProfileService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierProfileDisplayRepository>(
+    () => SupplierProfileDisplayRepositoryImpl(
+      apiService: sl<SupplierProfileDisplayApiService>(),
     ),
   );
 
@@ -501,6 +523,12 @@ Future<void> init() async {
   // =========================
   sl.registerLazySingleton<CreateSupplierProfileUseCase>(
     () => CreateSupplierProfileUseCase(sl<SupplierProfileRepository>()),
+  );
+
+  sl.registerLazySingleton<GetSupplierProfileDisplayUseCase>(
+    () => GetSupplierProfileDisplayUseCase(
+      sl<SupplierProfileDisplayRepository>(),
+    ),
   );
 
   // =========================
@@ -784,6 +812,13 @@ Future<void> init() async {
   sl.registerFactory<SupplierProfileCubit>(
     () => SupplierProfileCubit(
       createSupplierProfileUseCase: sl<CreateSupplierProfileUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierProfileDisplayBloc>(
+    () => SupplierProfileDisplayBloc(
+      getSupplierProfileDisplayUseCase:
+          sl<GetSupplierProfileDisplayUseCase>(),
     ),
   );
 

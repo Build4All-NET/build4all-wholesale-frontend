@@ -18,7 +18,7 @@ class SupplierExcelImportState extends Equatable {
   final String? successMessage;
   final SupplierExcelImportResultEntity? importResult;
 
-  const SupplierExcelImportState({
+  SupplierExcelImportState({
     required this.isPickingOrParsing,
     required this.isImporting,
     required this.rows,
@@ -32,10 +32,10 @@ class SupplierExcelImportState extends Equatable {
   });
 
   factory SupplierExcelImportState.initial() {
-    return const SupplierExcelImportState(
+    return SupplierExcelImportState(
       isPickingOrParsing: false,
       isImporting: false,
-      rows: [],
+      rows: const [],
     );
   }
 

@@ -5,28 +5,37 @@ class BranchMockStore {
   BranchMockStore._();
 
   static final List<BranchEntity> branches = [
-    const BranchEntity(
+    BranchEntity(
       id: '1',
-      name: 'Beirut Main Warehouse',
-      city: 'Beirut',
-      address: 'Hamra Main Street, Beirut',
-      phoneNumber: '81911967',
+      name: 'Dubai Main Warehouse',
+      countryCode: 'AE',
+      countryName: 'United Arab Emirates',
+      regionName: 'Dubai',
+      city: 'Dubai Marina',
+      address: 'Warehouse 12, Dubai Marina, Dubai',
+      phoneNumber: '+971501234567',
       status: BranchStatus.active,
     ),
-    const BranchEntity(
+    BranchEntity(
       id: '2',
-      name: 'Tripoli Branch',
-      city: 'Tripoli',
-      address: 'Tripoli, Lebanon',
-      phoneNumber: '70123456',
+      name: 'Riyadh Branch',
+      countryCode: 'SA',
+      countryName: 'Saudi Arabia',
+      regionName: 'Riyadh',
+      city: 'Riyadh',
+      address: 'Industrial Area, Riyadh',
+      phoneNumber: '+966512345678',
       status: BranchStatus.active,
     ),
-    const BranchEntity(
+    BranchEntity(
       id: '3',
-      name: 'Saida Branch',
-      city: 'Saida',
-      address: 'Saida, Lebanon',
-      phoneNumber: '76123456',
+      name: 'Doha Distribution Point',
+      countryCode: 'QA',
+      countryName: 'Qatar',
+      regionName: 'Doha',
+      city: 'Doha',
+      address: 'Logistics Zone, Doha',
+      phoneNumber: '+97433123456',
       status: BranchStatus.inactive,
     ),
   ];

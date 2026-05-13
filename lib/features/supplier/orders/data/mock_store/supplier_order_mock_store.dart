@@ -14,7 +14,7 @@ class SupplierOrderMockStore {
       paymentMethod: 'Wallet',
       status: SupplierOrderStatus.pending,
       notes: 'Please deliver before afternoon.',
-      items: const [
+      items: [
         SupplierOrderItemEntity(
           productId: 1,
           productName: 'Coca-Cola 24-Pack',
@@ -39,7 +39,7 @@ class SupplierOrderMockStore {
       orderDate: DateTime(2026, 3, 12, 11, 0),
       paymentMethod: 'Card',
       status: SupplierOrderStatus.pending,
-      items: const [
+      items: [
         SupplierOrderItemEntity(
           productId: 3,
           productName: 'Mineral Water 12-Pack',
@@ -64,7 +64,7 @@ class SupplierOrderMockStore {
       orderDate: DateTime(2026, 3, 13, 9, 15),
       paymentMethod: 'Cash',
       status: SupplierOrderStatus.preparing,
-      items: const [
+      items: [
         SupplierOrderItemEntity(
           productId: 5,
           productName: 'Rice Bag 25kg',
@@ -83,7 +83,7 @@ class SupplierOrderMockStore {
       orderDate: DateTime(2026, 3, 13, 13, 45),
       paymentMethod: 'Wallet',
       status: SupplierOrderStatus.shipped,
-      items: const [
+      items: [
         SupplierOrderItemEntity(
           productId: 6,
           productName: 'Cleaning Detergent Carton',
@@ -108,7 +108,7 @@ class SupplierOrderMockStore {
       orderDate: DateTime(2026, 3, 14, 16, 20),
       paymentMethod: 'Card',
       status: SupplierOrderStatus.delivered,
-      items: const [
+      items: [
         SupplierOrderItemEntity(
           productId: 8,
           productName: 'Milk Carton Box',
@@ -120,7 +120,7 @@ class SupplierOrderMockStore {
   ];
 
   Future<List<SupplierOrderEntity>> getOrders() async {
-    await Future.delayed(const Duration(milliseconds: 250));
+    await Future.delayed(Duration(milliseconds: 250));
     return List<SupplierOrderEntity>.from(_orders);
   }
 
@@ -132,7 +132,7 @@ class SupplierOrderMockStore {
     required String query,
     SupplierOrderStatus? status,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 200));
 
     final normalizedQuery = query.trim().toLowerCase();
 
@@ -153,7 +153,7 @@ class SupplierOrderMockStore {
     required int orderId,
     required SupplierOrderStatus status,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 250));
+    await Future.delayed(Duration(milliseconds: 250));
 
     final index = _orders.indexWhere((order) => order.id == orderId);
 

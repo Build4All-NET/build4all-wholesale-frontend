@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 
 class EmptyCatalogMessage extends StatelessWidget {
   final String message;
 
-  const EmptyCatalogMessage({
+  EmptyCatalogMessage({
     super.key,
     required this.message,
   });
@@ -15,7 +16,7 @@ class EmptyCatalogMessage extends StatelessWidget {
     return Center(
       child: Text(
         message,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w800,
           color: AppThemeTokens.textSecondary,
         ),

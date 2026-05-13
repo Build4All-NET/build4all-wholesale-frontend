@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -17,19 +18,19 @@ import '../widgets/supplier_excel_upload_card.dart';
 import '../widgets/supplier_excel_validation_summary_card.dart';
 
 class SupplierExcelImportScreen extends StatelessWidget {
-  const SupplierExcelImportScreen({super.key});
+  SupplierExcelImportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<SupplierExcelImportBloc>(),
-      child: const _SupplierExcelImportView(),
+      child: _SupplierExcelImportView(),
     );
   }
 }
 
 class _SupplierExcelImportView extends StatelessWidget {
-  const _SupplierExcelImportView();
+  _SupplierExcelImportView();
 
   @override
   Widget build(BuildContext context) {
@@ -58,49 +59,49 @@ class _SupplierExcelImportView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: AppThemeTokens.background,
-          drawer: const SupplierAppDrawer(),
+          drawer: SupplierAppDrawer(),
           appBar: AppBar(
-            title: const Text('Import Excel'),
+            title: Text(context.l10n.importExcelTitle),
             backgroundColor: AppThemeTokens.surface,
             foregroundColor: AppThemeTokens.textPrimary,
             elevation: 0,
             actions: [
               IconButton(
-                tooltip: 'Manage Categories',
+                tooltip: context.l10n.manageCategoriesTooltip,
                 onPressed: () => context.push('/supplier-catalog'),
-                icon: const Icon(Icons.category_outlined),
+                icon: Icon(Icons.category_outlined),
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
             ],
           ),
           bottomNavigationBar: _ImportBottomBar(state: state),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(
+              padding: EdgeInsets.all(
                 AppThemeTokens.screenHorizontalPadding,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SupplierExcelInstructionCard(),
-                  const SizedBox(height: 16),
+                  SupplierExcelInstructionCard(),
+                  SizedBox(height: 16),
                   SupplierExcelUploadCard(
                     fileName: state.fileName,
                     isLoading: state.isPickingOrParsing,
                     onPickFile: () {
                       context.read<SupplierExcelImportBloc>().add(
-                            const SupplierExcelPickFileRequested(),
+                            SupplierExcelPickFileRequested(),
                           );
                     },
                     onClear: () {
                       context.read<SupplierExcelImportBloc>().add(
-                            const SupplierExcelClearRequested(),
+                            SupplierExcelClearRequested(),
                           );
                     },
                   ),
-                  const SizedBox(height: 16),
-                  const SupplierExcelExpectedColumnsCard(),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
+                  SupplierExcelExpectedColumnsCard(),
+                  SizedBox(height: 16),
                   if (state.hasRows) ...[
                     SupplierExcelValidationSummaryCard(
                       totalRows: state.totalRows,
@@ -108,13 +109,13 @@ class _SupplierExcelImportView extends StatelessWidget {
                       errorRows: state.errorRowsCount,
                       warningRows: state.warningRowsCount,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     _ValidationHelpCard(state: state),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                   ],
                   if (state.importResult != null) ...[
                     _ImportResultCard(state: state),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                   ],
                   SupplierExcelPreviewList(
                     rows: state.rows,
@@ -124,7 +125,7 @@ class _SupplierExcelImportView extends StatelessWidget {
                       row: row,
                     ),
                   ),
-                  const SizedBox(height: 96),
+                  SizedBox(height: 96),
                 ],
               ),
             ),
@@ -160,31 +161,31 @@ class _SupplierExcelImportView extends StatelessWidget {
 class _ValidationHelpCard extends StatelessWidget {
   final SupplierExcelImportState state;
 
-  const _ValidationHelpCard({required this.state});
+  _ValidationHelpCard({required this.state});
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
     final title = state.hasErrors
-        ? 'Some rows need attention'
-        : 'All rows are ready to import';
+        ? context.l10n.someRowsNeedAttention
+        : context.l10n.allRowsReady;
 
     final message = state.hasErrors
-        ? 'You can edit invalid rows inside this screen, fix the Excel file and upload it again, or manage missing categories first.'
+        ? context.l10n.excelAttentionHelp
         : 'Review the rows below, then import the valid products. Branch stock is still managed from Branch Inventory.';
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: state.hasErrors
-            ? const Color(0xFFFFF7ED)
+            ? Color(0xFFFFF7ED)
             : primary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
         border: Border.all(
           color: state.hasErrors
-              ? const Color(0xFFFED7AA)
+              ? Color(0xFFFED7AA)
               : primary.withOpacity(0.22),
         ),
       ),
@@ -197,15 +198,15 @@ class _ValidationHelpCard extends StatelessWidget {
                 state.hasErrors
                     ? Icons.info_outline
                     : Icons.check_circle_outline,
-                color: state.hasErrors ? const Color(0xFFF97316) : primary,
+                color: state.hasErrors ? Color(0xFFF97316) : primary,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   title,
                   style: TextStyle(
                     color: state.hasErrors
-                        ? const Color(0xFF9A3412)
+                        ? Color(0xFF9A3412)
                         : AppThemeTokens.textPrimary,
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
@@ -214,24 +215,24 @@ class _ValidationHelpCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             message,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w700,
               height: 1.35,
             ),
           ),
           if (state.hasCatalogErrors) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: () => context.push('/supplier-catalog'),
-              icon: const Icon(Icons.category_outlined),
-              label: const Text('Manage Categories'),
+              icon: Icon(Icons.category_outlined),
+              label: Text(context.l10n.manageCategoriesButton),
               style: OutlinedButton.styleFrom(
                 foregroundColor: primary,
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 12,
                 ),
@@ -250,7 +251,7 @@ class _ValidationHelpCard extends StatelessWidget {
 class _ImportResultCard extends StatelessWidget {
   final SupplierExcelImportState state;
 
-  const _ImportResultCard({required this.state});
+  _ImportResultCard({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +260,7 @@ class _ImportResultCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -271,9 +272,9 @@ class _ImportResultCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.done_all_outlined, color: primary),
-              const SizedBox(width: 8),
-              const Text(
-                'Import Result',
+              SizedBox(width: 8),
+              Text(
+                context.l10n.importResultTitle,
                 style: TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -282,22 +283,22 @@ class _ImportResultCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
-            'Imported: ${result.importedCount} / ${result.totalRows}',
-            style: const TextStyle(
+            context.l10n.importedRowsSummary(result.importedCount, result.totalRows),
+            style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w800,
             ),
           ),
           if (result.failedMessages.isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             ...result.failedMessages.map(
               (message) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: EdgeInsets.only(bottom: 6),
                 child: Text(
                   message,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppThemeTokens.error,
                     fontWeight: FontWeight.w700,
                   ),
@@ -314,7 +315,7 @@ class _ImportResultCard extends StatelessWidget {
 class _ImportBottomBar extends StatelessWidget {
   final SupplierExcelImportState state;
 
-  const _ImportBottomBar({required this.state});
+  _ImportBottomBar({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +323,7 @@ class _ImportBottomBar extends StatelessWidget {
 
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 12),
         decoration: BoxDecoration(
           color: AppThemeTokens.surface,
           border: Border(top: BorderSide(color: AppThemeTokens.border)),
@@ -330,7 +331,7 @@ class _ImportBottomBar extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
               blurRadius: 14,
-              offset: const Offset(0, -6),
+              offset: Offset(0, -6),
             ),
           ],
         ),
@@ -342,34 +343,34 @@ class _ImportBottomBar extends StatelessWidget {
                     ? null
                     : () {
                         context.read<SupplierExcelImportBloc>().add(
-                              const SupplierExcelClearRequested(),
+                              SupplierExcelClearRequested(),
                             );
                       },
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                child: const Text(
-                  'Reset',
+                child: Text(
+                  context.l10n.resetButton,
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               flex: 2,
               child: ElevatedButton.icon(
                 onPressed: state.canImport
                     ? () {
                         context.read<SupplierExcelImportBloc>().add(
-                              const SupplierExcelImportRequested(),
+                              SupplierExcelImportRequested(),
                             );
                       }
                     : null,
                 icon: state.isImporting
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 18,
                         height: 18,
                         child: CircularProgressIndicator(
@@ -377,11 +378,11 @@ class _ImportBottomBar extends StatelessWidget {
                           color: Colors.white,
                         ),
                       )
-                    : const Icon(Icons.cloud_upload_outlined),
+                    : Icon(Icons.cloud_upload_outlined),
                 label: Text(
                   state.isImporting
-                      ? 'Importing...'
-                      : 'Import ${state.validRowsCount} Products',
+                      ? context.l10n.importingLabel
+                      : context.l10n.importProductsButton(state.validRowsCount),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
@@ -391,7 +392,7 @@ class _ImportBottomBar extends StatelessWidget {
                   foregroundColor: Colors.white,
                   disabledBackgroundColor: AppThemeTokens.border,
                   disabledForegroundColor: AppThemeTokens.textSecondary,
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     vertical: 12,
                     horizontal: 8,
                   ),

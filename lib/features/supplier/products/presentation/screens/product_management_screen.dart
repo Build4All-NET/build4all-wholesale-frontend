@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,7 @@ import '../bloc/product_list/product_list_state.dart';
 import '../widgets/product_card.dart';
 
 class ProductManagementScreen extends StatefulWidget {
-  const ProductManagementScreen({super.key});
+  ProductManagementScreen({super.key});
 
   @override
   State<ProductManagementScreen> createState() =>
@@ -31,7 +32,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   @override
   void initState() {
     super.initState();
-    _productListBloc.add(const LoadProducts());
+    _productListBloc.add(LoadProducts());
   }
 
   @override
@@ -48,7 +49,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     _searchDebounce?.cancel();
 
     _searchDebounce = Timer(
-      const Duration(milliseconds: 350),
+      Duration(milliseconds: 350),
       () {
         _productListBloc.add(SearchProducts(value));
       },
@@ -61,7 +62,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     if (result != null) {
       _productListBloc.add(
         _searchText.trim().isEmpty
-            ? const LoadProducts()
+            ? LoadProducts()
             : SearchProducts(_searchText),
       );
     }
@@ -76,7 +77,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     if (result != null) {
       _productListBloc.add(
         _searchText.trim().isEmpty
-            ? const LoadProducts()
+            ? LoadProducts()
             : SearchProducts(_searchText),
       );
     }
@@ -87,21 +88,21 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Product',
+          title: Text(
+            context.l10n.deleteProductTitle,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete ${product.name}?',
+            context.l10n.deleteProductConfirmation(product.name),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Delete'),
+              child: Text(context.l10n.delete),
             ),
           ],
         );
@@ -116,7 +117,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   Future<void> _refreshProducts() async {
     _productListBloc.add(
       _searchText.trim().isEmpty
-          ? const LoadProducts()
+          ? LoadProducts()
           : SearchProducts(_searchText),
     );
   }
@@ -150,12 +151,12 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
 
             return Scaffold(
               backgroundColor: AppThemeTokens.background,
-              drawer: const SupplierAppDrawer(),
+              drawer: SupplierAppDrawer(),
               appBar: AppBar(
                 backgroundColor: AppThemeTokens.background,
                 elevation: 0,
-                title: const Text(
-                  'Product Management',
+                title: Text(
+                  context.l10n.productManagementTitle,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     color: AppThemeTokens.textPrimary,
@@ -170,19 +171,19 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       size: 30,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                 ],
               ),
               body: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 14),
                     child: TextField(
                       controller: _searchController,
                       onChanged: _onSearchChanged,
                       decoration: InputDecoration(
-                        hintText: 'Search products, categories...',
-                        prefixIcon: const Icon(
+                        hintText: context.l10n.searchProductsHint,
+                        prefixIcon: Icon(
                           Icons.search,
                           color: AppThemeTokens.textSecondary,
                         ),
@@ -197,14 +198,14 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       ),
                     ),
                   ),
-                  const Divider(height: 1, color: AppThemeTokens.border),
+                  Divider(height: 1, color: AppThemeTokens.border),
                   Expanded(
                     child: state.isLoading
-                        ? const Center(child: CircularProgressIndicator())
+                        ? Center(child: CircularProgressIndicator())
                         : state.products.isEmpty
-                            ? const Center(
+                            ? Center(
                                 child: Text(
-                                  'No products found',
+                                  context.l10n.noProductsFound,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     color: AppThemeTokens.textSecondary,
@@ -214,7 +215,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                             : RefreshIndicator(
                                 onRefresh: _refreshProducts,
                                 child: ListView.builder(
-                                  padding: const EdgeInsets.all(16),
+                                  padding: EdgeInsets.all(16),
                                   itemCount: state.products.length,
                                   itemBuilder: (context, index) {
                                     final product = state.products[index];

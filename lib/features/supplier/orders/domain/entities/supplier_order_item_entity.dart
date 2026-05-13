@@ -4,7 +4,7 @@ class SupplierOrderItemEntity {
   final int quantity;
   final double unitPrice;
 
-  const SupplierOrderItemEntity({
+  SupplierOrderItemEntity({
     required this.productId,
     required this.productName,
     required this.quantity,

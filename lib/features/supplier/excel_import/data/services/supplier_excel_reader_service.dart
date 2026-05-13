@@ -9,7 +9,7 @@ import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
 import '../../domain/entities/supplier_picked_excel_file_entity.dart';
 
 class SupplierExcelReaderService {
-  static const List<String> expectedHeaders = [
+  static List<String> expectedHeaders = [
     'Product Name',
     'Description',
     'Category',
@@ -373,7 +373,7 @@ class _ParsedWorksheetRow {
   final int rowNumber;
   final List<String> cells;
 
-  const _ParsedWorksheetRow({
+  _ParsedWorksheetRow({
     required this.rowNumber,
     required this.cells,
   });

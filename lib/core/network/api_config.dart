@@ -13,6 +13,8 @@ class ApiConfig {
   static const String verifyEmailCode = '/auth/verify-email-code';
   static const String completeProfile = '/auth/complete-profile';
 
+  static const String build4AllAdminProfileMe = '/admin/users/me';
+
   static const String currentUser = '/auth/me';
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';

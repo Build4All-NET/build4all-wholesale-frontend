@@ -4,7 +4,7 @@ class SupplierExcelImportResultEntity {
   final int failedCount;
   final List<String> failedMessages;
 
-  const SupplierExcelImportResultEntity({
+  SupplierExcelImportResultEntity({
     required this.totalRows,
     required this.importedCount,
     required this.failedCount,

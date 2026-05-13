@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 
@@ -8,7 +9,7 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
   final int errorRows;
   final int warningRows;
 
-  const SupplierExcelValidationSummaryCard({
+  SupplierExcelValidationSummaryCard({
     super.key,
     required this.totalRows,
     required this.validRows,
@@ -20,24 +21,24 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tiles = [
       _SummaryTileData(
-        label: 'Rows',
+        label: context.l10n.rowsLabel,
         value: totalRows.toString(),
         icon: Icons.table_rows_outlined,
       ),
       _SummaryTileData(
-        label: 'Valid',
+        label: context.l10n.validLabel,
         value: validRows.toString(),
         icon: Icons.check_circle_outline,
       ),
       _SummaryTileData(
-        label: 'Errors',
+        label: context.l10n.errorsLabel,
         value: errorRows.toString(),
         icon: Icons.error_outline,
         isError: true,
       ),
       if (warningRows > 0)
         _SummaryTileData(
-          label: 'Warnings',
+          label: context.l10n.warningsLabel,
           value: warningRows.toString(),
           icon: Icons.info_outline,
           isWarning: true,
@@ -46,9 +47,9 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
 
     return GridView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       itemCount: tiles.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
@@ -75,7 +76,7 @@ class _SummaryTileData {
   final bool isError;
   final bool isWarning;
 
-  const _SummaryTileData({
+  _SummaryTileData({
     required this.label,
     required this.value,
     required this.icon,
@@ -91,7 +92,7 @@ class _SummaryTile extends StatelessWidget {
   final bool isError;
   final bool isWarning;
 
-  const _SummaryTile({
+  _SummaryTile({
     required this.label,
     required this.value,
     required this.icon,
@@ -108,7 +109,7 @@ class _SummaryTile extends StatelessWidget {
             : Theme.of(context).colorScheme.primary;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
@@ -119,7 +120,7 @@ class _SummaryTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: color, size: 20),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             value,
             style: TextStyle(
@@ -128,12 +129,12 @@ class _SummaryTile extends StatelessWidget {
               fontSize: 20,
             ),
           ),
-          const SizedBox(height: 2),
+          SizedBox(height: 2),
           Text(
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w700,
               fontSize: 12,
