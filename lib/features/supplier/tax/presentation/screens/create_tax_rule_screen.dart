@@ -66,8 +66,6 @@ class _CreateTaxRuleView extends StatefulWidget {
 }
 
 class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
-  static const String _noRegionValue = '__NO_REGION__';
-
   final _formKey = GlobalKey<FormState>();
 
   final ApiClient _projectApiClient =
@@ -82,7 +80,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
   TaxRulePreset _selectedPreset = TaxRulePreset.custom;
 
   String? _selectedCountryId;
-  String? _selectedRegionValue;
+  String? _selectedRegionId;
 
   bool _autoGenerateName = true;
   bool _appliesToShipping = false;
@@ -110,25 +108,15 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
   }
 
   TaxRegionModel? get _selectedRegion {
-    if (_selectedRegionValue == null ||
-        _selectedRegionValue == _noRegionValue) {
+    if (_selectedRegionId == null || _selectedRegionId!.trim().isEmpty) {
       return null;
     }
 
     final matches = _regions.where(
-      (region) => region.id == _selectedRegionValue,
+      (region) => region.id == _selectedRegionId,
     );
 
     return matches.isEmpty ? null : matches.first;
-  }
-
-  String? get _requestRegionId {
-    if (_selectedRegionValue == null ||
-        _selectedRegionValue == _noRegionValue) {
-      return null;
-    }
-
-    return _selectedRegionValue;
   }
 
   @override
@@ -146,13 +134,11 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
     _notesController = TextEditingController(text: rule?.notes ?? '');
 
     _selectedCountryId = rule?.countryId;
-    _selectedRegionValue = rule?.regionId ?? _noRegionValue;
+    _selectedRegionId = rule?.regionId;
 
     _appliesToShipping = rule?.appliesToShipping ?? false;
     _active = rule?.active ?? true;
 
-    // In create mode, generate name automatically.
-    // In edit mode, preserve saved name unless supplier turns it on.
     _autoGenerateName = rule == null;
 
     if (rule != null &&
@@ -203,7 +189,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
 
           if (!exists) {
             _selectedCountryId = null;
-            _selectedRegionValue = _noRegionValue;
+            _selectedRegionId = null;
           }
         }
 
@@ -233,7 +219,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
     if (countryId == null || countryId.isEmpty) {
       setState(() {
         _regions.clear();
-        _selectedRegionValue = _noRegionValue;
+        _selectedRegionId = null;
       });
       _syncGeneratedNameIfNeeded();
       return;
@@ -255,16 +241,13 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           ..addAll(regions);
 
         if (resetRegion) {
-          _selectedRegionValue = _noRegionValue;
+          _selectedRegionId = null;
         }
 
-        if (_selectedRegionValue != null &&
-            _selectedRegionValue != _noRegionValue &&
-            !_regions.any((region) => region.id == _selectedRegionValue)) {
-          _selectedRegionValue = _noRegionValue;
+        if (_selectedRegionId != null &&
+            !_regions.any((region) => region.id == _selectedRegionId)) {
+          _selectedRegionId = null;
         }
-
-        _selectedRegionValue ??= _noRegionValue;
 
         _loadingRegions = false;
       });
@@ -285,7 +268,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
 
     setState(() {
       _selectedCountryId = countryId;
-      _selectedRegionValue = _noRegionValue;
+      _selectedRegionId = null;
       _regions.clear();
     });
 
@@ -308,7 +291,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
 
         if (lebanonMatches.isNotEmpty) {
           _selectedCountryId = lebanonMatches.first.id;
-          _selectedRegionValue = _noRegionValue;
+          _selectedRegionId = null;
         }
       }
     });
@@ -425,7 +408,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           selectedCountry?.iso2Code ?? widget.rule?.countryIso2Code,
       countryIso3Code:
           selectedCountry?.iso3Code ?? widget.rule?.countryIso3Code,
-      regionId: _requestRegionId,
+      regionId: _selectedRegionId,
       regionName: selectedRegion?.name,
       regionCode: selectedRegion?.code,
       appliesToShipping: _appliesToShipping,
@@ -647,7 +630,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                           const SizedBox(height: 8),
                           const _HelpText(
                             text:
-                                'Example: enter 11 for 11%. Tax is applied to the whole order based on country and region.',
+                                'Example: enter 11 for 11%. Tax is applied to the whole order based on country and optional region.',
                           ),
                         ],
                       ),
@@ -680,7 +663,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                           else if (_countryErrorMessage != null)
                             _ErrorText(message: _countryErrorMessage!)
                           else
-                            _CountryDropdown(
+                            _TaxCountrySearchField(
                               countries: _countries,
                               selectedCountryId: _selectedCountryId,
                               onChanged: _handleCountryChanged,
@@ -694,7 +677,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                           Row(
                             children: [
                               const Expanded(
-                                child: _FieldLabel('Region'),
+                                child: _FieldLabel('Region (Optional)'),
                               ),
                               TextButton(
                                 onPressed: _selectedCountryId == null ||
@@ -720,15 +703,12 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                           else if (_regionErrorMessage != null)
                             _ErrorText(message: _regionErrorMessage!)
                           else
-                            _RegionDropdown(
+                            _TaxRegionSearchField(
                               regions: _regions,
-                              selectedRegionValue:
-                                  _selectedRegionValue ?? _noRegionValue,
-                              noRegionValue: _noRegionValue,
+                              selectedRegionId: _selectedRegionId,
                               onChanged: (value) {
                                 setState(() {
-                                  _selectedRegionValue =
-                                      value ?? _noRegionValue;
+                                  _selectedRegionId = value;
                                 });
 
                                 _syncGeneratedNameIfNeeded();
@@ -737,7 +717,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                           const SizedBox(height: 8),
                           const _HelpText(
                             text:
-                                'Choose No region for a country-level rule, or choose a specific region for a more specific rule.',
+                                'Choose a specific region only when needed. Leave it empty to apply this tax rule to the whole country.',
                           ),
                         ],
                       ),
@@ -987,99 +967,566 @@ class _TaxRulePresetDropdown extends StatelessWidget {
   }
 }
 
-class _CountryDropdown extends StatelessWidget {
+class _TaxCountrySearchField extends StatelessWidget {
   final List<TaxCountryModel> countries;
   final String? selectedCountryId;
   final ValueChanged<String?> onChanged;
 
-  const _CountryDropdown({
+  const _TaxCountrySearchField({
     required this.countries,
     required this.selectedCountryId,
     required this.onChanged,
   });
 
+  TaxCountryModel? get _selectedCountry {
+    if (selectedCountryId == null) return null;
+
+    final matches = countries.where(
+      (country) => country.id == selectedCountryId,
+    );
+
+    return matches.isEmpty ? null : matches.first;
+  }
+
+  Future<void> _openCountryPicker(BuildContext context) async {
+    final selected = await showModalBottomSheet<TaxCountryModel>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return _TaxCountryPickerSheet(
+          countries: countries,
+          selectedCountryId: selectedCountryId,
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    onChanged(selected.id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final safeSelectedId = countries.any(
-      (country) => country.id == selectedCountryId,
-    )
-        ? selectedCountryId
-        : null;
-
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      initialValue: safeSelectedId,
-      selectedItemBuilder: (context) {
-        return countries.map((country) {
-          return _DropdownText(country.name);
-        }).toList();
-      },
-      items: countries.map((country) {
-        return DropdownMenuItem<String>(
-          value: country.id,
-          child: _DropdownText(country.name),
-        );
-      }).toList(),
-      onChanged: onChanged,
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
+    return _SearchableSelectionField(
+      value: _selectedCountry == null ? null : _countryDisplay(_selectedCountry!),
+      hintText: 'Search and select country',
+      onTap: countries.isEmpty ? null : () => _openCountryPicker(context),
+      validator: () {
+        if (selectedCountryId == null || selectedCountryId!.trim().isEmpty) {
           return 'Country is required';
         }
 
         return null;
       },
-      decoration: _dropdownDecoration(context),
+    );
+  }
+
+  String _countryDisplay(TaxCountryModel country) {
+    final code = country.iso2Code.trim();
+    if (code.isEmpty) return country.name;
+    return '${country.name} ($code)';
+  }
+}
+
+class _TaxRegionSearchField extends StatelessWidget {
+  final List<TaxRegionModel> regions;
+  final String? selectedRegionId;
+  final ValueChanged<String?> onChanged;
+
+  const _TaxRegionSearchField({
+    required this.regions,
+    required this.selectedRegionId,
+    required this.onChanged,
+  });
+
+  TaxRegionModel? get _selectedRegion {
+    if (selectedRegionId == null || selectedRegionId!.trim().isEmpty) {
+      return null;
+    }
+
+    final matches = regions.where(
+      (region) => region.id == selectedRegionId,
+    );
+
+    return matches.isEmpty ? null : matches.first;
+  }
+
+  Future<void> _openRegionPicker(BuildContext context) async {
+    final selected = await showModalBottomSheet<TaxRegionModel>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return _TaxRegionPickerSheet(
+          regions: regions,
+          selectedRegionId: selectedRegionId,
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    onChanged(selected.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (regions.isEmpty) {
+      return _SearchableSelectionField(
+        value: null,
+        hintText: 'Select region (No region found)',
+        onTap: null,
+        validator: () => null,
+      );
+    }
+
+    return _SearchableSelectionField(
+      value: _selectedRegion?.name,
+      hintText: 'Search and select region',
+      onTap: () => _openRegionPicker(context),
+      validator: () => null,
     );
   }
 }
 
-class _RegionDropdown extends StatelessWidget {
-  final List<TaxRegionModel> regions;
-  final String selectedRegionValue;
-  final String noRegionValue;
-  final ValueChanged<String?> onChanged;
+class _SearchableSelectionField extends FormField<String> {
+  _SearchableSelectionField({
+    required String? value,
+    required String hintText,
+    required VoidCallback? onTap,
+    required String? Function() validator,
+  }) : super(
+          initialValue: value,
+          validator: (_) => validator(),
+          builder: (field) {
+            final hasValue = value != null && value.trim().isNotEmpty;
+            final hasError = field.hasError;
+            final enabled = onTap != null;
 
-  const _RegionDropdown({
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(6),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: enabled
+                          ? AppThemeTokens.surface
+                          : const Color(0xFFF3F4F6),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 13,
+                      ),
+                      border: _fieldBorder(),
+                      enabledBorder: _fieldBorder(),
+                      disabledBorder: _fieldBorder(
+                        color: const Color(0xFFE5E7EB),
+                      ),
+                      focusedBorder: _fieldBorder(
+                        color: Theme.of(field.context).colorScheme.primary,
+                      ),
+                      errorBorder: _fieldBorder(color: Colors.red),
+                      focusedErrorBorder: _fieldBorder(color: Colors.red),
+                      errorText: hasError ? field.errorText : null,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            hasValue ? value.trim() : hintText,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight:
+                                  hasValue ? FontWeight.w700 : FontWeight.w600,
+                              color: hasValue
+                                  ? AppThemeTokens.textPrimary
+                                  : AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.search,
+                          size: 20,
+                          color: enabled
+                              ? AppThemeTokens.textSecondary
+                              : const Color(0xFF9CA3AF),
+                        ),
+                        if (enabled) ...[
+                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 24,
+                            color: AppThemeTokens.textSecondary,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+
+  static OutlineInputBorder _fieldBorder({
+    Color color = AppThemeTokens.border,
+  }) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: BorderSide(color: color, width: 1.2),
+    );
+  }
+}
+
+class _TaxCountryPickerSheet extends StatefulWidget {
+  final List<TaxCountryModel> countries;
+  final String? selectedCountryId;
+
+  const _TaxCountryPickerSheet({
+    required this.countries,
+    required this.selectedCountryId,
+  });
+
+  @override
+  State<_TaxCountryPickerSheet> createState() => _TaxCountryPickerSheetState();
+}
+
+class _TaxCountryPickerSheetState extends State<_TaxCountryPickerSheet> {
+  final TextEditingController _searchController = TextEditingController();
+
+  String _query = '';
+
+  List<TaxCountryModel> get _filteredCountries {
+    final normalizedQuery = _query.trim().toLowerCase();
+
+    if (normalizedQuery.isEmpty) {
+      return widget.countries;
+    }
+
+    return widget.countries.where((country) {
+      return country.name.toLowerCase().contains(normalizedQuery) ||
+          country.iso2Code.toLowerCase().contains(normalizedQuery) ||
+          country.iso3Code.toLowerCase().contains(normalizedQuery);
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _SearchBottomSheetContainer(
+      title: 'Select Country',
+      searchHint: 'Search country...',
+      searchController: _searchController,
+      onSearchChanged: (value) {
+        setState(() {
+          _query = value;
+        });
+      },
+      emptyMessage: 'No country found',
+      itemCount: _filteredCountries.length,
+      itemBuilder: (context, index) {
+        final country = _filteredCountries[index];
+        final selected = country.id == widget.selectedCountryId;
+
+        return _PickerTile(
+          title: _countryTitle(country),
+          subtitle: _countrySubtitle(country),
+          selected: selected,
+          onTap: () => Navigator.of(context).pop(country),
+        );
+      },
+    );
+  }
+
+  String _countryTitle(TaxCountryModel country) {
+    final code = country.iso2Code.trim();
+    if (code.isEmpty) return country.name;
+    return '${country.name} ($code)';
+  }
+
+  String _countrySubtitle(TaxCountryModel country) {
+    final codes = [
+      country.iso2Code.trim(),
+      country.iso3Code.trim(),
+    ].where((code) => code.isNotEmpty).join(' • ');
+
+    return codes.isEmpty ? 'Country' : codes;
+  }
+}
+
+class _TaxRegionPickerSheet extends StatefulWidget {
+  final List<TaxRegionModel> regions;
+  final String? selectedRegionId;
+
+  const _TaxRegionPickerSheet({
     required this.regions,
-    required this.selectedRegionValue,
-    required this.noRegionValue,
-    required this.onChanged,
+    required this.selectedRegionId,
+  });
+
+  @override
+  State<_TaxRegionPickerSheet> createState() => _TaxRegionPickerSheetState();
+}
+
+class _TaxRegionPickerSheetState extends State<_TaxRegionPickerSheet> {
+  final TextEditingController _searchController = TextEditingController();
+
+  String _query = '';
+
+  List<TaxRegionModel> get _filteredRegions {
+    final normalizedQuery = _query.trim().toLowerCase();
+
+    if (normalizedQuery.isEmpty) {
+      return widget.regions;
+    }
+
+    return widget.regions.where((region) {
+      return region.name.toLowerCase().contains(normalizedQuery) ||
+          region.code.toLowerCase().contains(normalizedQuery) ||
+          region.countryName.toLowerCase().contains(normalizedQuery);
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _SearchBottomSheetContainer(
+      title: 'Select Region',
+      searchHint: 'Search region...',
+      searchController: _searchController,
+      onSearchChanged: (value) {
+        setState(() {
+          _query = value;
+        });
+      },
+      emptyMessage: 'No region found',
+      itemCount: _filteredRegions.length,
+      itemBuilder: (context, index) {
+        final region = _filteredRegions[index];
+        final selected = region.id == widget.selectedRegionId;
+
+        return _PickerTile(
+          title: region.name,
+          subtitle: _regionSubtitle(region),
+          selected: selected,
+          onTap: () => Navigator.of(context).pop(region),
+        );
+      },
+    );
+  }
+
+  String _regionSubtitle(TaxRegionModel region) {
+    final parts = [
+      region.code.trim(),
+      region.countryName.trim(),
+    ].where((part) => part.isNotEmpty).join(' • ');
+
+    return parts.isEmpty ? 'Region' : parts;
+  }
+}
+
+class _SearchBottomSheetContainer extends StatelessWidget {
+  final String title;
+  final String searchHint;
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearchChanged;
+  final String emptyMessage;
+  final int itemCount;
+  final IndexedWidgetBuilder itemBuilder;
+
+  const _SearchBottomSheetContainer({
+    required this.title,
+    required this.searchHint,
+    required this.searchController,
+    required this.onSearchChanged,
+    required this.emptyMessage,
+    required this.itemCount,
+    required this.itemBuilder,
   });
 
   @override
   Widget build(BuildContext context) {
-    final values = [
-      noRegionValue,
-      ...regions.map((region) => region.id),
-    ];
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final height = MediaQuery.of(context).size.height * 0.78;
 
-    final safeSelectedValue = values.contains(selectedRegionValue)
-        ? selectedRegionValue
-        : noRegionValue;
-
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      initialValue: safeSelectedValue,
-      selectedItemBuilder: (context) {
-        return [
-          const _DropdownText('No region'),
-          ...regions.map((region) => _DropdownText(region.name)),
-        ];
-      },
-      items: [
-        DropdownMenuItem<String>(
-          value: noRegionValue,
-          child: const _DropdownText('No region'),
-        ),
-        ...regions.map(
-          (region) => DropdownMenuItem<String>(
-            value: region.id,
-            child: _DropdownText(region.name),
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: Container(
+        height: height,
+        decoration: const BoxDecoration(
+          color: AppThemeTokens.surface,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
           ),
         ),
-      ],
-      onChanged: onChanged,
-      decoration: _dropdownDecoration(context),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 48,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppThemeTokens.border,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 12, 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: onSearchChanged,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: searchHint,
+                    hintStyle: const TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFFF8FAFC),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 13,
+                    ),
+                    border: _border(),
+                    enabledBorder: _border(),
+                    focusedBorder: _border(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, color: AppThemeTokens.border),
+              Expanded(
+                child: itemCount == 0
+                    ? Center(
+                        child: Text(
+                          emptyMessage,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: AppThemeTokens.textSecondary,
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
+                        itemCount: itemCount,
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 4);
+                        },
+                        itemBuilder: itemBuilder,
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: color, width: 1.2),
+    );
+  }
+}
+
+class _PickerTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _PickerTile({
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Material(
+      color: selected ? primary.withValues(alpha: 0.10) : Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: ListTile(
+        onTap: onTap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        title: Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
+            color: AppThemeTokens.textPrimary,
+          ),
+        ),
+        subtitle: subtitle.trim().isEmpty
+            ? null
+            : Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppThemeTokens.textSecondary,
+                ),
+              ),
+        trailing: selected
+            ? Icon(
+                Icons.check_circle,
+                color: primary,
+              )
+            : const Icon(
+                Icons.chevron_right,
+                color: AppThemeTokens.textSecondary,
+              ),
+      ),
     );
   }
 }

@@ -598,13 +598,19 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode
-                                      ? 'Update Promotion'
-                                      : 'Create Promotion',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                              : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? 'Update Promotion'
+                                        : 'Create Promotion',
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -818,9 +824,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               const Text(
                                 'No active branches available. Add branches from Branch Management first.',
                                 style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
                                   color: AppThemeTokens.textSecondary,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               )
                             else
@@ -1186,6 +1191,7 @@ class _InputField extends StatelessWidget {
   final bool enabled;
   final int maxLines;
   final String? Function(String?)? validator;
+  final ValueChanged<String>? onChanged;
 
   const _InputField({
     required this.controller,
@@ -1194,6 +1200,7 @@ class _InputField extends StatelessWidget {
     this.enabled = true,
     this.maxLines = 1,
     this.validator,
+    this.onChanged,
   });
 
   @override
@@ -1204,6 +1211,7 @@ class _InputField extends StatelessWidget {
       maxLines: maxLines,
       keyboardType: keyboardType,
       validator: validator,
+      onChanged: onChanged,
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
@@ -1253,21 +1261,15 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionDiscountType>(
+      isExpanded: true,
       initialValue: value,
-      items: PromotionDiscountType.values
-          .map(
-            (type) => DropdownMenuItem<PromotionDiscountType>(
-              value: type,
-              child: Text(type.label),
-            ),
-          )
-          .toList(),
+      items: PromotionDiscountType.values.map((type) {
+        return DropdownMenuItem<PromotionDiscountType>(
+          value: type,
+          child: _DropdownText(type.label),
+        );
+      }).toList(),
       onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1285,21 +1287,15 @@ class _TargetTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionTargetType>(
+      isExpanded: true,
       initialValue: value,
-      items: PromotionTargetType.values
-          .map(
-            (type) => DropdownMenuItem<PromotionTargetType>(
-              value: type,
-              child: Text(type.label),
-            ),
-          )
-          .toList(),
+      items: PromotionTargetType.values.map((type) {
+        return DropdownMenuItem<PromotionTargetType>(
+          value: type,
+          child: _DropdownText(type.label),
+        );
+      }).toList(),
       onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1317,21 +1313,15 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionBranchScope>(
+      isExpanded: true,
       initialValue: value,
-      items: PromotionBranchScope.values
-          .map(
-            (scope) => DropdownMenuItem<PromotionBranchScope>(
-              value: scope,
-              child: Text(scope.label),
-            ),
-          )
-          .toList(),
+      items: PromotionBranchScope.values.map((scope) {
+        return DropdownMenuItem<PromotionBranchScope>(
+          value: scope,
+          child: _DropdownText(scope.label),
+        );
+      }).toList(),
       onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1353,7 +1343,13 @@ class _SimpleStringDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
+      isExpanded: true,
       initialValue: value,
+      hint: Text(
+        hintText,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       items: items,
       onChanged: onChanged,
       validator: (selectedValue) {
@@ -1363,11 +1359,6 @@ class _SimpleStringDropdown extends StatelessWidget {
 
         return null;
       },
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1517,6 +1508,27 @@ class _DividerSpace extends StatelessWidget {
   }
 }
 
+class _DropdownText extends StatelessWidget {
+  final String text;
+
+  const _DropdownText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      maxLines: 1,
+      softWrap: false,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
+    );
+  }
+}
+
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
@@ -1546,150 +1558,157 @@ class _PromotionLookupOption {
   final String id;
   final String label;
   final String? categoryId;
-  final String? categoryName;
 
   const _PromotionLookupOption({
     required this.id,
     required this.label,
     this.categoryId,
-    this.categoryName,
   });
-
-  factory _PromotionLookupOption.fromJson(
-    Map<String, dynamic> json, {
-    required String fallbackPrefix,
-  }) {
-    final id = _firstNonEmpty(json, [
-      'id',
-      'productId',
-      'categoryId',
-      'subCategoryId',
-      'subcategoryId',
-    ]);
-
-    final name = _firstNonEmpty(json, [
-      'name',
-      'productName',
-      'categoryName',
-      'subCategoryName',
-      'subcategoryName',
-      'title',
-    ]);
-
-    final categoryId = _firstNonEmpty(json, [
-      'categoryId',
-      'parentCategoryId',
-    ]);
-
-    final categoryName = _firstNonEmpty(json, [
-      'categoryName',
-      'parentCategoryName',
-    ]);
-
-    return _PromotionLookupOption(
-      id: id,
-      label: name.isEmpty ? '$fallbackPrefix #$id' : name,
-      categoryId: categoryId.isEmpty ? null : categoryId,
-      categoryName: categoryName.isEmpty ? null : categoryName,
-    );
-  }
-
-  static String _firstNonEmpty(
-    Map<String, dynamic> json,
-    List<String> keys,
-  ) {
-    for (final key in keys) {
-      final value = json[key];
-
-      if (value != null && value.toString().trim().isNotEmpty) {
-        return value.toString();
-      }
-    }
-
-    return '';
-  }
 }
 
 class _PromotionLookupService {
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
-  _PromotionLookupService(this.apiClient);
+  const _PromotionLookupService(this._apiClient);
 
   Future<List<_PromotionLookupOption>> getProducts() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierProducts);
+    final response = await _apiClient.dio.get(ApiConfig.supplierProducts);
 
-    return _parseList(
-      response.data,
-      fallbackPrefix: 'Product',
-    );
+    final items = _extractList(response.data);
+
+    return items.map((json) {
+      final id = _readId(json, ['id', 'productId']);
+      final name = _readString(json, [
+        'name',
+        'productName',
+        'title',
+      ]);
+
+      return _PromotionLookupOption(
+        id: id,
+        label: name.isEmpty ? 'Product #$id' : name,
+      );
+    }).toList();
   }
 
   Future<List<_PromotionLookupOption>> getCategories() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierCategories);
+    final response = await _apiClient.dio.get(ApiConfig.supplierCategories);
 
-    return _parseList(
-      response.data,
-      fallbackPrefix: 'Category',
-    );
+    final items = _extractList(response.data);
+
+    return items.map((json) {
+      final id = _readId(json, ['id', 'categoryId']);
+      final name = _readString(json, ['name', 'categoryName', 'title']);
+
+      return _PromotionLookupOption(
+        id: id,
+        label: name.isEmpty ? 'Category #$id' : name,
+      );
+    }).toList();
   }
 
   Future<List<_PromotionLookupOption>> getSubCategories() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierSubCategories);
+    final response = await _apiClient.dio.get(ApiConfig.supplierSubCategories);
 
-    return _parseList(
-      response.data,
-      fallbackPrefix: 'SubCategory',
-    );
+    final items = _extractList(response.data);
+
+    return items.map((json) {
+      final id = _readId(json, ['id', 'subCategoryId', 'subcategoryId']);
+      final name = _readString(
+        json,
+        ['name', 'subCategoryName', 'subcategoryName', 'title'],
+      );
+      final categoryId = _readOptionalId(
+        json,
+        ['categoryId', 'parentCategoryId', 'supplierCategoryId'],
+      );
+
+      return _PromotionLookupOption(
+        id: id,
+        label: name.isEmpty ? 'SubCategory #$id' : name,
+        categoryId: categoryId,
+      );
+    }).toList();
   }
 
   Future<List<_PromotionLookupOption>> getBranches() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierBranches);
+    final response = await _apiClient.dio.get(ApiConfig.supplierBranches);
 
-    final rawOptions = _parseList(
-      response.data,
-      fallbackPrefix: 'Branch',
-    );
+    final items = _extractList(response.data);
 
-    if (response.data is List) {
-      final filtered = <_PromotionLookupOption>[];
+    return items.map((json) {
+      final id = _readId(json, ['id', 'branchId']);
+      final name = _readString(json, ['name', 'branchName', 'title']);
 
-      for (final item in response.data as List) {
-        if (item is! Map) continue;
-
-        final json = Map<String, dynamic>.from(item);
-        final status = json['status']?.toString().toUpperCase();
-
-        if (status == null || status == 'ACTIVE') {
-          filtered.add(
-            _PromotionLookupOption.fromJson(
-              json,
-              fallbackPrefix: 'Branch',
-            ),
-          );
-        }
-      }
-
-      return filtered;
-    }
-
-    return rawOptions;
+      return _PromotionLookupOption(
+        id: id,
+        label: name.isEmpty ? 'Branch #$id' : name,
+      );
+    }).toList();
   }
 
-  List<_PromotionLookupOption> _parseList(
-    dynamic data, {
-    required String fallbackPrefix,
-  }) {
-    if (data is! List) return [];
+  static List<Map<String, dynamic>> _extractList(dynamic data) {
+    if (data is List) {
+      return data
+          .whereType<Map>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .toList();
+    }
 
-    return data
-        .whereType<Map>()
-        .map(
-          (item) => _PromotionLookupOption.fromJson(
-            Map<String, dynamic>.from(item),
-            fallbackPrefix: fallbackPrefix,
-          ),
-        )
-        .where((item) => item.id.trim().isNotEmpty)
-        .toList();
+    if (data is Map) {
+      final map = Map<String, dynamic>.from(data);
+
+      for (final key in [
+        'content',
+        'items',
+        'data',
+        'products',
+        'categories',
+        'subCategories',
+        'subcategories',
+        'branches',
+      ]) {
+        final value = map[key];
+
+        if (value is List) {
+          return value
+              .whereType<Map>()
+              .map((item) => Map<String, dynamic>.from(item))
+              .toList();
+        }
+      }
+    }
+
+    return [];
+  }
+
+  static String _readId(Map<String, dynamic> json, List<String> keys) {
+    return _readOptionalId(json, keys) ?? '';
+  }
+
+  static String? _readOptionalId(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+
+      if (value == null) continue;
+
+      final text = value.toString().trim();
+      if (text.isNotEmpty) return text;
+    }
+
+    return null;
+  }
+
+  static String _readString(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+
+      if (value == null) continue;
+
+      final text = value.toString().trim();
+      if (text.isNotEmpty) return text;
+    }
+
+    return '';
   }
 }
