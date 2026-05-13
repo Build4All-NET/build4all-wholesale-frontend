@@ -1,13 +1,13 @@
 abstract class SupplierProfileDisplayEvent {
-  const SupplierProfileDisplayEvent();
+  SupplierProfileDisplayEvent();
 }
 
 class LoadSupplierProfileDisplayRequested
     extends SupplierProfileDisplayEvent {
-  const LoadSupplierProfileDisplayRequested();
+  LoadSupplierProfileDisplayRequested();
 }
 
 class RefreshSupplierProfileDisplayRequested
     extends SupplierProfileDisplayEvent {
-  const RefreshSupplierProfileDisplayRequested();
+  RefreshSupplierProfileDisplayRequested();
 }

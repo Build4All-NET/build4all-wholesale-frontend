@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../core/theme/app_theme_tokens.dart';
 
@@ -7,7 +8,7 @@ class SupplierQuickActionCard extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const SupplierQuickActionCard({
+  SupplierQuickActionCard({
     super.key,
     required this.title,
     required this.icon,
@@ -20,7 +21,7 @@ class SupplierQuickActionCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppThemeTokens.surface,
           borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -30,11 +31,11 @@ class SupplierQuickActionCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: AppThemeTokens.textPrimary, size: 28),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
                 color: AppThemeTokens.textPrimary,

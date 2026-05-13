@@ -4,7 +4,7 @@ import '../repositories/supplier_order_repository.dart';
 class GetSupplierOrderDetailsUseCase {
   final SupplierOrderRepository repository;
 
-  const GetSupplierOrderDetailsUseCase(this.repository);
+  GetSupplierOrderDetailsUseCase(this.repository);
 
   Future<SupplierOrderEntity> call({
     required int orderId,

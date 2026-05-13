@@ -30,7 +30,7 @@ class LowStockAlertEntity {
   final int stockQuantity;
   final LowStockAlertLevel alertLevel;
 
-  const LowStockAlertEntity({
+  LowStockAlertEntity({
     required this.inventoryId,
     required this.branchId,
     required this.branchName,

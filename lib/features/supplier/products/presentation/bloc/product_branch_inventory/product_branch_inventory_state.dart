@@ -16,7 +16,7 @@ class ProductBranchInventoryState extends Equatable {
   final String? error;
   final String? successMessage;
 
-  const ProductBranchInventoryState({
+  ProductBranchInventoryState({
     required this.isLoading,
     required this.isSaving,
     required this.isDeleting,
@@ -28,7 +28,7 @@ class ProductBranchInventoryState extends Equatable {
   });
 
   factory ProductBranchInventoryState.initial() {
-    return const ProductBranchInventoryState(
+    return ProductBranchInventoryState(
       isLoading: false,
       isSaving: false,
       isDeleting: false,

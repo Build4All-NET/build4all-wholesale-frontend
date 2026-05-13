@@ -9,7 +9,7 @@ class SupplierOrderDetailsState extends Equatable {
   final String? errorMessage;
   final String? successMessage;
 
-  const SupplierOrderDetailsState({
+  SupplierOrderDetailsState({
     required this.isLoading,
     required this.isUpdating,
     required this.order,
@@ -18,7 +18,7 @@ class SupplierOrderDetailsState extends Equatable {
   });
 
   factory SupplierOrderDetailsState.initial() {
-    return const SupplierOrderDetailsState(
+    return SupplierOrderDetailsState(
       isLoading: false,
       isUpdating: false,
       order: null,

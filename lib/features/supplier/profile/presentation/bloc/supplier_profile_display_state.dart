@@ -6,7 +6,7 @@ class SupplierProfileDisplayState {
   final SupplierProfileDisplayEntity? profile;
   final String? errorMessage;
 
-  const SupplierProfileDisplayState({
+  SupplierProfileDisplayState({
     this.loading = false,
     this.refreshing = false,
     this.profile,

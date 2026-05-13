@@ -10,7 +10,7 @@ class SupplierProfileDisplayBloc
 
   SupplierProfileDisplayBloc({
     required this.getSupplierProfileDisplayUseCase,
-  }) : super(const SupplierProfileDisplayState()) {
+  }) : super(SupplierProfileDisplayState()) {
     on<LoadSupplierProfileDisplayRequested>(_onLoadRequested);
     on<RefreshSupplierProfileDisplayRequested>(_onRefreshRequested);
   }

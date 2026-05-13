@@ -68,7 +68,6 @@ class SearchableSelectionField<T> extends FormField<T> {
                     child: InputDecorator(
                       isEmpty: !hasSelection,
                       decoration: InputDecoration(
-                        hintText: isLoading ? 'Loading...' : hintText,
                         errorText: field.errorText,
                         filled: true,
                         fillColor: enabled

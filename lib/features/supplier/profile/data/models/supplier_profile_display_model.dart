@@ -1,7 +1,7 @@
 import '../../domain/entities/supplier_profile_display_entity.dart';
 
 class SupplierProfileDisplayModel extends SupplierProfileDisplayEntity {
-  const SupplierProfileDisplayModel({
+  SupplierProfileDisplayModel({
     super.adminId,
     super.username,
     super.firstName,

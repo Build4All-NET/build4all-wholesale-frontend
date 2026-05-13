@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/supplier_excel_product_row_entity.dart';
@@ -8,7 +9,7 @@ class SupplierExcelPreviewList extends StatelessWidget {
   final List<SupplierExcelProductRowEntity> rows;
   final void Function(SupplierExcelProductRowEntity row) onEditRow;
 
-  const SupplierExcelPreviewList({
+  SupplierExcelPreviewList({
     super.key,
     required this.rows,
     required this.onEditRow,
@@ -19,13 +20,13 @@ class SupplierExcelPreviewList extends StatelessWidget {
     if (rows.isEmpty) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: AppThemeTokens.surface,
           borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
           border: Border.all(color: AppThemeTokens.border),
         ),
-        child: const Column(
+        child: Column(
           children: [
             Icon(
               Icons.table_chart_outlined,
@@ -34,7 +35,7 @@ class SupplierExcelPreviewList extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'No rows to preview yet',
+              context.l10n.noRowsToPreview,
               style: TextStyle(
                 color: AppThemeTokens.textPrimary,
                 fontWeight: FontWeight.w900,
@@ -43,7 +44,7 @@ class SupplierExcelPreviewList extends StatelessWidget {
             ),
             SizedBox(height: 6),
             Text(
-              'Select an Excel file to preview and validate products.',
+              context.l10n.selectExcelToPreview,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppThemeTokens.textSecondary,
@@ -58,24 +59,24 @@ class SupplierExcelPreviewList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Preview Rows',
+        Text(
+          context.l10n.previewRowsTitle,
           style: TextStyle(
             color: AppThemeTokens.textPrimary,
             fontWeight: FontWeight.w900,
             fontSize: 18,
           ),
         ),
-        const SizedBox(height: 6),
-        const Text(
-          'Review invalid rows, edit them directly here, or update the Excel file and upload it again.',
+        SizedBox(height: 6),
+        Text(
+          context.l10n.previewRowsHelp,
           style: TextStyle(
             color: AppThemeTokens.textSecondary,
             fontWeight: FontWeight.w600,
             height: 1.35,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         ...rows.map(
           (row) => SupplierExcelRowCard(
             row: row,

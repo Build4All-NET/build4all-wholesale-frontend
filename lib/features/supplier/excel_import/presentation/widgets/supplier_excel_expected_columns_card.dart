@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../data/services/supplier_excel_reader_service.dart';
 
 class SupplierExcelExpectedColumnsCard extends StatelessWidget {
-  const SupplierExcelExpectedColumnsCard({super.key});
+  SupplierExcelExpectedColumnsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -19,15 +20,15 @@ class SupplierExcelExpectedColumnsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Expected Columns',
+          Text(
+            context.l10n.expectedColumnsTitle,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 17,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -35,10 +36,10 @@ class SupplierExcelExpectedColumnsCard extends StatelessWidget {
               return Chip(
                 label: Text(
                   header,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
                 backgroundColor: AppThemeTokens.inputFill,
-                side: const BorderSide(color: AppThemeTokens.border),
+                side: BorderSide(color: AppThemeTokens.border),
               );
             }).toList(),
           ),

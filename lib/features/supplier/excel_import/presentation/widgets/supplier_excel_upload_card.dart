@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 
@@ -8,7 +9,7 @@ class SupplierExcelUploadCard extends StatelessWidget {
   final VoidCallback onPickFile;
   final VoidCallback onClear;
 
-  const SupplierExcelUploadCard({
+  SupplierExcelUploadCard({
     super.key,
     required this.fileName,
     required this.isLoading,
@@ -22,7 +23,7 @@ class SupplierExcelUploadCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -31,47 +32,47 @@ class SupplierExcelUploadCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 18,
-            offset: const Offset(0, 8),
+            offset: Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Upload Excel File',
+          Text(
+            context.l10n.uploadExcelFile,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 17,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
-            fileName == null ? 'Accepted format: .xlsx' : fileName!,
+            fileName == null ? context.l10n.acceptedExcelFormat : fileName!,
             style: TextStyle(
               color: fileName == null ? AppThemeTokens.textSecondary : primary,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: isLoading ? null : onPickFile,
                   icon: isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Icon(Icons.attach_file),
-                  label: Text(isLoading ? 'Reading file...' : 'Select Excel'),
+                      : Icon(Icons.attach_file),
+                  label: Text(isLoading ? context.l10n.readingFile : context.l10n.selectExcel),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -79,13 +80,13 @@ class SupplierExcelUploadCard extends StatelessWidget {
                 ),
               ),
               if (fileName != null) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 OutlinedButton.icon(
                   onPressed: isLoading ? null : onClear,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Clear'),
+                  icon: Icon(Icons.refresh),
+                  label: Text(context.l10n.clearButton),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       vertical: 14,
                       horizontal: 14,
                     ),

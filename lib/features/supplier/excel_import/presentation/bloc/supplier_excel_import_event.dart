@@ -3,28 +3,28 @@ import 'package:equatable/equatable.dart';
 import '../../domain/entities/supplier_excel_product_row_entity.dart';
 
 abstract class SupplierExcelImportEvent extends Equatable {
-  const SupplierExcelImportEvent();
+  SupplierExcelImportEvent();
 
   @override
   List<Object?> get props => [];
 }
 
 class SupplierExcelPickFileRequested extends SupplierExcelImportEvent {
-  const SupplierExcelPickFileRequested();
+  SupplierExcelPickFileRequested();
 }
 
 class SupplierExcelImportRequested extends SupplierExcelImportEvent {
-  const SupplierExcelImportRequested();
+  SupplierExcelImportRequested();
 }
 
 class SupplierExcelClearRequested extends SupplierExcelImportEvent {
-  const SupplierExcelClearRequested();
+  SupplierExcelClearRequested();
 }
 
 class SupplierExcelRowUpdated extends SupplierExcelImportEvent {
   final SupplierExcelProductRowEntity row;
 
-  const SupplierExcelRowUpdated({required this.row});
+  SupplierExcelRowUpdated({required this.row});
 
   @override
   List<Object?> get props => [row];

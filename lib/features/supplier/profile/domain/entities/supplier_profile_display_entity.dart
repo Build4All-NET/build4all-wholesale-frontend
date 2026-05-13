@@ -12,7 +12,7 @@ class SupplierProfileDisplayEntity {
   final String? createdAt;
   final String? updatedAt;
 
-  const SupplierProfileDisplayEntity({
+  SupplierProfileDisplayEntity({
     this.adminId,
     this.username,
     this.firstName,

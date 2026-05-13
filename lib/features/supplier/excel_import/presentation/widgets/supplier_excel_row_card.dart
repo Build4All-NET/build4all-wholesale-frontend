@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/supplier_excel_product_row_entity.dart';
@@ -7,7 +8,7 @@ class SupplierExcelRowCard extends StatelessWidget {
   final SupplierExcelProductRowEntity row;
   final VoidCallback onEdit;
 
-  const SupplierExcelRowCard({
+  SupplierExcelRowCard({
     super.key,
     required this.row,
     required this.onEdit,
@@ -23,8 +24,8 @@ class SupplierExcelRowCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
@@ -36,13 +37,13 @@ class SupplierExcelRowCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: badgeColor.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  'Row ${row.rowNumber}',
+                  context.l10n.rowNumberLabel(row.rowNumber),
                   style: TextStyle(
                     color: badgeColor,
                     fontWeight: FontWeight.w900,
@@ -50,13 +51,13 @@ class SupplierExcelRowCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  row.productName.isEmpty ? 'Unnamed product' : row.productName,
+                  row.productName.isEmpty ? context.l10n.unnamedProduct : row.productName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppThemeTokens.textPrimary,
                     fontWeight: FontWeight.w900,
                     fontSize: 15,
@@ -70,23 +71,23 @@ class SupplierExcelRowCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(label: 'Category', value: row.categoryName),
+              _InfoChip(label: context.l10n.categoryLabel, value: row.categoryName),
               _InfoChip(
-                label: 'SubCategory',
+                label: context.l10n.subCategoryLabel,
                 value: row.subCategoryName.isEmpty ? '-' : row.subCategoryName,
               ),
-              _InfoChip(label: 'Price', value: row.priceText),
-              _InfoChip(label: 'MOQ', value: row.moqText),
-              _InfoChip(label: 'Status', value: row.statusText),
+              _InfoChip(label: context.l10n.priceLabel, value: row.priceText),
+              _InfoChip(label: context.l10n.moqLabel, value: row.moqText),
+              _InfoChip(label: context.l10n.statusLabel, value: row.statusText),
             ],
           ),
           if (row.errors.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             ...row.errors.map(
               (error) => _MessageLine(
                 message: error,
@@ -96,7 +97,7 @@ class SupplierExcelRowCard extends StatelessWidget {
             ),
           ],
           if (row.warnings.isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             ...row.warnings.map(
               (warning) => _MessageLine(
                 message: warning,
@@ -105,16 +106,16 @@ class SupplierExcelRowCard extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton.icon(
               onPressed: onEdit,
-              icon: const Icon(Icons.edit_outlined, size: 18),
-              label: const Text('Edit Row'),
+              icon: Icon(Icons.edit_outlined, size: 18),
+              label: Text(context.l10n.editRowButton),
               style: TextButton.styleFrom(
                 foregroundColor: primary,
-                textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                textStyle: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
           ),
@@ -128,7 +129,7 @@ class _InfoChip extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoChip({
+  _InfoChip({
     required this.label,
     required this.value,
   });
@@ -136,7 +137,7 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: AppThemeTokens.inputFill,
         borderRadius: BorderRadius.circular(999),
@@ -144,7 +145,7 @@ class _InfoChip extends StatelessWidget {
       ),
       child: Text(
         '$label: ${value.isEmpty ? '-' : value}',
-        style: const TextStyle(
+        style: TextStyle(
           color: AppThemeTokens.textSecondary,
           fontWeight: FontWeight.w800,
           fontSize: 12,
@@ -159,7 +160,7 @@ class _MessageLine extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  const _MessageLine({
+  _MessageLine({
     required this.message,
     required this.icon,
     required this.color,
@@ -168,12 +169,12 @@ class _MessageLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: EdgeInsets.only(bottom: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: color),
-          const SizedBox(width: 6),
+          SizedBox(width: 6),
           Expanded(
             child: Text(
               message,

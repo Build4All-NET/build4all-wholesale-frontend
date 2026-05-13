@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 
@@ -7,7 +8,7 @@ class SupplierProfileInfoCard extends StatelessWidget {
   final String label;
   final String? value;
 
-  const SupplierProfileInfoCard({
+  SupplierProfileInfoCard({
     super.key,
     required this.icon,
     required this.label,
@@ -17,11 +18,11 @@ class SupplierProfileInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final cleanValue = _clean(value);
+    final cleanValue = _clean(context, value);
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
@@ -30,7 +31,7 @@ class SupplierProfileInfoCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.035),
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -50,23 +51,23 @@ class SupplierProfileInfoCard extends StatelessWidget {
               size: 22,
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppThemeTokens.textSecondary,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   cleanValue,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppThemeTokens.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
@@ -80,10 +81,10 @@ class SupplierProfileInfoCard extends StatelessWidget {
     );
   }
 
-  String _clean(String? value) {
+  String _clean(BuildContext context, String? value) {
     final text = value?.trim();
     if (text == null || text.isEmpty || text.toLowerCase() == 'null') {
-      return 'Not provided';
+      return context.l10n.supplierNotProvided;
     }
 
     return text;

@@ -1,20 +1,20 @@
 import 'package:equatable/equatable.dart';
 
 abstract class ProductListEvent extends Equatable {
-  const ProductListEvent();
+  ProductListEvent();
 
   @override
   List<Object?> get props => [];
 }
 
 class LoadProducts extends ProductListEvent {
-  const LoadProducts();
+  LoadProducts();
 }
 
 class SearchProducts extends ProductListEvent {
   final String query;
 
-  const SearchProducts(this.query);
+  SearchProducts(this.query);
 
   @override
   List<Object?> get props => [query];
@@ -23,7 +23,7 @@ class SearchProducts extends ProductListEvent {
 class DeleteProductRequested extends ProductListEvent {
   final String productId;
 
-  const DeleteProductRequested(this.productId);
+  DeleteProductRequested(this.productId);
 
   @override
   List<Object?> get props => [productId];

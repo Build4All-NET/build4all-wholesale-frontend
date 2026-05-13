@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../core/theme/app_theme_tokens.dart';
 
@@ -7,7 +8,7 @@ class SupplierSectionHeader extends StatelessWidget {
   final String? actionText;
   final VoidCallback? onActionTap;
 
-  const SupplierSectionHeader({
+  SupplierSectionHeader({
     super.key,
     required this.title,
     this.actionText,
@@ -21,7 +22,7 @@ class SupplierSectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
               color: AppThemeTokens.textPrimary,

@@ -15,7 +15,7 @@ class BranchEntity {
   final String phoneNumber;
   final BranchStatus status;
 
-  const BranchEntity({
+  BranchEntity({
     required this.id,
     required this.name,
     this.countryCode = '',

@@ -4,7 +4,7 @@ class BranchModel extends BranchEntity {
   final int totalProducts;
   final int totalStock;
 
-  const BranchModel({
+  BranchModel({
     required super.id,
     required super.name,
     super.countryCode = '',

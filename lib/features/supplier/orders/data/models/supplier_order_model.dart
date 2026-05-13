@@ -2,7 +2,7 @@ import '../../domain/entities/supplier_order_entity.dart';
 import 'supplier_order_item_model.dart';
 
 class SupplierOrderModel extends SupplierOrderEntity {
-  const SupplierOrderModel({
+  SupplierOrderModel({
     required super.id,
     required super.orderNumber,
     required super.retailerName,

@@ -3,24 +3,24 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/entities/supplier_order_entity.dart';
 
 abstract class SupplierOrdersEvent extends Equatable {
-  const SupplierOrdersEvent();
+  SupplierOrdersEvent();
 
   @override
   List<Object?> get props => [];
 }
 
 class SupplierOrdersStarted extends SupplierOrdersEvent {
-  const SupplierOrdersStarted();
+  SupplierOrdersStarted();
 }
 
 class SupplierOrdersRefreshed extends SupplierOrdersEvent {
-  const SupplierOrdersRefreshed();
+  SupplierOrdersRefreshed();
 }
 
 class SupplierOrdersSearchChanged extends SupplierOrdersEvent {
   final String query;
 
-  const SupplierOrdersSearchChanged(this.query);
+  SupplierOrdersSearchChanged(this.query);
 
   @override
   List<Object?> get props => [query];
@@ -29,7 +29,7 @@ class SupplierOrdersSearchChanged extends SupplierOrdersEvent {
 class SupplierOrdersStatusFilterChanged extends SupplierOrdersEvent {
   final SupplierOrderStatus? status;
 
-  const SupplierOrdersStatusFilterChanged(this.status);
+  SupplierOrdersStatusFilterChanged(this.status);
 
   @override
   List<Object?> get props => [status];
@@ -38,7 +38,7 @@ class SupplierOrdersStatusFilterChanged extends SupplierOrdersEvent {
 class SupplierOrdersOrderUpdated extends SupplierOrdersEvent {
   final SupplierOrderEntity order;
 
-  const SupplierOrdersOrderUpdated(this.order);
+  SupplierOrdersOrderUpdated(this.order);
 
   @override
   List<Object?> get props => [order];

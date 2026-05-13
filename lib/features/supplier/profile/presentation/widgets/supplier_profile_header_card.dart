@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/supplier_profile_display_entity.dart';
@@ -6,7 +7,7 @@ import '../../domain/entities/supplier_profile_display_entity.dart';
 class SupplierProfileHeaderCard extends StatelessWidget {
   final SupplierProfileDisplayEntity profile;
 
-  const SupplierProfileHeaderCard({
+  SupplierProfileHeaderCard({
     super.key,
     required this.profile,
   });
@@ -17,7 +18,7 @@ class SupplierProfileHeaderCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: primary,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -25,7 +26,7 @@ class SupplierProfileHeaderCard extends StatelessWidget {
           BoxShadow(
             color: primary.withOpacity(0.18),
             blurRadius: 18,
-            offset: const Offset(0, 8),
+            offset: Offset(0, 8),
           ),
         ],
       ),
@@ -36,26 +37,26 @@ class SupplierProfileHeaderCard extends StatelessWidget {
             backgroundColor: Colors.white.withOpacity(0.18),
             child: Text(
               _initials(profile),
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
               ),
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           Text(
             profile.fullName,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
-            _clean(profile.email),
+            _clean(context, profile.email),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white.withOpacity(0.88),
@@ -63,9 +64,9 @@ class SupplierProfileHeaderCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.16),
               borderRadius: BorderRadius.circular(999),
@@ -75,7 +76,7 @@ class SupplierProfileHeaderCard extends StatelessWidget {
             ),
             child: Text(
               profile.displayRole,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w800,
               ),
@@ -105,9 +106,9 @@ class SupplierProfileHeaderCard extends StatelessWidget {
     return name[0].toUpperCase();
   }
 
-  String _clean(String? value) {
+  String _clean(BuildContext context, String? value) {
     final text = value?.trim();
-    if (text == null || text.isEmpty) return 'Not provided';
+    if (text == null || text.isEmpty) return context.l10n.supplierNotProvided;
     return text;
   }
 }

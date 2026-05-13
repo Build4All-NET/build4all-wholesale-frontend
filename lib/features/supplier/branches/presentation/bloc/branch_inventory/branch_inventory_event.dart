@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 abstract class BranchInventoryEvent extends Equatable {
-  const BranchInventoryEvent();
+  BranchInventoryEvent();
 
   @override
   List<Object?> get props => [];
@@ -10,7 +10,7 @@ abstract class BranchInventoryEvent extends Equatable {
 class LoadBranchInventory extends BranchInventoryEvent {
   final String branchId;
 
-  const LoadBranchInventory({
+  LoadBranchInventory({
     required this.branchId,
   });
 
@@ -23,7 +23,7 @@ class AssignProductToBranchRequested extends BranchInventoryEvent {
   final String productId;
   final int stockQuantity;
 
-  const AssignProductToBranchRequested({
+  AssignProductToBranchRequested({
     required this.branchId,
     required this.productId,
     required this.stockQuantity,
@@ -38,7 +38,7 @@ class UpdateBranchInventoryStockRequested extends BranchInventoryEvent {
   final String inventoryId;
   final int stockQuantity;
 
-  const UpdateBranchInventoryStockRequested({
+  UpdateBranchInventoryStockRequested({
     required this.branchId,
     required this.inventoryId,
     required this.stockQuantity,
@@ -52,7 +52,7 @@ class DeleteBranchInventoryItemRequested extends BranchInventoryEvent {
   final String branchId;
   final String inventoryId;
 
-  const DeleteBranchInventoryItemRequested({
+  DeleteBranchInventoryItemRequested({
     required this.branchId,
     required this.inventoryId,
   });

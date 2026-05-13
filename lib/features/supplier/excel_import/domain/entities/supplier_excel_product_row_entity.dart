@@ -17,7 +17,7 @@ class SupplierExcelProductRowEntity {
   final List<String> errors;
   final List<String> warnings;
 
-  const SupplierExcelProductRowEntity({
+  SupplierExcelProductRowEntity({
     required this.rowNumber,
     required this.productName,
     required this.description,

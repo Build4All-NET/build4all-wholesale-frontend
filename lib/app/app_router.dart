@@ -141,19 +141,19 @@ class AppRouter {
       // =========================
       GoRoute(
         path: '/supplier-dashboard',
-        builder: (context, state) => const SupplierDashboardScreen(),
+        builder: (context, state) => SupplierDashboardScreen(),
       ),
       GoRoute(
         path: '/supplier-profile',
-        builder: (context, state) => const SupplierProfileDisplayScreen(),
+        builder: (context, state) => SupplierProfileDisplayScreen(),
       ),
       GoRoute(
         path: '/supplier-products',
-        builder: (context, state) => const ProductManagementScreen(),
+        builder: (context, state) => ProductManagementScreen(),
       ),
       GoRoute(
         path: '/supplier-products/add',
-        builder: (context, state) => const AddProductScreen(),
+        builder: (context, state) => AddProductScreen(),
       ),
       GoRoute(
         path: '/supplier-products/edit',
@@ -173,15 +173,15 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-catalog',
-        builder: (context, state) => const SupplierCatalogScreen(),
+        builder: (context, state) => SupplierCatalogScreen(),
       ),
       GoRoute(
         path: '/supplier-branches',
-        builder: (context, state) => const BranchManagementScreen(),
+        builder: (context, state) => BranchManagementScreen(),
       ),
       GoRoute(
         path: '/supplier-branches/add',
-        builder: (context, state) => const AddBranchScreen(),
+        builder: (context, state) => AddBranchScreen(),
       ),
       GoRoute(
         path: '/supplier-branches/edit',
@@ -201,14 +201,14 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-inventory',
-        builder: (context, state) => const SupplierComingSoonScreen(
+        builder: (context, state) => SupplierComingSoonScreen(
           title: 'Branch Inventory',
           icon: Icons.warehouse_outlined,
         ),
       ),
       GoRoute(
         path: '/supplier-orders',
-        builder: (context, state) => const SupplierOrdersScreen(),
+        builder: (context, state) => SupplierOrdersScreen(),
       ),
       GoRoute(
         path: '/supplier-orders/details',
@@ -318,14 +318,14 @@ class AppRouter {
 
       GoRoute(
         path: '/supplier-settings',
-        builder: (context, state) => const SupplierComingSoonScreen(
+        builder: (context, state) => SupplierComingSoonScreen(
           title: 'Settings',
           icon: Icons.settings_outlined,
         ),
       ),
       GoRoute(
         path: '/supplier-excel-import',
-        builder: (context, state) => const SupplierExcelImportScreen(),
+        builder: (context, state) => SupplierExcelImportScreen(),
       ),
 
       // =========================

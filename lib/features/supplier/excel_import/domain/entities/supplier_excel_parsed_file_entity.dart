@@ -4,7 +4,7 @@ class SupplierExcelParsedFileEntity {
   final String fileName;
   final List<SupplierExcelProductRowEntity> rows;
 
-  const SupplierExcelParsedFileEntity({
+  SupplierExcelParsedFileEntity({
     required this.fileName,
     required this.rows,
   });

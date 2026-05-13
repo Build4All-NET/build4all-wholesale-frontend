@@ -3,24 +3,24 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/entities/supplier_category_entity.dart';
 
 abstract class SupplierCatalogEvent extends Equatable {
-  const SupplierCatalogEvent();
+  SupplierCatalogEvent();
 
   @override
   List<Object?> get props => [];
 }
 
 class LoadSupplierCatalog extends SupplierCatalogEvent {
-  const LoadSupplierCatalog();
+  LoadSupplierCatalog();
 }
 
 class RefreshSupplierCatalog extends SupplierCatalogEvent {
-  const RefreshSupplierCatalog();
+  RefreshSupplierCatalog();
 }
 
 class CreateCatalogCategoryRequested extends SupplierCatalogEvent {
   final String name;
 
-  const CreateCatalogCategoryRequested({
+  CreateCatalogCategoryRequested({
     required this.name,
   });
 
@@ -32,7 +32,7 @@ class UpdateCatalogCategoryRequested extends SupplierCatalogEvent {
   final String categoryId;
   final String name;
 
-  const UpdateCatalogCategoryRequested({
+  UpdateCatalogCategoryRequested({
     required this.categoryId,
     required this.name,
   });
@@ -45,7 +45,7 @@ class UpdateCatalogCategoryStatusRequested extends SupplierCatalogEvent {
   final String categoryId;
   final SupplierCatalogStatus status;
 
-  const UpdateCatalogCategoryStatusRequested({
+  UpdateCatalogCategoryStatusRequested({
     required this.categoryId,
     required this.status,
   });
@@ -57,7 +57,7 @@ class UpdateCatalogCategoryStatusRequested extends SupplierCatalogEvent {
 class DeleteCatalogCategoryRequested extends SupplierCatalogEvent {
   final String categoryId;
 
-  const DeleteCatalogCategoryRequested({
+  DeleteCatalogCategoryRequested({
     required this.categoryId,
   });
 
@@ -69,7 +69,7 @@ class CreateCatalogSubCategoryRequested extends SupplierCatalogEvent {
   final String categoryId;
   final String name;
 
-  const CreateCatalogSubCategoryRequested({
+  CreateCatalogSubCategoryRequested({
     required this.categoryId,
     required this.name,
   });
@@ -82,7 +82,7 @@ class UpdateCatalogSubCategoryRequested extends SupplierCatalogEvent {
   final String subCategoryId;
   final String name;
 
-  const UpdateCatalogSubCategoryRequested({
+  UpdateCatalogSubCategoryRequested({
     required this.subCategoryId,
     required this.name,
   });
@@ -95,7 +95,7 @@ class UpdateCatalogSubCategoryStatusRequested extends SupplierCatalogEvent {
   final String subCategoryId;
   final SupplierCatalogStatus status;
 
-  const UpdateCatalogSubCategoryStatusRequested({
+  UpdateCatalogSubCategoryStatusRequested({
     required this.subCategoryId,
     required this.status,
   });
@@ -107,7 +107,7 @@ class UpdateCatalogSubCategoryStatusRequested extends SupplierCatalogEvent {
 class DeleteCatalogSubCategoryRequested extends SupplierCatalogEvent {
   final String subCategoryId;
 
-  const DeleteCatalogSubCategoryRequested({
+  DeleteCatalogSubCategoryRequested({
     required this.subCategoryId,
   });
 

@@ -22,7 +22,7 @@ class ProductEntity {
   /// Comes from backend and is calculated from branch inventory.
   final int totalStock;
 
-  const ProductEntity({
+  ProductEntity({
     required this.id,
     required this.name,
     required this.description,

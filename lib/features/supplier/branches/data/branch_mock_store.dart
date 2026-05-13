@@ -5,7 +5,7 @@ class BranchMockStore {
   BranchMockStore._();
 
   static final List<BranchEntity> branches = [
-    const BranchEntity(
+    BranchEntity(
       id: '1',
       name: 'Dubai Main Warehouse',
       countryCode: 'AE',
@@ -16,7 +16,7 @@ class BranchMockStore {
       phoneNumber: '+971501234567',
       status: BranchStatus.active,
     ),
-    const BranchEntity(
+    BranchEntity(
       id: '2',
       name: 'Riyadh Branch',
       countryCode: 'SA',
@@ -27,7 +27,7 @@ class BranchMockStore {
       phoneNumber: '+966512345678',
       status: BranchStatus.active,
     ),
-    const BranchEntity(
+    BranchEntity(
       id: '3',
       name: 'Doha Distribution Point',
       countryCode: 'QA',

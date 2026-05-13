@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/location/data/models/country_model.dart';
@@ -18,7 +19,7 @@ import '../../domain/repositories/branch_repository.dart';
 class AddBranchScreen extends StatefulWidget {
   final BranchEntity? branchToEdit;
 
-  const AddBranchScreen({
+  AddBranchScreen({
     super.key,
     this.branchToEdit,
   });
@@ -220,7 +221,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
 
     final country = _selectedCountry;
     if (country == null) {
-      _showSnackBar('Please select a country');
+      _showSnackBar(context.l10n.pleaseSelectCountry);
       return;
     }
 
@@ -282,23 +283,23 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
     final phoneCountryIso = phone?.countryISOCode.toUpperCase();
 
     if (localDigits.isEmpty) {
-      return 'Phone number is required';
+      return context.l10n.phoneRequiredError;
     }
 
     if (country == null) {
-      return 'Please select a country first';
+      return context.l10n.phoneSelectCountryFirstError;
     }
 
     if (phoneCountryIso != null && phoneCountryIso != country.iso2Code) {
-      return 'Phone country must match the selected country';
+      return context.l10n.phoneCountryMismatchError;
     }
 
     if (country.iso2Code == 'LB' && localDigits.length != 8) {
-      return 'Lebanese phone numbers must contain 8 digits after +961';
+      return context.l10n.lebanesePhoneDigitsError;
     }
 
     if (localDigits.length < 6 || localDigits.length > 15) {
-      return 'Enter a valid phone number for the selected country';
+      return context.l10n.validPhoneForSelectedCountryError;
     }
 
     return null;
@@ -322,8 +323,8 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final title = widget.isEditMode ? 'Edit Branch' : 'Add Branch';
-    final buttonText = widget.isEditMode ? 'Update Branch' : 'Save Branch';
+    final title = widget.isEditMode ? context.l10n.editBranchTitle : context.l10n.addBranchTitle;
+    final buttonText = widget.isEditMode ? context.l10n.updateBranchButton : context.l10n.saveBranchButton;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -332,7 +333,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
         elevation: 0,
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w900,
             color: AppThemeTokens.textPrimary,
           ),
@@ -340,8 +341,8 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.fromLTRB(14, 10, 14, 12),
+          decoration: BoxDecoration(
             color: AppThemeTokens.background,
             border: Border(
               top: BorderSide(color: AppThemeTokens.border),
@@ -354,21 +355,21 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   onPressed: _isSaving ? null : () => context.pop(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeTokens.textPrimary,
-                    side: const BorderSide(color: AppThemeTokens.border),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    side: BorderSide(color: AppThemeTokens.border),
+                    padding: EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusSmall,
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'Cancel',
+                  child: Text(
+                    context.l10n.cancel,
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _isSaving ? null : _saveBranch,
@@ -376,7 +377,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusSmall,
@@ -384,7 +385,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                     ),
                   ),
                   child: _isSaving
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
@@ -394,7 +395,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                         )
                       : Text(
                           buttonText,
-                          style: const TextStyle(fontWeight: FontWeight.w900),
+                          style: TextStyle(fontWeight: FontWeight.w900),
                         ),
                 ),
               ),
@@ -405,33 +406,33 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(14, 0, 14, 24),
+          padding: EdgeInsets.fromLTRB(14, 0, 14, 24),
           children: [
             _SectionCard(
-              title: 'Branch Information',
+              title: context.l10n.branchInformationTitle,
               subtitle:
-                  'Create a supplier branch or warehouse used later for inventory and stock allocation.',
+                  context.l10n.branchInformationSubtitle,
               children: [
                 if (_locationError != null) ...[
                   _ErrorBox(
                     message: _locationError!,
                     onRetry: _loadCountries,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                 ],
                 _AppTextField(
-                  label: 'Branch Name *',
-                  hint: 'e.g., Main Warehouse',
+                  label: context.l10n.branchNameLabel,
+                  hint: context.l10n.branchNameHint,
                   controller: _branchNameController,
                   validator: (value) {
                     final name = value?.trim() ?? '';
 
-                    if (name.isEmpty) return 'Branch name is required';
+                    if (name.isEmpty) return context.l10n.branchNameRequiredError;
                     if (name.length < 3) {
-                      return 'Branch name must be at least 3 characters';
+                      return context.l10n.branchNameMinError;
                     }
                     if (name.length > 80) {
-                      return 'Branch name is too long';
+                      return context.l10n.branchNameTooLongError;
                     }
 
                     return null;
@@ -465,7 +466,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   },
                 ),
                 _AppTextField(
-                  label: 'City / Area *',
+                  label: context.l10n.cityAreaLabel,
                   hint: LocationHintHelper.cityAreaHint(
                     countryIso2: _selectedCountry?.iso2Code,
                     regionName: _selectedRegion?.name,
@@ -474,31 +475,31 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   validator: (value) {
                     final city = value?.trim() ?? '';
 
-                    if (city.isEmpty) return 'City / Area is required';
+                    if (city.isEmpty) return context.l10n.cityAreaRequiredError;
                     if (city.length < 2) {
-                      return 'City / Area must be at least 2 characters';
+                      return context.l10n.cityAreaMinError;
                     }
                     if (city.length > 80) {
-                      return 'City / Area is too long';
+                      return context.l10n.cityAreaTooLongError;
                     }
 
                     return null;
                   },
                 ),
                 _AppTextField(
-                  label: 'Full Address *',
-                  hint: 'e.g., Building, street, industrial area',
+                  label: context.l10n.fullAddressLabel,
+                  hint: context.l10n.fullAddressHint,
                   controller: _addressController,
                   maxLines: 3,
                   validator: (value) {
                     final address = value?.trim() ?? '';
 
-                    if (address.isEmpty) return 'Address is required';
+                    if (address.isEmpty) return context.l10n.addressRequiredError;
                     if (address.length < 8) {
-                      return 'Address must be more specific';
+                      return context.l10n.addressSpecificError;
                     }
                     if (address.length > 180) {
-                      return 'Address is too long';
+                      return context.l10n.addressTooLongError;
                     }
 
                     return null;
@@ -536,7 +537,7 @@ class _SectionCard extends StatelessWidget {
   final String? subtitle;
   final List<Widget> children;
 
-  const _SectionCard({
+  _SectionCard({
     required this.title,
     this.subtitle,
     required this.children,
@@ -545,7 +546,7 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -556,17 +557,17 @@ class _SectionCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               subtitle!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: AppThemeTokens.textSecondary,
@@ -574,7 +575,7 @@ class _SectionCard extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           ...children,
         ],
       ),
@@ -586,7 +587,7 @@ class _ErrorBox extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
-  const _ErrorBox({
+  _ErrorBox({
     required this.message,
     required this.onRetry,
   });
@@ -594,7 +595,7 @@ class _ErrorBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppThemeTokens.error.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
@@ -603,18 +604,18 @@ class _ErrorBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.error_outline, color: AppThemeTokens.error),
-          const SizedBox(width: 10),
+          Icon(Icons.error_outline, color: AppThemeTokens.error),
+          SizedBox(width: 10),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppThemeTokens.error,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
         ],
       ),
     );
@@ -627,7 +628,7 @@ class _CountryDropdown extends StatelessWidget {
   final CountryModel? selectedCountry;
   final ValueChanged<CountryModel?> onChanged;
 
-  const _CountryDropdown({
+  _CountryDropdown({
     required this.isLoading,
     required this.countries,
     required this.selectedCountry,
@@ -637,18 +638,18 @@ class _CountryDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SearchableSelectionField<CountryModel>(
-      label: 'Country *',
-      hintText: isLoading ? 'Loading countries...' : 'Select country',
-      searchHintText: 'Search country...',
+      label: context.l10n.branchCountryLabel,
+      hintText: isLoading ? context.l10n.loadingCountries : context.l10n.selectCountry,
+      searchHintText: context.l10n.searchCountry,
       items: countries,
       value: selectedCountry,
       isLoading: isLoading,
       enabled: !isLoading && countries.isNotEmpty,
-      emptyText: 'No countries found',
+      emptyText: context.l10n.noCountriesFound,
       itemLabel: (country) => country.name,
       onSelected: (country) => onChanged(country),
       validator: (value) {
-        if (value == null) return 'Country is required';
+        if (value == null) return context.l10n.countryRequiredError;
         return null;
       },
     );
@@ -662,7 +663,7 @@ class _RegionDropdown extends StatelessWidget {
   final bool countrySelected;
   final ValueChanged<RegionModel?> onChanged;
 
-  const _RegionDropdown({
+  _RegionDropdown({
     required this.isLoading,
     required this.regions,
     required this.selectedRegion,
@@ -675,20 +676,20 @@ class _RegionDropdown extends StatelessWidget {
     final disabled = !countrySelected || isLoading || regions.isEmpty;
 
     return SearchableSelectionField<RegionModel>(
-      label: 'Region / State',
+      label: context.l10n.branchRegionLabel,
       hintText: !countrySelected
-          ? 'Select country first'
+          ? context.l10n.selectCountryFirst
           : isLoading
-              ? 'Loading regions...'
+              ? context.l10n.loadingRegions
               : regions.isEmpty
-                  ? 'No predefined regions, continue with city/area'
-                  : 'Select region / state',
-      searchHintText: 'Search region / state...',
+                  ? context.l10n.noPredefinedRegions
+                  : context.l10n.selectRegionState,
+      searchHintText: context.l10n.searchRegionState,
       items: regions,
       value: selectedRegion,
       isLoading: isLoading,
       enabled: !disabled,
-      emptyText: 'No regions found for your search',
+      emptyText: context.l10n.noRegionsFound,
       itemLabel: (region) => region.name,
       onSelected: (region) => onChanged(region),
     );
@@ -701,7 +702,7 @@ class _PhoneField extends StatelessWidget {
   final String? Function(PhoneNumber?) validator;
   final ValueChanged<PhoneNumber> onChanged;
 
-  const _PhoneField({
+  _PhoneField({
     required this.controller,
     required this.initialCountryCode,
     required this.validator,
@@ -711,19 +712,19 @@ class _PhoneField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 17),
+      padding: EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Phone Number *',
+          Text(
+            context.l10n.branchPhoneLabel,
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           IntlPhoneField(
             key: ValueKey('branch-phone-$initialCountryCode'),
             controller: controller,
@@ -732,8 +733,8 @@ class _PhoneField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
             decoration: InputDecoration(
-              hintText: 'Enter phone number',
-              hintStyle: const TextStyle(
+              hintText: context.l10n.enterPhoneNumber,
+              hintStyle: TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
@@ -749,15 +750,15 @@ class _PhoneField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: const BorderSide(color: AppThemeTokens.error),
+                borderSide: BorderSide(color: AppThemeTokens.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: const BorderSide(color: AppThemeTokens.error),
+                borderSide: BorderSide(color: AppThemeTokens.error),
               ),
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
@@ -777,7 +778,7 @@ class _AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?) validator;
 
-  const _AppTextField({
+  _AppTextField({
     required this.label,
     required this.hint,
     required this.controller,
@@ -789,19 +790,19 @@ class _AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 17),
+      padding: EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           TextFormField(
             controller: controller,
             maxLines: maxLines,
@@ -809,7 +810,7 @@ class _AppTextField extends StatelessWidget {
             validator: validator,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(
+              hintStyle: TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
@@ -825,15 +826,15 @@ class _AppTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: const BorderSide(color: AppThemeTokens.error),
+                borderSide: BorderSide(color: AppThemeTokens.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: const BorderSide(color: AppThemeTokens.error),
+                borderSide: BorderSide(color: AppThemeTokens.error),
               ),
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
@@ -849,7 +850,7 @@ class _StatusSelector extends StatelessWidget {
   final BranchStatus selectedStatus;
   final ValueChanged<BranchStatus?> onChanged;
 
-  const _StatusSelector({
+  _StatusSelector({
     required this.selectedStatus,
     required this.onChanged,
   });
@@ -857,33 +858,33 @@ class _StatusSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 17),
+      padding: EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Branch Status *',
+          Text(
+            context.l10n.branchStatusLabel,
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           DropdownButtonFormField<BranchStatus>(
             value: selectedStatus,
-            items: const [
+            items: [
               DropdownMenuItem(
                 value: BranchStatus.active,
-                child: Text('Active'),
+                child: Text(context.l10n.activeStatus),
               ),
               DropdownMenuItem(
                 value: BranchStatus.inactive,
-                child: Text('Inactive'),
+                child: Text(context.l10n.inactiveStatus),
               ),
             ],
             onChanged: onChanged,
-            decoration: _dropdownDecoration('Select status'),
+            decoration: _dropdownDecoration(context.l10n.selectStatus),
           ),
         ],
       ),
@@ -894,7 +895,7 @@ class _StatusSelector extends StatelessWidget {
 InputDecoration _dropdownDecoration(String hint) {
   return InputDecoration(
     hintText: hint,
-    hintStyle: const TextStyle(
+    hintStyle: TextStyle(
       color: AppThemeTokens.textSecondary,
       fontWeight: FontWeight.w500,
     ),
@@ -906,12 +907,12 @@ InputDecoration _dropdownDecoration(String hint) {
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-      borderSide: const BorderSide(color: AppThemeTokens.error),
+      borderSide: BorderSide(color: AppThemeTokens.error),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-      borderSide: const BorderSide(color: AppThemeTokens.error),
+      borderSide: BorderSide(color: AppThemeTokens.error),
     ),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
   );
 }
