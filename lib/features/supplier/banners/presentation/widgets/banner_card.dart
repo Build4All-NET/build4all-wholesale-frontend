@@ -38,7 +38,8 @@ class BannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final statusColor = _statusColor();
-    final visibleText = banner.currentlyVisible ? 'Yes' : 'No';
+    final enabledText = banner.active ? 'Enabled' : 'Disabled';
+    final visibleText = banner.currentlyVisible ? 'Visible now' : 'Not visible now';
 
     return Container(
       width: double.infinity,
@@ -62,6 +63,8 @@ class BannerCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   banner.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -105,15 +108,10 @@ class BannerCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(
-                text: 'Target: ${banner.targetLabelText}',
-              ),
-              _InfoChip(
-                text: 'Order: ${banner.sortOrder}',
-              ),
-              _InfoChip(
-                text: 'Visible now: $visibleText',
-              ),
+              _InfoChip(text: enabledText),
+              _InfoChip(text: visibleText),
+              _InfoChip(text: 'Target: ${banner.targetLabelText}'),
+              _InfoChip(text: 'Order: ${banner.sortOrder}'),
             ],
           ),
           const SizedBox(height: 16),
@@ -137,7 +135,7 @@ class BannerCard extends StatelessWidget {
                   label: 'Edit',
                   onPressed: onEdit,
                   color: primary,
-                  borderColor: primary.withOpacity(0.35),
+                  borderColor: primary.withValues(alpha: 0.35),
                 ),
               ),
               const SizedBox(width: 8),
@@ -147,7 +145,7 @@ class BannerCard extends StatelessWidget {
                   label: 'Delete',
                   onPressed: onDelete,
                   color: Colors.red,
-                  borderColor: Colors.red.withOpacity(0.35),
+                  borderColor: Colors.red.withValues(alpha: 0.35),
                 ),
               ),
             ],
@@ -189,7 +187,7 @@ class _BannerImage extends StatelessWidget {
       width: double.infinity,
       height: 150,
       decoration: BoxDecoration(
-        color: primary.withOpacity(0.06),
+        color: primary.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppThemeTokens.border),
       ),
@@ -229,10 +227,10 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 105),
+      constraints: const BoxConstraints(maxWidth: 115),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -259,7 +257,7 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 280),
+      constraints: const BoxConstraints(maxWidth: 300),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
@@ -268,6 +266,7 @@ class _InfoChip extends StatelessWidget {
       ),
       child: Text(
         text,
+        maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 12,
@@ -298,28 +297,39 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 48,
-      child: OutlinedButton.icon(
+      child: OutlinedButton(
         onPressed: onPressed,
-        icon: Icon(
-          icon,
-          size: 16,
-          color: color,
-        ),
-        label: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
-            color: color,
-          ),
-        ),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 6),
           side: BorderSide(color: borderColor),
+          minimumSize: const Size(0, 48),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: color,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: color,
+                ),
+              ),
+            ],
           ),
         ),
       ),

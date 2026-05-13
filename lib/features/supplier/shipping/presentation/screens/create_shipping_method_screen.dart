@@ -94,6 +94,16 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     return matches.isEmpty ? null : matches.first;
   }
 
+  ShippingRegionModel? get _selectedRegion {
+    if (_selectedRegionId == null) return null;
+
+    final matches = _regions.where(
+      (region) => region.id == _selectedRegionId,
+    );
+
+    return matches.isEmpty ? null : matches.first;
+  }
+
   bool get _selectedCountryIsLebanon {
     return _selectedCountry?.isLebanon == true;
   }
@@ -445,18 +455,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
       countryIso2Code: _selectedCountry?.iso2Code,
       countryIso3Code: _selectedCountry?.iso3Code,
       regionId: _selectedRegionId,
-      regionName: _selectedRegionId == null
-          ? null
-          : _regions
-              .where((region) => region.id == _selectedRegionId)
-              .map((region) => region.name)
-              .firstOrNull,
-      regionCode: _selectedRegionId == null
-          ? null
-          : _regions
-              .where((region) => region.id == _selectedRegionId)
-              .map((region) => region.code)
-              .firstOrNull,
+      regionName: _selectedRegion?.name,
+      regionCode: _selectedRegion?.code,
       cost: _isPickup
           ? 0
           : double.tryParse(_shippingCostController.text.trim()) ?? 0,
@@ -690,7 +690,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                           else if (_countryErrorMessage != null)
                             _ErrorText(message: _countryErrorMessage!)
                           else
-                            _CountryDropdown(
+                            _CountrySearchField(
                               countries: _countries,
                               selectedCountryId: _selectedCountryId,
                               onChanged: _handleCountryChanged,
@@ -743,7 +743,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               ),
                             )
                           else
-                            _RegionDropdown(
+                            _RegionSearchField(
                               regions: _regions,
                               selectedRegionId: _selectedRegionId,
                               required: _selectedCountryIsLebanon,
@@ -814,8 +814,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                           _FieldLabel('Free Shipping Threshold'),
                           _InputField(
                             controller: _freeShippingThresholdController,
-                            hintText:
-                                _isPickup ? 'Pickup only' : '200',
+                            hintText: _isPickup ? 'Pickup only' : '200',
                             enabled: !_isPickup,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -1112,21 +1111,20 @@ class _MethodTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingMethodType>(
+      isExpanded: true,
       initialValue: value,
-      items: ShippingMethodType.values
-          .map(
-            (type) => DropdownMenuItem<ShippingMethodType>(
-              value: type,
-              child: Text(type.label),
-            ),
-          )
-          .toList(),
+      selectedItemBuilder: (context) {
+        return ShippingMethodType.values.map((type) {
+          return _DropdownText(type.label);
+        }).toList();
+      },
+      items: ShippingMethodType.values.map((type) {
+        return DropdownMenuItem<ShippingMethodType>(
+          value: type,
+          child: _DropdownText(type.label),
+        );
+      }).toList(),
       onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1144,128 +1142,583 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingBranchScope>(
+      isExpanded: true,
       initialValue: value,
-      items: ShippingBranchScope.values
-          .map(
-            (scope) => DropdownMenuItem<ShippingBranchScope>(
-              value: scope,
-              child: Text(scope.label),
-            ),
-          )
-          .toList(),
+      selectedItemBuilder: (context) {
+        return ShippingBranchScope.values.map((scope) {
+          return _DropdownText(scope.label);
+        }).toList();
+      },
+      items: ShippingBranchScope.values.map((scope) {
+        return DropdownMenuItem<ShippingBranchScope>(
+          value: scope,
+          child: _DropdownText(scope.label),
+        );
+      }).toList(),
       onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
       decoration: _dropdownDecoration(context),
     );
   }
 }
 
-class _CountryDropdown extends StatelessWidget {
+class _CountrySearchField extends StatelessWidget {
   final List<ShippingCountryModel> countries;
   final String? selectedCountryId;
   final ValueChanged<String?> onChanged;
 
-  const _CountryDropdown({
+  const _CountrySearchField({
     required this.countries,
     required this.selectedCountryId,
     required this.onChanged,
   });
 
+  ShippingCountryModel? get _selectedCountry {
+    if (selectedCountryId == null) return null;
+
+    final matches = countries.where(
+      (country) => country.id == selectedCountryId,
+    );
+
+    return matches.isEmpty ? null : matches.first;
+  }
+
+  Future<void> _openCountryPicker(BuildContext context) async {
+    final selected = await showModalBottomSheet<ShippingCountryModel>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return _CountryPickerSheet(
+          countries: countries,
+          selectedCountryId: selectedCountryId,
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    onChanged(selected.id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final safeSelectedId = countries.any(
-      (country) => country.id == selectedCountryId,
-    )
-        ? selectedCountryId
-        : null;
-
-    return DropdownButtonFormField<String>(
-      initialValue: safeSelectedId,
-      items: countries
-          .map(
-            (country) => DropdownMenuItem<String>(
-              value: country.id,
-              child: Text(
-                country.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
+    return _SearchableSelectionField(
+      value: _selectedCountry?.name,
+      hintText: 'Search and select country',
+      onTap: () => _openCountryPicker(context),
+      validator: () {
+        if (selectedCountryId == null || selectedCountryId!.trim().isEmpty) {
           return 'Country is required';
         }
 
         return null;
       },
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
     );
   }
 }
 
-class _RegionDropdown extends StatelessWidget {
+class _RegionSearchField extends StatelessWidget {
   final List<ShippingRegionModel> regions;
   final String? selectedRegionId;
   final bool required;
   final ValueChanged<String?> onChanged;
 
-  const _RegionDropdown({
+  const _RegionSearchField({
     required this.regions,
     required this.selectedRegionId,
     required this.required,
     required this.onChanged,
   });
 
+  ShippingRegionModel? get _selectedRegion {
+    if (selectedRegionId == null) return null;
+
+    final matches = regions.where(
+      (region) => region.id == selectedRegionId,
+    );
+
+    return matches.isEmpty ? null : matches.first;
+  }
+
+  Future<void> _openRegionPicker(BuildContext context) async {
+    final selected = await showModalBottomSheet<ShippingRegionModel>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return _RegionPickerSheet(
+          regions: regions,
+          selectedRegionId: selectedRegionId,
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    onChanged(selected.id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final safeSelectedId = regions.any(
-      (region) => region.id == selectedRegionId,
-    )
-        ? selectedRegionId
-        : null;
-
-    return DropdownButtonFormField<String>(
-      initialValue: safeSelectedId,
-      items: regions
-          .map(
-            (region) => DropdownMenuItem<String>(
-              value: region.id,
-              child: Text(
-                region.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      validator: (value) {
+    return _SearchableSelectionField(
+      value: _selectedRegion?.name,
+      hintText: 'Search and select region',
+      onTap: () => _openRegionPicker(context),
+      validator: () {
         if (!required) return null;
 
-        if (value == null || value.trim().isEmpty) {
+        if (selectedRegionId == null || selectedRegionId!.trim().isEmpty) {
           return 'Region is required for Lebanon';
         }
 
         return null;
       },
+    );
+  }
+}
+
+class _SearchableSelectionField extends FormField<String> {
+  _SearchableSelectionField({
+    required String? value,
+    required String hintText,
+    required VoidCallback onTap,
+    required String? Function() validator,
+  }) : super(
+          initialValue: value,
+          validator: (_) => validator(),
+          builder: (field) {
+            final hasValue = value != null && value.trim().isNotEmpty;
+            final hasError = field.hasError;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(6),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppThemeTokens.surface,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 13,
+                      ),
+                      border: _fieldBorder(),
+                      enabledBorder: _fieldBorder(),
+                      focusedBorder: _fieldBorder(
+                        color: Theme.of(field.context).colorScheme.primary,
+                      ),
+                      errorBorder: _fieldBorder(color: Colors.red),
+                      focusedErrorBorder: _fieldBorder(color: Colors.red),
+                      errorText: hasError ? field.errorText : null,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            hasValue ? value.trim() : hintText,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight:
+                                  hasValue ? FontWeight.w700 : FontWeight.w600,
+                              color: hasValue
+                                  ? AppThemeTokens.textPrimary
+                                  : AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Icon(
+                          Icons.search,
+                          size: 20,
+                          color: AppThemeTokens.textSecondary,
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 24,
+                          color: AppThemeTokens.textSecondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+
+  static OutlineInputBorder _fieldBorder({
+    Color color = AppThemeTokens.border,
+  }) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(6),
+      borderSide: BorderSide(color: color, width: 1.2),
+    );
+  }
+}
+
+class _CountryPickerSheet extends StatefulWidget {
+  final List<ShippingCountryModel> countries;
+  final String? selectedCountryId;
+
+  const _CountryPickerSheet({
+    required this.countries,
+    required this.selectedCountryId,
+  });
+
+  @override
+  State<_CountryPickerSheet> createState() => _CountryPickerSheetState();
+}
+
+class _CountryPickerSheetState extends State<_CountryPickerSheet> {
+  final TextEditingController _searchController = TextEditingController();
+
+  String _query = '';
+
+  List<ShippingCountryModel> get _filteredCountries {
+    final normalizedQuery = _query.trim().toLowerCase();
+
+    if (normalizedQuery.isEmpty) {
+      return widget.countries;
+    }
+
+    return widget.countries.where((country) {
+      return country.name.toLowerCase().contains(normalizedQuery) ||
+          country.iso2Code.toLowerCase().contains(normalizedQuery) ||
+          country.iso3Code.toLowerCase().contains(normalizedQuery);
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _SearchBottomSheetContainer(
+      title: 'Select Country',
+      searchHint: 'Search country...',
+      searchController: _searchController,
+      onSearchChanged: (value) {
+        setState(() {
+          _query = value;
+        });
+      },
+      emptyMessage: 'No country found',
+      itemCount: _filteredCountries.length,
+      itemBuilder: (context, index) {
+        final country = _filteredCountries[index];
+        final selected = country.id == widget.selectedCountryId;
+
+        return _PickerTile(
+          title: country.name,
+          subtitle: _countrySubtitle(country),
+          selected: selected,
+          onTap: () => Navigator.of(context).pop(country),
+        );
+      },
+    );
+  }
+
+  String _countrySubtitle(ShippingCountryModel country) {
+    final codes = [
+      country.iso2Code.trim(),
+      country.iso3Code.trim(),
+    ].where((code) => code.isNotEmpty).join(' • ');
+
+    return codes.isEmpty ? 'Country' : codes;
+  }
+}
+
+class _RegionPickerSheet extends StatefulWidget {
+  final List<ShippingRegionModel> regions;
+  final String? selectedRegionId;
+
+  const _RegionPickerSheet({
+    required this.regions,
+    required this.selectedRegionId,
+  });
+
+  @override
+  State<_RegionPickerSheet> createState() => _RegionPickerSheetState();
+}
+
+class _RegionPickerSheetState extends State<_RegionPickerSheet> {
+  final TextEditingController _searchController = TextEditingController();
+
+  String _query = '';
+
+  List<ShippingRegionModel> get _filteredRegions {
+    final normalizedQuery = _query.trim().toLowerCase();
+
+    if (normalizedQuery.isEmpty) {
+      return widget.regions;
+    }
+
+    return widget.regions.where((region) {
+      return region.name.toLowerCase().contains(normalizedQuery) ||
+          region.code.toLowerCase().contains(normalizedQuery) ||
+          region.countryName.toLowerCase().contains(normalizedQuery);
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _SearchBottomSheetContainer(
+      title: 'Select Region',
+      searchHint: 'Search region...',
+      searchController: _searchController,
+      onSearchChanged: (value) {
+        setState(() {
+          _query = value;
+        });
+      },
+      emptyMessage: 'No region found',
+      itemCount: _filteredRegions.length,
+      itemBuilder: (context, index) {
+        final region = _filteredRegions[index];
+        final selected = region.id == widget.selectedRegionId;
+
+        return _PickerTile(
+          title: region.name,
+          subtitle: _regionSubtitle(region),
+          selected: selected,
+          onTap: () => Navigator.of(context).pop(region),
+        );
+      },
+    );
+  }
+
+  String _regionSubtitle(ShippingRegionModel region) {
+    final parts = [
+      region.code.trim(),
+      region.countryName.trim(),
+    ].where((part) => part.isNotEmpty).join(' • ');
+
+    return parts.isEmpty ? 'Region' : parts;
+  }
+}
+
+class _SearchBottomSheetContainer extends StatelessWidget {
+  final String title;
+  final String searchHint;
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearchChanged;
+  final String emptyMessage;
+  final int itemCount;
+  final IndexedWidgetBuilder itemBuilder;
+
+  const _SearchBottomSheetContainer({
+    required this.title,
+    required this.searchHint,
+    required this.searchController,
+    required this.onSearchChanged,
+    required this.emptyMessage,
+    required this.itemCount,
+    required this.itemBuilder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final height = MediaQuery.of(context).size.height * 0.78;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: Container(
+        height: height,
+        decoration: const BoxDecoration(
+          color: AppThemeTokens.surface,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 48,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppThemeTokens.border,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 12, 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: AppThemeTokens.textPrimary,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: onSearchChanged,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: searchHint,
+                    hintStyle: const TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFFF8FAFC),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 13,
+                    ),
+                    border: _border(),
+                    enabledBorder: _border(),
+                    focusedBorder: _border(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, color: AppThemeTokens.border),
+              Expanded(
+                child: itemCount == 0
+                    ? Center(
+                        child: Text(
+                          emptyMessage,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: AppThemeTokens.textSecondary,
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
+                        itemCount: itemCount,
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 4);
+                        },
+                        itemBuilder: itemBuilder,
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: color, width: 1.2),
+    );
+  }
+}
+
+class _PickerTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _PickerTile({
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Material(
+      color: selected ? primary.withValues(alpha: 0.10) : Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: ListTile(
+        onTap: onTap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        title: Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
+            color: AppThemeTokens.textPrimary,
+          ),
+        ),
+        subtitle: subtitle.trim().isEmpty
+            ? null
+            : Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppThemeTokens.textSecondary,
+                ),
+              ),
+        trailing: selected
+            ? Icon(
+                Icons.check_circle,
+                color: primary,
+              )
+            : const Icon(
+                Icons.chevron_right,
+                color: AppThemeTokens.textSecondary,
+              ),
+      ),
+    );
+  }
+}
+
+class _DropdownText extends StatelessWidget {
+  final String text;
+
+  const _DropdownText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      maxLines: 1,
+      softWrap: false,
+      overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
         color: AppThemeTokens.textPrimary,
       ),
-      decoration: _dropdownDecoration(context),
     );
   }
 }
