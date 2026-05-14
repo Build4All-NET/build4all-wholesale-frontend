@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/tax_rule_entity.dart';
 
@@ -15,45 +14,6 @@ class TaxRuleCard extends StatelessWidget {
     this.onEdit,
     this.onDelete,
   });
-
-  String _statusLabel(BuildContext context) {
-    final normalizedStatus = rule.status?.trim().toUpperCase();
-
-    if (normalizedStatus == 'ACTIVE') {
-      return context.l10n.activeStatus;
-    }
-
-    if (normalizedStatus == 'INACTIVE') {
-      return context.l10n.inactiveStatus;
-    }
-
-    return rule.active ? context.l10n.activeStatus : context.l10n.inactiveStatus;
-  }
-
-  bool _isActiveStatus() {
-    final normalizedStatus = rule.status?.trim().toUpperCase();
-
-    if (normalizedStatus == 'ACTIVE') return true;
-    if (normalizedStatus == 'INACTIVE') return false;
-
-    return rule.active;
-  }
-
-  String _scopeLabel(BuildContext context) {
-    final regionName = rule.regionName?.trim();
-
-    if (regionName != null && regionName.isNotEmpty) {
-      return context.l10n.regionRuleLabel;
-    }
-
-    return context.l10n.countryRuleLabel;
-  }
-
-  String _shippingTaxLabel(BuildContext context) {
-    return rule.appliesToShipping
-        ? context.l10n.appliesToShippingLabel
-        : context.l10n.itemsOnlyTaxLabel;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +58,7 @@ class TaxRuleCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${rule.rateLabel} • ${_scopeLabel(context)}',
+                      '${rule.rateLabel} • ${rule.scopeLabel}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -111,10 +71,7 @@ class TaxRuleCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StatusPill(
-                status: _statusLabel(context),
-                active: _isActiveStatus(),
-              ),
+              _StatusPill(status: rule.statusLabel),
             ],
           ),
           if (rule.notes != null && rule.notes!.trim().isNotEmpty) ...[
@@ -137,8 +94,8 @@ class TaxRuleCard extends StatelessWidget {
             runSpacing: 8,
             children: [
               _TextChip(text: rule.locationLabel),
-              _TextChip(text: _shippingTaxLabel(context)),
-              _TextChip(text: context.l10n.orderLevelTaxLabel),
+              _TextChip(text: rule.shippingTaxLabel),
+              _TextChip(text: 'Order-level tax'),
             ],
           ),
           const SizedBox(height: 16),
@@ -150,7 +107,7 @@ class TaxRuleCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.edit_outlined,
-                    label: context.l10n.editButton,
+                    label: 'Edit',
                     onPressed: onEdit!,
                     borderColor: primary.withValues(alpha: 0.35),
                     textColor: primary,
@@ -162,7 +119,7 @@ class TaxRuleCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.delete_outline,
-                    label: context.l10n.delete,
+                    label: 'Delete',
                     onPressed: onDelete!,
                     borderColor: Colors.red.withValues(alpha: 0.45),
                     textColor: Colors.red,
@@ -178,15 +135,13 @@ class TaxRuleCard extends StatelessWidget {
 
 class _StatusPill extends StatelessWidget {
   final String status;
-  final bool active;
 
-  const _StatusPill({
-    required this.status,
-    required this.active,
-  });
+  const _StatusPill({required this.status});
 
   @override
   Widget build(BuildContext context) {
+    final active = status.toLowerCase() == 'active';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
