@@ -1699,4 +1699,79 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get productNameHint => 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box';
+
+  @override
+  String get taxConfigurationTitle => 'Configuration des taxes';
+
+  @override
+  String get createTaxRuleTitle => 'Créer une règle de taxe';
+
+  @override
+  String get editTaxRuleTitle => 'Modifier la règle de taxe';
+
+  @override
+  String get createTaxRuleTooltip => 'Créer une règle de taxe';
+
+  @override
+  String get taxRefreshTooltip => 'Actualiser les règles de taxe';
+
+  @override
+  String get manageTaxRulesTitle => 'Gérer les règles de taxe';
+
+  @override
+  String get manageTaxRulesSubtitle =>
+      'Configurez la taxe au niveau de la commande selon le pays et la région. Le paiement du détaillant utilisera ces règles pour calculer la taxe.';
+
+  @override
+  String get enabledOnlyFilter => 'Activées uniquement';
+
+  @override
+  String get disabledOnlyFilter => 'Désactivées uniquement';
+
+  @override
+  String get searchTaxRulesHint => 'Rechercher des règles de taxe';
+
+  @override
+  String get taxRuleListTitle => 'Liste des règles de taxe';
+
+  @override
+  String taxRulesShown(Object count) {
+    return '$count règle(s) affichée(s)';
+  }
+
+  @override
+  String get couldNotLoadTaxRules => 'Impossible de charger les règles de taxe';
+
+  @override
+  String get noTaxRulesYet => 'Aucune règle de taxe pour le moment';
+
+  @override
+  String get noTaxRulesYetMessage =>
+      'Créez des règles de taxe depuis le raccourci du tableau de bord fournisseur ou depuis l’icône plus en haut.';
+
+  @override
+  String get noMatchingTaxRules => 'Aucune règle de taxe correspondante';
+
+  @override
+  String get deleteTaxRuleTitle => 'Supprimer la règle de taxe';
+
+  @override
+  String deleteTaxRuleConfirmation(Object ruleName) {
+    return 'Voulez-vous vraiment supprimer « $ruleName » ?';
+  }
+
+  @override
+  String get countryRuleLabel => 'Règle par pays';
+
+  @override
+  String get regionRuleLabel => 'Règle par région';
+
+  @override
+  String get appliesToShippingLabel => 'S’applique à la livraison';
+
+  @override
+  String get itemsOnlyTaxLabel => 'Articles uniquement';
+
+  @override
+  String get orderLevelTaxLabel => 'Taxe au niveau de la commande';
 }

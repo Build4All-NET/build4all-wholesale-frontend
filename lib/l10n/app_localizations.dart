@@ -3246,6 +3246,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box'**
   String get productNameHint;
+
+  /// No description provided for @taxConfigurationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Configuration'**
+  String get taxConfigurationTitle;
+
+  /// No description provided for @createTaxRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Tax Rule'**
+  String get createTaxRuleTitle;
+
+  /// No description provided for @editTaxRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Tax Rule'**
+  String get editTaxRuleTitle;
+
+  /// No description provided for @createTaxRuleTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Tax Rule'**
+  String get createTaxRuleTooltip;
+
+  /// No description provided for @taxRefreshTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh tax rules'**
+  String get taxRefreshTooltip;
+
+  /// No description provided for @manageTaxRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Tax Rules'**
+  String get manageTaxRulesTitle;
+
+  /// No description provided for @manageTaxRulesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.'**
+  String get manageTaxRulesSubtitle;
+
+  /// No description provided for @enabledOnlyFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled only'**
+  String get enabledOnlyFilter;
+
+  /// No description provided for @disabledOnlyFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled only'**
+  String get disabledOnlyFilter;
+
+  /// No description provided for @searchTaxRulesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tax rules'**
+  String get searchTaxRulesHint;
+
+  /// No description provided for @taxRuleListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Rule List'**
+  String get taxRuleListTitle;
+
+  /// No description provided for @taxRulesShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} rule(s) shown'**
+  String taxRulesShown(Object count);
+
+  /// No description provided for @couldNotLoadTaxRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load tax rules'**
+  String get couldNotLoadTaxRules;
+
+  /// No description provided for @noTaxRulesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No tax rules yet'**
+  String get noTaxRulesYet;
+
+  /// No description provided for @noTaxRulesYetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Create tax rules from the supplier dashboard quick action or tap the plus icon above.'**
+  String get noTaxRulesYetMessage;
+
+  /// No description provided for @noMatchingTaxRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching tax rules'**
+  String get noMatchingTaxRules;
+
+  /// No description provided for @deleteTaxRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Tax Rule'**
+  String get deleteTaxRuleTitle;
+
+  /// No description provided for @deleteTaxRuleConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{ruleName}\"?'**
+  String deleteTaxRuleConfirmation(Object ruleName);
+
+  /// No description provided for @countryRuleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country rule'**
+  String get countryRuleLabel;
+
+  /// No description provided for @regionRuleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region rule'**
+  String get regionRuleLabel;
+
+  /// No description provided for @appliesToShippingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to shipping'**
+  String get appliesToShippingLabel;
+
+  /// No description provided for @itemsOnlyTaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Items only'**
+  String get itemsOnlyTaxLabel;
+
+  /// No description provided for @orderLevelTaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order-level tax'**
+  String get orderLevelTaxLabel;
 }
 
 class _AppLocalizationsDelegate

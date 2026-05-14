@@ -1676,4 +1676,79 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get productNameHint =>
       'مثال: صندوق كوكاكولا 24 قطعة، صندوق قمصان قطنية';
+
+  @override
+  String get taxConfigurationTitle => 'إعدادات الضرائب';
+
+  @override
+  String get createTaxRuleTitle => 'إنشاء قاعدة ضريبية';
+
+  @override
+  String get editTaxRuleTitle => 'تعديل قاعدة ضريبية';
+
+  @override
+  String get createTaxRuleTooltip => 'إنشاء قاعدة ضريبية';
+
+  @override
+  String get taxRefreshTooltip => 'تحديث قواعد الضرائب';
+
+  @override
+  String get manageTaxRulesTitle => 'إدارة قواعد الضرائب';
+
+  @override
+  String get manageTaxRulesSubtitle =>
+      'اضبطي ضريبة الطلب حسب البلد والمنطقة. سيستخدمها دفع التاجر لحساب الضريبة.';
+
+  @override
+  String get enabledOnlyFilter => 'المفعّلة فقط';
+
+  @override
+  String get disabledOnlyFilter => 'غير المفعّلة فقط';
+
+  @override
+  String get searchTaxRulesHint => 'ابحثي في قواعد الضرائب';
+
+  @override
+  String get taxRuleListTitle => 'قائمة قواعد الضرائب';
+
+  @override
+  String taxRulesShown(Object count) {
+    return '$count قاعدة ظاهرة';
+  }
+
+  @override
+  String get couldNotLoadTaxRules => 'تعذر تحميل قواعد الضرائب';
+
+  @override
+  String get noTaxRulesYet => 'لا توجد قواعد ضريبية بعد';
+
+  @override
+  String get noTaxRulesYetMessage =>
+      'أنشئي قواعد ضريبية من اختصار لوحة تحكم المورّد أو من زر الإضافة في الأعلى.';
+
+  @override
+  String get noMatchingTaxRules => 'لا توجد قواعد ضريبية مطابقة';
+
+  @override
+  String get deleteTaxRuleTitle => 'حذف قاعدة ضريبية';
+
+  @override
+  String deleteTaxRuleConfirmation(Object ruleName) {
+    return 'هل أنتِ متأكدة أنك تريدين حذف \"$ruleName\"؟';
+  }
+
+  @override
+  String get countryRuleLabel => 'قاعدة على مستوى البلد';
+
+  @override
+  String get regionRuleLabel => 'قاعدة على مستوى المنطقة';
+
+  @override
+  String get appliesToShippingLabel => 'تُطبّق على الشحن';
+
+  @override
+  String get itemsOnlyTaxLabel => 'على المنتجات فقط';
+
+  @override
+  String get orderLevelTaxLabel => 'ضريبة على مستوى الطلب';
 }

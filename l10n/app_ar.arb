@@ -654,5 +654,38 @@
       "rowNumber": {}
     }
   },
-  "productNameHint": "مثال: صندوق كوكاكولا 24 قطعة، صندوق قمصان قطنية"
+  "productNameHint": "مثال: صندوق كوكاكولا 24 قطعة، صندوق قمصان قطنية",
+  "taxConfigurationTitle": "إعدادات الضرائب",
+  "createTaxRuleTitle": "إنشاء قاعدة ضريبية",
+  "editTaxRuleTitle": "تعديل قاعدة ضريبية",
+  "createTaxRuleTooltip": "إنشاء قاعدة ضريبية",
+  "taxRefreshTooltip": "تحديث قواعد الضرائب",
+  "manageTaxRulesTitle": "إدارة قواعد الضرائب",
+  "manageTaxRulesSubtitle": "اضبطي ضريبة الطلب حسب البلد والمنطقة. سيستخدمها دفع التاجر لحساب الضريبة.",
+  "enabledOnlyFilter": "المفعّلة فقط",
+  "disabledOnlyFilter": "غير المفعّلة فقط",
+  "searchTaxRulesHint": "ابحثي في قواعد الضرائب",
+  "taxRuleListTitle": "قائمة قواعد الضرائب",
+  "taxRulesShown": "{count} قاعدة ظاهرة",
+  "@taxRulesShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "couldNotLoadTaxRules": "تعذر تحميل قواعد الضرائب",
+  "noTaxRulesYet": "لا توجد قواعد ضريبية بعد",
+  "noTaxRulesYetMessage": "أنشئي قواعد ضريبية من اختصار لوحة تحكم المورّد أو من زر الإضافة في الأعلى.",
+  "noMatchingTaxRules": "لا توجد قواعد ضريبية مطابقة",
+  "deleteTaxRuleTitle": "حذف قاعدة ضريبية",
+  "deleteTaxRuleConfirmation": "هل أنتِ متأكدة أنك تريدين حذف \"{ruleName}\"؟",
+  "@deleteTaxRuleConfirmation": {
+    "placeholders": {
+      "ruleName": {}
+    }
+  },
+  "countryRuleLabel": "قاعدة على مستوى البلد",
+  "regionRuleLabel": "قاعدة على مستوى المنطقة",
+  "appliesToShippingLabel": "تُطبّق على الشحن",
+  "itemsOnlyTaxLabel": "على المنتجات فقط",
+  "orderLevelTaxLabel": "ضريبة على مستوى الطلب"
 }

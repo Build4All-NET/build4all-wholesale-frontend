@@ -654,5 +654,38 @@
       "rowNumber": {}
     }
   },
-  "productNameHint": "e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box"
+  "productNameHint": "e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box",
+  "taxConfigurationTitle": "Tax Configuration",
+  "createTaxRuleTitle": "Create Tax Rule",
+  "editTaxRuleTitle": "Edit Tax Rule",
+  "createTaxRuleTooltip": "Create Tax Rule",
+  "taxRefreshTooltip": "Refresh tax rules",
+  "manageTaxRulesTitle": "Manage Tax Rules",
+  "manageTaxRulesSubtitle": "Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.",
+  "enabledOnlyFilter": "Enabled only",
+  "disabledOnlyFilter": "Disabled only",
+  "searchTaxRulesHint": "Search tax rules",
+  "taxRuleListTitle": "Tax Rule List",
+  "taxRulesShown": "{count} rule(s) shown",
+  "@taxRulesShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "couldNotLoadTaxRules": "Could not load tax rules",
+  "noTaxRulesYet": "No tax rules yet",
+  "noTaxRulesYetMessage": "Create tax rules from the supplier dashboard quick action or tap the plus icon above.",
+  "noMatchingTaxRules": "No matching tax rules",
+  "deleteTaxRuleTitle": "Delete Tax Rule",
+  "deleteTaxRuleConfirmation": "Are you sure you want to delete \"{ruleName}\"?",
+  "@deleteTaxRuleConfirmation": {
+    "placeholders": {
+      "ruleName": {}
+    }
+  },
+  "countryRuleLabel": "Country rule",
+  "regionRuleLabel": "Region rule",
+  "appliesToShippingLabel": "Applies to shipping",
+  "itemsOnlyTaxLabel": "Items only",
+  "orderLevelTaxLabel": "Order-level tax"
 }

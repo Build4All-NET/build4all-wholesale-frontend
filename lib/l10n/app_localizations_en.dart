@@ -1689,4 +1689,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productNameHint => 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box';
+
+  @override
+  String get taxConfigurationTitle => 'Tax Configuration';
+
+  @override
+  String get createTaxRuleTitle => 'Create Tax Rule';
+
+  @override
+  String get editTaxRuleTitle => 'Edit Tax Rule';
+
+  @override
+  String get createTaxRuleTooltip => 'Create Tax Rule';
+
+  @override
+  String get taxRefreshTooltip => 'Refresh tax rules';
+
+  @override
+  String get manageTaxRulesTitle => 'Manage Tax Rules';
+
+  @override
+  String get manageTaxRulesSubtitle =>
+      'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.';
+
+  @override
+  String get enabledOnlyFilter => 'Enabled only';
+
+  @override
+  String get disabledOnlyFilter => 'Disabled only';
+
+  @override
+  String get searchTaxRulesHint => 'Search tax rules';
+
+  @override
+  String get taxRuleListTitle => 'Tax Rule List';
+
+  @override
+  String taxRulesShown(Object count) {
+    return '$count rule(s) shown';
+  }
+
+  @override
+  String get couldNotLoadTaxRules => 'Could not load tax rules';
+
+  @override
+  String get noTaxRulesYet => 'No tax rules yet';
+
+  @override
+  String get noTaxRulesYetMessage =>
+      'Create tax rules from the supplier dashboard quick action or tap the plus icon above.';
+
+  @override
+  String get noMatchingTaxRules => 'No matching tax rules';
+
+  @override
+  String get deleteTaxRuleTitle => 'Delete Tax Rule';
+
+  @override
+  String deleteTaxRuleConfirmation(Object ruleName) {
+    return 'Are you sure you want to delete \"$ruleName\"?';
+  }
+
+  @override
+  String get countryRuleLabel => 'Country rule';
+
+  @override
+  String get regionRuleLabel => 'Region rule';
+
+  @override
+  String get appliesToShippingLabel => 'Applies to shipping';
+
+  @override
+  String get itemsOnlyTaxLabel => 'Items only';
+
+  @override
+  String get orderLevelTaxLabel => 'Order-level tax';
 }
