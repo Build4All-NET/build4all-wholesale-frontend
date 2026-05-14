@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
-import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
+import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/location/data/models/country_model.dart';
 import '../../../../../core/location/data/models/region_model.dart';
 import '../../../../../core/location/data/services/location_api_service.dart';
@@ -19,7 +19,7 @@ import '../../domain/repositories/branch_repository.dart';
 class AddBranchScreen extends StatefulWidget {
   final BranchEntity? branchToEdit;
 
-  AddBranchScreen({
+  const AddBranchScreen({
     super.key,
     this.branchToEdit,
   });
@@ -221,7 +221,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
 
     final country = _selectedCountry;
     if (country == null) {
-      _showSnackBar(context.l10n.pleaseSelectCountry);
+      _showSnackBar(context.l10n.selectCountryFirstError);
       return;
     }
 
@@ -283,15 +283,15 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
     final phoneCountryIso = phone?.countryISOCode.toUpperCase();
 
     if (localDigits.isEmpty) {
-      return context.l10n.phoneRequiredError;
+      return context.l10n.phoneNumberRequiredError;
     }
 
     if (country == null) {
-      return context.l10n.phoneSelectCountryFirstError;
+      return context.l10n.selectCountryFirstError;
     }
 
     if (phoneCountryIso != null && phoneCountryIso != country.iso2Code) {
-      return context.l10n.phoneCountryMismatchError;
+      return context.l10n.phoneCountryMustMatchSelectedCountry;
     }
 
     if (country.iso2Code == 'LB' && localDigits.length != 8) {
@@ -323,8 +323,9 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final title = widget.isEditMode ? context.l10n.editBranchTitle : context.l10n.addBranchTitle;
-    final buttonText = widget.isEditMode ? context.l10n.updateBranchButton : context.l10n.saveBranchButton;
+    final l10n = context.l10n;
+    final title = widget.isEditMode ? l10n.editBranchTitle : l10n.addBranchTitle;
+    final buttonText = widget.isEditMode ? l10n.updateBranchButton : l10n.saveBranchButton;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -333,7 +334,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
         elevation: 0,
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
             color: AppThemeTokens.textPrimary,
           ),
@@ -341,8 +342,8 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.fromLTRB(14, 10, 14, 12),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+          decoration: const BoxDecoration(
             color: AppThemeTokens.background,
             border: Border(
               top: BorderSide(color: AppThemeTokens.border),
@@ -355,8 +356,8 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   onPressed: _isSaving ? null : () => context.pop(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeTokens.textPrimary,
-                    side: BorderSide(color: AppThemeTokens.border),
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    side: const BorderSide(color: AppThemeTokens.border),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusSmall,
@@ -364,12 +365,12 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                     ),
                   ),
                   child: Text(
-                    context.l10n.cancel,
-                    style: TextStyle(fontWeight: FontWeight.w900),
+                    l10n.cancel,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _isSaving ? null : _saveBranch,
@@ -377,7 +378,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusSmall,
@@ -385,7 +386,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                     ),
                   ),
                   child: _isSaving
-                      ? SizedBox(
+                      ? const SizedBox(
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
@@ -395,7 +396,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                         )
                       : Text(
                           buttonText,
-                          style: TextStyle(fontWeight: FontWeight.w900),
+                          style: const TextStyle(fontWeight: FontWeight.w900),
                         ),
                 ),
               ),
@@ -406,33 +407,32 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.fromLTRB(14, 0, 14, 24),
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 24),
           children: [
             _SectionCard(
-              title: context.l10n.branchInformationTitle,
-              subtitle:
-                  context.l10n.branchInformationSubtitle,
+              title: l10n.branchInformationTitle,
+              subtitle: l10n.branchInformationSubtitle,
               children: [
                 if (_locationError != null) ...[
                   _ErrorBox(
                     message: _locationError!,
                     onRetry: _loadCountries,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
                 _AppTextField(
-                  label: context.l10n.branchNameLabel,
-                  hint: context.l10n.branchNameHint,
+                  label: l10n.branchNameLabel,
+                  hint: l10n.branchNameHint,
                   controller: _branchNameController,
                   validator: (value) {
                     final name = value?.trim() ?? '';
 
-                    if (name.isEmpty) return context.l10n.branchNameRequiredError;
+                    if (name.isEmpty) return l10n.branchNameRequiredError;
                     if (name.length < 3) {
-                      return context.l10n.branchNameMinError;
+                      return l10n.branchNameMinError;
                     }
                     if (name.length > 80) {
-                      return context.l10n.branchNameTooLongError;
+                      return l10n.branchNameTooLongError;
                     }
 
                     return null;
@@ -466,40 +466,47 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   },
                 ),
                 _AppTextField(
-                  label: context.l10n.cityAreaLabel,
+                  label: '${l10n.cityAreaLabel} *',
                   hint: LocationHintHelper.cityAreaHint(
                     countryIso2: _selectedCountry?.iso2Code,
                     regionName: _selectedRegion?.name,
+                    genericHint: l10n.cityAreaHintGeneric,
+                    leBeirutHint: l10n.cityAreaHintLebanonBeirut,
+                    leMountHint: l10n.cityAreaHintLebanonMount,
+                    leNorthHint: l10n.cityAreaHintLebanonNorth,
+                    leSouthHint: l10n.cityAreaHintLebanonSouth,
+                    leBekaaHint: l10n.cityAreaHintLebanonBekaa,
+                    leGenericHint: l10n.cityAreaHintLebanonGeneric,
                   ),
                   controller: _cityController,
                   validator: (value) {
                     final city = value?.trim() ?? '';
 
-                    if (city.isEmpty) return context.l10n.cityAreaRequiredError;
+                    if (city.isEmpty) return l10n.cityAreaRequiredError;
                     if (city.length < 2) {
-                      return context.l10n.cityAreaMinError;
+                      return l10n.cityAreaMinError;
                     }
                     if (city.length > 80) {
-                      return context.l10n.cityAreaTooLongError;
+                      return l10n.cityAreaTooLongError;
                     }
 
                     return null;
                   },
                 ),
                 _AppTextField(
-                  label: context.l10n.fullAddressLabel,
-                  hint: context.l10n.fullAddressHint,
+                  label: l10n.fullAddressLabel,
+                  hint: l10n.fullAddressHint,
                   controller: _addressController,
                   maxLines: 3,
                   validator: (value) {
                     final address = value?.trim() ?? '';
 
-                    if (address.isEmpty) return context.l10n.addressRequiredError;
+                    if (address.isEmpty) return l10n.addressRequiredError;
                     if (address.length < 8) {
-                      return context.l10n.addressSpecificError;
+                      return l10n.addressSpecificError;
                     }
                     if (address.length > 180) {
-                      return context.l10n.addressTooLongError;
+                      return l10n.addressTooLongError;
                     }
 
                     return null;
@@ -537,7 +544,7 @@ class _SectionCard extends StatelessWidget {
   final String? subtitle;
   final List<Widget> children;
 
-  _SectionCard({
+  const _SectionCard({
     required this.title,
     this.subtitle,
     required this.children,
@@ -546,7 +553,7 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -557,17 +564,17 @@ class _SectionCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
           if (subtitle != null) ...[
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               subtitle!,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: AppThemeTokens.textSecondary,
@@ -575,7 +582,7 @@ class _SectionCard extends StatelessWidget {
               ),
             ),
           ],
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ...children,
         ],
       ),
@@ -587,7 +594,7 @@ class _ErrorBox extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
-  _ErrorBox({
+  const _ErrorBox({
     required this.message,
     required this.onRetry,
   });
@@ -595,7 +602,7 @@ class _ErrorBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppThemeTokens.error.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
@@ -604,18 +611,18 @@ class _ErrorBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.error_outline, color: AppThemeTokens.error),
-          SizedBox(width: 10),
+          const Icon(Icons.error_outline, color: AppThemeTokens.error),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppThemeTokens.error,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.retryButton)),
         ],
       ),
     );
@@ -628,7 +635,7 @@ class _CountryDropdown extends StatelessWidget {
   final CountryModel? selectedCountry;
   final ValueChanged<CountryModel?> onChanged;
 
-  _CountryDropdown({
+  const _CountryDropdown({
     required this.isLoading,
     required this.countries,
     required this.selectedCountry,
@@ -663,7 +670,7 @@ class _RegionDropdown extends StatelessWidget {
   final bool countrySelected;
   final ValueChanged<RegionModel?> onChanged;
 
-  _RegionDropdown({
+  const _RegionDropdown({
     required this.isLoading,
     required this.regions,
     required this.selectedRegion,
@@ -682,14 +689,14 @@ class _RegionDropdown extends StatelessWidget {
           : isLoading
               ? context.l10n.loadingRegions
               : regions.isEmpty
-                  ? context.l10n.noPredefinedRegions
+                  ? context.l10n.noPredefinedRegionsContinueWithCity
                   : context.l10n.selectRegionState,
       searchHintText: context.l10n.searchRegionState,
       items: regions,
       value: selectedRegion,
       isLoading: isLoading,
       enabled: !disabled,
-      emptyText: context.l10n.noRegionsFound,
+      emptyText: context.l10n.noRegionsFoundForSearch,
       itemLabel: (region) => region.name,
       onSelected: (region) => onChanged(region),
     );
@@ -702,7 +709,7 @@ class _PhoneField extends StatelessWidget {
   final String? Function(PhoneNumber?) validator;
   final ValueChanged<PhoneNumber> onChanged;
 
-  _PhoneField({
+  const _PhoneField({
     required this.controller,
     required this.initialCountryCode,
     required this.validator,
@@ -712,7 +719,7 @@ class _PhoneField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 17),
+      padding: const EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -724,7 +731,7 @@ class _PhoneField extends StatelessWidget {
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           IntlPhoneField(
             key: ValueKey('branch-phone-$initialCountryCode'),
             controller: controller,
@@ -734,7 +741,7 @@ class _PhoneField extends StatelessWidget {
             onChanged: onChanged,
             decoration: InputDecoration(
               hintText: context.l10n.enterPhoneNumber,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
@@ -750,15 +757,15 @@ class _PhoneField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: BorderSide(color: AppThemeTokens.error),
+                borderSide: const BorderSide(color: AppThemeTokens.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: BorderSide(color: AppThemeTokens.error),
+                borderSide: const BorderSide(color: AppThemeTokens.error),
               ),
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
@@ -778,7 +785,7 @@ class _AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?) validator;
 
-  _AppTextField({
+  const _AppTextField({
     required this.label,
     required this.hint,
     required this.controller,
@@ -790,19 +797,19 @@ class _AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 17),
+      padding: const EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           TextFormField(
             controller: controller,
             maxLines: maxLines,
@@ -810,7 +817,7 @@ class _AppTextField extends StatelessWidget {
             validator: validator,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
@@ -826,15 +833,15 @@ class _AppTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: BorderSide(color: AppThemeTokens.error),
+                borderSide: const BorderSide(color: AppThemeTokens.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
                   AppThemeTokens.radiusSmall,
                 ),
-                borderSide: BorderSide(color: AppThemeTokens.error),
+                borderSide: const BorderSide(color: AppThemeTokens.error),
               ),
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
@@ -850,7 +857,7 @@ class _StatusSelector extends StatelessWidget {
   final BranchStatus selectedStatus;
   final ValueChanged<BranchStatus?> onChanged;
 
-  _StatusSelector({
+  const _StatusSelector({
     required this.selectedStatus,
     required this.onChanged,
   });
@@ -858,7 +865,7 @@ class _StatusSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 17),
+      padding: const EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -870,7 +877,7 @@ class _StatusSelector extends StatelessWidget {
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           DropdownButtonFormField<BranchStatus>(
             value: selectedStatus,
             items: [
@@ -895,7 +902,7 @@ class _StatusSelector extends StatelessWidget {
 InputDecoration _dropdownDecoration(String hint) {
   return InputDecoration(
     hintText: hint,
-    hintStyle: TextStyle(
+    hintStyle: const TextStyle(
       color: AppThemeTokens.textSecondary,
       fontWeight: FontWeight.w500,
     ),
@@ -907,12 +914,12 @@ InputDecoration _dropdownDecoration(String hint) {
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-      borderSide: BorderSide(color: AppThemeTokens.error),
+      borderSide: const BorderSide(color: AppThemeTokens.error),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-      borderSide: BorderSide(color: AppThemeTokens.error),
+      borderSide: const BorderSide(color: AppThemeTokens.error),
     ),
-    contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
   );
 }

@@ -770,7 +770,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchNameTooLongError => 'اسم الفرع طويل جدًا';
 
   @override
-  String get cityAreaLabel => 'المدينة / المنطقة *';
+  String get cityAreaLabel => 'المدينة / المنطقة';
 
   @override
   String get cityAreaRequiredError => 'المدينة / المنطقة مطلوبة';
@@ -801,13 +801,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchCountryLabel => 'الدولة *';
 
   @override
-  String get loadingCountries => 'جارٍ تحميل الدول...';
+  String get loadingCountries => 'جاري تحميل الدول...';
 
   @override
   String get selectCountry => 'اختر الدولة';
 
   @override
-  String get searchCountry => 'ابحث عن دولة...';
+  String get searchCountry => 'ابحث عن الدولة...';
 
   @override
   String get noCountriesFound => 'لم يتم العثور على دول';
@@ -822,17 +822,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectCountryFirst => 'اختر الدولة أولاً';
 
   @override
-  String get loadingRegions => 'جارٍ تحميل المناطق...';
+  String get loadingRegions => 'جاري تحميل المناطق...';
 
   @override
   String get noPredefinedRegions =>
       'لا توجد مناطق محددة، يمكنك المتابعة بالمدينة/المنطقة';
 
   @override
-  String get selectRegionState => 'اختر المنطقة / الولاية';
+  String get selectRegionState => 'اختر المنطقة / المحافظة';
 
   @override
-  String get searchRegionState => 'ابحث عن منطقة / ولاية...';
+  String get searchRegionState => 'ابحث عن المنطقة / المحافظة...';
 
   @override
   String get noRegionsFound => 'لم يتم العثور على مناطق مطابقة';
@@ -856,7 +856,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectStatus => 'اختر الحالة';
 
   @override
-  String get pleaseSelectCountry => 'يرجى اختيار الدولة';
+  String get pleaseSelectCountry => 'يرجى اختيار الدولة.';
 
   @override
   String get phoneRequiredError => 'رقم الهاتف مطلوب';
@@ -870,11 +870,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get lebanesePhoneDigitsError =>
-      'يجب أن تحتوي أرقام لبنان على 8 أرقام بعد +961';
+      'يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961';
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'أدخل رقم هاتف صالحًا للدولة المختارة';
+      'أدخل رقم هاتف صحيح للدولة المختارة';
 
   @override
   String get deleteBranchTitle => 'حذف الفرع';
@@ -1678,77 +1678,56 @@ class AppLocalizationsAr extends AppLocalizations {
       'مثال: صندوق كوكاكولا 24 قطعة، صندوق قمصان قطنية';
 
   @override
-  String get taxConfigurationTitle => 'إعدادات الضرائب';
+  String get countryRequiredLabel => 'الدولة *';
 
   @override
-  String get createTaxRuleTitle => 'إنشاء قاعدة ضريبية';
+  String get selectCountryFirstError => 'يرجى اختيار الدولة أولاً';
 
   @override
-  String get editTaxRuleTitle => 'تعديل قاعدة ضريبية';
+  String get regionStateLabel => 'المنطقة / المحافظة';
 
   @override
-  String get createTaxRuleTooltip => 'إنشاء قاعدة ضريبية';
+  String get noPredefinedRegionsContinueWithCity =>
+      'لا توجد مناطق محددة، يمكنك المتابعة بالمدينة / المنطقة';
 
   @override
-  String get taxRefreshTooltip => 'تحديث قواعد الضرائب';
+  String get noRegionsFoundForSearch => 'لم يتم العثور على مناطق مطابقة للبحث';
 
   @override
-  String get manageTaxRulesTitle => 'إدارة قواعد الضرائب';
+  String get cityAreaHintGeneric => 'مثال: مدينة، حي، أو منطقة عمل';
 
   @override
-  String get manageTaxRulesSubtitle =>
-      'اضبطي ضريبة الطلب حسب البلد والمنطقة. سيستخدمها دفع التاجر لحساب الضريبة.';
+  String get cityAreaHintLebanonBeirut => 'مثال: الحمرا، الأشرفية، فردان';
 
   @override
-  String get enabledOnlyFilter => 'المفعّلة فقط';
+  String get cityAreaHintLebanonMount => 'مثال: بعبدا، جونية، عاليه';
 
   @override
-  String get disabledOnlyFilter => 'غير المفعّلة فقط';
+  String get cityAreaHintLebanonNorth => 'مثال: طرابلس، البترون، حلبا';
 
   @override
-  String get searchTaxRulesHint => 'ابحثي في قواعد الضرائب';
+  String get cityAreaHintLebanonSouth => 'مثال: صيدا، صور، النبطية';
 
   @override
-  String get taxRuleListTitle => 'قائمة قواعد الضرائب';
+  String get cityAreaHintLebanonBekaa => 'مثال: زحلة، بعلبك، شتورا';
 
   @override
-  String taxRulesShown(Object count) {
-    return '$count قاعدة ظاهرة';
-  }
+  String get cityAreaHintLebanonGeneric => 'مثال: بيروت، طرابلس، صيدا';
 
   @override
-  String get couldNotLoadTaxRules => 'تعذر تحميل قواعد الضرائب';
+  String get phoneNumberRequiredError => 'رقم الهاتف مطلوب';
 
   @override
-  String get noTaxRulesYet => 'لا توجد قواعد ضريبية بعد';
+  String get phoneCountryMustMatchSelectedCountry =>
+      'يجب أن تتطابق دولة الهاتف مع الدولة المختارة';
 
   @override
-  String get noTaxRulesYetMessage =>
-      'أنشئي قواعد ضريبية من اختصار لوحة تحكم المورّد أو من زر الإضافة في الأعلى.';
+  String get completeRequiredFieldsCorrectly =>
+      'يرجى إكمال جميع الحقول المطلوبة بشكل صحيح.';
 
   @override
-  String get noMatchingTaxRules => 'لا توجد قواعد ضريبية مطابقة';
+  String get businessTypeRequiredError => 'نوع النشاط مطلوب';
 
   @override
-  String get deleteTaxRuleTitle => 'حذف قاعدة ضريبية';
-
-  @override
-  String deleteTaxRuleConfirmation(Object ruleName) {
-    return 'هل أنتِ متأكدة أنك تريدين حذف \"$ruleName\"؟';
-  }
-
-  @override
-  String get countryRuleLabel => 'قاعدة على مستوى البلد';
-
-  @override
-  String get regionRuleLabel => 'قاعدة على مستوى المنطقة';
-
-  @override
-  String get appliesToShippingLabel => 'تُطبّق على الشحن';
-
-  @override
-  String get itemsOnlyTaxLabel => 'على المنتجات فقط';
-
-  @override
-  String get orderLevelTaxLabel => 'ضريبة على مستوى الطلب';
+  String get retryButton => 'إعادة المحاولة';
 }

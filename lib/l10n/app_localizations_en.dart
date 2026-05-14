@@ -777,7 +777,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get branchNameTooLongError => 'Branch name is too long';
 
   @override
-  String get cityAreaLabel => 'City / Area *';
+  String get cityAreaLabel => 'City / Area';
 
   @override
   String get cityAreaRequiredError => 'City / Area is required';
@@ -862,7 +862,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectStatus => 'Select status';
 
   @override
-  String get pleaseSelectCountry => 'Please select a country';
+  String get pleaseSelectCountry => 'Please select a country.';
 
   @override
   String get phoneRequiredError => 'Phone number is required';
@@ -1691,77 +1691,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get productNameHint => 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box';
 
   @override
-  String get taxConfigurationTitle => 'Tax Configuration';
+  String get countryRequiredLabel => 'Country *';
 
   @override
-  String get createTaxRuleTitle => 'Create Tax Rule';
+  String get selectCountryFirstError => 'Please select a country first';
 
   @override
-  String get editTaxRuleTitle => 'Edit Tax Rule';
+  String get regionStateLabel => 'Region / State';
 
   @override
-  String get createTaxRuleTooltip => 'Create Tax Rule';
+  String get noPredefinedRegionsContinueWithCity =>
+      'No predefined regions, continue with city/area';
 
   @override
-  String get taxRefreshTooltip => 'Refresh tax rules';
+  String get noRegionsFoundForSearch => 'No regions found for your search';
 
   @override
-  String get manageTaxRulesTitle => 'Manage Tax Rules';
+  String get cityAreaHintGeneric => 'e.g., city, district, or business area';
 
   @override
-  String get manageTaxRulesSubtitle =>
-      'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.';
+  String get cityAreaHintLebanonBeirut => 'e.g., Hamra, Achrafieh, Verdun';
 
   @override
-  String get enabledOnlyFilter => 'Enabled only';
+  String get cityAreaHintLebanonMount => 'e.g., Baabda, Jounieh, Aley';
 
   @override
-  String get disabledOnlyFilter => 'Disabled only';
+  String get cityAreaHintLebanonNorth => 'e.g., Tripoli, Batroun, Halba';
 
   @override
-  String get searchTaxRulesHint => 'Search tax rules';
+  String get cityAreaHintLebanonSouth => 'e.g., Saida, Tyre, Nabatieh';
 
   @override
-  String get taxRuleListTitle => 'Tax Rule List';
+  String get cityAreaHintLebanonBekaa => 'e.g., Zahle, Baalbek, Chtaura';
 
   @override
-  String taxRulesShown(Object count) {
-    return '$count rule(s) shown';
-  }
+  String get cityAreaHintLebanonGeneric => 'e.g., Beirut, Tripoli, Saida';
 
   @override
-  String get couldNotLoadTaxRules => 'Could not load tax rules';
+  String get phoneNumberRequiredError => 'Phone number is required';
 
   @override
-  String get noTaxRulesYet => 'No tax rules yet';
+  String get phoneCountryMustMatchSelectedCountry =>
+      'Phone country must match the selected country';
 
   @override
-  String get noTaxRulesYetMessage =>
-      'Create tax rules from the supplier dashboard quick action or tap the plus icon above.';
+  String get completeRequiredFieldsCorrectly =>
+      'Please complete all required fields correctly.';
 
   @override
-  String get noMatchingTaxRules => 'No matching tax rules';
+  String get businessTypeRequiredError => 'Business type is required';
 
   @override
-  String get deleteTaxRuleTitle => 'Delete Tax Rule';
-
-  @override
-  String deleteTaxRuleConfirmation(Object ruleName) {
-    return 'Are you sure you want to delete \"$ruleName\"?';
-  }
-
-  @override
-  String get countryRuleLabel => 'Country rule';
-
-  @override
-  String get regionRuleLabel => 'Region rule';
-
-  @override
-  String get appliesToShippingLabel => 'Applies to shipping';
-
-  @override
-  String get itemsOnlyTaxLabel => 'Items only';
-
-  @override
-  String get orderLevelTaxLabel => 'Order-level tax';
+  String get retryButton => 'Retry';
 }

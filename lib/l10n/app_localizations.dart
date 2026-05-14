@@ -1597,7 +1597,7 @@ abstract class AppLocalizations {
   /// No description provided for @cityAreaLabel.
   ///
   /// In en, this message translates to:
-  /// **'City / Area *'**
+  /// **'City / Area'**
   String get cityAreaLabel;
 
   /// No description provided for @cityAreaRequiredError.
@@ -1765,7 +1765,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseSelectCountry.
   ///
   /// In en, this message translates to:
-  /// **'Please select a country'**
+  /// **'Please select a country.'**
   String get pleaseSelectCountry;
 
   /// No description provided for @phoneRequiredError.
@@ -3247,143 +3247,107 @@ abstract class AppLocalizations {
   /// **'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box'**
   String get productNameHint;
 
-  /// No description provided for @taxConfigurationTitle.
+  /// No description provided for @countryRequiredLabel.
   ///
   /// In en, this message translates to:
-  /// **'Tax Configuration'**
-  String get taxConfigurationTitle;
+  /// **'Country *'**
+  String get countryRequiredLabel;
 
-  /// No description provided for @createTaxRuleTitle.
+  /// No description provided for @selectCountryFirstError.
   ///
   /// In en, this message translates to:
-  /// **'Create Tax Rule'**
-  String get createTaxRuleTitle;
+  /// **'Please select a country first'**
+  String get selectCountryFirstError;
 
-  /// No description provided for @editTaxRuleTitle.
+  /// No description provided for @regionStateLabel.
   ///
   /// In en, this message translates to:
-  /// **'Edit Tax Rule'**
-  String get editTaxRuleTitle;
+  /// **'Region / State'**
+  String get regionStateLabel;
 
-  /// No description provided for @createTaxRuleTooltip.
+  /// No description provided for @noPredefinedRegionsContinueWithCity.
   ///
   /// In en, this message translates to:
-  /// **'Create Tax Rule'**
-  String get createTaxRuleTooltip;
+  /// **'No predefined regions, continue with city/area'**
+  String get noPredefinedRegionsContinueWithCity;
 
-  /// No description provided for @taxRefreshTooltip.
+  /// No description provided for @noRegionsFoundForSearch.
   ///
   /// In en, this message translates to:
-  /// **'Refresh tax rules'**
-  String get taxRefreshTooltip;
+  /// **'No regions found for your search'**
+  String get noRegionsFoundForSearch;
 
-  /// No description provided for @manageTaxRulesTitle.
+  /// No description provided for @cityAreaHintGeneric.
   ///
   /// In en, this message translates to:
-  /// **'Manage Tax Rules'**
-  String get manageTaxRulesTitle;
+  /// **'e.g., city, district, or business area'**
+  String get cityAreaHintGeneric;
 
-  /// No description provided for @manageTaxRulesSubtitle.
+  /// No description provided for @cityAreaHintLebanonBeirut.
   ///
   /// In en, this message translates to:
-  /// **'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.'**
-  String get manageTaxRulesSubtitle;
+  /// **'e.g., Hamra, Achrafieh, Verdun'**
+  String get cityAreaHintLebanonBeirut;
 
-  /// No description provided for @enabledOnlyFilter.
+  /// No description provided for @cityAreaHintLebanonMount.
   ///
   /// In en, this message translates to:
-  /// **'Enabled only'**
-  String get enabledOnlyFilter;
+  /// **'e.g., Baabda, Jounieh, Aley'**
+  String get cityAreaHintLebanonMount;
 
-  /// No description provided for @disabledOnlyFilter.
+  /// No description provided for @cityAreaHintLebanonNorth.
   ///
   /// In en, this message translates to:
-  /// **'Disabled only'**
-  String get disabledOnlyFilter;
+  /// **'e.g., Tripoli, Batroun, Halba'**
+  String get cityAreaHintLebanonNorth;
 
-  /// No description provided for @searchTaxRulesHint.
+  /// No description provided for @cityAreaHintLebanonSouth.
   ///
   /// In en, this message translates to:
-  /// **'Search tax rules'**
-  String get searchTaxRulesHint;
+  /// **'e.g., Saida, Tyre, Nabatieh'**
+  String get cityAreaHintLebanonSouth;
 
-  /// No description provided for @taxRuleListTitle.
+  /// No description provided for @cityAreaHintLebanonBekaa.
   ///
   /// In en, this message translates to:
-  /// **'Tax Rule List'**
-  String get taxRuleListTitle;
+  /// **'e.g., Zahle, Baalbek, Chtaura'**
+  String get cityAreaHintLebanonBekaa;
 
-  /// No description provided for @taxRulesShown.
+  /// No description provided for @cityAreaHintLebanonGeneric.
   ///
   /// In en, this message translates to:
-  /// **'{count} rule(s) shown'**
-  String taxRulesShown(Object count);
+  /// **'e.g., Beirut, Tripoli, Saida'**
+  String get cityAreaHintLebanonGeneric;
 
-  /// No description provided for @couldNotLoadTaxRules.
+  /// No description provided for @phoneNumberRequiredError.
   ///
   /// In en, this message translates to:
-  /// **'Could not load tax rules'**
-  String get couldNotLoadTaxRules;
+  /// **'Phone number is required'**
+  String get phoneNumberRequiredError;
 
-  /// No description provided for @noTaxRulesYet.
+  /// No description provided for @phoneCountryMustMatchSelectedCountry.
   ///
   /// In en, this message translates to:
-  /// **'No tax rules yet'**
-  String get noTaxRulesYet;
+  /// **'Phone country must match the selected country'**
+  String get phoneCountryMustMatchSelectedCountry;
 
-  /// No description provided for @noTaxRulesYetMessage.
+  /// No description provided for @completeRequiredFieldsCorrectly.
   ///
   /// In en, this message translates to:
-  /// **'Create tax rules from the supplier dashboard quick action or tap the plus icon above.'**
-  String get noTaxRulesYetMessage;
+  /// **'Please complete all required fields correctly.'**
+  String get completeRequiredFieldsCorrectly;
 
-  /// No description provided for @noMatchingTaxRules.
+  /// No description provided for @businessTypeRequiredError.
   ///
   /// In en, this message translates to:
-  /// **'No matching tax rules'**
-  String get noMatchingTaxRules;
+  /// **'Business type is required'**
+  String get businessTypeRequiredError;
 
-  /// No description provided for @deleteTaxRuleTitle.
+  /// No description provided for @retryButton.
   ///
   /// In en, this message translates to:
-  /// **'Delete Tax Rule'**
-  String get deleteTaxRuleTitle;
-
-  /// No description provided for @deleteTaxRuleConfirmation.
-  ///
-  /// In en, this message translates to:
-  /// **'Are you sure you want to delete \"{ruleName}\"?'**
-  String deleteTaxRuleConfirmation(Object ruleName);
-
-  /// No description provided for @countryRuleLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Country rule'**
-  String get countryRuleLabel;
-
-  /// No description provided for @regionRuleLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Region rule'**
-  String get regionRuleLabel;
-
-  /// No description provided for @appliesToShippingLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Applies to shipping'**
-  String get appliesToShippingLabel;
-
-  /// No description provided for @itemsOnlyTaxLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Items only'**
-  String get itemsOnlyTaxLabel;
-
-  /// No description provided for @orderLevelTaxLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Order-level tax'**
-  String get orderLevelTaxLabel;
+  /// **'Retry'**
+  String get retryButton;
 }
 
 class _AppLocalizationsDelegate

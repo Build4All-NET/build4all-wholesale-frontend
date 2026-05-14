@@ -1,5 +1,4 @@
 {
-  "@@locale": "fr",
   "appTitle": "Application B2B Wholesale",
   "login": "Connexion",
   "signUp": "S'inscrire",
@@ -183,37 +182,494 @@
   "outOfStock": "Rupture",
   "noProductsInCategory": "Aucun produit dans cette catégorie",
   "productAddedToCart": "Produit ajouté au panier",
-  "taxConfigurationTitle": "Configuration des taxes",
-  "createTaxRuleTitle": "Créer une règle de taxe",
-  "editTaxRuleTitle": "Modifier la règle de taxe",
-  "createTaxRuleTooltip": "Créer une règle de taxe",
-  "taxRefreshTooltip": "Actualiser les règles de taxe",
-  "manageTaxRulesTitle": "Gérer les règles de taxe",
-  "manageTaxRulesSubtitle": "Configurez la taxe au niveau de la commande selon le pays et la région. Le paiement du détaillant utilisera ces règles pour calculer la taxe.",
-  "enabledOnlyFilter": "Activées uniquement",
-  "disabledOnlyFilter": "Désactivées uniquement",
-  "searchTaxRulesHint": "Rechercher des règles de taxe",
-  "taxRuleListTitle": "Liste des règles de taxe",
-  "taxRulesShown": "{count} règle(s) affichée(s)",
-  "@taxRulesShown": {
+  "supplierDashboardTitle": "Tableau de bord fournisseur",
+  "supplierDashboardMenuTooltip": "Menu",
+  "supplierDashboardRefreshTooltip": "Actualiser",
+  "supplierDashboardSettingsTooltip": "Paramètres",
+  "supplierDashboardLowStockAlerts": "Alertes de stock faible",
+  "supplierDashboardQuickActions": "Actions rapides",
+  "supplierPendingOrders": "Commandes en attente",
+  "supplierActiveOrders": "Commandes actives",
+  "supplierShippedOrders": "Commandes expédiées",
+  "supplierCompletedOrders": "Commandes terminées",
+  "supplierFinancialSummary": "Résumé financier",
+  "supplierTodaySales": "Ventes du jour",
+  "supplierMonthlyRevenue": "Revenu mensuel",
+  "supplierOrdersToday": "Commandes aujourd’hui",
+  "supplierNoLowStockAlerts": "Aucune alerte de stock faible",
+  "supplierAddProduct": "Ajouter un produit",
+  "supplierCreatePromotion": "Créer une promotion",
+  "supplierManageBranches": "Gérer les succursales",
+  "supplierShippingMethods": "Méthodes de livraison",
+  "supplierConfigureTaxes": "Configurer les taxes",
+  "supplierImportExcel": "Importer Excel",
+  "supplierHomeBanners": "Bannières d’accueil",
+  "supplierCoupons": "Coupons",
+  "supplierLoadingDashboardData": "Chargement des données du tableau de bord...",
+  "supplierLowStockItem": "Article en stock faible",
+  "supplierLowStockProduct": "Produit en stock faible",
+  "supplierCurrentMinimumStock": "Stock actuel : {currentStock} | Minimum : {minimumStock}",
+  "@supplierCurrentMinimumStock": {
+    "placeholders": {
+      "currentStock": {},
+      "minimumStock": {}
+    }
+  },
+  "supplierLogoutTitle": "Déconnexion",
+  "supplierLogoutConfirmation": "Voulez-vous vraiment vous déconnecter ?",
+  "supplierDrawerDashboard": "Tableau de bord",
+  "supplierDrawerProfile": "Profil",
+  "supplierDrawerProducts": "Produits",
+  "supplierDrawerCatalog": "Catalogue",
+  "supplierDrawerBranches": "Succursales",
+  "supplierDrawerOrders": "Commandes",
+  "supplierDrawerPromotions": "Promotions",
+  "supplierDrawerCoupons": "Coupons",
+  "supplierDrawerHomeBanners": "Bannières d’accueil",
+  "supplierDrawerShippingMethods": "Méthodes de livraison",
+  "supplierDrawerTaxes": "Taxes",
+  "supplierDrawerSettings": "Paramètres",
+  "supplierProfileTitle": "Profil fournisseur",
+  "supplierProfileRefreshTooltip": "Actualiser",
+  "supplierProfileNoData": "Aucune donnée de profil fournisseur trouvée",
+  "supplierProfileInformation": "Informations du profil",
+  "supplierFullNameLabel": "Nom complet",
+  "supplierUsernameLabel": "Nom d’utilisateur",
+  "supplierEmailLabel": "E-mail",
+  "supplierPhoneNumberLabel": "Numéro de téléphone",
+  "supplierAccountTypeLabel": "Type de compte",
+  "supplierOwnerLabel": "Propriétaire",
+  "supplierUnableToLoadProfile": "Impossible de charger le profil fournisseur",
+  "supplierTryAgain": "Réessayer",
+  "supplierNotProvided": "Non renseigné",
+  "branchManagementTitle": "Gestion\ndes succursales",
+  "addBranchTitle": "Ajouter une succursale",
+  "editBranchTitle": "Modifier la succursale",
+  "updateBranchButton": "Mettre à jour la succursale",
+  "saveBranchButton": "Enregistrer la succursale",
+  "branchInformationTitle": "Informations de la succursale",
+  "branchInformationSubtitle": "Créez une succursale ou un entrepôt fournisseur utilisé ensuite pour l’inventaire et l’allocation du stock.",
+  "branchNameLabel": "Nom de la succursale *",
+  "branchNameHint": "ex. Entrepôt principal",
+  "branchNameRequiredError": "Le nom de la succursale est obligatoire",
+  "branchNameMinError": "Le nom de la succursale doit contenir au moins 3 caractères",
+  "branchNameTooLongError": "Le nom de la succursale est trop long",
+  "cityAreaLabel": "Ville / Zone",
+  "cityAreaRequiredError": "La ville / zone est obligatoire",
+  "cityAreaMinError": "La ville / zone doit contenir au moins 2 caractères",
+  "cityAreaTooLongError": "La ville / zone est trop longue",
+  "fullAddressLabel": "Adresse complète *",
+  "fullAddressHint": "ex. Bâtiment, rue, zone industrielle",
+  "addressRequiredError": "L’adresse est obligatoire",
+  "addressSpecificError": "L’adresse doit être plus précise",
+  "addressTooLongError": "L’adresse est trop longue",
+  "branchCountryLabel": "Pays *",
+  "loadingCountries": "Chargement des pays...",
+  "selectCountry": "Sélectionner un pays",
+  "searchCountry": "Rechercher un pays...",
+  "noCountriesFound": "Aucun pays trouvé",
+  "countryRequiredError": "Le pays est obligatoire",
+  "branchRegionLabel": "Région / État",
+  "selectCountryFirst": "Sélectionnez d’abord un pays",
+  "loadingRegions": "Chargement des régions...",
+  "noPredefinedRegions": "Aucune région prédéfinie, continuez avec la ville/zone",
+  "selectRegionState": "Sélectionner une région / un état",
+  "searchRegionState": "Rechercher une région / un état...",
+  "noRegionsFound": "Aucune région trouvée pour votre recherche",
+  "branchPhoneLabel": "Numéro de téléphone *",
+  "enterPhoneNumber": "Entrez le numéro de téléphone",
+  "branchStatusLabel": "Statut de la succursale *",
+  "activeStatus": "Actif",
+  "inactiveStatus": "Inactif",
+  "selectStatus": "Sélectionner le statut",
+  "pleaseSelectCountry": "Veuillez sélectionner un pays.",
+  "phoneRequiredError": "Le numéro de téléphone est obligatoire",
+  "phoneSelectCountryFirstError": "Veuillez d’abord sélectionner un pays",
+  "phoneCountryMismatchError": "Le pays du téléphone doit correspondre au pays sélectionné",
+  "lebanesePhoneDigitsError": "Les numéros libanais doivent contenir 8 chiffres après +961",
+  "validPhoneForSelectedCountryError": "Entrez un numéro de téléphone valide pour le pays sélectionné",
+  "deleteBranchTitle": "Supprimer la succursale",
+  "deleteBranchConfirmation": "Voulez-vous vraiment supprimer {branchName} ?",
+  "@deleteBranchConfirmation": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
+  "searchBranchesHint": "Rechercher des succursales...",
+  "noBranchesFound": "Aucune succursale trouvée",
+  "addBranchesEmptyMessage": "Ajoutez des succursales pour gérer le stock et l’inventaire par emplacement.",
+  "editButton": "Modifier",
+  "totalProductsLabel": "Total des produits",
+  "totalStockLabel": "Stock total",
+  "viewInventoryButton": "Voir l’inventaire",
+  "branchInventoryTitle": "Inventaire de {branchName}",
+  "@branchInventoryTitle": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
+  "allProductsAssigned": "Tous les produits disponibles sont déjà affectés à cette succursale",
+  "assignProductToBranchTitle": "Affecter un produit à la succursale",
+  "productLabel": "Produit",
+  "stockQuantityLabel": "Quantité en stock",
+  "stockQuantityHint": "ex. 100",
+  "inventoryRecordNote": "Cela crée un enregistrement d’inventaire pour cette succursale et ce produit.",
+  "assignButton": "Affecter",
+  "updateStockTitle": "Mettre à jour le stock",
+  "stockQuantityFieldLabel": "Quantité en stock",
+  "stockQuantityUpdateHint": "ex. 500",
+  "updateButton": "Mettre à jour",
+  "removeProductFromBranchTitle": "Retirer le produit de la succursale",
+  "removeProductFromBranchConfirmation": "Voulez-vous vraiment retirer {productName} de l’inventaire de {branchName} ?",
+  "@removeProductFromBranchConfirmation": {
+    "placeholders": {
+      "productName": {},
+      "branchName": {}
+    }
+  },
+  "removeButton": "Retirer",
+  "noInventoryFound": "Aucun inventaire trouvé",
+  "assignProductsToBranchEmpty": "Affectez des produits à cette succursale pour commencer à suivre le stock.",
+  "assignProductButton": "Affecter un produit",
+  "stockWithQuantity": "Stock : {quantity}",
+  "@stockWithQuantity": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
+  "catalogTitle": "Gestion du catalogue",
+  "searchCatalogHint": "Rechercher des catégories ou sous-catégories...",
+  "noCatalogItems": "Aucun élément de catalogue trouvé",
+  "addCatalogFirst": "Ajoutez des catégories et sous-catégories pour organiser les produits fournisseur.",
+  "categoryLabel": "Catégorie",
+  "subCategoryLabel": "Sous-catégorie",
+  "addCategoryTitle": "Ajouter une catégorie",
+  "editCategoryTitle": "Modifier la catégorie",
+  "addSubCategoryTitle": "Ajouter une sous-catégorie",
+  "editSubCategoryTitle": "Modifier la sous-catégorie",
+  "categoryNameLabel": "Nom de la catégorie",
+  "subCategoryNameLabel": "Nom de la sous-catégorie",
+  "parentCategoryLabel": "Catégorie parente",
+  "categoryRequiredError": "La catégorie est obligatoire",
+  "subCategoryRequiredError": "La sous-catégorie est obligatoire",
+  "activateButton": "Activer",
+  "deactivateButton": "Désactiver",
+  "productManagementTitle": "Gestion\ndes produits",
+  "searchProductsHint": "Rechercher des produits...",
+  "noProductsFound": "Aucun produit trouvé",
+  "addProductsEmptyMessage": "Ajoutez des produits pour commencer à construire votre catalogue fournisseur.",
+  "productNameLabel": "Nom du produit",
+  "productNameRequiredError": "Le nom du produit est obligatoire",
+  "productNameMinError": "Le nom du produit doit contenir au moins 3 caractères",
+  "productNameTooLongError": "Le nom du produit est trop long",
+  "productDescriptionLabel": "Description",
+  "productDescriptionHint": "Détails du produit, emballage, notes...",
+  "productPriceLabel": "Prix",
+  "productPriceRequiredError": "Le prix est obligatoire",
+  "productPriceInvalidError": "Saisissez un prix valide",
+  "minimumOrderQuantityLabel": "Quantité minimale de commande",
+  "minimumOrderQuantityRequiredError": "La quantité minimale de commande est obligatoire",
+  "minimumOrderQuantityInvalidError": "Saisissez une quantité minimale de commande valide",
+  "productStatusLabel": "Statut du produit",
+  "productImageLabel": "Image du produit",
+  "uploadImageButton": "Téléverser une image",
+  "changeImageButton": "Changer l’image",
+  "categoryDropdownLabel": "Catégorie",
+  "subCategoryDropdownLabel": "Sous-catégorie",
+  "selectCategoryHint": "Sélectionner une catégorie",
+  "selectSubCategoryHint": "Sélectionner une sous-catégorie",
+  "addProductTitle": "Ajouter un produit",
+  "editProductTitle": "Modifier le produit",
+  "saveProductButton": "Enregistrer le produit",
+  "updateProductButton": "Mettre à jour le produit",
+  "deleteProductTitle": "Supprimer le produit",
+  "deleteProductConfirmation": "Voulez-vous vraiment supprimer {productName} ?",
+  "@deleteProductConfirmation": {
+    "placeholders": {
+      "productName": {}
+    }
+  },
+  "manageStockButton": "Gérer le stock",
+  "priceLabel": "Prix",
+  "moqLabel": "QMC",
+  "statusLabel": "Statut",
+  "productBranchStockTitle": "Gérer le stock du produit par succursale",
+  "branchStockCardsTitle": "Stock par succursale",
+  "totalStockForProduct": "Stock total : {quantity}",
+  "@totalStockForProduct": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
+  "noBranchStockFound": "Aucun stock par succursale trouvé",
+  "assignStockToBranch": "Affectez du stock à une succursale pour commencer à vendre ce produit.",
+  "removeStockTitle": "Retirer le stock",
+  "removeStockConfirmation": "Voulez-vous vraiment retirer le stock pour {branchName} ?",
+  "@removeStockConfirmation": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
+  "supplierOrdersTitle": "Gestion des commandes",
+  "orderDetailsTitle": "Détails de la commande",
+  "searchOrdersHint": "Rechercher des commandes...",
+  "noOrdersFound": "Aucune commande trouvée",
+  "orderNumberLabel": "Commande n°{orderId}",
+  "@orderNumberLabel": {
+    "placeholders": {
+      "orderId": {}
+    }
+  },
+  "customerLabel": "Client",
+  "retailerLabel": "Détaillant",
+  "orderItemsLabel": "Articles de la commande",
+  "orderTimelineLabel": "Chronologie de la commande",
+  "orderStatusPending": "En attente",
+  "orderStatusAccepted": "Acceptée",
+  "orderStatusPreparing": "En préparation",
+  "orderStatusShipped": "Expédiée",
+  "orderStatusDelivered": "Livrée",
+  "orderStatusCancelled": "Annulée",
+  "acceptOrderButton": "Accepter la commande",
+  "markPreparingButton": "Marquer en préparation",
+  "shipOrderButton": "Expédier la commande",
+  "markDeliveredButton": "Marquer comme livrée",
+  "cancelOrderButton": "Annuler la commande",
+  "orderTotalLabel": "Total de la commande",
+  "orderDateLabel": "Date de la commande",
+  "deliveryAddressLabel": "Adresse de livraison",
+  "paymentStatusLabel": "Statut du paiement",
+  "quantityLabel": "Quantité",
+  "importExcelTitle": "Importer Excel",
+  "uploadExcelFile": "Téléverser un fichier Excel",
+  "acceptedExcelFormat": "Format accepté : .xlsx",
+  "readingFile": "Lecture du fichier...",
+  "selectExcel": "Sélectionner Excel",
+  "clearButton": "Effacer",
+  "expectedColumnsTitle": "Colonnes attendues",
+  "importProductInfoOnly": "Importer uniquement les informations produit",
+  "excelImportExplanation": "Cet import crée des produits fournisseur en masse. Le stock par succursale n’est pas importé ici, car le stock appartient à l’inventaire des succursales.",
+  "excelCreateCategoriesFirst": "Créez d’abord les catégories et sous-catégories, puis téléversez le fichier Excel afin que les lignes soient associées correctement.",
+  "noRowsToPreview": "Aucune ligne à prévisualiser pour le moment",
+  "selectExcelToPreview": "Sélectionnez un fichier Excel pour prévisualiser et valider les produits.",
+  "previewRowsTitle": "Aperçu des lignes",
+  "previewRowsHelp": "Vérifiez les lignes invalides, modifiez-les directement ici, ou mettez à jour le fichier Excel et téléversez-le à nouveau.",
+  "unnamedProduct": "Produit sans nom",
+  "editRowButton": "Modifier la ligne",
+  "rowsLabel": "Lignes",
+  "validLabel": "Valides",
+  "errorsLabel": "Erreurs",
+  "warningsLabel": "Avertissements",
+  "duplicateProductWarning": "Avertissement de produit en double",
+  "supplierComingSoonMessage": "Ce module fournisseur sera implémenté étape par étape.",
+  "addButton": "Ajouter",
+  "backButton": "Retour",
+  "menuTooltip": "Menu",
+  "categoriesTab": "Catégories",
+  "subCategoriesTab": "Sous-catégories",
+  "categoryNameFieldLabel": "Nom de la catégorie",
+  "categoryNameHint": "Exemple : Vêtements",
+  "subCategoryNameFieldLabel": "Nom de la sous-catégorie",
+  "subCategoryNameHint": "Exemple : Vêtements femmes",
+  "createActiveCategoryFirst": "Créez d’abord une catégorie active",
+  "deactivateCategoryTitle": "Désactiver la catégorie",
+  "activateCategoryTitle": "Activer la catégorie",
+  "deactivateCategoryMessage": "Cette catégorie n’apparaîtra plus lors de l’ajout de nouveaux produits. Les produits existants ne seront pas affectés.",
+  "activateCategoryMessage": "Cette catégorie apparaîtra à nouveau lors de l’ajout de nouveaux produits.",
+  "deactivateSubCategoryTitle": "Désactiver la sous-catégorie",
+  "activateSubCategoryTitle": "Activer la sous-catégorie",
+  "deactivateSubCategoryMessage": "Cette sous-catégorie n’apparaîtra plus lors de l’ajout de nouveaux produits. Les produits existants ne seront pas affectés.",
+  "activateSubCategoryMessage": "Cette sous-catégorie apparaîtra à nouveau lors de l’ajout de nouveaux produits.",
+  "deleteCategoryTitle": "Supprimer la catégorie",
+  "deleteSubCategoryTitle": "Supprimer la sous-catégorie",
+  "deleteCategoryPermanentConfirmation": "Supprimer définitivement « {categoryName} » ? Cela est autorisé uniquement si elle n’est pas liée à des produits ou à des sous-catégories.",
+  "@deleteCategoryPermanentConfirmation": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
+  "deleteSubCategoryPermanentConfirmation": "Supprimer définitivement « {subCategoryName} » ? Cela est autorisé uniquement si elle n’est pas liée à des produits.",
+  "@deleteSubCategoryPermanentConfirmation": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
+  "noCategoriesFound": "Aucune catégorie trouvée",
+  "noSubCategoriesFound": "Aucune sous-catégorie trouvée",
+  "searchCategoriesHint": "Rechercher des catégories...",
+  "searchSubCategoriesHint": "Rechercher des sous-catégories...",
+  "categoryStats": "{productCount} produits • {subCategoryCount} sous-catégories",
+  "@categoryStats": {
+    "placeholders": {
+      "productCount": {},
+      "subCategoryCount": {}
+    }
+  },
+  "subCategoryStats": "{categoryName} • {productCount} produits",
+  "@subCategoryStats": {
+    "placeholders": {
+      "categoryName": {},
+      "productCount": {}
+    }
+  },
+  "linkedLabel": "Lié",
+  "productInformationTitle": "Informations du produit",
+  "productDescriptionRequiredError": "La description est obligatoire",
+  "productDescriptionMinError": "La description doit contenir au moins 10 caractères",
+  "productDescriptionTooLongError": "La description est trop longue",
+  "pricePerUnitLabel": "Prix par unité *",
+  "priceGreaterThanZeroError": "Le prix doit être supérieur à 0",
+  "priceTooHighError": "Le prix est trop élevé",
+  "quantityInvalidError": "Saisissez une quantité valide",
+  "moqWholesaleMinError": "La quantité minimale de commande doit être au moins 5 pour le wholesale",
+  "moqTooHighError": "La quantité minimale de commande est trop élevée",
+  "productBranchStockSectionTitle": "Stock du produit par succursale",
+  "manageProductStockSavedNote": "Gérez directement le stock de ce produit dans toutes les succursales. Les mises à jour du stock sont enregistrées immédiatement dans l’inventaire des succursales.",
+  "manageProductStockAfterSaveNote": "Enregistrez d’abord ce produit, puis affectez son stock par succursale depuis Stock du produit par succursale.",
+  "branchStockAfterSaveNote": "Le stock par succursale sera disponible après l’enregistrement du produit.",
+  "addingLabel": "Ajout...",
+  "deletingLabel": "Suppression...",
+  "deleteSelectedCategory": "Supprimer la catégorie sélectionnée",
+  "deleteSelectedSubCategory": "Supprimer la sous-catégorie sélectionnée",
+  "loadingSubCategories": "Chargement des sous-catégories...",
+  "selectSubCategoryIfNeeded": "Sélectionner une sous-catégorie si nécessaire",
+  "selectProductStatus": "Sélectionner le statut du produit",
+  "uploadImagesTitle": "Téléverser des images",
+  "tapToUploadProductImage": "Touchez pour téléverser l’image du produit",
+  "imageFormatHint": "PNG, JPG jusqu’à 10 Mo",
+  "selectCategoryFirstMessage": "Sélectionnez d’abord une catégorie",
+  "selectedCategoryNotFound": "La catégorie sélectionnée est introuvable",
+  "selectedSubCategoryNotFound": "La sous-catégorie sélectionnée est introuvable",
+  "selectSubCategoryFirstMessage": "Sélectionnez d’abord une sous-catégorie",
+  "categoryAddedMessage": "{categoryName} ajoutée",
+  "@categoryAddedMessage": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
+  "subCategoryAddedMessage": "{subCategoryName} ajoutée",
+  "@subCategoryAddedMessage": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
+  "categoryDeletedMessage": "{categoryName} supprimée",
+  "@categoryDeletedMessage": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
+  "subCategoryDeletedMessage": "{subCategoryName} supprimée",
+  "@subCategoryDeletedMessage": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
+  "deleteCategoryHelp": "Si cette catégorie est déjà utilisée par des produits ou des sous-catégories, le backend peut empêcher sa suppression.",
+  "deleteSubCategoryHelp": "Si cette sous-catégorie est déjà utilisée par des produits, le backend peut empêcher sa suppression.",
+  "updateBranchStockTitle": "Mettre à jour le stock de la succursale",
+  "assignStockToBranchTitle": "Affecter le stock à une succursale",
+  "branchLabel": "Succursale",
+  "stockSavedToBranchInventoryNote": "Le stock est enregistré directement dans l’inventaire des succursales. Vous n’avez pas besoin de mettre à jour à nouveau les détails du produit.",
+  "stockByBranchTitle": "Stock par succursale",
+  "productBranchStockExplanation": "Mettez à jour directement le stock de ce produit par succursale. Cela s’enregistre dans l’inventaire des succursales, pas dans les détails du produit.",
+  "branchesLabel": "Succursales",
+  "notAssignedYet": "Pas encore affecté",
+  "createBranchFirst": "Créez d’abord une succursale, puis affectez le stock du produit.",
+  "totalBranchStockLabel": "Stock total des succursales : {quantity}",
+  "@totalBranchStockLabel": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
+  "noBranchStockAssigned": "Aucun stock par succursale affecté",
+  "viewDetailsButton": "Voir les détails",
+  "itemsCountLabel": "{count} articles",
+  "@itemsCountLabel": {
     "placeholders": {
       "count": {}
     }
   },
-  "couldNotLoadTaxRules": "Impossible de charger les règles de taxe",
-  "noTaxRulesYet": "Aucune règle de taxe pour le moment",
-  "noTaxRulesYetMessage": "Créez des règles de taxe depuis le raccourci du tableau de bord fournisseur ou depuis l’icône plus en haut.",
-  "noMatchingTaxRules": "Aucune règle de taxe correspondante",
-  "deleteTaxRuleTitle": "Supprimer la règle de taxe",
-  "deleteTaxRuleConfirmation": "Voulez-vous vraiment supprimer « {ruleName} » ?",
-  "@deleteTaxRuleConfirmation": {
+  "allLabel": "Tous",
+  "incomingOrdersEmptyMessage": "Les commandes entrantes des détaillants apparaîtront ici.",
+  "orderNotFound": "Commande introuvable",
+  "paymentMethodLabel": "Méthode de paiement",
+  "totalAmountLabel": "Montant total",
+  "orderCancelledMessage": "Cette commande a été annulée.",
+  "productsOrderedTitle": "Produits commandés",
+  "unitsTimesPrice": "{quantity} unités × {price}",
+  "@unitsTimesPrice": {
     "placeholders": {
-      "ruleName": {}
+      "quantity": {},
+      "price": {}
     }
   },
-  "countryRuleLabel": "Règle par pays",
-  "regionRuleLabel": "Règle par région",
-  "appliesToShippingLabel": "S’applique à la livraison",
-  "itemsOnlyTaxLabel": "Articles uniquement",
-  "orderLevelTaxLabel": "Taxe au niveau de la commande"
+  "deliveryInformationTitle": "Informations de livraison",
+  "retailerPhoneLabel": "Téléphone du détaillant",
+  "branchLabelPlain": "Succursale",
+  "orderNotesTitle": "Notes de commande",
+  "noMoreStatusActions": "Aucune autre action de statut disponible pour cette commande.",
+  "rejectOrderButton": "Rejeter la commande",
+  "manageCategoriesTooltip": "Gérer les catégories",
+  "someRowsNeedAttention": "Certaines lignes nécessitent votre attention",
+  "allRowsReady": "Toutes les lignes sont prêtes à être importées",
+  "excelAttentionHelp": "Vous pouvez modifier les lignes invalides dans cet écran, corriger le fichier Excel et le téléverser à nouveau, ou gérer d’abord les catégories manquantes.",
+  "manageCategoriesButton": "Gérer les catégories",
+  "importResultTitle": "Résultat de l’import",
+  "importedRowsSummary": "Importées : {importedCount} / {totalRows}",
+  "@importedRowsSummary": {
+    "placeholders": {
+      "importedCount": {},
+      "totalRows": {}
+    }
+  },
+  "resetButton": "Réinitialiser",
+  "importingLabel": "Importation...",
+  "importProductsButton": "Importer {count} produits",
+  "@importProductsButton": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "editRowTitle": "Modifier la ligne {rowNumber}",
+  "@editRowTitle": {
+    "placeholders": {
+      "rowNumber": {}
+    }
+  },
+  "editRowHelp": "Corrigez les informations du produit avant l’import. Cela met à jour uniquement l’aperçu ; le fichier Excel sur votre téléphone n’est pas modifié.",
+  "saveChangesButton": "Enregistrer les modifications",
+  "noSubcategory": "Aucune sous-catégorie",
+  "noSubcategoriesForCategory": "Aucune sous-catégorie pour cette catégorie",
+  "selectCategoryWithCurrent": "Sélectionner une catégorie ({categoryName})",
+  "@selectCategoryWithCurrent": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
+  "rowNumberLabel": "Ligne {rowNumber}",
+  "@rowNumberLabel": {
+    "placeholders": {
+      "rowNumber": {}
+    }
+  },
+  "productNameHint": "ex. Coca-Cola pack de 24, carton de T-shirts en coton",
+  "@@locale": "fr",
+  "countryRequiredLabel": "Pays *",
+  "selectCountryFirstError": "Veuillez sélectionner d’abord un pays",
+  "regionStateLabel": "Région / État",
+  "noPredefinedRegionsContinueWithCity": "Aucune région prédéfinie, continuez avec la ville / zone",
+  "noRegionsFoundForSearch": "Aucune région trouvée pour votre recherche",
+  "cityAreaHintGeneric": "ex. ville, quartier ou zone d’activité",
+  "cityAreaHintLebanonBeirut": "ex. Hamra, Achrafieh, Verdun",
+  "cityAreaHintLebanonMount": "ex. Baabda, Jounieh, Aley",
+  "cityAreaHintLebanonNorth": "ex. Tripoli, Batroun, Halba",
+  "cityAreaHintLebanonSouth": "ex. Saida, Tyr, Nabatieh",
+  "cityAreaHintLebanonBekaa": "ex. Zahlé, Baalbek, Chtaura",
+  "cityAreaHintLebanonGeneric": "ex. Beyrouth, Tripoli, Saida",
+  "phoneNumberRequiredError": "Le numéro de téléphone est obligatoire",
+  "phoneCountryMustMatchSelectedCountry": "Le pays du téléphone doit correspondre au pays sélectionné",
+  "completeRequiredFieldsCorrectly": "Veuillez compléter correctement tous les champs obligatoires.",
+  "businessTypeRequiredError": "Le type d’activité est obligatoire",
+  "retryButton": "Réessayer"
 }
