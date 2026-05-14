@@ -143,6 +143,18 @@ class SearchableSelectionField<T> extends FormField<T> {
         );
 }
 
+class _SearchableSelectionMatch<T> {
+  final T item;
+  final String label;
+  final int score;
+
+  const _SearchableSelectionMatch({
+    required this.item,
+    required this.label,
+    required this.score,
+  });
+}
+
 class _SearchableSelectionSheet<T> extends StatefulWidget {
   final String title;
   final String searchHintText;
@@ -182,17 +194,66 @@ class _SearchableSelectionSheetState<T>
     super.dispose();
   }
 
+  String _normalize(String value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[\u064B-\u065F\u0670]'), '')
+        .replaceAll('أ', 'ا')
+        .replaceAll('إ', 'ا')
+        .replaceAll('آ', 'ا')
+        .replaceAll('ى', 'ي')
+        .replaceAll('ة', 'ه')
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('ë', 'e')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ä', 'a')
+        .replaceAll('ù', 'u')
+        .replaceAll('û', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('î', 'i')
+        .replaceAll('ï', 'i')
+        .replaceAll('ô', 'o')
+        .replaceAll('ö', 'o')
+        .replaceAll('ç', 'c');
+  }
+
+  int _matchScore(String label, String query) {
+    if (label == query) return 0;
+    if (label.startsWith(query)) return 1;
+    if (label.split(RegExp(r'\s+')).any((word) => word.startsWith(query))) {
+      return 2;
+    }
+    if (label.contains(query)) return 3;
+    return 99;
+  }
+
   List<T> get _filteredItems {
-    final normalizedQuery = _query.trim().toLowerCase();
+    final normalizedQuery = _normalize(_query);
     if (normalizedQuery.isEmpty) return widget.items;
 
-    return widget.items
-        .where(
-          (item) => widget.itemLabel(item).toLowerCase().contains(
-                normalizedQuery,
-              ),
-        )
-        .toList();
+    final matches = widget.items
+        .map((item) {
+          final label = widget.itemLabel(item);
+          final normalizedLabel = _normalize(label);
+          return _SearchableSelectionMatch<T>(
+            item: item,
+            label: label,
+            score: _matchScore(normalizedLabel, normalizedQuery),
+          );
+        })
+        .where((match) => match.score < 99)
+        .toList()
+      ..sort((a, b) {
+        final scoreCompare = a.score.compareTo(b.score);
+        if (scoreCompare != 0) return scoreCompare;
+        return a.label.toLowerCase().compareTo(b.label.toLowerCase());
+      });
+
+    return matches.map((match) => match.item).toList();
   }
 
   @override

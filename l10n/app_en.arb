@@ -249,7 +249,7 @@
   "branchNameRequiredError": "Branch name is required",
   "branchNameMinError": "Branch name must be at least 3 characters",
   "branchNameTooLongError": "Branch name is too long",
-  "cityAreaLabel": "City / Area *",
+  "cityAreaLabel": "City / Area",
   "cityAreaRequiredError": "City / Area is required",
   "cityAreaMinError": "City / Area must be at least 2 characters",
   "cityAreaTooLongError": "City / Area is too long",
@@ -277,7 +277,7 @@
   "activeStatus": "Active",
   "inactiveStatus": "Inactive",
   "selectStatus": "Select status",
-  "pleaseSelectCountry": "Please select a country",
+  "pleaseSelectCountry": "Please select a country.",
   "phoneRequiredError": "Phone number is required",
   "phoneSelectCountryFirstError": "Please select a country first",
   "phoneCountryMismatchError": "Phone country must match the selected country",
@@ -654,5 +654,22 @@
       "rowNumber": {}
     }
   },
-  "productNameHint": "e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box"
+  "productNameHint": "e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box",
+  "countryRequiredLabel": "Country *",
+  "selectCountryFirstError": "Please select a country first",
+  "regionStateLabel": "Region / State",
+  "noPredefinedRegionsContinueWithCity": "No predefined regions, continue with city/area",
+  "noRegionsFoundForSearch": "No regions found for your search",
+  "cityAreaHintGeneric": "e.g., city, district, or business area",
+  "cityAreaHintLebanonBeirut": "e.g., Hamra, Achrafieh, Verdun",
+  "cityAreaHintLebanonMount": "e.g., Baabda, Jounieh, Aley",
+  "cityAreaHintLebanonNorth": "e.g., Tripoli, Batroun, Halba",
+  "cityAreaHintLebanonSouth": "e.g., Saida, Tyre, Nabatieh",
+  "cityAreaHintLebanonBekaa": "e.g., Zahle, Baalbek, Chtaura",
+  "cityAreaHintLebanonGeneric": "e.g., Beirut, Tripoli, Saida",
+  "phoneNumberRequiredError": "Phone number is required",
+  "phoneCountryMustMatchSelectedCountry": "Phone country must match the selected country",
+  "completeRequiredFieldsCorrectly": "Please complete all required fields correctly.",
+  "businessTypeRequiredError": "Business type is required",
+  "retryButton": "Retry"
 }

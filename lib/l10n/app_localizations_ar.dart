@@ -770,7 +770,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchNameTooLongError => 'اسم الفرع طويل جدًا';
 
   @override
-  String get cityAreaLabel => 'المدينة / المنطقة *';
+  String get cityAreaLabel => 'المدينة / المنطقة';
 
   @override
   String get cityAreaRequiredError => 'المدينة / المنطقة مطلوبة';
@@ -801,13 +801,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchCountryLabel => 'الدولة *';
 
   @override
-  String get loadingCountries => 'جارٍ تحميل الدول...';
+  String get loadingCountries => 'جاري تحميل الدول...';
 
   @override
   String get selectCountry => 'اختر الدولة';
 
   @override
-  String get searchCountry => 'ابحث عن دولة...';
+  String get searchCountry => 'ابحث عن الدولة...';
 
   @override
   String get noCountriesFound => 'لم يتم العثور على دول';
@@ -822,17 +822,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectCountryFirst => 'اختر الدولة أولاً';
 
   @override
-  String get loadingRegions => 'جارٍ تحميل المناطق...';
+  String get loadingRegions => 'جاري تحميل المناطق...';
 
   @override
   String get noPredefinedRegions =>
       'لا توجد مناطق محددة، يمكنك المتابعة بالمدينة/المنطقة';
 
   @override
-  String get selectRegionState => 'اختر المنطقة / الولاية';
+  String get selectRegionState => 'اختر المنطقة / المحافظة';
 
   @override
-  String get searchRegionState => 'ابحث عن منطقة / ولاية...';
+  String get searchRegionState => 'ابحث عن المنطقة / المحافظة...';
 
   @override
   String get noRegionsFound => 'لم يتم العثور على مناطق مطابقة';
@@ -856,7 +856,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectStatus => 'اختر الحالة';
 
   @override
-  String get pleaseSelectCountry => 'يرجى اختيار الدولة';
+  String get pleaseSelectCountry => 'يرجى اختيار الدولة.';
 
   @override
   String get phoneRequiredError => 'رقم الهاتف مطلوب';
@@ -870,11 +870,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get lebanesePhoneDigitsError =>
-      'يجب أن تحتوي أرقام لبنان على 8 أرقام بعد +961';
+      'يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961';
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'أدخل رقم هاتف صالحًا للدولة المختارة';
+      'أدخل رقم هاتف صحيح للدولة المختارة';
 
   @override
   String get deleteBranchTitle => 'حذف الفرع';
@@ -1676,4 +1676,58 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get productNameHint =>
       'مثال: صندوق كوكاكولا 24 قطعة، صندوق قمصان قطنية';
+
+  @override
+  String get countryRequiredLabel => 'الدولة *';
+
+  @override
+  String get selectCountryFirstError => 'يرجى اختيار الدولة أولاً';
+
+  @override
+  String get regionStateLabel => 'المنطقة / المحافظة';
+
+  @override
+  String get noPredefinedRegionsContinueWithCity =>
+      'لا توجد مناطق محددة، يمكنك المتابعة بالمدينة / المنطقة';
+
+  @override
+  String get noRegionsFoundForSearch => 'لم يتم العثور على مناطق مطابقة للبحث';
+
+  @override
+  String get cityAreaHintGeneric => 'مثال: مدينة، حي، أو منطقة عمل';
+
+  @override
+  String get cityAreaHintLebanonBeirut => 'مثال: الحمرا، الأشرفية، فردان';
+
+  @override
+  String get cityAreaHintLebanonMount => 'مثال: بعبدا، جونية، عاليه';
+
+  @override
+  String get cityAreaHintLebanonNorth => 'مثال: طرابلس، البترون، حلبا';
+
+  @override
+  String get cityAreaHintLebanonSouth => 'مثال: صيدا، صور، النبطية';
+
+  @override
+  String get cityAreaHintLebanonBekaa => 'مثال: زحلة، بعلبك، شتورا';
+
+  @override
+  String get cityAreaHintLebanonGeneric => 'مثال: بيروت، طرابلس، صيدا';
+
+  @override
+  String get phoneNumberRequiredError => 'رقم الهاتف مطلوب';
+
+  @override
+  String get phoneCountryMustMatchSelectedCountry =>
+      'يجب أن تتطابق دولة الهاتف مع الدولة المختارة';
+
+  @override
+  String get completeRequiredFieldsCorrectly =>
+      'يرجى إكمال جميع الحقول المطلوبة بشكل صحيح.';
+
+  @override
+  String get businessTypeRequiredError => 'نوع النشاط مطلوب';
+
+  @override
+  String get retryButton => 'إعادة المحاولة';
 }

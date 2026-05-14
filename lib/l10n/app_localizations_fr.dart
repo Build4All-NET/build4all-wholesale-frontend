@@ -586,111 +586,113 @@ class AppLocalizationsFr extends AppLocalizations {
   String get productAddedToCart => 'Produit ajouté au panier';
 
   @override
-  String get supplierDashboardTitle => 'Supplier Dashboard';
+  String get supplierDashboardTitle => 'Tableau de bord fournisseur';
 
   @override
   String get supplierDashboardMenuTooltip => 'Menu';
 
   @override
-  String get supplierDashboardRefreshTooltip => 'Refresh';
+  String get supplierDashboardRefreshTooltip => 'Actualiser';
 
   @override
-  String get supplierDashboardSettingsTooltip => 'Settings';
+  String get supplierDashboardSettingsTooltip => 'Paramètres';
 
   @override
-  String get supplierDashboardLowStockAlerts => 'Low Stock Alerts';
+  String get supplierDashboardLowStockAlerts => 'Alertes de stock faible';
 
   @override
-  String get supplierDashboardQuickActions => 'Quick Actions';
+  String get supplierDashboardQuickActions => 'Actions rapides';
 
   @override
-  String get supplierPendingOrders => 'Pending Orders';
+  String get supplierPendingOrders => 'Commandes en attente';
 
   @override
-  String get supplierActiveOrders => 'Active Orders';
+  String get supplierActiveOrders => 'Commandes actives';
 
   @override
-  String get supplierShippedOrders => 'Shipped Orders';
+  String get supplierShippedOrders => 'Commandes expédiées';
 
   @override
-  String get supplierCompletedOrders => 'Completed Orders';
+  String get supplierCompletedOrders => 'Commandes terminées';
 
   @override
-  String get supplierFinancialSummary => 'Financial Summary';
+  String get supplierFinancialSummary => 'Résumé financier';
 
   @override
-  String get supplierTodaySales => 'Today\'s Sales';
+  String get supplierTodaySales => 'Ventes du jour';
 
   @override
-  String get supplierMonthlyRevenue => 'Monthly Revenue';
+  String get supplierMonthlyRevenue => 'Revenu mensuel';
 
   @override
-  String get supplierOrdersToday => 'Orders Today';
+  String get supplierOrdersToday => 'Commandes aujourd’hui';
 
   @override
-  String get supplierNoLowStockAlerts => 'No low stock alerts';
+  String get supplierNoLowStockAlerts => 'Aucune alerte de stock faible';
 
   @override
-  String get supplierAddProduct => 'Add Product';
+  String get supplierAddProduct => 'Ajouter un produit';
 
   @override
-  String get supplierCreatePromotion => 'Create Promotion';
+  String get supplierCreatePromotion => 'Créer une promotion';
 
   @override
-  String get supplierManageBranches => 'Manage Branches';
+  String get supplierManageBranches => 'Gérer les succursales';
 
   @override
-  String get supplierShippingMethods => 'Shipping Methods';
+  String get supplierShippingMethods => 'Méthodes de livraison';
 
   @override
-  String get supplierConfigureTaxes => 'Configure Taxes';
+  String get supplierConfigureTaxes => 'Configurer les taxes';
 
   @override
-  String get supplierImportExcel => 'Import Excel';
+  String get supplierImportExcel => 'Importer Excel';
 
   @override
-  String get supplierHomeBanners => 'Home Banners';
+  String get supplierHomeBanners => 'Bannières d’accueil';
 
   @override
   String get supplierCoupons => 'Coupons';
 
   @override
-  String get supplierLoadingDashboardData => 'Loading dashboard data...';
+  String get supplierLoadingDashboardData =>
+      'Chargement des données du tableau de bord...';
 
   @override
-  String get supplierLowStockItem => 'Low stock item';
+  String get supplierLowStockItem => 'Article en stock faible';
 
   @override
-  String get supplierLowStockProduct => 'Low stock product';
+  String get supplierLowStockProduct => 'Produit en stock faible';
 
   @override
   String supplierCurrentMinimumStock(Object currentStock, Object minimumStock) {
-    return 'Current stock: $currentStock | Minimum: $minimumStock';
+    return 'Stock actuel : $currentStock | Minimum : $minimumStock';
   }
 
   @override
-  String get supplierLogoutTitle => 'Logout';
+  String get supplierLogoutTitle => 'Déconnexion';
 
   @override
-  String get supplierLogoutConfirmation => 'Are you sure you want to logout?';
+  String get supplierLogoutConfirmation =>
+      'Voulez-vous vraiment vous déconnecter ?';
 
   @override
-  String get supplierDrawerDashboard => 'Dashboard';
+  String get supplierDrawerDashboard => 'Tableau de bord';
 
   @override
-  String get supplierDrawerProfile => 'Profile';
+  String get supplierDrawerProfile => 'Profil';
 
   @override
-  String get supplierDrawerProducts => 'Products';
+  String get supplierDrawerProducts => 'Produits';
 
   @override
-  String get supplierDrawerCatalog => 'Catalog';
+  String get supplierDrawerCatalog => 'Catalogue';
 
   @override
-  String get supplierDrawerBranches => 'Branches';
+  String get supplierDrawerBranches => 'Succursales';
 
   @override
-  String get supplierDrawerOrders => 'Orders';
+  String get supplierDrawerOrders => 'Commandes';
 
   @override
   String get supplierDrawerPromotions => 'Promotions';
@@ -699,1004 +701,1084 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierDrawerCoupons => 'Coupons';
 
   @override
-  String get supplierDrawerHomeBanners => 'Home Banners';
+  String get supplierDrawerHomeBanners => 'Bannières d’accueil';
 
   @override
-  String get supplierDrawerShippingMethods => 'Shipping Methods';
+  String get supplierDrawerShippingMethods => 'Méthodes de livraison';
 
   @override
   String get supplierDrawerTaxes => 'Taxes';
 
   @override
-  String get supplierDrawerSettings => 'Settings';
+  String get supplierDrawerSettings => 'Paramètres';
 
   @override
-  String get supplierProfileTitle => 'Supplier Profile';
+  String get supplierProfileTitle => 'Profil fournisseur';
 
   @override
-  String get supplierProfileRefreshTooltip => 'Refresh';
+  String get supplierProfileRefreshTooltip => 'Actualiser';
 
   @override
-  String get supplierProfileNoData => 'No supplier profile data found';
+  String get supplierProfileNoData =>
+      'Aucune donnée de profil fournisseur trouvée';
 
   @override
-  String get supplierProfileInformation => 'Profile Information';
+  String get supplierProfileInformation => 'Informations du profil';
 
   @override
-  String get supplierFullNameLabel => 'Full Name';
+  String get supplierFullNameLabel => 'Nom complet';
 
   @override
-  String get supplierUsernameLabel => 'Username';
+  String get supplierUsernameLabel => 'Nom d’utilisateur';
 
   @override
-  String get supplierEmailLabel => 'Email';
+  String get supplierEmailLabel => 'E-mail';
 
   @override
-  String get supplierPhoneNumberLabel => 'Phone Number';
+  String get supplierPhoneNumberLabel => 'Numéro de téléphone';
 
   @override
-  String get supplierAccountTypeLabel => 'Account Type';
+  String get supplierAccountTypeLabel => 'Type de compte';
 
   @override
-  String get supplierOwnerLabel => 'Owner';
+  String get supplierOwnerLabel => 'Propriétaire';
 
   @override
-  String get supplierUnableToLoadProfile => 'Unable to load supplier profile';
+  String get supplierUnableToLoadProfile =>
+      'Impossible de charger le profil fournisseur';
 
   @override
-  String get supplierTryAgain => 'Try Again';
+  String get supplierTryAgain => 'Réessayer';
 
   @override
-  String get supplierNotProvided => 'Not provided';
+  String get supplierNotProvided => 'Non renseigné';
 
   @override
-  String get branchManagementTitle => 'Branch\nManagement';
+  String get branchManagementTitle => 'Gestion\ndes succursales';
 
   @override
-  String get addBranchTitle => 'Add Branch';
+  String get addBranchTitle => 'Ajouter une succursale';
 
   @override
-  String get editBranchTitle => 'Edit Branch';
+  String get editBranchTitle => 'Modifier la succursale';
 
   @override
-  String get updateBranchButton => 'Update Branch';
+  String get updateBranchButton => 'Mettre à jour la succursale';
 
   @override
-  String get saveBranchButton => 'Save Branch';
+  String get saveBranchButton => 'Enregistrer la succursale';
 
   @override
-  String get branchInformationTitle => 'Branch Information';
+  String get branchInformationTitle => 'Informations de la succursale';
 
   @override
   String get branchInformationSubtitle =>
-      'Create a supplier branch or warehouse used later for inventory and stock allocation.';
+      'Créez une succursale ou un entrepôt fournisseur utilisé ensuite pour l’inventaire et l’allocation du stock.';
 
   @override
-  String get branchNameLabel => 'Branch Name *';
+  String get branchNameLabel => 'Nom de la succursale *';
 
   @override
-  String get branchNameHint => 'e.g., Main Warehouse';
+  String get branchNameHint => 'ex. Entrepôt principal';
 
   @override
-  String get branchNameRequiredError => 'Branch name is required';
+  String get branchNameRequiredError =>
+      'Le nom de la succursale est obligatoire';
 
   @override
-  String get branchNameMinError => 'Branch name must be at least 3 characters';
+  String get branchNameMinError =>
+      'Le nom de la succursale doit contenir au moins 3 caractères';
 
   @override
-  String get branchNameTooLongError => 'Branch name is too long';
+  String get branchNameTooLongError => 'Le nom de la succursale est trop long';
 
   @override
-  String get cityAreaLabel => 'City / Area *';
+  String get cityAreaLabel => 'Ville / Zone';
 
   @override
-  String get cityAreaRequiredError => 'City / Area is required';
+  String get cityAreaRequiredError => 'La ville / zone est obligatoire';
 
   @override
-  String get cityAreaMinError => 'City / Area must be at least 2 characters';
+  String get cityAreaMinError =>
+      'La ville / zone doit contenir au moins 2 caractères';
 
   @override
-  String get cityAreaTooLongError => 'City / Area is too long';
+  String get cityAreaTooLongError => 'La ville / zone est trop longue';
 
   @override
-  String get fullAddressLabel => 'Full Address *';
+  String get fullAddressLabel => 'Adresse complète *';
 
   @override
-  String get fullAddressHint => 'e.g., Building, street, industrial area';
+  String get fullAddressHint => 'ex. Bâtiment, rue, zone industrielle';
 
   @override
-  String get addressRequiredError => 'Address is required';
+  String get addressRequiredError => 'L’adresse est obligatoire';
 
   @override
-  String get addressSpecificError => 'Address must be more specific';
+  String get addressSpecificError => 'L’adresse doit être plus précise';
 
   @override
-  String get addressTooLongError => 'Address is too long';
+  String get addressTooLongError => 'L’adresse est trop longue';
 
   @override
-  String get branchCountryLabel => 'Country *';
+  String get branchCountryLabel => 'Pays *';
 
   @override
-  String get loadingCountries => 'Loading countries...';
+  String get loadingCountries => 'Chargement des pays...';
 
   @override
-  String get selectCountry => 'Select country';
+  String get selectCountry => 'Sélectionner un pays';
 
   @override
-  String get searchCountry => 'Search country...';
+  String get searchCountry => 'Rechercher un pays...';
 
   @override
-  String get noCountriesFound => 'No countries found';
+  String get noCountriesFound => 'Aucun pays trouvé';
 
   @override
-  String get countryRequiredError => 'Country is required';
+  String get countryRequiredError => 'Le pays est obligatoire';
 
   @override
-  String get branchRegionLabel => 'Region / State';
+  String get branchRegionLabel => 'Région / État';
 
   @override
-  String get selectCountryFirst => 'Select country first';
+  String get selectCountryFirst => 'Sélectionnez d’abord un pays';
 
   @override
-  String get loadingRegions => 'Loading regions...';
+  String get loadingRegions => 'Chargement des régions...';
 
   @override
   String get noPredefinedRegions =>
-      'No predefined regions, continue with city/area';
+      'Aucune région prédéfinie, continuez avec la ville/zone';
 
   @override
-  String get selectRegionState => 'Select region / state';
+  String get selectRegionState => 'Sélectionner une région / un état';
 
   @override
-  String get searchRegionState => 'Search region / state...';
+  String get searchRegionState => 'Rechercher une région / un état...';
 
   @override
-  String get noRegionsFound => 'No regions found for your search';
+  String get noRegionsFound => 'Aucune région trouvée pour votre recherche';
 
   @override
-  String get branchPhoneLabel => 'Phone Number *';
+  String get branchPhoneLabel => 'Numéro de téléphone *';
 
   @override
-  String get enterPhoneNumber => 'Enter phone number';
+  String get enterPhoneNumber => 'Entrez le numéro de téléphone';
 
   @override
-  String get branchStatusLabel => 'Branch Status *';
+  String get branchStatusLabel => 'Statut de la succursale *';
 
   @override
-  String get activeStatus => 'Active';
+  String get activeStatus => 'Actif';
 
   @override
-  String get inactiveStatus => 'Inactive';
+  String get inactiveStatus => 'Inactif';
 
   @override
-  String get selectStatus => 'Select status';
+  String get selectStatus => 'Sélectionner le statut';
 
   @override
-  String get pleaseSelectCountry => 'Please select a country';
+  String get pleaseSelectCountry => 'Veuillez sélectionner un pays.';
 
   @override
-  String get phoneRequiredError => 'Phone number is required';
+  String get phoneRequiredError => 'Le numéro de téléphone est obligatoire';
 
   @override
-  String get phoneSelectCountryFirstError => 'Please select a country first';
+  String get phoneSelectCountryFirstError =>
+      'Veuillez d’abord sélectionner un pays';
 
   @override
   String get phoneCountryMismatchError =>
-      'Phone country must match the selected country';
+      'Le pays du téléphone doit correspondre au pays sélectionné';
 
   @override
   String get lebanesePhoneDigitsError =>
-      'Lebanese phone numbers must contain 8 digits after +961';
+      'Les numéros libanais doivent contenir 8 chiffres après +961';
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'Enter a valid phone number for the selected country';
+      'Entrez un numéro de téléphone valide pour le pays sélectionné';
 
   @override
-  String get deleteBranchTitle => 'Delete Branch';
+  String get deleteBranchTitle => 'Supprimer la succursale';
 
   @override
   String deleteBranchConfirmation(Object branchName) {
-    return 'Are you sure you want to delete $branchName?';
+    return 'Voulez-vous vraiment supprimer $branchName ?';
   }
 
   @override
-  String get searchBranchesHint => 'Search branches...';
+  String get searchBranchesHint => 'Rechercher des succursales...';
 
   @override
-  String get noBranchesFound => 'No branches found';
+  String get noBranchesFound => 'Aucune succursale trouvée';
 
   @override
   String get addBranchesEmptyMessage =>
-      'Add branches to manage stock and inventory by location.';
+      'Ajoutez des succursales pour gérer le stock et l’inventaire par emplacement.';
 
   @override
-  String get editButton => 'Edit';
+  String get editButton => 'Modifier';
 
   @override
-  String get totalProductsLabel => 'Total Products';
+  String get totalProductsLabel => 'Total des produits';
 
   @override
-  String get totalStockLabel => 'Total Stock';
+  String get totalStockLabel => 'Stock total';
 
   @override
-  String get viewInventoryButton => 'View Inventory';
+  String get viewInventoryButton => 'Voir l’inventaire';
 
   @override
   String branchInventoryTitle(Object branchName) {
-    return '$branchName Inventory';
+    return 'Inventaire de $branchName';
   }
 
   @override
   String get allProductsAssigned =>
-      'All available products are already assigned to this branch';
+      'Tous les produits disponibles sont déjà affectés à cette succursale';
 
   @override
-  String get assignProductToBranchTitle => 'Assign Product to Branch';
+  String get assignProductToBranchTitle =>
+      'Affecter un produit à la succursale';
 
   @override
-  String get productLabel => 'Product';
+  String get productLabel => 'Produit';
 
   @override
-  String get stockQuantityLabel => 'Stock Quantity';
+  String get stockQuantityLabel => 'Quantité en stock';
 
   @override
-  String get stockQuantityHint => 'e.g., 100';
+  String get stockQuantityHint => 'ex. 100';
 
   @override
   String get inventoryRecordNote =>
-      'This creates an inventory record for this branch and product.';
+      'Cela crée un enregistrement d’inventaire pour cette succursale et ce produit.';
 
   @override
-  String get assignButton => 'Assign';
+  String get assignButton => 'Affecter';
 
   @override
-  String get updateStockTitle => 'Update Stock';
+  String get updateStockTitle => 'Mettre à jour le stock';
 
   @override
-  String get stockQuantityFieldLabel => 'Stock quantity';
+  String get stockQuantityFieldLabel => 'Quantité en stock';
 
   @override
-  String get stockQuantityUpdateHint => 'e.g., 500';
+  String get stockQuantityUpdateHint => 'ex. 500';
 
   @override
-  String get updateButton => 'Update';
+  String get updateButton => 'Mettre à jour';
 
   @override
-  String get removeProductFromBranchTitle => 'Remove Product from Branch';
+  String get removeProductFromBranchTitle =>
+      'Retirer le produit de la succursale';
 
   @override
   String removeProductFromBranchConfirmation(
     Object productName,
     Object branchName,
   ) {
-    return 'Are you sure you want to remove $productName from $branchName inventory?';
+    return 'Voulez-vous vraiment retirer $productName de l’inventaire de $branchName ?';
   }
 
   @override
-  String get removeButton => 'Remove';
+  String get removeButton => 'Retirer';
 
   @override
-  String get noInventoryFound => 'No inventory found';
+  String get noInventoryFound => 'Aucun inventaire trouvé';
 
   @override
   String get assignProductsToBranchEmpty =>
-      'Assign products to this branch to start tracking stock.';
+      'Affectez des produits à cette succursale pour commencer à suivre le stock.';
 
   @override
-  String get assignProductButton => 'Assign Product';
+  String get assignProductButton => 'Affecter un produit';
 
   @override
   String stockWithQuantity(Object quantity) {
-    return 'Stock: $quantity';
+    return 'Stock : $quantity';
   }
 
   @override
-  String get catalogTitle => 'Catalog Management';
+  String get catalogTitle => 'Gestion du catalogue';
 
   @override
-  String get searchCatalogHint => 'Search categories or subcategories...';
+  String get searchCatalogHint =>
+      'Rechercher des catégories ou sous-catégories...';
 
   @override
-  String get noCatalogItems => 'No catalog items found';
+  String get noCatalogItems => 'Aucun élément de catalogue trouvé';
 
   @override
   String get addCatalogFirst =>
-      'Add categories and subcategories to organize supplier products.';
+      'Ajoutez des catégories et sous-catégories pour organiser les produits fournisseur.';
 
   @override
-  String get categoryLabel => 'Category';
+  String get categoryLabel => 'Catégorie';
 
   @override
-  String get subCategoryLabel => 'SubCategory';
+  String get subCategoryLabel => 'Sous-catégorie';
 
   @override
-  String get addCategoryTitle => 'Add Category';
+  String get addCategoryTitle => 'Ajouter une catégorie';
 
   @override
-  String get editCategoryTitle => 'Edit Category';
+  String get editCategoryTitle => 'Modifier la catégorie';
 
   @override
-  String get addSubCategoryTitle => 'Add SubCategory';
+  String get addSubCategoryTitle => 'Ajouter une sous-catégorie';
 
   @override
-  String get editSubCategoryTitle => 'Edit SubCategory';
+  String get editSubCategoryTitle => 'Modifier la sous-catégorie';
 
   @override
-  String get categoryNameLabel => 'Category Name';
+  String get categoryNameLabel => 'Nom de la catégorie';
 
   @override
-  String get subCategoryNameLabel => 'SubCategory Name';
+  String get subCategoryNameLabel => 'Nom de la sous-catégorie';
 
   @override
-  String get parentCategoryLabel => 'Parent Category';
+  String get parentCategoryLabel => 'Catégorie parente';
 
   @override
-  String get categoryRequiredError => 'Category is required';
+  String get categoryRequiredError => 'La catégorie est obligatoire';
 
   @override
-  String get subCategoryRequiredError => 'SubCategory is required';
+  String get subCategoryRequiredError => 'La sous-catégorie est obligatoire';
 
   @override
-  String get activateButton => 'Activate';
+  String get activateButton => 'Activer';
 
   @override
-  String get deactivateButton => 'Deactivate';
+  String get deactivateButton => 'Désactiver';
 
   @override
-  String get productManagementTitle => 'Product\nManagement';
+  String get productManagementTitle => 'Gestion\ndes produits';
 
   @override
-  String get searchProductsHint => 'Search products...';
+  String get searchProductsHint => 'Rechercher des produits...';
 
   @override
-  String get noProductsFound => 'No products found';
+  String get noProductsFound => 'Aucun produit trouvé';
 
   @override
   String get addProductsEmptyMessage =>
-      'Add products to start building your supplier catalog.';
+      'Ajoutez des produits pour commencer à construire votre catalogue fournisseur.';
 
   @override
-  String get productNameLabel => 'Product Name';
+  String get productNameLabel => 'Nom du produit';
 
   @override
-  String get productNameRequiredError => 'Product name is required';
+  String get productNameRequiredError => 'Le nom du produit est obligatoire';
 
   @override
   String get productNameMinError =>
-      'Product name must be at least 3 characters';
+      'Le nom du produit doit contenir au moins 3 caractères';
 
   @override
-  String get productNameTooLongError => 'Product name is too long';
+  String get productNameTooLongError => 'Le nom du produit est trop long';
 
   @override
   String get productDescriptionLabel => 'Description';
 
   @override
-  String get productDescriptionHint => 'Product details, packaging, notes...';
+  String get productDescriptionHint =>
+      'Détails du produit, emballage, notes...';
 
   @override
-  String get productPriceLabel => 'Price';
+  String get productPriceLabel => 'Prix';
 
   @override
-  String get productPriceRequiredError => 'Price is required';
+  String get productPriceRequiredError => 'Le prix est obligatoire';
 
   @override
-  String get productPriceInvalidError => 'Enter a valid price';
+  String get productPriceInvalidError => 'Saisissez un prix valide';
 
   @override
-  String get minimumOrderQuantityLabel => 'Minimum Order Quantity';
+  String get minimumOrderQuantityLabel => 'Quantité minimale de commande';
 
   @override
   String get minimumOrderQuantityRequiredError =>
-      'Minimum order quantity is required';
+      'La quantité minimale de commande est obligatoire';
 
   @override
   String get minimumOrderQuantityInvalidError =>
-      'Enter a valid minimum order quantity';
+      'Saisissez une quantité minimale de commande valide';
 
   @override
-  String get productStatusLabel => 'Product Status';
+  String get productStatusLabel => 'Statut du produit';
 
   @override
-  String get productImageLabel => 'Product Image';
+  String get productImageLabel => 'Image du produit';
 
   @override
-  String get uploadImageButton => 'Upload Image';
+  String get uploadImageButton => 'Téléverser une image';
 
   @override
-  String get changeImageButton => 'Change Image';
+  String get changeImageButton => 'Changer l’image';
 
   @override
-  String get categoryDropdownLabel => 'Category';
+  String get categoryDropdownLabel => 'Catégorie';
 
   @override
-  String get subCategoryDropdownLabel => 'SubCategory';
+  String get subCategoryDropdownLabel => 'Sous-catégorie';
 
   @override
-  String get selectCategoryHint => 'Select category';
+  String get selectCategoryHint => 'Sélectionner une catégorie';
 
   @override
-  String get selectSubCategoryHint => 'Select subcategory';
+  String get selectSubCategoryHint => 'Sélectionner une sous-catégorie';
 
   @override
-  String get addProductTitle => 'Add Product';
+  String get addProductTitle => 'Ajouter un produit';
 
   @override
-  String get editProductTitle => 'Edit Product';
+  String get editProductTitle => 'Modifier le produit';
 
   @override
-  String get saveProductButton => 'Save Product';
+  String get saveProductButton => 'Enregistrer le produit';
 
   @override
-  String get updateProductButton => 'Update Product';
+  String get updateProductButton => 'Mettre à jour le produit';
 
   @override
-  String get deleteProductTitle => 'Delete Product';
+  String get deleteProductTitle => 'Supprimer le produit';
 
   @override
   String deleteProductConfirmation(Object productName) {
-    return 'Are you sure you want to delete $productName?';
+    return 'Voulez-vous vraiment supprimer $productName ?';
   }
 
   @override
-  String get manageStockButton => 'Manage Stock';
+  String get manageStockButton => 'Gérer le stock';
 
   @override
-  String get priceLabel => 'Price';
+  String get priceLabel => 'Prix';
 
   @override
-  String get moqLabel => 'MOQ';
+  String get moqLabel => 'QMC';
 
   @override
-  String get statusLabel => 'Status';
+  String get statusLabel => 'Statut';
 
   @override
-  String get productBranchStockTitle => 'Manage Product Branch Stock';
+  String get productBranchStockTitle =>
+      'Gérer le stock du produit par succursale';
 
   @override
-  String get branchStockCardsTitle => 'Branch Stock';
+  String get branchStockCardsTitle => 'Stock par succursale';
 
   @override
   String totalStockForProduct(Object quantity) {
-    return 'Total stock: $quantity';
+    return 'Stock total : $quantity';
   }
 
   @override
-  String get noBranchStockFound => 'No branch stock found';
+  String get noBranchStockFound => 'Aucun stock par succursale trouvé';
 
   @override
   String get assignStockToBranch =>
-      'Assign stock to a branch to start selling this product.';
+      'Affectez du stock à une succursale pour commencer à vendre ce produit.';
 
   @override
-  String get removeStockTitle => 'Remove Stock';
+  String get removeStockTitle => 'Retirer le stock';
 
   @override
   String removeStockConfirmation(Object branchName) {
-    return 'Are you sure you want to remove stock for $branchName?';
+    return 'Voulez-vous vraiment retirer le stock pour $branchName ?';
   }
 
   @override
-  String get supplierOrdersTitle => 'Orders Management';
+  String get supplierOrdersTitle => 'Gestion des commandes';
 
   @override
-  String get orderDetailsTitle => 'Order Details';
+  String get orderDetailsTitle => 'Détails de la commande';
 
   @override
-  String get searchOrdersHint => 'Search orders...';
+  String get searchOrdersHint => 'Rechercher des commandes...';
 
   @override
-  String get noOrdersFound => 'No orders found';
+  String get noOrdersFound => 'Aucune commande trouvée';
 
   @override
   String orderNumberLabel(Object orderId) {
-    return 'Order #$orderId';
+    return 'Commande n°$orderId';
   }
 
   @override
-  String get customerLabel => 'Customer';
+  String get customerLabel => 'Client';
 
   @override
-  String get retailerLabel => 'Retailer';
+  String get retailerLabel => 'Détaillant';
 
   @override
-  String get orderItemsLabel => 'Order Items';
+  String get orderItemsLabel => 'Articles de la commande';
 
   @override
-  String get orderTimelineLabel => 'Order Timeline';
+  String get orderTimelineLabel => 'Chronologie de la commande';
 
   @override
-  String get orderStatusPending => 'Pending';
+  String get orderStatusPending => 'En attente';
 
   @override
-  String get orderStatusAccepted => 'Accepted';
+  String get orderStatusAccepted => 'Acceptée';
 
   @override
-  String get orderStatusPreparing => 'Preparing';
+  String get orderStatusPreparing => 'En préparation';
 
   @override
-  String get orderStatusShipped => 'Shipped';
+  String get orderStatusShipped => 'Expédiée';
 
   @override
-  String get orderStatusDelivered => 'Delivered';
+  String get orderStatusDelivered => 'Livrée';
 
   @override
-  String get orderStatusCancelled => 'Cancelled';
+  String get orderStatusCancelled => 'Annulée';
 
   @override
-  String get acceptOrderButton => 'Accept Order';
+  String get acceptOrderButton => 'Accepter la commande';
 
   @override
-  String get markPreparingButton => 'Mark Preparing';
+  String get markPreparingButton => 'Marquer en préparation';
 
   @override
-  String get shipOrderButton => 'Ship Order';
+  String get shipOrderButton => 'Expédier la commande';
 
   @override
-  String get markDeliveredButton => 'Mark Delivered';
+  String get markDeliveredButton => 'Marquer comme livrée';
 
   @override
-  String get cancelOrderButton => 'Cancel Order';
+  String get cancelOrderButton => 'Annuler la commande';
 
   @override
-  String get orderTotalLabel => 'Order Total';
+  String get orderTotalLabel => 'Total de la commande';
 
   @override
-  String get orderDateLabel => 'Order Date';
+  String get orderDateLabel => 'Date de la commande';
 
   @override
-  String get deliveryAddressLabel => 'Delivery Address';
+  String get deliveryAddressLabel => 'Adresse de livraison';
 
   @override
-  String get paymentStatusLabel => 'Payment Status';
+  String get paymentStatusLabel => 'Statut du paiement';
 
   @override
-  String get quantityLabel => 'Quantity';
+  String get quantityLabel => 'Quantité';
 
   @override
-  String get importExcelTitle => 'Import Excel';
+  String get importExcelTitle => 'Importer Excel';
 
   @override
-  String get uploadExcelFile => 'Upload Excel File';
+  String get uploadExcelFile => 'Téléverser un fichier Excel';
 
   @override
-  String get acceptedExcelFormat => 'Accepted format: .xlsx';
+  String get acceptedExcelFormat => 'Format accepté : .xlsx';
 
   @override
-  String get readingFile => 'Reading file...';
+  String get readingFile => 'Lecture du fichier...';
 
   @override
-  String get selectExcel => 'Select Excel';
+  String get selectExcel => 'Sélectionner Excel';
 
   @override
-  String get clearButton => 'Clear';
+  String get clearButton => 'Effacer';
 
   @override
-  String get expectedColumnsTitle => 'Expected Columns';
+  String get expectedColumnsTitle => 'Colonnes attendues';
 
   @override
-  String get importProductInfoOnly => 'Import product information only';
+  String get importProductInfoOnly =>
+      'Importer uniquement les informations produit';
 
   @override
   String get excelImportExplanation =>
-      'This import creates supplier products in bulk. Branch stock is not imported here because stock belongs to Branch Inventory.';
+      'Cet import crée des produits fournisseur en masse. Le stock par succursale n’est pas importé ici, car le stock appartient à l’inventaire des succursales.';
 
   @override
   String get excelCreateCategoriesFirst =>
-      'Create categories and subcategories first, then upload the Excel file so rows can be matched safely.';
+      'Créez d’abord les catégories et sous-catégories, puis téléversez le fichier Excel afin que les lignes soient associées correctement.';
 
   @override
-  String get noRowsToPreview => 'No rows to preview yet';
+  String get noRowsToPreview => 'Aucune ligne à prévisualiser pour le moment';
 
   @override
   String get selectExcelToPreview =>
-      'Select an Excel file to preview and validate products.';
+      'Sélectionnez un fichier Excel pour prévisualiser et valider les produits.';
 
   @override
-  String get previewRowsTitle => 'Preview Rows';
+  String get previewRowsTitle => 'Aperçu des lignes';
 
   @override
   String get previewRowsHelp =>
-      'Review invalid rows, edit them directly here, or update the Excel file and upload it again.';
+      'Vérifiez les lignes invalides, modifiez-les directement ici, ou mettez à jour le fichier Excel et téléversez-le à nouveau.';
 
   @override
-  String get unnamedProduct => 'Unnamed product';
+  String get unnamedProduct => 'Produit sans nom';
 
   @override
-  String get editRowButton => 'Edit Row';
+  String get editRowButton => 'Modifier la ligne';
 
   @override
-  String get rowsLabel => 'Rows';
+  String get rowsLabel => 'Lignes';
 
   @override
-  String get validLabel => 'Valid';
+  String get validLabel => 'Valides';
 
   @override
-  String get errorsLabel => 'Errors';
+  String get errorsLabel => 'Erreurs';
 
   @override
-  String get warningsLabel => 'Warnings';
+  String get warningsLabel => 'Avertissements';
 
   @override
-  String get duplicateProductWarning => 'Duplicate product warning';
+  String get duplicateProductWarning => 'Avertissement de produit en double';
 
   @override
   String get supplierComingSoonMessage =>
-      'This supplier module will be implemented step by step.';
+      'Ce module fournisseur sera implémenté étape par étape.';
 
   @override
-  String get addButton => 'Add';
+  String get addButton => 'Ajouter';
 
   @override
-  String get backButton => 'Back';
+  String get backButton => 'Retour';
 
   @override
   String get menuTooltip => 'Menu';
 
   @override
-  String get categoriesTab => 'Categories';
+  String get categoriesTab => 'Catégories';
 
   @override
-  String get subCategoriesTab => 'Sub Categories';
+  String get subCategoriesTab => 'Sous-catégories';
 
   @override
-  String get categoryNameFieldLabel => 'Category name';
+  String get categoryNameFieldLabel => 'Nom de la catégorie';
 
   @override
-  String get categoryNameHint => 'Example: Clothing';
+  String get categoryNameHint => 'Exemple : Vêtements';
 
   @override
-  String get subCategoryNameFieldLabel => 'Sub category name';
+  String get subCategoryNameFieldLabel => 'Nom de la sous-catégorie';
 
   @override
-  String get subCategoryNameHint => 'Example: Women Clothing';
+  String get subCategoryNameHint => 'Exemple : Vêtements femmes';
 
   @override
-  String get createActiveCategoryFirst => 'Create an active category first';
+  String get createActiveCategoryFirst => 'Créez d’abord une catégorie active';
 
   @override
-  String get deactivateCategoryTitle => 'Deactivate Category';
+  String get deactivateCategoryTitle => 'Désactiver la catégorie';
 
   @override
-  String get activateCategoryTitle => 'Activate Category';
+  String get activateCategoryTitle => 'Activer la catégorie';
 
   @override
   String get deactivateCategoryMessage =>
-      'This category will no longer appear when adding new products. Existing products will not be affected.';
+      'Cette catégorie n’apparaîtra plus lors de l’ajout de nouveaux produits. Les produits existants ne seront pas affectés.';
 
   @override
   String get activateCategoryMessage =>
-      'This category will appear again when adding new products.';
+      'Cette catégorie apparaîtra à nouveau lors de l’ajout de nouveaux produits.';
 
   @override
-  String get deactivateSubCategoryTitle => 'Deactivate Sub Category';
+  String get deactivateSubCategoryTitle => 'Désactiver la sous-catégorie';
 
   @override
-  String get activateSubCategoryTitle => 'Activate Sub Category';
+  String get activateSubCategoryTitle => 'Activer la sous-catégorie';
 
   @override
   String get deactivateSubCategoryMessage =>
-      'This sub category will no longer appear when adding new products. Existing products will not be affected.';
+      'Cette sous-catégorie n’apparaîtra plus lors de l’ajout de nouveaux produits. Les produits existants ne seront pas affectés.';
 
   @override
   String get activateSubCategoryMessage =>
-      'This sub category will appear again when adding new products.';
+      'Cette sous-catégorie apparaîtra à nouveau lors de l’ajout de nouveaux produits.';
 
   @override
-  String get deleteCategoryTitle => 'Delete Category';
+  String get deleteCategoryTitle => 'Supprimer la catégorie';
 
   @override
-  String get deleteSubCategoryTitle => 'Delete Sub Category';
+  String get deleteSubCategoryTitle => 'Supprimer la sous-catégorie';
 
   @override
   String deleteCategoryPermanentConfirmation(Object categoryName) {
-    return 'Delete \"$categoryName\" permanently? This is allowed only if it is not linked to products or sub categories.';
+    return 'Supprimer définitivement « $categoryName » ? Cela est autorisé uniquement si elle n’est pas liée à des produits ou à des sous-catégories.';
   }
 
   @override
   String deleteSubCategoryPermanentConfirmation(Object subCategoryName) {
-    return 'Delete \"$subCategoryName\" permanently? This is allowed only if it is not linked to products.';
+    return 'Supprimer définitivement « $subCategoryName » ? Cela est autorisé uniquement si elle n’est pas liée à des produits.';
   }
 
   @override
-  String get noCategoriesFound => 'No categories found';
+  String get noCategoriesFound => 'Aucune catégorie trouvée';
 
   @override
-  String get noSubCategoriesFound => 'No sub categories found';
+  String get noSubCategoriesFound => 'Aucune sous-catégorie trouvée';
 
   @override
-  String get searchCategoriesHint => 'Search categories...';
+  String get searchCategoriesHint => 'Rechercher des catégories...';
 
   @override
-  String get searchSubCategoriesHint => 'Search sub categories...';
+  String get searchSubCategoriesHint => 'Rechercher des sous-catégories...';
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount products • $subCategoryCount sub categories';
+    return '$productCount produits • $subCategoryCount sous-catégories';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName • $productCount products';
+    return '$categoryName • $productCount produits';
   }
 
   @override
-  String get linkedLabel => 'Linked';
+  String get linkedLabel => 'Lié';
 
   @override
-  String get productInformationTitle => 'Product Information';
+  String get productInformationTitle => 'Informations du produit';
 
   @override
-  String get productDescriptionRequiredError => 'Description is required';
+  String get productDescriptionRequiredError =>
+      'La description est obligatoire';
 
   @override
   String get productDescriptionMinError =>
-      'Description must be at least 10 characters';
+      'La description doit contenir au moins 10 caractères';
 
   @override
-  String get productDescriptionTooLongError => 'Description is too long';
+  String get productDescriptionTooLongError => 'La description est trop longue';
 
   @override
-  String get pricePerUnitLabel => 'Price per Unit *';
+  String get pricePerUnitLabel => 'Prix par unité *';
 
   @override
-  String get priceGreaterThanZeroError => 'Price must be greater than 0';
+  String get priceGreaterThanZeroError => 'Le prix doit être supérieur à 0';
 
   @override
-  String get priceTooHighError => 'Price is too high';
+  String get priceTooHighError => 'Le prix est trop élevé';
 
   @override
-  String get quantityInvalidError => 'Enter a valid quantity';
+  String get quantityInvalidError => 'Saisissez une quantité valide';
 
   @override
   String get moqWholesaleMinError =>
-      'Minimum order quantity must be at least 5 for wholesale';
+      'La quantité minimale de commande doit être au moins 5 pour le wholesale';
 
   @override
-  String get moqTooHighError => 'Minimum order quantity is too high';
+  String get moqTooHighError =>
+      'La quantité minimale de commande est trop élevée';
 
   @override
-  String get productBranchStockSectionTitle => 'Product Branch Stock';
+  String get productBranchStockSectionTitle =>
+      'Stock du produit par succursale';
 
   @override
   String get manageProductStockSavedNote =>
-      'Manage this product stock across all branches directly. Stock updates are saved immediately in Branch Inventory.';
+      'Gérez directement le stock de ce produit dans toutes les succursales. Les mises à jour du stock sont enregistrées immédiatement dans l’inventaire des succursales.';
 
   @override
   String get manageProductStockAfterSaveNote =>
-      'Save this product first, then assign its stock per branch from Product Branch Stock.';
+      'Enregistrez d’abord ce produit, puis affectez son stock par succursale depuis Stock du produit par succursale.';
 
   @override
   String get branchStockAfterSaveNote =>
-      'Branch stock becomes available after saving the product.';
+      'Le stock par succursale sera disponible après l’enregistrement du produit.';
 
   @override
-  String get addingLabel => 'Adding...';
+  String get addingLabel => 'Ajout...';
 
   @override
-  String get deletingLabel => 'Deleting...';
+  String get deletingLabel => 'Suppression...';
 
   @override
-  String get deleteSelectedCategory => 'Delete Selected Category';
+  String get deleteSelectedCategory => 'Supprimer la catégorie sélectionnée';
 
   @override
-  String get deleteSelectedSubCategory => 'Delete Selected Sub Category';
+  String get deleteSelectedSubCategory =>
+      'Supprimer la sous-catégorie sélectionnée';
 
   @override
-  String get loadingSubCategories => 'Loading sub categories...';
+  String get loadingSubCategories => 'Chargement des sous-catégories...';
 
   @override
-  String get selectSubCategoryIfNeeded => 'Select sub category if needed';
+  String get selectSubCategoryIfNeeded =>
+      'Sélectionner une sous-catégorie si nécessaire';
 
   @override
-  String get selectProductStatus => 'Select product status';
+  String get selectProductStatus => 'Sélectionner le statut du produit';
 
   @override
-  String get uploadImagesTitle => 'Upload Images';
+  String get uploadImagesTitle => 'Téléverser des images';
 
   @override
-  String get tapToUploadProductImage => 'Tap to upload product image';
+  String get tapToUploadProductImage =>
+      'Touchez pour téléverser l’image du produit';
 
   @override
-  String get imageFormatHint => 'PNG, JPG up to 10MB';
+  String get imageFormatHint => 'PNG, JPG jusqu’à 10 Mo';
 
   @override
-  String get selectCategoryFirstMessage => 'Select a category first';
+  String get selectCategoryFirstMessage => 'Sélectionnez d’abord une catégorie';
 
   @override
-  String get selectedCategoryNotFound => 'Selected category was not found';
+  String get selectedCategoryNotFound =>
+      'La catégorie sélectionnée est introuvable';
 
   @override
   String get selectedSubCategoryNotFound =>
-      'Selected sub category was not found';
+      'La sous-catégorie sélectionnée est introuvable';
 
   @override
-  String get selectSubCategoryFirstMessage => 'Select a sub category first';
+  String get selectSubCategoryFirstMessage =>
+      'Sélectionnez d’abord une sous-catégorie';
 
   @override
   String categoryAddedMessage(Object categoryName) {
-    return '$categoryName added';
+    return '$categoryName ajoutée';
   }
 
   @override
   String subCategoryAddedMessage(Object subCategoryName) {
-    return '$subCategoryName added';
+    return '$subCategoryName ajoutée';
   }
 
   @override
   String categoryDeletedMessage(Object categoryName) {
-    return '$categoryName deleted';
+    return '$categoryName supprimée';
   }
 
   @override
   String subCategoryDeletedMessage(Object subCategoryName) {
-    return '$subCategoryName deleted';
+    return '$subCategoryName supprimée';
   }
 
   @override
   String get deleteCategoryHelp =>
-      'If this category is already used by products or subcategories, the backend may prevent deleting it.';
+      'Si cette catégorie est déjà utilisée par des produits ou des sous-catégories, le backend peut empêcher sa suppression.';
 
   @override
   String get deleteSubCategoryHelp =>
-      'If this sub category is already used by products, the backend may prevent deleting it.';
+      'Si cette sous-catégorie est déjà utilisée par des produits, le backend peut empêcher sa suppression.';
 
   @override
-  String get updateBranchStockTitle => 'Update Branch Stock';
+  String get updateBranchStockTitle =>
+      'Mettre à jour le stock de la succursale';
 
   @override
-  String get assignStockToBranchTitle => 'Assign Stock to Branch';
+  String get assignStockToBranchTitle => 'Affecter le stock à une succursale';
 
   @override
-  String get branchLabel => 'Branch';
+  String get branchLabel => 'Succursale';
 
   @override
   String get stockSavedToBranchInventoryNote =>
-      'Stock is saved directly in Branch Inventory. You do not need to update the product details again.';
+      'Le stock est enregistré directement dans l’inventaire des succursales. Vous n’avez pas besoin de mettre à jour à nouveau les détails du produit.';
 
   @override
-  String get stockByBranchTitle => 'Stock by Branch';
+  String get stockByBranchTitle => 'Stock par succursale';
 
   @override
   String get productBranchStockExplanation =>
-      'Update this product stock directly per branch. This saves to Branch Inventory, not Product details.';
+      'Mettez à jour directement le stock de ce produit par succursale. Cela s’enregistre dans l’inventaire des succursales, pas dans les détails du produit.';
 
   @override
-  String get branchesLabel => 'Branches';
+  String get branchesLabel => 'Succursales';
 
   @override
-  String get notAssignedYet => 'Not assigned yet';
+  String get notAssignedYet => 'Pas encore affecté';
 
   @override
   String get createBranchFirst =>
-      'Create a branch first, then assign product stock.';
+      'Créez d’abord une succursale, puis affectez le stock du produit.';
 
   @override
   String totalBranchStockLabel(Object quantity) {
-    return 'Total Branch Stock: $quantity';
+    return 'Stock total des succursales : $quantity';
   }
 
   @override
-  String get noBranchStockAssigned => 'No branch stock assigned';
+  String get noBranchStockAssigned => 'Aucun stock par succursale affecté';
 
   @override
-  String get viewDetailsButton => 'View Details';
+  String get viewDetailsButton => 'Voir les détails';
 
   @override
   String itemsCountLabel(Object count) {
-    return '$count items';
+    return '$count articles';
   }
 
   @override
-  String get allLabel => 'All';
+  String get allLabel => 'Tous';
 
   @override
   String get incomingOrdersEmptyMessage =>
-      'Incoming retailer orders will appear here.';
+      'Les commandes entrantes des détaillants apparaîtront ici.';
 
   @override
-  String get orderNotFound => 'Order not found';
+  String get orderNotFound => 'Commande introuvable';
 
   @override
-  String get paymentMethodLabel => 'Payment Method';
+  String get paymentMethodLabel => 'Méthode de paiement';
 
   @override
-  String get totalAmountLabel => 'Total Amount';
+  String get totalAmountLabel => 'Montant total';
 
   @override
-  String get orderCancelledMessage => 'This order was cancelled.';
+  String get orderCancelledMessage => 'Cette commande a été annulée.';
 
   @override
-  String get productsOrderedTitle => 'Products Ordered';
+  String get productsOrderedTitle => 'Produits commandés';
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity units × $price';
+    return '$quantity unités × $price';
   }
 
   @override
-  String get deliveryInformationTitle => 'Delivery Information';
+  String get deliveryInformationTitle => 'Informations de livraison';
 
   @override
-  String get retailerPhoneLabel => 'Retailer Phone';
+  String get retailerPhoneLabel => 'Téléphone du détaillant';
 
   @override
-  String get branchLabelPlain => 'Branch';
+  String get branchLabelPlain => 'Succursale';
 
   @override
-  String get orderNotesTitle => 'Order Notes';
+  String get orderNotesTitle => 'Notes de commande';
 
   @override
   String get noMoreStatusActions =>
-      'No more status actions available for this order.';
+      'Aucune autre action de statut disponible pour cette commande.';
 
   @override
-  String get rejectOrderButton => 'Reject Order';
+  String get rejectOrderButton => 'Rejeter la commande';
 
   @override
-  String get manageCategoriesTooltip => 'Manage Categories';
+  String get manageCategoriesTooltip => 'Gérer les catégories';
 
   @override
-  String get someRowsNeedAttention => 'Some rows need attention';
+  String get someRowsNeedAttention =>
+      'Certaines lignes nécessitent votre attention';
 
   @override
-  String get allRowsReady => 'All rows are ready to import';
+  String get allRowsReady => 'Toutes les lignes sont prêtes à être importées';
 
   @override
   String get excelAttentionHelp =>
-      'You can edit invalid rows inside this screen, fix the Excel file and upload it again, or manage missing categories first.';
+      'Vous pouvez modifier les lignes invalides dans cet écran, corriger le fichier Excel et le téléverser à nouveau, ou gérer d’abord les catégories manquantes.';
 
   @override
-  String get manageCategoriesButton => 'Manage Categories';
+  String get manageCategoriesButton => 'Gérer les catégories';
 
   @override
-  String get importResultTitle => 'Import Result';
+  String get importResultTitle => 'Résultat de l’import';
 
   @override
   String importedRowsSummary(Object importedCount, Object totalRows) {
-    return 'Imported: $importedCount / $totalRows';
+    return 'Importées : $importedCount / $totalRows';
   }
 
   @override
-  String get resetButton => 'Reset';
+  String get resetButton => 'Réinitialiser';
 
   @override
-  String get importingLabel => 'Importing...';
+  String get importingLabel => 'Importation...';
 
   @override
   String importProductsButton(Object count) {
-    return 'Import $count Products';
+    return 'Importer $count produits';
   }
 
   @override
   String editRowTitle(Object rowNumber) {
-    return 'Edit Row $rowNumber';
+    return 'Modifier la ligne $rowNumber';
   }
 
   @override
   String get editRowHelp =>
-      'Correct the product information before importing. This updates the preview only; it does not change the Excel file on your phone.';
+      'Corrigez les informations du produit avant l’import. Cela met à jour uniquement l’aperçu ; le fichier Excel sur votre téléphone n’est pas modifié.';
 
   @override
-  String get saveChangesButton => 'Save Changes';
+  String get saveChangesButton => 'Enregistrer les modifications';
 
   @override
-  String get noSubcategory => 'No subcategory';
+  String get noSubcategory => 'Aucune sous-catégorie';
 
   @override
-  String get noSubcategoriesForCategory => 'No subcategories for this category';
+  String get noSubcategoriesForCategory =>
+      'Aucune sous-catégorie pour cette catégorie';
 
   @override
   String selectCategoryWithCurrent(Object categoryName) {
-    return 'Select category ($categoryName)';
+    return 'Sélectionner une catégorie ($categoryName)';
   }
 
   @override
   String rowNumberLabel(Object rowNumber) {
-    return 'Row $rowNumber';
+    return 'Ligne $rowNumber';
   }
 
   @override
-  String get productNameHint => 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box';
+  String get productNameHint =>
+      'ex. Coca-Cola pack de 24, carton de T-shirts en coton';
+
+  @override
+  String get countryRequiredLabel => 'Pays *';
+
+  @override
+  String get selectCountryFirstError => 'Veuillez sélectionner d’abord un pays';
+
+  @override
+  String get regionStateLabel => 'Région / État';
+
+  @override
+  String get noPredefinedRegionsContinueWithCity =>
+      'Aucune région prédéfinie, continuez avec la ville / zone';
+
+  @override
+  String get noRegionsFoundForSearch =>
+      'Aucune région trouvée pour votre recherche';
+
+  @override
+  String get cityAreaHintGeneric => 'ex. ville, quartier ou zone d’activité';
+
+  @override
+  String get cityAreaHintLebanonBeirut => 'ex. Hamra, Achrafieh, Verdun';
+
+  @override
+  String get cityAreaHintLebanonMount => 'ex. Baabda, Jounieh, Aley';
+
+  @override
+  String get cityAreaHintLebanonNorth => 'ex. Tripoli, Batroun, Halba';
+
+  @override
+  String get cityAreaHintLebanonSouth => 'ex. Saida, Tyr, Nabatieh';
+
+  @override
+  String get cityAreaHintLebanonBekaa => 'ex. Zahlé, Baalbek, Chtaura';
+
+  @override
+  String get cityAreaHintLebanonGeneric => 'ex. Beyrouth, Tripoli, Saida';
+
+  @override
+  String get phoneNumberRequiredError =>
+      'Le numéro de téléphone est obligatoire';
+
+  @override
+  String get phoneCountryMustMatchSelectedCountry =>
+      'Le pays du téléphone doit correspondre au pays sélectionné';
+
+  @override
+  String get completeRequiredFieldsCorrectly =>
+      'Veuillez compléter correctement tous les champs obligatoires.';
+
+  @override
+  String get businessTypeRequiredError => 'Le type d’activité est obligatoire';
+
+  @override
+  String get retryButton => 'Réessayer';
 }

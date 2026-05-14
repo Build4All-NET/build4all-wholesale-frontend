@@ -172,23 +172,23 @@ class _CompleteSupplierProfileScreenState
     final phoneCountryIso = phone?.countryISOCode.toUpperCase();
 
     if (localDigits.isEmpty) {
-      return '${context.l10n.phoneNumber} is required';
+      return context.l10n.phoneNumberRequiredError;
     }
 
     if (country == null) {
-      return 'Please select a country first';
+      return context.l10n.selectCountryFirstError;
     }
 
     if (phoneCountryIso != null && phoneCountryIso != country.iso2Code) {
-      return 'Phone country must match the selected country';
+      return context.l10n.phoneCountryMustMatchSelectedCountry;
     }
 
     if (country.iso2Code == 'LB' && localDigits.length != 8) {
-      return 'Lebanese phone numbers must contain 8 digits after +961';
+      return context.l10n.lebanesePhoneDigitsError;
     }
 
     if (localDigits.length < 6 || localDigits.length > 15) {
-      return 'Enter a valid phone number for the selected country';
+      return context.l10n.validPhoneForSelectedCountryError;
     }
 
     return null;
@@ -199,9 +199,7 @@ class _CompleteSupplierProfileScreenState
 
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please complete all required fields correctly.'),
-        ),
+        SnackBar(content: Text(context.l10n.completeRequiredFieldsCorrectly)),
       );
       return;
     }
@@ -209,7 +207,7 @@ class _CompleteSupplierProfileScreenState
     final country = _selectedCountry;
     if (country == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a country.')),
+        SnackBar(content: Text(context.l10n.pleaseSelectCountry)),
       );
       return;
     }
@@ -361,8 +359,6 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              const Text('Country'),
-                              const SizedBox(height: 8),
                               _CountryDropdown(
                                 isLoading: _isLoadingCountries,
                                 countries: _countries,
@@ -382,8 +378,6 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              const Text('Region / State'),
-                              const SizedBox(height: 8),
                               _RegionDropdown(
                                 isLoading: _isLoadingRegions,
                                 regions: _regions,
@@ -398,17 +392,24 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              const Text('City / Area'),
+                              Text(l10n.cityAreaLabel),
                               const SizedBox(height: 8),
                               PrimaryTextField(
                                 controller: _cityController,
                                 hintText: LocationHintHelper.cityAreaHint(
                                   countryIso2: _selectedCountry?.iso2Code,
                                   regionName: _selectedRegion?.name,
+                                  genericHint: l10n.cityAreaHintGeneric,
+                                  leBeirutHint: l10n.cityAreaHintLebanonBeirut,
+                                  leMountHint: l10n.cityAreaHintLebanonMount,
+                                  leNorthHint: l10n.cityAreaHintLebanonNorth,
+                                  leSouthHint: l10n.cityAreaHintLebanonSouth,
+                                  leBekaaHint: l10n.cityAreaHintLebanonBekaa,
+                                  leGenericHint: l10n.cityAreaHintLebanonGeneric,
                                 ),
                                 validator: (value) => Validators.requiredField(
                                   value,
-                                  fieldName: 'City / Area',
+                                  fieldName: l10n.cityAreaLabel,
                                 ),
                               ),
 
@@ -426,7 +427,7 @@ class _CompleteSupplierProfileScreenState
                                   _completePhoneNumber = phone.completeNumber;
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'Enter phone number',
+                                  hintText: l10n.enterPhoneNumber,
                                   filled: true,
                                   fillColor: AppThemeTokens.inputFill,
                                   border: OutlineInputBorder(
@@ -482,7 +483,7 @@ class _CompleteSupplierProfileScreenState
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return '${l10n.businessType} is required';
+                                    return l10n.businessTypeRequiredError;
                                   }
                                   return null;
                                 },
@@ -551,18 +552,18 @@ class _CountryDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SearchableSelectionField<CountryModel>(
-      label: 'Country *',
-      hintText: isLoading ? 'Loading countries...' : 'Select country',
-      searchHintText: 'Search country...',
+      label: context.l10n.countryRequiredLabel,
+      hintText: isLoading ? context.l10n.loadingCountries : context.l10n.selectCountry,
+      searchHintText: context.l10n.searchCountry,
       items: countries,
       value: selectedCountry,
       isLoading: isLoading,
       enabled: !isLoading && countries.isNotEmpty,
-      emptyText: 'No countries found',
+      emptyText: context.l10n.noCountriesFound,
       itemLabel: (country) => country.name,
       onSelected: (country) => onChanged(country),
       validator: (value) {
-        if (value == null) return 'Country is required';
+        if (value == null) return context.l10n.countryRequiredError;
         return null;
       },
     );
@@ -589,20 +590,20 @@ class _RegionDropdown extends StatelessWidget {
     final disabled = !countrySelected || isLoading || regions.isEmpty;
 
     return SearchableSelectionField<RegionModel>(
-      label: 'Region / State',
+      label: context.l10n.regionStateLabel,
       hintText: !countrySelected
-          ? 'Select country first'
+          ? context.l10n.selectCountryFirst
           : isLoading
-              ? 'Loading regions...'
+              ? context.l10n.loadingRegions
               : regions.isEmpty
-                  ? 'No predefined regions, continue with city/area'
-                  : 'Select region / state',
-      searchHintText: 'Search region / state...',
+                  ? context.l10n.noPredefinedRegionsContinueWithCity
+                  : context.l10n.selectRegionState,
+      searchHintText: context.l10n.searchRegionState,
       items: regions,
       value: selectedRegion,
       isLoading: isLoading,
       enabled: !disabled,
-      emptyText: 'No regions found for your search',
+      emptyText: context.l10n.noRegionsFoundForSearch,
       itemLabel: (region) => region.name,
       onSelected: (region) => onChanged(region),
     );
@@ -641,7 +642,7 @@ class _ErrorBox extends StatelessWidget {
               ),
             ),
           ),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.retryButton)),
         ],
       ),
     );

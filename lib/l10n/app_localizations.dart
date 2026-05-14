@@ -1597,7 +1597,7 @@ abstract class AppLocalizations {
   /// No description provided for @cityAreaLabel.
   ///
   /// In en, this message translates to:
-  /// **'City / Area *'**
+  /// **'City / Area'**
   String get cityAreaLabel;
 
   /// No description provided for @cityAreaRequiredError.
@@ -1765,7 +1765,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseSelectCountry.
   ///
   /// In en, this message translates to:
-  /// **'Please select a country'**
+  /// **'Please select a country.'**
   String get pleaseSelectCountry;
 
   /// No description provided for @phoneRequiredError.
@@ -3246,6 +3246,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box'**
   String get productNameHint;
+
+  /// No description provided for @countryRequiredLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country *'**
+  String get countryRequiredLabel;
+
+  /// No description provided for @selectCountryFirstError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a country first'**
+  String get selectCountryFirstError;
+
+  /// No description provided for @regionStateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region / State'**
+  String get regionStateLabel;
+
+  /// No description provided for @noPredefinedRegionsContinueWithCity.
+  ///
+  /// In en, this message translates to:
+  /// **'No predefined regions, continue with city/area'**
+  String get noPredefinedRegionsContinueWithCity;
+
+  /// No description provided for @noRegionsFoundForSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'No regions found for your search'**
+  String get noRegionsFoundForSearch;
+
+  /// No description provided for @cityAreaHintGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., city, district, or business area'**
+  String get cityAreaHintGeneric;
+
+  /// No description provided for @cityAreaHintLebanonBeirut.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Hamra, Achrafieh, Verdun'**
+  String get cityAreaHintLebanonBeirut;
+
+  /// No description provided for @cityAreaHintLebanonMount.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Baabda, Jounieh, Aley'**
+  String get cityAreaHintLebanonMount;
+
+  /// No description provided for @cityAreaHintLebanonNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Tripoli, Batroun, Halba'**
+  String get cityAreaHintLebanonNorth;
+
+  /// No description provided for @cityAreaHintLebanonSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Saida, Tyre, Nabatieh'**
+  String get cityAreaHintLebanonSouth;
+
+  /// No description provided for @cityAreaHintLebanonBekaa.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Zahle, Baalbek, Chtaura'**
+  String get cityAreaHintLebanonBekaa;
+
+  /// No description provided for @cityAreaHintLebanonGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Beirut, Tripoli, Saida'**
+  String get cityAreaHintLebanonGeneric;
+
+  /// No description provided for @phoneNumberRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required'**
+  String get phoneNumberRequiredError;
+
+  /// No description provided for @phoneCountryMustMatchSelectedCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone country must match the selected country'**
+  String get phoneCountryMustMatchSelectedCountry;
+
+  /// No description provided for @completeRequiredFieldsCorrectly.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete all required fields correctly.'**
+  String get completeRequiredFieldsCorrectly;
+
+  /// No description provided for @businessTypeRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Business type is required'**
+  String get businessTypeRequiredError;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButton;
 }
 
 class _AppLocalizationsDelegate

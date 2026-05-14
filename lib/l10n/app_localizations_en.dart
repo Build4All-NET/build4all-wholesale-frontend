@@ -777,7 +777,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get branchNameTooLongError => 'Branch name is too long';
 
   @override
-  String get cityAreaLabel => 'City / Area *';
+  String get cityAreaLabel => 'City / Area';
 
   @override
   String get cityAreaRequiredError => 'City / Area is required';
@@ -862,7 +862,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectStatus => 'Select status';
 
   @override
-  String get pleaseSelectCountry => 'Please select a country';
+  String get pleaseSelectCountry => 'Please select a country.';
 
   @override
   String get phoneRequiredError => 'Phone number is required';
@@ -1689,4 +1689,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productNameHint => 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box';
+
+  @override
+  String get countryRequiredLabel => 'Country *';
+
+  @override
+  String get selectCountryFirstError => 'Please select a country first';
+
+  @override
+  String get regionStateLabel => 'Region / State';
+
+  @override
+  String get noPredefinedRegionsContinueWithCity =>
+      'No predefined regions, continue with city/area';
+
+  @override
+  String get noRegionsFoundForSearch => 'No regions found for your search';
+
+  @override
+  String get cityAreaHintGeneric => 'e.g., city, district, or business area';
+
+  @override
+  String get cityAreaHintLebanonBeirut => 'e.g., Hamra, Achrafieh, Verdun';
+
+  @override
+  String get cityAreaHintLebanonMount => 'e.g., Baabda, Jounieh, Aley';
+
+  @override
+  String get cityAreaHintLebanonNorth => 'e.g., Tripoli, Batroun, Halba';
+
+  @override
+  String get cityAreaHintLebanonSouth => 'e.g., Saida, Tyre, Nabatieh';
+
+  @override
+  String get cityAreaHintLebanonBekaa => 'e.g., Zahle, Baalbek, Chtaura';
+
+  @override
+  String get cityAreaHintLebanonGeneric => 'e.g., Beirut, Tripoli, Saida';
+
+  @override
+  String get phoneNumberRequiredError => 'Phone number is required';
+
+  @override
+  String get phoneCountryMustMatchSelectedCountry =>
+      'Phone country must match the selected country';
+
+  @override
+  String get completeRequiredFieldsCorrectly =>
+      'Please complete all required fields correctly.';
+
+  @override
+  String get businessTypeRequiredError => 'Business type is required';
+
+  @override
+  String get retryButton => 'Retry';
 }

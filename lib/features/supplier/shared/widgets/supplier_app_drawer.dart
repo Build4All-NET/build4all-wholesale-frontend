@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/theme/locale_cubit.dart';
 
 class SupplierAppDrawer extends StatelessWidget {
   const SupplierAppDrawer({super.key});
@@ -129,6 +131,8 @@ class SupplierAppDrawer extends StatelessWidget {
               ),
             ),
             Divider(height: 1),
+            _SupplierDrawerLanguageTile(),
+            Divider(height: 1),
             ListTile(
               leading: Icon(Icons.logout, color: AppThemeTokens.error),
               title: Text(
@@ -142,6 +146,69 @@ class SupplierAppDrawer extends StatelessWidget {
             ),
             SizedBox(height: 12),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class _SupplierDrawerLanguageTile extends StatelessWidget {
+  const _SupplierDrawerLanguageTile();
+
+  String _languageLabel(BuildContext context, String languageCode) {
+    final l10n = context.l10n;
+
+    switch (languageCode) {
+      case 'ar':
+        return l10n.arabic;
+      case 'fr':
+        return l10n.french;
+      case 'en':
+      default:
+        return l10n.english;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentLanguageCode = context.watch<LocaleCubit>().state.locale.languageCode;
+    final l10n = context.l10n;
+
+    return PopupMenuButton<String>(
+      tooltip: l10n.language,
+      initialValue: currentLanguageCode,
+      onSelected: (value) {
+        context.read<LocaleCubit>().changeLocale(value);
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(value: 'en', child: Text(l10n.english)),
+        PopupMenuItem(value: 'ar', child: Text(l10n.arabic)),
+        PopupMenuItem(value: 'fr', child: Text(l10n.french)),
+      ],
+      child: ListTile(
+        leading: Icon(
+          Icons.language_rounded,
+          color: AppThemeTokens.textPrimary,
+          size: 22,
+        ),
+        title: Text(
+          l10n.language,
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: AppThemeTokens.textPrimary,
+          ),
+        ),
+        subtitle: Text(
+          _languageLabel(context, currentLanguageCode),
+          style: TextStyle(
+            color: AppThemeTokens.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        trailing: Icon(
+          Icons.arrow_drop_down_rounded,
+          color: AppThemeTokens.textSecondary,
         ),
       ),
     );
