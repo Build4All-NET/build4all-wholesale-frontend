@@ -210,6 +210,12 @@
   "supplierLowStockItem": "Low stock item",
   "supplierLowStockProduct": "Low stock product",
   "supplierCurrentMinimumStock": "Current stock: {currentStock} | Minimum: {minimumStock}",
+  "@supplierCurrentMinimumStock": {
+    "placeholders": {
+      "currentStock": {},
+      "minimumStock": {}
+    }
+  },
   "supplierLogoutTitle": "Logout",
   "supplierLogoutConfirmation": "Are you sure you want to logout?",
   "supplierDrawerDashboard": "Dashboard",
@@ -270,7 +276,7 @@
   "noPredefinedRegions": "No predefined regions, continue with city/area",
   "selectRegionState": "Select region / state",
   "searchRegionState": "Search region / state...",
-  "noRegionsFound": "No regions found for your search",
+  "noRegionsFound": "No regions found",
   "branchPhoneLabel": "Phone Number *",
   "enterPhoneNumber": "Enter phone number",
   "branchStatusLabel": "Branch Status *",
@@ -285,6 +291,11 @@
   "validPhoneForSelectedCountryError": "Enter a valid phone number for the selected country",
   "deleteBranchTitle": "Delete Branch",
   "deleteBranchConfirmation": "Are you sure you want to delete {branchName}?",
+  "@deleteBranchConfirmation": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
   "searchBranchesHint": "Search branches...",
   "noBranchesFound": "No branches found",
   "addBranchesEmptyMessage": "Add branches to manage stock and inventory by location.",
@@ -293,6 +304,11 @@
   "totalStockLabel": "Total Stock",
   "viewInventoryButton": "View Inventory",
   "branchInventoryTitle": "{branchName} Inventory",
+  "@branchInventoryTitle": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
   "allProductsAssigned": "All available products are already assigned to this branch",
   "assignProductToBranchTitle": "Assign Product to Branch",
   "productLabel": "Product",
@@ -306,11 +322,22 @@
   "updateButton": "Update",
   "removeProductFromBranchTitle": "Remove Product from Branch",
   "removeProductFromBranchConfirmation": "Are you sure you want to remove {productName} from {branchName} inventory?",
+  "@removeProductFromBranchConfirmation": {
+    "placeholders": {
+      "productName": {},
+      "branchName": {}
+    }
+  },
   "removeButton": "Remove",
   "noInventoryFound": "No inventory found",
   "assignProductsToBranchEmpty": "Assign products to this branch to start tracking stock.",
   "assignProductButton": "Assign Product",
   "stockWithQuantity": "Stock: {quantity}",
+  "@stockWithQuantity": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
   "catalogTitle": "Catalog Management",
   "searchCatalogHint": "Search categories or subcategories...",
   "noCatalogItems": "No catalog items found",
@@ -358,6 +385,11 @@
   "updateProductButton": "Update Product",
   "deleteProductTitle": "Delete Product",
   "deleteProductConfirmation": "Are you sure you want to delete {productName}?",
+  "@deleteProductConfirmation": {
+    "placeholders": {
+      "productName": {}
+    }
+  },
   "manageStockButton": "Manage Stock",
   "priceLabel": "Price",
   "moqLabel": "MOQ",
@@ -365,15 +397,30 @@
   "productBranchStockTitle": "Manage Product Branch Stock",
   "branchStockCardsTitle": "Branch Stock",
   "totalStockForProduct": "Total stock: {quantity}",
+  "@totalStockForProduct": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
   "noBranchStockFound": "No branch stock found",
   "assignStockToBranch": "Assign stock to a branch to start selling this product.",
   "removeStockTitle": "Remove Stock",
   "removeStockConfirmation": "Are you sure you want to remove stock for {branchName}?",
+  "@removeStockConfirmation": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
   "supplierOrdersTitle": "Orders Management",
   "orderDetailsTitle": "Order Details",
   "searchOrdersHint": "Search orders...",
   "noOrdersFound": "No orders found",
   "orderNumberLabel": "Order #{orderId}",
+  "@orderNumberLabel": {
+    "placeholders": {
+      "orderId": {}
+    }
+  },
   "customerLabel": "Customer",
   "retailerLabel": "Retailer",
   "orderItemsLabel": "Order Items",
@@ -416,53 +463,6 @@
   "warningsLabel": "Warnings",
   "duplicateProductWarning": "Duplicate product warning",
   "supplierComingSoonMessage": "This supplier module will be implemented step by step.",
-  "@supplierCurrentMinimumStock": {
-    "placeholders": {
-      "currentStock": {},
-      "minimumStock": {}
-    }
-  },
-  "@deleteBranchConfirmation": {
-    "placeholders": {
-      "branchName": {}
-    }
-  },
-  "@branchInventoryTitle": {
-    "placeholders": {
-      "branchName": {}
-    }
-  },
-  "@removeProductFromBranchConfirmation": {
-    "placeholders": {
-      "productName": {},
-      "branchName": {}
-    }
-  },
-  "@stockWithQuantity": {
-    "placeholders": {
-      "quantity": {}
-    }
-  },
-  "@totalStockForProduct": {
-    "placeholders": {
-      "quantity": {}
-    }
-  },
-  "@removeStockConfirmation": {
-    "placeholders": {
-      "branchName": {}
-    }
-  },
-  "@deleteProductConfirmation": {
-    "placeholders": {
-      "productName": {}
-    }
-  },
-  "@orderNumberLabel": {
-    "placeholders": {
-      "orderId": {}
-    }
-  },
   "addButton": "Add",
   "backButton": "Back",
   "menuTooltip": "Menu",
@@ -484,13 +484,35 @@
   "deleteCategoryTitle": "Delete Category",
   "deleteSubCategoryTitle": "Delete Sub Category",
   "deleteCategoryPermanentConfirmation": "Delete \"{categoryName}\" permanently? This is allowed only if it is not linked to products or sub categories.",
+  "@deleteCategoryPermanentConfirmation": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
   "deleteSubCategoryPermanentConfirmation": "Delete \"{subCategoryName}\" permanently? This is allowed only if it is not linked to products.",
+  "@deleteSubCategoryPermanentConfirmation": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
   "noCategoriesFound": "No categories found",
   "noSubCategoriesFound": "No sub categories found",
   "searchCategoriesHint": "Search categories...",
   "searchSubCategoriesHint": "Search sub categories...",
   "categoryStats": "{productCount} products • {subCategoryCount} sub categories",
+  "@categoryStats": {
+    "placeholders": {
+      "productCount": {},
+      "subCategoryCount": {}
+    }
+  },
   "subCategoryStats": "{categoryName} • {productCount} products",
+  "@subCategoryStats": {
+    "placeholders": {
+      "categoryName": {},
+      "productCount": {}
+    }
+  },
   "linkedLabel": "Linked",
   "productInformationTitle": "Product Information",
   "productDescriptionRequiredError": "Description is required",
@@ -521,9 +543,29 @@
   "selectedSubCategoryNotFound": "Selected sub category was not found",
   "selectSubCategoryFirstMessage": "Select a sub category first",
   "categoryAddedMessage": "{categoryName} added",
+  "@categoryAddedMessage": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
   "subCategoryAddedMessage": "{subCategoryName} added",
+  "@subCategoryAddedMessage": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
   "categoryDeletedMessage": "{categoryName} deleted",
+  "@categoryDeletedMessage": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
   "subCategoryDeletedMessage": "{subCategoryName} deleted",
+  "@subCategoryDeletedMessage": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
   "deleteCategoryHelp": "If this category is already used by products or subcategories, the backend may prevent deleting it.",
   "deleteSubCategoryHelp": "If this sub category is already used by products, the backend may prevent deleting it.",
   "updateBranchStockTitle": "Update Branch Stock",
@@ -536,9 +578,19 @@
   "notAssignedYet": "Not assigned yet",
   "createBranchFirst": "Create a branch first, then assign product stock.",
   "totalBranchStockLabel": "Total Branch Stock: {quantity}",
+  "@totalBranchStockLabel": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
   "noBranchStockAssigned": "No branch stock assigned",
   "viewDetailsButton": "View Details",
   "itemsCountLabel": "{count} items",
+  "@itemsCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "allLabel": "All",
   "incomingOrdersEmptyMessage": "Incoming retailer orders will appear here.",
   "orderNotFound": "Order not found",
@@ -547,6 +599,12 @@
   "orderCancelledMessage": "This order was cancelled.",
   "productsOrderedTitle": "Products Ordered",
   "unitsTimesPrice": "{quantity} units × {price}",
+  "@unitsTimesPrice": {
+    "placeholders": {
+      "quantity": {},
+      "price": {}
+    }
+  },
   "deliveryInformationTitle": "Delivery Information",
   "retailerPhoneLabel": "Retailer Phone",
   "branchLabelPlain": "Branch",
@@ -560,95 +618,37 @@
   "manageCategoriesButton": "Manage Categories",
   "importResultTitle": "Import Result",
   "importedRowsSummary": "Imported: {importedCount} / {totalRows}",
-  "resetButton": "Reset",
-  "importingLabel": "Importing...",
-  "importProductsButton": "Import {count} Products",
-  "editRowTitle": "Edit Row {rowNumber}",
-  "editRowHelp": "Correct the product information before importing. This updates the preview only; it does not change the Excel file on your phone.",
-  "saveChangesButton": "Save Changes",
-  "noSubcategory": "No subcategory",
-  "noSubcategoriesForCategory": "No subcategories for this category",
-  "selectCategoryWithCurrent": "Select category ({categoryName})",
-  "rowNumberLabel": "Row {rowNumber}",
-  "@deleteCategoryPermanentConfirmation": {
-    "placeholders": {
-      "categoryName": {}
-    }
-  },
-  "@deleteSubCategoryPermanentConfirmation": {
-    "placeholders": {
-      "subCategoryName": {}
-    }
-  },
-  "@categoryStats": {
-    "placeholders": {
-      "productCount": {},
-      "subCategoryCount": {}
-    }
-  },
-  "@subCategoryStats": {
-    "placeholders": {
-      "categoryName": {},
-      "productCount": {}
-    }
-  },
-  "@categoryAddedMessage": {
-    "placeholders": {
-      "categoryName": {}
-    }
-  },
-  "@subCategoryAddedMessage": {
-    "placeholders": {
-      "subCategoryName": {}
-    }
-  },
-  "@categoryDeletedMessage": {
-    "placeholders": {
-      "categoryName": {}
-    }
-  },
-  "@subCategoryDeletedMessage": {
-    "placeholders": {
-      "subCategoryName": {}
-    }
-  },
-  "@totalBranchStockLabel": {
-    "placeholders": {
-      "quantity": {}
-    }
-  },
-  "@itemsCountLabel": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "@unitsTimesPrice": {
-    "placeholders": {
-      "quantity": {},
-      "price": {}
-    }
-  },
   "@importedRowsSummary": {
     "placeholders": {
       "importedCount": {},
       "totalRows": {}
     }
   },
+  "resetButton": "Reset",
+  "importingLabel": "Importing...",
+  "importProductsButton": "Import {count} Products",
   "@importProductsButton": {
     "placeholders": {
       "count": {}
     }
   },
+  "editRowTitle": "Edit Row {rowNumber}",
   "@editRowTitle": {
     "placeholders": {
       "rowNumber": {}
     }
   },
+  "editRowHelp": "Correct the product information before importing. This updates the preview only; it does not change the Excel file on your phone.",
+  "saveChangesButton": "Save Changes",
+  "noSubcategory": "No subcategory",
+  "noSubcategoriesForCategory": "No subcategories for this category",
+  "selectCategoryWithCurrent": "Select category ({categoryName})",
   "@selectCategoryWithCurrent": {
     "placeholders": {
       "categoryName": {}
     }
   },
+  "rowNumberLabel": "Row {rowNumber}",
   "@rowNumberLabel": {
     "placeholders": {
       "rowNumber": {}
@@ -671,5 +671,404 @@
   "phoneCountryMustMatchSelectedCountry": "Phone country must match the selected country",
   "completeRequiredFieldsCorrectly": "Please complete all required fields correctly.",
   "businessTypeRequiredError": "Business type is required",
-  "retryButton": "Retry"
+  "retryButton": "Retry",
+  "noLabel": "No",
+  "urlLabel": "URL",
+  "yesLabel": "Yes",
+  "copyButton": "Copy",
+  "noneLabel": "None",
+  "supplierUsed": "Used",
+  "supplierFixed": "Fixed",
+  "notesLabel": "Notes",
+  "activeLabel": "Active",
+  "cancelButton": "Cancel",
+  "supplierCustom": "Custom",
+  "deleteButton": "Delete",
+  "regionLabel": "Region",
+  "searchLabel": "Search",
+  "supplierTarget": "Target",
+  "supplierBanners": "Banners",
+  "countryLabel": "Country",
+  "supplierPercent": "Percent",
+  "refreshButton": "Refresh",
+  "supplierTitle": "Title *",
+  "supplierDiscount": "Discount",
+  "supplierEndDate": "End Date",
+  "inactiveLabel": "Inactive",
+  "supplierLocation": "Location",
+  "supplierMaxUses": "Max Uses",
+  "regionRequiredLabel": "Region *",
+  "supplierSubtitle": "Subtitle",
+  "supplierValidTo": "Valid To",
+  "supplierValidity": "Validity",
+  "supplierMinOrder": "Min order",
+  "noRegionLabel": "No region",
+  "supplierRemaining": "Remaining",
+  "supplierUnlimited": "Unlimited",
+  "supplierValidNow": "Valid now",
+  "supplierPromotions": "Promotions",
+  "supplierStartDate": "Start Date",
+  "supplierValidFrom": "Valid From",
+  "supplierBannerList": "Banner List",
+  "supplierCouponList": "Coupon List",
+  "supplierCreateRule": "Create Rule",
+  "descriptionLabel": "Description",
+  "supplierEditBanner": "Edit Banner",
+  "supplierEditCoupon": "Edit Coupon",
+  "supplierLebanonVat": "Lebanon VAT",
+  "supplierPickupOnly": "Pickup only",
+  "supplierRuleName": "Rule Name *",
+  "supplierRulePreset": "Rule Preset",
+  "subcategoryLabel": "Subcategory",
+  "supplierUpdateRule": "Update Rule",
+  "supplierValidNow2": "Valid now: ",
+  "supplierAllBranches": "All Branches",
+  "supplierAllProducts": "All Products",
+  "supplierAppliesTo": "Applies To *",
+  "supplierBannerImage": "Banner Image",
+  "supplierCouponRules": "Coupon Rules",
+  "supplierEnabledOnly": "Enabled only",
+  "supplierFixedAmount": "Fixed Amount",
+  "supplierMaxDiscount": "Max discount",
+  "supplierSortOrder": "Sort Order *",
+  "supplierTargetUrl": "Target URL *",
+  "supplierTaxRate": "Tax Rate % *",
+  "supplierUploadImage": "Upload Image",
+  "supplierUploading": "Uploading...",
+  "supplierAlwaysActive": "Always active",
+  "supplierCouponCode": "Coupon Code *",
+  "supplierCreateBanner": "Create Banner",
+  "supplierCreateCoupon": "Create Coupon",
+  "supplierCreateMethod": "Create Method",
+  "supplierDeleteBanner": "Delete Banner",
+  "supplierDeleteCoupon": "Delete Coupon",
+  "supplierDisabledOnly": "Disabled only",
+  "supplierDisplayRules": "Display Rules",
+  "supplierEditTaxRule": "Edit Tax Rule",
+  "supplierFreeShipping": "Free Shipping",
+  "supplierMethodName": "Method Name *",
+  "supplierMethodType": "Method Type *",
+  "searchRegionHint": "Search region",
+  "selectRegionHint": "Select region",
+  "supplierShippingCost": "Shipping Cost",
+  "supplierTargetType": "Target Type *",
+  "supplierTaxRuleList": "Tax Rule List",
+  "supplierUpdateBanner": "Update Banner",
+  "supplierUpdateCoupon": "Update Coupon",
+  "supplierUpdateMethod": "Update Method",
+  "supplierBannerImage2": "Banner Image *",
+  "supplierEditPromotion": "Edit Promotion",
+  "supplierManageBanners": "Manage Banners",
+  "supplierManageCoupons": "Manage Coupons",
+  "supplierNoBannersYet": "No banners yet",
+  "supplierNoCouponsYet": "No coupons yet",
+  "supplierPickupIsFree": "Pickup is free",
+  "supplierPromotionList": "Promotion List",
+  "searchCountryHint": "Search country",
+  "selectCountryHint": "Select country",
+  "supplierStatusNotes": "Status & Notes",
+  "supplierCreateTaxRule": "Create Tax Rule",
+  "supplierDeleteTaxRule": "Delete Tax Rule",
+  "supplierDiscountType": "Discount Type *",
+  "supplierOrderLevelTax": "Order-level tax",
+  "supplierPromotionRules": "Promotion Rules",
+  "supplierSelectBranches": "Select Branches",
+  "supplierWholesaleDeals": "Wholesale Deals",
+  "supplierDeletePromotion": "Delete Promotion",
+  "supplierDiscountValue": "Discount Value *",
+  "supplierExpressDelivery": "Express Delivery",
+  "supplierManageTaxRules": "Manage Tax Rules",
+  "supplierMinOrderAmount": "Min Order Amount",
+  "supplierNoResultsFound": "No results found",
+  "supplierNoTaxRulesYet": "No tax rules yet",
+  "supplierPleaseSelectA": "Please select a ",
+  "supplierPricingTiming": "Pricing & Timing",
+  "supplierPromotionName": "Promotion Name *",
+  "supplierPromotionTarget": "Promotion Target",
+  "supplierSearchTaxRules": "Search tax rules",
+  "supplierSelectProduct": "Select Product *",
+  "supplierUpdatePromotion": "Update Promotion",
+  "supplierManagePromotions": "Manage Promotions",
+  "supplierNoPromotionsYet": "No promotions yet",
+  "supplierScheduleStatus": "Schedule & Status",
+  "supplierSearchPromotions": "Search promotions",
+  "supplierSelectCategory": "Select Category *",
+  "supplierSelectedBranches": "Selected Branches",
+  "supplierStandardDelivery": "Standard Delivery",
+  "supplierTaxApplicability": "Tax Applicability",
+  "supplierTaxConfiguration": "Tax Configuration",
+  "supplierAutoGenerateName": "Auto-generate name",
+  "supplierBannerInformation": "Banner Information",
+  "supplierCouponInformation": "Coupon Information",
+  "supplierMethodInformation": "Method Information",
+  "supplierPickupFromBranch": "Pickup from Branch",
+  "supplierPickupFromBranch2": "Pickup from branch",
+  "supplierCountryIsRequired": "Country is required",
+  "supplierMaxDiscountAmount": "Max Discount Amount",
+  "supplierNoMatchingBanners": "No matching banners",
+  "supplierBranchApplicability": "Branch Applicability",
+  "supplierDiscountValue2": "Discount Value (%) *",
+  "supplierEditShippingMethod": "Edit Shipping Method",
+  "supplierMinimumOrderAmount": "Minimum Order Amount",
+  "supplierSelectSubcategory": "Select SubCategory *",
+  "supplierShippingMethodList": "Shipping Method List",
+  "supplierTaxRuleInformation": "Tax Rule Information",
+  "supplierNoMatchingTaxRules": "No matching tax rules",
+  "supplierPromotionInformation": "Promotion Information",
+  "supplierFieldnameIsRequired": "$fieldName is required",
+  "supplierCouldNotLoadBanners": "Could not load banners",
+  "supplierCouldNotLoadCoupons": "Could not load coupons",
+  "supplierCreateShippingMethod": "Create Shipping Method",
+  "supplierDeleteShippingMethod": "Delete Shipping Method",
+  "supplierNoMatchingPromotions": "No matching promotions",
+  "supplierPromotionTitleCopied": "Promotion title copied",
+  "supplierSortOrderIsRequired": "Sort order is required",
+  "supplierEstimatedDeliveryTime": "Estimated Delivery Time",
+  "supplierFreeShippingThreshold": "Free Shipping Threshold",
+  "supplierManageShippingMethods": "Manage Shipping Methods",
+  "supplierNoShippingMethodsYet": "No shipping methods yet",
+  "supplierPleaseSelectACountry": "Please select a country",
+  "supplierSearchShippingMethods": "Search shipping methods",
+  "supplierCouldNotLoadTaxRules": "Could not load tax rules",
+  "supplierCouldNotLoadPromotions": "Could not load promotions",
+  "supplierApplyTaxToShippingCost": "Apply tax to shipping cost",
+  "supplierBannerCopiedSuccessfully": "Banner copied successfully",
+  "supplierNoMatchingShippingMethods": "No matching shipping methods",
+  "supplierSpecialOffersForRetailers": "Special offers for retailers",
+  "supplierCouldNotLoadTargetOptions": "Could not load target options",
+  "supplierPleaseSelectACategoryFirst": "Please select a category first",
+  "supplierRegionIsRequiredForLebanon": "Region is required for Lebanon",
+  "supplierCouldNotLoadShippingMethods": "Could not load shipping methods",
+  "supplierTaxRateMustBeGreaterThan0": "Tax rate must be greater than 0",
+  "supplierFieldnameMustBeAValidNumber": "$fieldName must be a valid number",
+  "supplierFieldnameMustBeGreaterThan0": "$fieldName must be greater than 0",
+  "supplierPleaseSelectAtLeastOneBranch": "Please select at least one branch",
+  "supplierBannerImageUploadedSuccessfully": "Banner image uploaded successfully",
+  "supplierOptionalNotesAboutThisTaxRule": "Optional notes about this tax rule",
+  "supplierPleaseSelectARegionForLebanon": "Please select a region for Lebanon",
+  "supplierValidFromMustBeBeforeValidTo": "Valid From must be before Valid To",
+  "supplierTaxRateCannotBeGreaterThan100": "Tax rate cannot be greater than 100",
+  "supplierUploadedImageUrlWillAppearHere": "Uploaded image URL will appear here",
+  "supplierNoRegionsAvailableForThisCountry": "No regions available for this country.",
+  "supplierUrlMustStartWithHttpOrHttps": "URL must start with http:// or https://",
+  "supplierOptionalNotesAboutThisShippingMethod": "Optional notes about this shipping method",
+  "supplierSortOrderMustBeAValidPositiveNumber": "Sort order must be a valid positive number",
+  "supplierPercentDiscountCannotBeGreaterThan100": "Percent discount cannot be greater than 100",
+  "supplierFieldnameMustBeGreaterThanOrEqualTo0": "$fieldName must be greater than or equal to 0",
+  "supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule": "Choose a preset or keep Custom and enter your own order-level tax rule.",
+  "supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule": "Selected branches are loaded from the backend Branch Management module.",
+  "supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst": "No active branches available. Add branches from Branch Management first.",
+  "supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry": "Country is required because tax is calculated from the retailer delivery country.",
+  "supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue": "The selected item name is shown here, but the backend saves its ID in targetValue.",
+  "supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove": "Create tax rules from the supplier dashboard quick action or tap the plus icon above.",
+  "supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion": "Example: enter 11 for 11%. Tax is applied to the whole order based on country and region.",
+  "supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions": "Country and region are used later by retailer checkout to show the correct shipping options.",
+  "supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove": "Create shipping methods from the supplier dashboard quick action or tap the plus icon above.",
+  "supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule": "Choose No region for a country-level rule, or choose a specific region for a more specific rule.",
+  "supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability": "Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.",
+  "supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField": "Upload an image from your device. The backend returns a URL and stores it in the banner imageUrl field.",
+  "supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax": "Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.",
+  "supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount": "If enabled, checkout tax will include shipping cost. If disabled, tax applies only to items after promotion discount.",
+  "supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch": "Branches define where this shipping method is valid. Retailer checkout will later match shipping with fulfillment branch.",
+  "supplierFieldRequired": "{fieldName} is required",
+  "@supplierFieldRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldGreaterThanZero": "{fieldName} must be greater than 0",
+  "@supplierFieldGreaterThanZero": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldGreaterThanOrEqualZero": "{fieldName} must be greater than or equal to 0",
+  "@supplierFieldGreaterThanOrEqualZero": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldValidNumber": "{fieldName} must be a valid number",
+  "@supplierFieldValidNumber": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierBranchesValue": "Branches: {value}",
+  "@supplierBranchesValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierTargetValue": "Target: {value}",
+  "@supplierTargetValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierOrderValue": "Order: {value}",
+  "@supplierOrderValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierVisibleNowValue": "Visible now: {value}",
+  "@supplierVisibleNowValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierValidNowValue": "Valid now: {value}",
+  "@supplierValidNowValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "notRequiredLabel": "Not required",
+  "pickButton": "Pick",
+  "uploadingLabel": "Uploading...",
+  "supplierBannerImagePlain": "Banner Image",
+  "supplierBannersDescription": "View, create, edit, and delete supplier banners saved in the backend database. These banners will later appear for retailers on the home screen.",
+  "supplierBusinessDaysHint": "2-3 business days",
+  "supplierChooseCategory": "Choose category",
+  "supplierCouponCodePlain": "Coupon Code",
+  "supplierCouponCopied": "{couponCode} copied",
+  "@supplierCouponCopied": {
+    "placeholders": {
+      "couponCode": {}
+    }
+  },
+  "supplierCouponDescriptionHint": "Describe this coupon",
+  "supplierCouponsDescription": "View, create, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.",
+  "supplierCreateBannersFromDashboard": "Create banners from the supplier dashboard quick action or tap the plus icon above.",
+  "supplierCreateCouponsFromDashboard": "Create coupons from the supplier dashboard quick action or tap the plus icon above.",
+  "supplierCreatePromotionsFromDashboard": "Create promotions from the supplier dashboard quick action or tap the plus icon above.",
+  "supplierDeleteBannerConfirmation": "Are you sure you want to delete \"{bannerTitle}\"?",
+  "@supplierDeleteBannerConfirmation": {
+    "placeholders": {
+      "bannerTitle": {}
+    }
+  },
+  "supplierDeleteCouponConfirmation": "Are you sure you want to delete coupon \"{couponCode}\"?",
+  "@supplierDeleteCouponConfirmation": {
+    "placeholders": {
+      "couponCode": {}
+    }
+  },
+  "supplierDeletePromotionConfirmation": "Are you sure you want to delete \"{promotionTitle}\"?",
+  "@supplierDeletePromotionConfirmation": {
+    "placeholders": {
+      "promotionTitle": {}
+    }
+  },
+  "supplierDeleteShippingMethodConfirmation": "Are you sure you want to delete \"{methodName}\"?",
+  "@supplierDeleteShippingMethodConfirmation": {
+    "placeholders": {
+      "methodName": {}
+    }
+  },
+  "supplierDeleteTaxRuleConfirmation": "Are you sure you want to delete \"{ruleName}\"?",
+  "@supplierDeleteTaxRuleConfirmation": {
+    "placeholders": {
+      "ruleName": {}
+    }
+  },
+  "supplierDiscountValuePercent": "Discount Value (%) *",
+  "supplierDiscountValuePlain": "Discount Value",
+  "supplierEndDateAfterStartDate": "End date must be after start date",
+  "supplierEstimatedDeliveryTimePlain": "Estimated Delivery Time",
+  "supplierFixedDiscountHelp": "Fixed discount means a fixed amount off, for example $20 off.",
+  "supplierFreeShippingThresholdPlain": "Free Shipping Threshold",
+  "supplierManageHomeBanners": "Manage Home Banners",
+  "supplierMaxDiscountFixedHelp": "Maximum discount amount is not needed for fixed promotions.",
+  "supplierMaxDiscountPercentHelp": "Optional. It limits the total discount when using percent promotions.",
+  "supplierMaximumDiscountAmount": "Maximum Discount Amount",
+  "supplierMaximumDiscountAmountPlain": "Maximum Discount Amount",
+  "supplierMethodNamePlain": "Method Name",
+  "supplierMethodsShown": "{count} methods shown",
+  "@supplierMethodsShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierMinimumOrderAmountPlain": "Minimum Order Amount",
+  "supplierNoActiveBranchesAvailableAddBranchesFirst": "No active branches available. Add branches from Branch Management first.",
+  "supplierNoActiveCategoriesAvailable": "No active categories available.",
+  "supplierNoActiveProductsAvailable": "No active products available.",
+  "supplierNoActiveSubcategoriesForCategory": "No active subcategories for this category.",
+  "supplierNoRegionsAvailableForCountry": "No regions available for this country.",
+  "supplierOnlyForPercentCoupons": "Only for percent coupons",
+  "supplierOnlyForPercentDiscounts": "Only for percent discounts",
+  "supplierPercentDiscountHelp": "Percent discount means percentage off, for example 10% off. Maximum discount amount can limit supplier loss.",
+  "supplierPleaseSelectTarget": "Please select {targetLabel}",
+  "@supplierPleaseSelectTarget": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierPromotionBranchesHelp": "Branches define where the promotion is valid. Product/category selection above is not filtered by branch.",
+  "supplierPromotionDescriptionHint": "Short description shown later to retailer side",
+  "supplierPromotionTargetHelp": "The target defines which products are included in the promotion. Branch availability is selected separately below.",
+  "supplierPromotionTitle": "Promotion Title *",
+  "supplierPromotionTitleHint": "Food category wholesale deal",
+  "supplierPromotionTitlePlain": "Promotion Title",
+  "supplierPromotionsDescription": "View, search, create, edit, and delete supplier wholesale promotions for products, categories, subcategories, or all products.",
+  "supplierPromotionsShown": "{count} promotions shown",
+  "@supplierPromotionsShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierRuleNamePlain": "Rule Name",
+  "supplierRulesShown": "{count} rules shown",
+  "@supplierRulesShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierSelectCategoryFirst": "Select a category first.",
+  "supplierSelectTargetHint": "Select {targetLabel}",
+  "@supplierSelectTargetHint": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierSelectTargetLabel": "Select {targetLabel} *",
+  "@supplierSelectTargetLabel": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierSelectedBranchesLoadedFromBackendBranchManagement": "Selected branches are loaded from the backend Branch Management module.",
+  "supplierSelectedItemNameShownHere": "The selected item name is shown here, but the backend saves its ID in targetValue.",
+  "supplierShippingCostPlain": "Shipping Cost",
+  "supplierShippingNameHint": "Beirut Standard Delivery",
+  "supplierSortOrderPositiveNumber": "Sort order must be a valid positive number",
+  "supplierSortOrderRequired": "Sort order is required",
+  "supplierTargetUrlRequired": "Target URL is required",
+  "supplierTaxRatePlain": "Tax Rate",
+  "supplierTitlePlain": "Title",
+  "supplierValidFromBeforeValidTo": "Valid From must be before Valid To",
+  "supplierScheduled": "Scheduled",
+  "supplierExpired": "Expired",
+  "supplierUsageLimitReached": "Usage limit reached",
+  "supplierFreePickup": "Free pickup",
+  "supplierNoMinimum": "No minimum",
+  "supplierMinimumValue": "{value} minimum",
+  "@supplierMinimumValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierNoFreeShipping": "No free shipping",
+  "supplierFreeAboveValue": "Free above {value}",
+  "@supplierFreeAboveValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierNoLocationSelected": "No location selected",
+  "supplierNoBranchesSelected": "No branches selected",
+  "supplierNoTarget": "No target",
+  "supplierDrawerRfqs": "RFQ Requests"
 }

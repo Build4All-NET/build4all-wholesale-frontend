@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -228,7 +230,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
 
     return null;
@@ -241,7 +243,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     final parsed = double.tryParse(value!.trim());
 
     if (parsed == null || parsed <= 0) {
-      return '$fieldName must be greater than 0';
+      return context.l10n.supplierFieldGreaterThanZero(fieldName);
     }
 
     return null;
@@ -253,20 +255,20 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     final parsed = double.tryParse(value.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
     return null;
   }
 
   String? _discountValueValidator(String? value) {
-    final baseError = _requiredPositiveNumber(value, 'Discount Value');
+    final baseError = _requiredPositiveNumber(value, context.l10n.supplierDiscountValuePlain);
     if (baseError != null) return baseError;
 
     final parsed = double.tryParse(value!.trim()) ?? 0;
 
     if (_discountType == PromotionDiscountType.percent && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
+      return context.l10n.supplierPercentDiscountCannotBeGreaterThan100;
     }
 
     return null;
@@ -374,7 +376,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     if (_startDate != null &&
         _endDate != null &&
         _startDate!.isAfter(_endDate!)) {
-      _dateError = 'End date must be after start date';
+      _dateError = context.l10n.supplierEndDateAfterStartDate;
     } else {
       _dateError = null;
     }
@@ -394,14 +396,14 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     if (_targetType == PromotionTargetType.subcategory &&
         _selectedTargetCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a category first')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectACategoryFirst)),
       );
       return false;
     }
 
     if (_selectedTargetId == null || _selectedTargetId!.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select ${_targetType.label}')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectTarget(_localizedOptionLabel(context, _targetType.label)))),
       );
       return false;
     }
@@ -423,8 +425,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     if (_branchScope == PromotionBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select at least one branch'),
+        SnackBar(
+          content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch),
         ),
       );
       return;
@@ -531,7 +533,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                 icon: const Icon(Icons.arrow_back, size: 28),
               ),
               title: Text(
-                _isEditMode ? 'Edit Promotion' : 'Create Promotion',
+                _isEditMode ? context.l10n.supplierEditPromotion : context.l10n.supplierCreatePromotion,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 22,
@@ -563,8 +565,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
+                          child: Text(
+                            context.l10n.cancelButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -598,19 +600,13 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    _isEditMode
-                                        ? 'Update Promotion'
-                                        : 'Create Promotion',
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    overflow: TextOverflow.visible,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                              : Text(
+                                  _isEditMode
+                                      ? context.l10n.supplierUpdatePromotion
+                                      : context.l10n.supplierCreatePromotion,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
                                   ),
                                 ),
                         ),
@@ -628,31 +624,31 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Promotion Information',
+                        title: context.l10n.supplierPromotionInformation,
                         children: [
-                          _FieldLabel('Promotion Title *'),
+                          _FieldLabel(context.l10n.supplierPromotionTitle),
                           _InputField(
                             controller: _titleController,
-                            hintText: 'Food category wholesale deal',
+                            hintText: context.l10n.supplierPromotionTitleHint,
                             validator: (value) {
-                              return _required(value, 'Promotion Title');
+                              return _required(value, context.l10n.supplierPromotionTitlePlain);
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Description'),
+                          _FieldLabel(context.l10n.descriptionLabel),
                           _InputField(
                             controller: _descriptionController,
                             hintText:
-                                'Short description shown later to retailer side',
+                                context.l10n.supplierPromotionDescriptionHint,
                             maxLines: 3,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Discount',
+                        title: context.l10n.supplierDiscount,
                         children: [
-                          _FieldLabel('Discount Type *'),
+                          _FieldLabel(context.l10n.supplierDiscountType),
                           _DiscountTypeDropdown(
                             value: _discountType,
                             onChanged: _handleDiscountTypeChanged,
@@ -660,11 +656,11 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           const SizedBox(height: 8),
                           _HelpText(
                             text: _isPercent
-                                ? 'Percent discount means percentage off, for example 10% off. Maximum discount amount can limit supplier loss.'
-                                : 'Fixed discount means a fixed amount off, for example \$20 off.',
+                                ? context.l10n.supplierPercentDiscountHelp
+                                : context.l10n.supplierFixedDiscountHelp,
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Discount Value *'),
+                          _FieldLabel(context.l10n.supplierDiscountValue),
                           _InputField(
                             controller: _discountValueController,
                             hintText: _isPercent ? '10' : '20',
@@ -678,17 +674,17 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Promotion Target',
+                        title: context.l10n.supplierPromotionTarget,
                         children: [
-                          _FieldLabel('Applies To *'),
+                          _FieldLabel(context.l10n.supplierAppliesTo),
                           _TargetTypeDropdown(
                             value: _targetType,
                             onChanged: _handleTargetTypeChanged,
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'The target defines which products are included in the promotion. Branch availability is selected separately below.',
+                                context.l10n.supplierPromotionTargetHelp,
                           ),
                           if (_targetType != PromotionTargetType.allProducts)
                             ...[
@@ -721,9 +717,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Promotion Rules',
+                        title: context.l10n.supplierPromotionRules,
                         children: [
-                          _FieldLabel('Minimum Order Amount'),
+                          _FieldLabel(context.l10n.supplierMinimumOrderAmount),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '100',
@@ -734,16 +730,16 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             validator: (value) {
                               return _optionalNonNegativeNumber(
                                 value,
-                                'Minimum Order Amount',
+                                context.l10n.supplierMinimumOrderAmountPlain,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Maximum Discount Amount'),
+                          _FieldLabel(context.l10n.supplierMaximumDiscountAmount),
                           _InputField(
                             controller: _maxDiscountAmountController,
                             hintText:
-                                _isPercent ? '50' : 'Only for percent discounts',
+                                _isPercent ? '50' : context.l10n.supplierOnlyForPercentDiscounts,
                             enabled: _isPercent,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -752,23 +748,23 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             validator: (value) {
                               return _optionalNonNegativeNumber(
                                 value,
-                                'Maximum Discount Amount',
+                                context.l10n.supplierMaximumDiscountAmountPlain,
                               );
                             },
                           ),
                           const SizedBox(height: 8),
                           _HelpText(
                             text: _isPercent
-                                ? 'Optional. It limits the total discount when using percent promotions.'
-                                : 'Maximum discount amount is not needed for fixed promotions.',
+                                ? context.l10n.supplierMaxDiscountPercentHelp
+                                : context.l10n.supplierMaxDiscountFixedHelp,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Branch Applicability',
+                        title: context.l10n.supplierBranchApplicability,
                         children: [
-                          _FieldLabel('Applies To *'),
+                          _FieldLabel(context.l10n.supplierAppliesTo),
                           _BranchScopeDropdown(
                             value: _branchScope,
                             onChanged: (value) {
@@ -786,24 +782,24 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             },
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'Branches define where the promotion is valid. Product/category selection above is not filtered by branch.',
+                                context.l10n.supplierPromotionBranchesHelp,
                           ),
                           if (_branchScope ==
                               PromotionBranchScope.selectedBranches) ...[
                             const _DividerSpace(),
                             Row(
                               children: [
-                                const Expanded(
-                                  child: _FieldLabel('Select Branches'),
+                                Expanded(
+                                  child: _FieldLabel(context.l10n.supplierSelectBranches),
                                 ),
                                 TextButton(
                                   onPressed: _loadingBranches
                                       ? null
                                       : _loadBranches,
-                                  child: const Text(
-                                    'Refresh',
+                                  child: Text(
+                                    context.l10n.refreshButton,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w900,
                                     ),
@@ -821,11 +817,12 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             else if (_branchErrorMessage != null)
                               _ErrorText(message: _branchErrorMessage!)
                             else if (_branches.isEmpty)
-                              const Text(
-                                'No active branches available. Add branches from Branch Management first.',
+                              Text(
+                                context.l10n.supplierNoActiveBranchesAvailableAddBranchesFirst,
                                 style: TextStyle(
-                                  color: AppThemeTokens.textSecondary,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w600,
+                                  color: AppThemeTokens.textSecondary,
                                 ),
                               )
                             else
@@ -853,10 +850,10 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Schedule & Status',
+                        title: context.l10n.supplierScheduleStatus,
                         children: [
                           _DateTimePickerRow(
-                            label: 'Start Date',
+                            label: context.l10n.supplierStartDate,
                             value: _formatDateTime(_startDate),
                             onPick: () async {
                               final picked = await _pickDateTime(_startDate);
@@ -877,7 +874,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           ),
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
-                            label: 'End Date',
+                            label: context.l10n.supplierEndDate,
                             value: _formatDateTime(_endDate),
                             onPick: () async {
                               final picked = await _pickDateTime(_endDate);
@@ -903,9 +900,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           const _DividerSpace(),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
+                                  context.l10n.activeStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -970,8 +967,8 @@ class _TargetSelectionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (targetType == PromotionTargetType.product) {
       return _LookupDropdownBlock(
-        label: 'Select Product *',
-        emptyText: 'No active products available.',
+        label: context.l10n.supplierSelectProduct,
+        emptyText: context.l10n.supplierNoActiveProductsAvailable,
         options: products,
         selectedId: selectedTargetId,
         onRefresh: onRefresh,
@@ -981,8 +978,8 @@ class _TargetSelectionSection extends StatelessWidget {
 
     if (targetType == PromotionTargetType.category) {
       return _LookupDropdownBlock(
-        label: 'Select Category *',
-        emptyText: 'No active categories available.',
+        label: context.l10n.supplierSelectCategory,
+        emptyText: context.l10n.supplierNoActiveCategoriesAvailable,
         options: categories,
         selectedId: selectedTargetId,
         onRefresh: onRefresh,
@@ -993,10 +990,10 @@ class _TargetSelectionSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _FieldLabel('Select Category *'),
+        _FieldLabel(context.l10n.supplierSelectCategory),
         _SimpleStringDropdown(
           value: _safeSelectedId(selectedCategoryId, categories),
-          hintText: 'Choose category',
+          hintText: context.l10n.supplierChooseCategory,
           items: categories
               .map(
                 (category) => DropdownMenuItem<String>(
@@ -1009,10 +1006,10 @@ class _TargetSelectionSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _LookupDropdownBlock(
-          label: 'Select SubCategory *',
+          label: context.l10n.supplierSelectSubcategory,
           emptyText: selectedCategoryId == null
-              ? 'Select a category first.'
-              : 'No active subcategories for this category.',
+              ? context.l10n.supplierSelectCategoryFirst
+              : context.l10n.supplierNoActiveSubcategoriesForCategory,
           options: filteredSubCategories,
           selectedId: selectedTargetId,
           onRefresh: onRefresh,
@@ -1062,8 +1059,8 @@ class _LookupDropdownBlock extends StatelessWidget {
             Expanded(child: _FieldLabel(label)),
             TextButton(
               onPressed: onRefresh,
-              child: const Text(
-                'Refresh',
+              child: Text(
+                context.l10n.refreshButton,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -1100,7 +1097,7 @@ class _LookupDropdownBlock extends StatelessWidget {
             },
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return '${label.replaceAll('*', '').trim()} is required';
+                return context.l10n.supplierFieldRequired(label.replaceAll('*', '').trim());
               }
 
               return null;
@@ -1121,7 +1118,7 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({
+  _SectionCard({
     required this.title,
     required this.children,
   });
@@ -1166,7 +1163,7 @@ class _SectionCard extends StatelessWidget {
 class _FieldLabel extends StatelessWidget {
   final String text;
 
-  const _FieldLabel(this.text);
+  _FieldLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -1191,16 +1188,14 @@ class _InputField extends StatelessWidget {
   final bool enabled;
   final int maxLines;
   final String? Function(String?)? validator;
-  final ValueChanged<String>? onChanged;
 
-  const _InputField({
+  _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType,
     this.enabled = true,
     this.maxLines = 1,
     this.validator,
-    this.onChanged,
   });
 
   @override
@@ -1211,7 +1206,6 @@ class _InputField extends StatelessWidget {
       maxLines: maxLines,
       keyboardType: keyboardType,
       validator: validator,
-      onChanged: onChanged,
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
@@ -1261,15 +1255,21 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionDiscountType>(
-      isExpanded: true,
       initialValue: value,
-      items: PromotionDiscountType.values.map((type) {
-        return DropdownMenuItem<PromotionDiscountType>(
-          value: type,
-          child: _DropdownText(type.label),
-        );
-      }).toList(),
+      items: PromotionDiscountType.values
+          .map(
+            (type) => DropdownMenuItem<PromotionDiscountType>(
+              value: type,
+              child: Text(_localizedEnumLabel(context, type.label)),
+            ),
+          )
+          .toList(),
       onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1287,15 +1287,21 @@ class _TargetTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionTargetType>(
-      isExpanded: true,
       initialValue: value,
-      items: PromotionTargetType.values.map((type) {
-        return DropdownMenuItem<PromotionTargetType>(
-          value: type,
-          child: _DropdownText(type.label),
-        );
-      }).toList(),
+      items: PromotionTargetType.values
+          .map(
+            (type) => DropdownMenuItem<PromotionTargetType>(
+              value: type,
+              child: Text(_localizedEnumLabel(context, type.label)),
+            ),
+          )
+          .toList(),
       onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1313,15 +1319,21 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionBranchScope>(
-      isExpanded: true,
       initialValue: value,
-      items: PromotionBranchScope.values.map((scope) {
-        return DropdownMenuItem<PromotionBranchScope>(
-          value: scope,
-          child: _DropdownText(scope.label),
-        );
-      }).toList(),
+      items: PromotionBranchScope.values
+          .map(
+            (scope) => DropdownMenuItem<PromotionBranchScope>(
+              value: scope,
+              child: Text(_localizedEnumLabel(context, scope.label)),
+            ),
+          )
+          .toList(),
       onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1343,13 +1355,7 @@ class _SimpleStringDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      isExpanded: true,
       initialValue: value,
-      hint: Text(
-        hintText,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
       items: items,
       onChanged: onChanged,
       validator: (selectedValue) {
@@ -1359,6 +1365,11 @@ class _SimpleStringDropdown extends StatelessWidget {
 
         return null;
       },
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1422,8 +1433,8 @@ class _DateTimePickerRow extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
-                      'Clear',
+                    child: Text(
+                      context.l10n.clearButton,
                       style: TextStyle(fontWeight: FontWeight.w900),
                     ),
                   ),
@@ -1444,8 +1455,8 @@ class _DateTimePickerRow extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
-                      'Pick',
+                    child: Text(
+                      context.l10n.pickButton,
                       style: TextStyle(fontWeight: FontWeight.w900),
                     ),
                   ),
@@ -1462,7 +1473,7 @@ class _DateTimePickerRow extends StatelessWidget {
 class _HelpText extends StatelessWidget {
   final String text;
 
-  const _HelpText({required this.text});
+  _HelpText({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -1508,24 +1519,43 @@ class _DividerSpace extends StatelessWidget {
   }
 }
 
-class _DropdownText extends StatelessWidget {
-  final String text;
 
-  const _DropdownText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      maxLines: 1,
-      softWrap: false,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-    );
+String _localizedEnumLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
   }
 }
 
@@ -1558,157 +1588,207 @@ class _PromotionLookupOption {
   final String id;
   final String label;
   final String? categoryId;
+  final String? categoryName;
 
   const _PromotionLookupOption({
     required this.id,
     required this.label,
     this.categoryId,
+    this.categoryName,
   });
-}
 
-class _PromotionLookupService {
-  final ApiClient _apiClient;
+  factory _PromotionLookupOption.fromJson(
+    Map<String, dynamic> json, {
+    required String fallbackPrefix,
+  }) {
+    final id = _firstNonEmpty(json, [
+      'id',
+      'productId',
+      'categoryId',
+      'subCategoryId',
+      'subcategoryId',
+    ]);
 
-  const _PromotionLookupService(this._apiClient);
+    final name = _firstNonEmpty(json, [
+      'name',
+      'productName',
+      'categoryName',
+      'subCategoryName',
+      'subcategoryName',
+      'title',
+    ]);
 
-  Future<List<_PromotionLookupOption>> getProducts() async {
-    final response = await _apiClient.dio.get(ApiConfig.supplierProducts);
+    final categoryId = _firstNonEmpty(json, [
+      'categoryId',
+      'parentCategoryId',
+    ]);
 
-    final items = _extractList(response.data);
+    final categoryName = _firstNonEmpty(json, [
+      'categoryName',
+      'parentCategoryName',
+    ]);
 
-    return items.map((json) {
-      final id = _readId(json, ['id', 'productId']);
-      final name = _readString(json, [
-        'name',
-        'productName',
-        'title',
-      ]);
-
-      return _PromotionLookupOption(
-        id: id,
-        label: name.isEmpty ? 'Product #$id' : name,
-      );
-    }).toList();
+    return _PromotionLookupOption(
+      id: id,
+      label: name.isEmpty ? '$fallbackPrefix #$id' : name,
+      categoryId: categoryId.isEmpty ? null : categoryId,
+      categoryName: categoryName.isEmpty ? null : categoryName,
+    );
   }
 
-  Future<List<_PromotionLookupOption>> getCategories() async {
-    final response = await _apiClient.dio.get(ApiConfig.supplierCategories);
+  static String _firstNonEmpty(
+    Map<String, dynamic> json,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final value = json[key];
 
-    final items = _extractList(response.data);
-
-    return items.map((json) {
-      final id = _readId(json, ['id', 'categoryId']);
-      final name = _readString(json, ['name', 'categoryName', 'title']);
-
-      return _PromotionLookupOption(
-        id: id,
-        label: name.isEmpty ? 'Category #$id' : name,
-      );
-    }).toList();
-  }
-
-  Future<List<_PromotionLookupOption>> getSubCategories() async {
-    final response = await _apiClient.dio.get(ApiConfig.supplierSubCategories);
-
-    final items = _extractList(response.data);
-
-    return items.map((json) {
-      final id = _readId(json, ['id', 'subCategoryId', 'subcategoryId']);
-      final name = _readString(
-        json,
-        ['name', 'subCategoryName', 'subcategoryName', 'title'],
-      );
-      final categoryId = _readOptionalId(
-        json,
-        ['categoryId', 'parentCategoryId', 'supplierCategoryId'],
-      );
-
-      return _PromotionLookupOption(
-        id: id,
-        label: name.isEmpty ? 'SubCategory #$id' : name,
-        categoryId: categoryId,
-      );
-    }).toList();
-  }
-
-  Future<List<_PromotionLookupOption>> getBranches() async {
-    final response = await _apiClient.dio.get(ApiConfig.supplierBranches);
-
-    final items = _extractList(response.data);
-
-    return items.map((json) {
-      final id = _readId(json, ['id', 'branchId']);
-      final name = _readString(json, ['name', 'branchName', 'title']);
-
-      return _PromotionLookupOption(
-        id: id,
-        label: name.isEmpty ? 'Branch #$id' : name,
-      );
-    }).toList();
-  }
-
-  static List<Map<String, dynamic>> _extractList(dynamic data) {
-    if (data is List) {
-      return data
-          .whereType<Map>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
-    }
-
-    if (data is Map) {
-      final map = Map<String, dynamic>.from(data);
-
-      for (final key in [
-        'content',
-        'items',
-        'data',
-        'products',
-        'categories',
-        'subCategories',
-        'subcategories',
-        'branches',
-      ]) {
-        final value = map[key];
-
-        if (value is List) {
-          return value
-              .whereType<Map>()
-              .map((item) => Map<String, dynamic>.from(item))
-              .toList();
-        }
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
       }
     }
 
-    return [];
-  }
-
-  static String _readId(Map<String, dynamic> json, List<String> keys) {
-    return _readOptionalId(json, keys) ?? '';
-  }
-
-  static String? _readOptionalId(Map<String, dynamic> json, List<String> keys) {
-    for (final key in keys) {
-      final value = json[key];
-
-      if (value == null) continue;
-
-      final text = value.toString().trim();
-      if (text.isNotEmpty) return text;
-    }
-
-    return null;
-  }
-
-  static String _readString(Map<String, dynamic> json, List<String> keys) {
-    for (final key in keys) {
-      final value = json[key];
-
-      if (value == null) continue;
-
-      final text = value.toString().trim();
-      if (text.isNotEmpty) return text;
-    }
-
     return '';
+  }
+}
+
+class _PromotionLookupService {
+  final ApiClient apiClient;
+
+  _PromotionLookupService(this.apiClient);
+
+  Future<List<_PromotionLookupOption>> getProducts() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierProducts);
+
+    return _parseList(
+      response.data,
+      fallbackPrefix: 'Product',
+    );
+  }
+
+  Future<List<_PromotionLookupOption>> getCategories() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierCategories);
+
+    return _parseList(
+      response.data,
+      fallbackPrefix: 'Category',
+    );
+  }
+
+  Future<List<_PromotionLookupOption>> getSubCategories() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierSubCategories);
+
+    return _parseList(
+      response.data,
+      fallbackPrefix: 'SubCategory',
+    );
+  }
+
+  Future<List<_PromotionLookupOption>> getBranches() async {
+    final response = await apiClient.dio.get(ApiConfig.supplierBranches);
+
+    final rawOptions = _parseList(
+      response.data,
+      fallbackPrefix: 'Branch',
+    );
+
+    if (response.data is List) {
+      final filtered = <_PromotionLookupOption>[];
+
+      for (final item in response.data as List) {
+        if (item is! Map) continue;
+
+        final json = Map<String, dynamic>.from(item);
+        final status = json['status']?.toString().toUpperCase();
+
+        if (status == null || status == 'ACTIVE') {
+          filtered.add(
+            _PromotionLookupOption.fromJson(
+              json,
+              fallbackPrefix: 'Branch',
+            ),
+          );
+        }
+      }
+
+      return filtered;
+    }
+
+    return rawOptions;
+  }
+
+  List<_PromotionLookupOption> _parseList(
+    dynamic data, {
+    required String fallbackPrefix,
+  }) {
+    if (data is! List) return [];
+
+    return data
+        .whereType<Map>()
+        .map(
+          (item) => _PromotionLookupOption.fromJson(
+            Map<String, dynamic>.from(item),
+            fallbackPrefix: fallbackPrefix,
+          ),
+        )
+        .where((item) => item.id.trim().isNotEmpty)
+        .toList();
+  }
+}
+
+String _localizedOptionLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
+  }
+}
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    case 'scheduled':
+      return context.l10n.supplierScheduled;
+    case 'expired':
+      return context.l10n.supplierExpired;
+    case 'usage limit reached':
+    case 'usage_limit_reached':
+      return context.l10n.supplierUsageLimitReached;
+    default:
+      return label;
   }
 }

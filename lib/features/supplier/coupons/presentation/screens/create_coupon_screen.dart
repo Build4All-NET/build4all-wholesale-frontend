@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -204,7 +206,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     if (_startsAt != null &&
         _expiresAt != null &&
         _startsAt!.isAfter(_expiresAt!)) {
-      _dateError = 'Valid From must be before Valid To';
+      _dateError = context.l10n.supplierValidFromBeforeValidTo;
       return false;
     }
 
@@ -224,14 +226,14 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
 
     return null;
   }
 
   String? _numberValidator(String? value, String fieldName) {
-    if (_isFreeShipping && fieldName == 'Discount Value') {
+    if (_isFreeShipping && fieldName == context.l10n.supplierDiscountValuePlain) {
       return null;
     }
 
@@ -241,11 +243,11 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     final parsed = double.tryParse(value!.trim());
 
     if (parsed == null || parsed <= 0) {
-      return '$fieldName must be greater than 0';
+      return context.l10n.supplierFieldGreaterThanZero(fieldName);
     }
 
-    if (_isPercent && fieldName == 'Discount Value' && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
+    if (_isPercent && fieldName == context.l10n.supplierDiscountValuePlain && parsed > 100) {
+      return context.l10n.supplierPercentDiscountCannotBeGreaterThan100;
     }
 
     return null;
@@ -257,7 +259,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     final parsed = double.tryParse(value.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
     return null;
@@ -269,7 +271,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     final parsed = int.tryParse(value.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
     return null;
@@ -300,7 +302,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     if (_branchScope == CouponBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one branch')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch)),
       );
       return;
     }
@@ -394,7 +396,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                 onPressed: state.saving ? null : _cancel,
               ),
               title: Text(
-                _isEditMode ? 'Edit Coupon' : 'Create Coupon',
+                _isEditMode ? context.l10n.supplierEditCoupon : context.l10n.supplierCreateCoupon,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 24,
@@ -426,8 +428,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
+                          child: Text(
+                            context.l10n.cancelButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -463,8 +465,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                 )
                               : Text(
                                   _isEditMode
-                                      ? 'Update Coupon'
-                                      : 'Create Coupon',
+                                      ? context.l10n.supplierUpdateCoupon
+                                      : context.l10n.supplierCreateCoupon,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -485,26 +487,26 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Coupon Information',
+                        title: context.l10n.supplierCouponInformation,
                         children: [
-                          _FieldLabel('Coupon Code *'),
+                          _FieldLabel(context.l10n.supplierCouponCode),
                           _InputField(
                             controller: _codeController,
                             hintText: 'SPRING25',
                             textCapitalization: TextCapitalization.characters,
                             validator: (value) {
-                              return _required(value, 'Coupon Code');
+                              return _required(value, context.l10n.supplierCouponCodePlain);
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Description'),
+                          _FieldLabel(context.l10n.descriptionLabel),
                           _InputField(
                             controller: _descriptionController,
-                            hintText: 'Describe this coupon',
+                            hintText: context.l10n.supplierCouponDescriptionHint,
                             maxLines: 2,
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Discount Type *'),
+                          _FieldLabel(context.l10n.supplierDiscountType),
                           _DiscountTypeDropdown(
                             value: _discountType,
                             onChanged: (value) {
@@ -526,12 +528,12 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           const _DividerSpace(),
                           _FieldLabel(
                             _isPercent
-                                ? 'Discount Value (%) *'
-                                : 'Discount Value *',
+                                ? context.l10n.supplierDiscountValuePercent
+                                : context.l10n.supplierDiscountValue,
                           ),
                           _InputField(
                             controller: _discountValueController,
-                            hintText: _isFreeShipping ? 'Not required' : '25',
+                            hintText: _isFreeShipping ? context.l10n.notRequiredLabel : '25',
                             enabled: !_isFreeShipping,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -540,7 +542,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _numberValidator(
                                 value,
-                                'Discount Value',
+                                context.l10n.supplierDiscountValuePlain,
                               );
                             },
                           ),
@@ -548,9 +550,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Coupon Rules',
+                        title: context.l10n.supplierCouponRules,
                         children: [
-                          _FieldLabel('Max Uses'),
+                          _FieldLabel(context.l10n.supplierMaxUses),
                           _InputField(
                             controller: _maxUsesController,
                             hintText: '100',
@@ -558,12 +560,12 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _optionalPositiveInt(
                                 value,
-                                'Max Uses',
+                                context.l10n.supplierMaxUses,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Min Order Amount'),
+                          _FieldLabel(context.l10n.supplierMinOrderAmount),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '50',
@@ -574,16 +576,16 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _optionalPositiveNumber(
                                 value,
-                                'Min Order Amount',
+                                context.l10n.supplierMinOrderAmount,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Max Discount Amount'),
+                          _FieldLabel(context.l10n.supplierMaxDiscountAmount),
                           _InputField(
                             controller: _maxDiscountAmountController,
                             hintText:
-                                _isPercent ? '30' : 'Only for percent coupons',
+                                _isPercent ? '30' : context.l10n.supplierOnlyForPercentCoupons,
                             enabled: _isPercent,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -592,7 +594,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _optionalPositiveNumber(
                                 value,
-                                'Max Discount Amount',
+                                context.l10n.supplierMaxDiscountAmount,
                               );
                             },
                           ),
@@ -600,9 +602,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Branch Applicability',
+                        title: context.l10n.supplierBranchApplicability,
                         children: [
-                          _FieldLabel('Applies To *'),
+                          _FieldLabel(context.l10n.supplierAppliesTo),
                           _BranchScopeDropdown(
                             value: _branchScope,
                             onChanged: (value) {
@@ -624,15 +626,15 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             const _DividerSpace(),
                             Row(
                               children: [
-                                const Expanded(
-                                  child: _FieldLabel('Select Branches'),
+                                Expanded(
+                                  child: _FieldLabel(context.l10n.supplierSelectBranches),
                                 ),
                                 TextButton(
                                   onPressed: _loadingBranches
                                       ? null
                                       : _loadBranches,
-                                  child: const Text(
-                                    'Refresh',
+                                  child: Text(
+                                    context.l10n.refreshButton,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w900,
                                     ),
@@ -657,8 +659,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                 ),
                               )
                             else if (_availableBranches.isEmpty)
-                              const Text(
-                                'No active branches available. Add branches from Branch Management first.',
+                              Text(
+                                context.l10n.supplierNoActiveBranchesAvailableAddBranchesFirst,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -685,8 +687,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                 }).toList(),
                               ),
                             const SizedBox(height: 10),
-                            const Text(
-                              'Selected branches are loaded from the backend Branch Management module.',
+                            Text(
+                              context.l10n.supplierSelectedBranchesLoadedFromBackendBranchManagement,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -698,10 +700,10 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Validity',
+                        title: context.l10n.supplierValidity,
                         children: [
                           _DateTimePickerRow(
-                            label: 'Valid From',
+                            label: context.l10n.supplierValidFrom,
                             value: _formatDateTime(_startsAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_startsAt);
@@ -722,7 +724,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           ),
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
-                            label: 'Valid To',
+                            label: context.l10n.supplierValidTo,
                             value: _formatDateTime(_expiresAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_expiresAt);
@@ -754,9 +756,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           const _DividerSpace(),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
+                                  context.l10n.activeStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -796,7 +798,7 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({
+  _SectionCard({
     required this.title,
     required this.children,
   });
@@ -841,7 +843,7 @@ class _SectionCard extends StatelessWidget {
 class _FieldLabel extends StatelessWidget {
   final String text;
 
-  const _FieldLabel(this.text);
+  _FieldLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -868,7 +870,7 @@ class _InputField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final String? Function(String?)? validator;
 
-  const _InputField({
+  _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType,
@@ -941,7 +943,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
           .map(
             (type) => DropdownMenuItem<CouponDiscountType>(
               value: type,
-              child: Text(type.label),
+              child: Text(_localizedEnumLabel(context, type.label)),
             ),
           )
           .toList(),
@@ -973,7 +975,7 @@ class _BranchScopeDropdown extends StatelessWidget {
           .map(
             (scope) => DropdownMenuItem<CouponBranchScope>(
               value: scope,
-              child: Text(scope.label),
+              child: Text(_localizedEnumLabel(context, scope.label)),
             ),
           )
           .toList(),
@@ -985,6 +987,46 @@ class _BranchScopeDropdown extends StatelessWidget {
       ),
       decoration: _dropdownDecoration(context),
     );
+  }
+}
+
+
+String _localizedEnumLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
   }
 }
 

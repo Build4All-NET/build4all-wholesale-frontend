@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -43,25 +45,25 @@ class _CouponsViewState extends State<_CouponsView> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Coupon',
+          title: Text(
+            context.l10n.supplierDeleteCoupon,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete coupon "${coupon.code}"?',
+            context.l10n.supplierDeleteCouponConfirmation(coupon.code),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancelButton),
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: const Text(
-                'Delete',
+              child: Text(
+                context.l10n.deleteButton,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -111,7 +113,7 @@ class _CouponsViewState extends State<_CouponsView> {
             },
           ),
           title: Text(
-            'Coupons',
+            context.l10n.supplierCoupons,
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -120,12 +122,12 @@ class _CouponsViewState extends State<_CouponsView> {
           ),
           actions: [
             IconButton(
-              tooltip: 'Create Coupon',
+              tooltip: context.l10n.supplierCreateCoupon,
               onPressed: () => context.go('/supplier-coupons/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
-              tooltip: 'Refresh',
+              tooltip: context.l10n.refreshButton,
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -147,8 +149,8 @@ class _CouponsViewState extends State<_CouponsView> {
                     children: [
                       _HeaderCard(primary: primary),
                       const SizedBox(height: 20),
-                      const Text(
-                        'Coupon List',
+                      Text(
+                        context.l10n.supplierCouponList,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w900,
@@ -230,12 +232,12 @@ class _HeaderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Coupons',
+                  context.l10n.supplierManageCoupons,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -244,7 +246,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, create, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.',
+                  context.l10n.supplierCouponsDescription,
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -310,8 +312,8 @@ class _ErrorCard extends StatelessWidget {
             size: 34,
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Could not load coupons',
+          Text(
+            context.l10n.supplierCouldNotLoadCoupons,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
@@ -335,8 +337,8 @@ class _ErrorCard extends StatelessWidget {
               foregroundColor: Colors.white,
               elevation: 0,
             ),
-            child: const Text(
-              'Retry',
+            child: Text(
+              context.l10n.retryButton,
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
@@ -374,8 +376,8 @@ class _EmptyCouponsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          const Text(
-            'No coupons yet',
+          Text(
+            context.l10n.supplierNoCouponsYet,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -383,8 +385,8 @@ class _EmptyCouponsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Create coupons from the supplier dashboard quick action or tap the plus icon above.',
+          Text(
+            context.l10n.supplierCreateCouponsFromDashboard,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,

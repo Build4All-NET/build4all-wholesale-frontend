@@ -1,4 +1,5 @@
 {
+  "@@locale": "fr",
   "appTitle": "Application B2B Wholesale",
   "login": "Connexion",
   "signUp": "S'inscrire",
@@ -275,7 +276,7 @@
   "noPredefinedRegions": "Aucune région prédéfinie, continuez avec la ville/zone",
   "selectRegionState": "Sélectionner une région / un état",
   "searchRegionState": "Rechercher une région / un état...",
-  "noRegionsFound": "Aucune région trouvée pour votre recherche",
+  "noRegionsFound": "Aucune région trouvée",
   "branchPhoneLabel": "Numéro de téléphone *",
   "enterPhoneNumber": "Entrez le numéro de téléphone",
   "branchStatusLabel": "Statut de la succursale *",
@@ -654,7 +655,6 @@
     }
   },
   "productNameHint": "ex. Coca-Cola pack de 24, carton de T-shirts en coton",
-  "@@locale": "fr",
   "countryRequiredLabel": "Pays *",
   "selectCountryFirstError": "Veuillez sélectionner d’abord un pays",
   "regionStateLabel": "Région / État",
@@ -671,5 +671,404 @@
   "phoneCountryMustMatchSelectedCountry": "Le pays du téléphone doit correspondre au pays sélectionné",
   "completeRequiredFieldsCorrectly": "Veuillez compléter correctement tous les champs obligatoires.",
   "businessTypeRequiredError": "Le type d’activité est obligatoire",
-  "retryButton": "Réessayer"
+  "retryButton": "Réessayer",
+  "noLabel": "Non",
+  "urlLabel": "URL",
+  "yesLabel": "Oui",
+  "copyButton": "Copier",
+  "noneLabel": "Aucun",
+  "supplierUsed": "Utilisé",
+  "supplierFixed": "Fixe",
+  "notesLabel": "Notes",
+  "activeLabel": "Actif",
+  "cancelButton": "Annuler",
+  "supplierCustom": "Personnalisé",
+  "deleteButton": "Supprimer",
+  "regionLabel": "Région",
+  "searchLabel": "Rechercher",
+  "supplierTarget": "Cible",
+  "supplierBanners": "Bannières",
+  "countryLabel": "Pays",
+  "supplierPercent": "Pourcentage",
+  "refreshButton": "Actualiser",
+  "supplierTitle": "Titre *",
+  "supplierDiscount": "Remise",
+  "supplierEndDate": "Date de fin",
+  "inactiveLabel": "Inactif",
+  "supplierLocation": "Localisation",
+  "supplierMaxUses": "Utilisations max.",
+  "regionRequiredLabel": "Région *",
+  "supplierSubtitle": "Sous-titre",
+  "supplierValidTo": "Valide jusqu’au",
+  "supplierValidity": "Validité",
+  "supplierMinOrder": "Commande min.",
+  "noRegionLabel": "Aucune région",
+  "supplierRemaining": "Restant",
+  "supplierUnlimited": "Illimité",
+  "supplierValidNow": "Valide maintenant",
+  "supplierPromotions": "Promotions",
+  "supplierStartDate": "Date de début",
+  "supplierValidFrom": "Valide du",
+  "supplierBannerList": "Liste des bannières",
+  "supplierCouponList": "Liste des coupons",
+  "supplierCreateRule": "Créer la règle",
+  "descriptionLabel": "Description",
+  "supplierEditBanner": "Modifier la bannière",
+  "supplierEditCoupon": "Modifier le coupon",
+  "supplierLebanonVat": "TVA du Liban",
+  "supplierPickupOnly": "Retrait uniquement",
+  "supplierRuleName": "Nom de la règle *",
+  "supplierRulePreset": "Modèle de règle",
+  "subcategoryLabel": "Sous-catégorie",
+  "supplierUpdateRule": "Mettre à jour",
+  "supplierValidNow2": "Valide maintenant : ",
+  "supplierAllBranches": "Toutes les succursales",
+  "supplierAllProducts": "Tous les produits",
+  "supplierAppliesTo": "S’applique à *",
+  "supplierBannerImage": "Image de bannière",
+  "supplierCouponRules": "Règles du coupon",
+  "supplierEnabledOnly": "Actifs seulement",
+  "supplierFixedAmount": "Montant fixe",
+  "supplierMaxDiscount": "Remise max.",
+  "supplierSortOrder": "Ordre d’affichage *",
+  "supplierTargetUrl": "URL cible *",
+  "supplierTaxRate": "Taux de taxe % *",
+  "supplierUploadImage": "Téléverser une image",
+  "supplierUploading": "Téléversement...",
+  "supplierAlwaysActive": "Toujours actif",
+  "supplierCouponCode": "Code du coupon *",
+  "supplierCreateBanner": "Créer une bannière",
+  "supplierCreateCoupon": "Créer un coupon",
+  "supplierCreateMethod": "Créer la méthode",
+  "supplierDeleteBanner": "Supprimer la bannière",
+  "supplierDeleteCoupon": "Supprimer le coupon",
+  "supplierDisabledOnly": "Inactifs seulement",
+  "supplierDisplayRules": "Règles d’affichage",
+  "supplierEditTaxRule": "Modifier la règle fiscale",
+  "supplierFreeShipping": "Livraison gratuite",
+  "supplierMethodName": "Nom de la méthode *",
+  "supplierMethodType": "Type de méthode *",
+  "searchRegionHint": "Rechercher une région",
+  "selectRegionHint": "Sélectionner une région",
+  "supplierShippingCost": "Frais de livraison",
+  "supplierTargetType": "Type de cible *",
+  "supplierTaxRuleList": "Liste des règles fiscales",
+  "supplierUpdateBanner": "Mettre à jour la bannière",
+  "supplierUpdateCoupon": "Mettre à jour le coupon",
+  "supplierUpdateMethod": "Mettre à jour",
+  "supplierBannerImage2": "Image de bannière *",
+  "supplierEditPromotion": "Modifier la promotion",
+  "supplierManageBanners": "Gérer les bannières",
+  "supplierManageCoupons": "Gérer les coupons",
+  "supplierNoBannersYet": "Aucune bannière pour le moment",
+  "supplierNoCouponsYet": "Aucun coupon pour le moment",
+  "supplierPickupIsFree": "Le retrait est gratuit",
+  "supplierPromotionList": "Liste des promotions",
+  "searchCountryHint": "Rechercher un pays",
+  "selectCountryHint": "Sélectionner un pays",
+  "supplierStatusNotes": "Statut et notes",
+  "supplierCreateTaxRule": "Créer une règle fiscale",
+  "supplierDeleteTaxRule": "Supprimer la règle fiscale",
+  "supplierDiscountType": "Type de remise *",
+  "supplierOrderLevelTax": "Taxe au niveau de la commande",
+  "supplierPromotionRules": "Règles de promotion",
+  "supplierSelectBranches": "Sélectionner les succursales",
+  "supplierWholesaleDeals": "Offres de gros",
+  "supplierDeletePromotion": "Supprimer la promotion",
+  "supplierDiscountValue": "Valeur de remise *",
+  "supplierExpressDelivery": "Livraison express",
+  "supplierManageTaxRules": "Gérer les règles fiscales",
+  "supplierMinOrderAmount": "Montant minimum de commande",
+  "supplierNoResultsFound": "Aucun résultat trouvé",
+  "supplierNoTaxRulesYet": "Aucune règle fiscale pour le moment",
+  "supplierPleaseSelectA": "Veuillez sélectionner ",
+  "supplierPricingTiming": "Prix et délais",
+  "supplierPromotionName": "Nom de la promotion *",
+  "supplierPromotionTarget": "Cible de la promotion",
+  "supplierSearchTaxRules": "Rechercher des règles fiscales",
+  "supplierSelectProduct": "Sélectionner un produit *",
+  "supplierUpdatePromotion": "Mettre à jour la promotion",
+  "supplierManagePromotions": "Gérer les promotions",
+  "supplierNoPromotionsYet": "Aucune promotion pour le moment",
+  "supplierScheduleStatus": "Planification et statut",
+  "supplierSearchPromotions": "Rechercher des promotions",
+  "supplierSelectCategory": "Sélectionner une catégorie *",
+  "supplierSelectedBranches": "Succursales sélectionnées",
+  "supplierStandardDelivery": "Livraison standard",
+  "supplierTaxApplicability": "Applicabilité de la taxe",
+  "supplierTaxConfiguration": "Configuration des taxes",
+  "supplierAutoGenerateName": "Générer le nom automatiquement",
+  "supplierBannerInformation": "Informations sur la bannière",
+  "supplierCouponInformation": "Informations sur le coupon",
+  "supplierMethodInformation": "Informations sur la méthode",
+  "supplierPickupFromBranch": "Retrait en succursale",
+  "supplierPickupFromBranch2": "Retrait en succursale",
+  "supplierCountryIsRequired": "Le pays est requis",
+  "supplierMaxDiscountAmount": "Montant maximum de remise",
+  "supplierNoMatchingBanners": "Aucune bannière correspondante",
+  "supplierBranchApplicability": "Applicabilité aux succursales",
+  "supplierDiscountValue2": "Valeur de remise (%) *",
+  "supplierEditShippingMethod": "Modifier la méthode de livraison",
+  "supplierMinimumOrderAmount": "Montant minimum de commande",
+  "supplierSelectSubcategory": "Sélectionner une sous-catégorie *",
+  "supplierShippingMethodList": "Liste des méthodes de livraison",
+  "supplierTaxRuleInformation": "Informations sur la règle fiscale",
+  "supplierNoMatchingTaxRules": "Aucune règle fiscale correspondante",
+  "supplierPromotionInformation": "Informations sur la promotion",
+  "supplierFieldnameIsRequired": "$fieldName is required",
+  "supplierCouldNotLoadBanners": "Impossible de charger les bannières",
+  "supplierCouldNotLoadCoupons": "Impossible de charger les coupons",
+  "supplierCreateShippingMethod": "Créer une méthode de livraison",
+  "supplierDeleteShippingMethod": "Supprimer la méthode de livraison",
+  "supplierNoMatchingPromotions": "Aucune promotion correspondante",
+  "supplierPromotionTitleCopied": "Titre de la promotion copié",
+  "supplierSortOrderIsRequired": "L’ordre d’affichage est requis",
+  "supplierEstimatedDeliveryTime": "Délai de livraison estimé",
+  "supplierFreeShippingThreshold": "Seuil de livraison gratuite",
+  "supplierManageShippingMethods": "Gérer les méthodes de livraison",
+  "supplierNoShippingMethodsYet": "Aucune méthode de livraison pour le moment",
+  "supplierPleaseSelectACountry": "Veuillez sélectionner un pays",
+  "supplierSearchShippingMethods": "Rechercher des méthodes de livraison",
+  "supplierCouldNotLoadTaxRules": "Impossible de charger les règles fiscales",
+  "supplierCouldNotLoadPromotions": "Impossible de charger les promotions",
+  "supplierApplyTaxToShippingCost": "Appliquer la taxe aux frais de livraison",
+  "supplierBannerCopiedSuccessfully": "Bannière copiée avec succès",
+  "supplierNoMatchingShippingMethods": "Aucune méthode de livraison correspondante",
+  "supplierSpecialOffersForRetailers": "Offres spéciales pour les détaillants",
+  "supplierCouldNotLoadTargetOptions": "Impossible de charger les options de cible",
+  "supplierPleaseSelectACategoryFirst": "Veuillez d’abord sélectionner une catégorie",
+  "supplierRegionIsRequiredForLebanon": "La région est requise pour le Liban",
+  "supplierCouldNotLoadShippingMethods": "Impossible de charger les méthodes de livraison",
+  "supplierTaxRateMustBeGreaterThan0": "Le taux de taxe doit être supérieur à 0",
+  "supplierFieldnameMustBeAValidNumber": "$fieldName must be a valid number",
+  "supplierFieldnameMustBeGreaterThan0": "$fieldName must be greater than 0",
+  "supplierPleaseSelectAtLeastOneBranch": "Veuillez sélectionner au moins une succursale",
+  "supplierBannerImageUploadedSuccessfully": "Image de bannière téléversée avec succès",
+  "supplierOptionalNotesAboutThisTaxRule": "Notes facultatives sur cette règle fiscale",
+  "supplierPleaseSelectARegionForLebanon": "Veuillez sélectionner une région pour le Liban",
+  "supplierValidFromMustBeBeforeValidTo": "La date de début doit être antérieure à la date de fin",
+  "supplierTaxRateCannotBeGreaterThan100": "Le taux de taxe ne peut pas dépasser 100",
+  "supplierUploadedImageUrlWillAppearHere": "L’URL de l’image téléversée apparaîtra ici",
+  "supplierNoRegionsAvailableForThisCountry": "Aucune région disponible pour ce pays.",
+  "supplierUrlMustStartWithHttpOrHttps": "L’URL doit commencer par http:// ou https://",
+  "supplierOptionalNotesAboutThisShippingMethod": "Notes facultatives sur cette méthode de livraison",
+  "supplierSortOrderMustBeAValidPositiveNumber": "L’ordre d’affichage doit être un nombre positif valide",
+  "supplierPercentDiscountCannotBeGreaterThan100": "Le pourcentage de remise ne peut pas dépasser 100",
+  "supplierFieldnameMustBeGreaterThanOrEqualTo0": "$fieldName must be greater than or equal to 0",
+  "supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule": "Choisissez un modèle ou gardez Personnalisé pour saisir votre propre règle fiscale au niveau de la commande.",
+  "supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule": "Les succursales sélectionnées sont chargées depuis le module de gestion des succursales.",
+  "supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst": "Aucune succursale active disponible. Ajoutez d’abord des succursales depuis la gestion des succursales.",
+  "supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry": "Le pays est requis car la taxe est calculée à partir du pays de livraison du détaillant.",
+  "supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue": "Le nom de l’élément sélectionné s’affiche ici, mais le backend enregistre son identifiant dans targetValue.",
+  "supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove": "Créez des règles fiscales depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.",
+  "supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion": "Exemple : saisissez 11 pour 11 %. La taxe s’applique à toute la commande selon le pays et la région.",
+  "supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions": "Le pays et la région seront utilisés au paiement détaillant pour afficher les bonnes options de livraison.",
+  "supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove": "Créez des méthodes de livraison depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.",
+  "supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule": "Choisissez Aucune région pour une règle au niveau du pays, ou une région précise pour une règle plus spécifique.",
+  "supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability": "Créez et gérez les options de livraison ou de retrait par pays, région, succursales, coût et disponibilité.",
+  "supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField": "Téléversez une image depuis votre appareil. Le backend renvoie une URL et la stocke dans le champ imageUrl de la bannière.",
+  "supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax": "Configurez la taxe au niveau de la commande par pays et région. Le paiement détaillant utilisera ces règles pour calculer la taxe.",
+  "supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount": "Si activé, la taxe au paiement inclut les frais de livraison. Sinon, elle s’applique uniquement aux articles après remise promotionnelle.",
+  "supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch": "Les succursales définissent où cette méthode est valide. Le paiement détaillant fera correspondre la livraison avec la succursale de préparation.",
+  "supplierFieldRequired": "{fieldName} est requis",
+  "@supplierFieldRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldGreaterThanZero": "{fieldName} doit être supérieur à 0",
+  "@supplierFieldGreaterThanZero": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldGreaterThanOrEqualZero": "{fieldName} doit être supérieur ou égal à 0",
+  "@supplierFieldGreaterThanOrEqualZero": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldValidNumber": "{fieldName} doit être un nombre valide",
+  "@supplierFieldValidNumber": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierBranchesValue": "Succursales : {value}",
+  "@supplierBranchesValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierTargetValue": "Cible : {value}",
+  "@supplierTargetValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierOrderValue": "Ordre : {value}",
+  "@supplierOrderValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierVisibleNowValue": "Visible maintenant : {value}",
+  "@supplierVisibleNowValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierValidNowValue": "Valide maintenant : {value}",
+  "@supplierValidNowValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "notRequiredLabel": "Non requis",
+  "pickButton": "Choisir",
+  "uploadingLabel": "Téléversement...",
+  "supplierBannerImagePlain": "Image de bannière",
+  "supplierBannersDescription": "Consultez, créez, modifiez et supprimez les bannières fournisseur enregistrées dans la base de données. Elles apparaîtront ensuite aux détaillants sur l’accueil.",
+  "supplierBusinessDaysHint": "2 à 3 jours ouvrables",
+  "supplierChooseCategory": "Choisir une catégorie",
+  "supplierCouponCodePlain": "Code du coupon",
+  "supplierCouponCopied": "{couponCode} copié",
+  "@supplierCouponCopied": {
+    "placeholders": {
+      "couponCode": {}
+    }
+  },
+  "supplierCouponDescriptionHint": "Décrivez ce coupon",
+  "supplierCouponsDescription": "Consultez, créez, modifiez et supprimez les coupons fournisseur enregistrés en base. Ils pourront ensuite être utilisés dans le panier et le paiement détaillant.",
+  "supplierCreateBannersFromDashboard": "Créez des bannières depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.",
+  "supplierCreateCouponsFromDashboard": "Créez des coupons depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.",
+  "supplierCreatePromotionsFromDashboard": "Créez des promotions depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.",
+  "supplierDeleteBannerConfirmation": "Voulez-vous vraiment supprimer « {bannerTitle} » ?",
+  "@supplierDeleteBannerConfirmation": {
+    "placeholders": {
+      "bannerTitle": {}
+    }
+  },
+  "supplierDeleteCouponConfirmation": "Voulez-vous vraiment supprimer le coupon « {couponCode} » ?",
+  "@supplierDeleteCouponConfirmation": {
+    "placeholders": {
+      "couponCode": {}
+    }
+  },
+  "supplierDeletePromotionConfirmation": "Voulez-vous vraiment supprimer « {promotionTitle} » ?",
+  "@supplierDeletePromotionConfirmation": {
+    "placeholders": {
+      "promotionTitle": {}
+    }
+  },
+  "supplierDeleteShippingMethodConfirmation": "Voulez-vous vraiment supprimer « {methodName} » ?",
+  "@supplierDeleteShippingMethodConfirmation": {
+    "placeholders": {
+      "methodName": {}
+    }
+  },
+  "supplierDeleteTaxRuleConfirmation": "Voulez-vous vraiment supprimer « {ruleName} » ?",
+  "@supplierDeleteTaxRuleConfirmation": {
+    "placeholders": {
+      "ruleName": {}
+    }
+  },
+  "supplierDiscountValuePercent": "Valeur de remise (%) *",
+  "supplierDiscountValuePlain": "Valeur de remise",
+  "supplierEndDateAfterStartDate": "La date de fin doit être après la date de début",
+  "supplierEstimatedDeliveryTimePlain": "Délai de livraison estimé",
+  "supplierFixedDiscountHelp": "Une remise fixe signifie un montant fixe déduit, par exemple 20 $.",
+  "supplierFreeShippingThresholdPlain": "Seuil de livraison gratuite",
+  "supplierManageHomeBanners": "Gérer les bannières d’accueil",
+  "supplierMaxDiscountFixedHelp": "Le montant maximum de remise n’est pas nécessaire pour les promotions à remise fixe.",
+  "supplierMaxDiscountPercentHelp": "Facultatif. Il limite la remise totale pour les promotions en pourcentage.",
+  "supplierMaximumDiscountAmount": "Montant maximum de remise",
+  "supplierMaximumDiscountAmountPlain": "Montant maximum de remise",
+  "supplierMethodNamePlain": "Nom de la méthode",
+  "supplierMethodsShown": "{count} méthodes affichées",
+  "@supplierMethodsShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierMinimumOrderAmountPlain": "Montant minimum de commande",
+  "supplierNoActiveBranchesAvailableAddBranchesFirst": "Aucune succursale active disponible. Ajoutez d’abord des succursales depuis la gestion des succursales.",
+  "supplierNoActiveCategoriesAvailable": "Aucune catégorie active disponible.",
+  "supplierNoActiveProductsAvailable": "Aucun produit actif disponible.",
+  "supplierNoActiveSubcategoriesForCategory": "Aucune sous-catégorie active pour cette catégorie.",
+  "supplierNoRegionsAvailableForCountry": "Aucune région disponible pour ce pays.",
+  "supplierOnlyForPercentCoupons": "Uniquement pour les coupons en pourcentage",
+  "supplierOnlyForPercentDiscounts": "Uniquement pour les remises en pourcentage",
+  "supplierPercentDiscountHelp": "Une remise en pourcentage signifie une réduction, par exemple 10 %. Le montant maximum peut limiter la perte du fournisseur.",
+  "supplierPleaseSelectTarget": "Veuillez sélectionner {targetLabel}",
+  "@supplierPleaseSelectTarget": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierPromotionBranchesHelp": "Les succursales définissent où la promotion est valide. La sélection produit/catégorie ci-dessus n’est pas filtrée par succursale.",
+  "supplierPromotionDescriptionHint": "Courte description affichée plus tard côté détaillant",
+  "supplierPromotionTargetHelp": "La cible définit les produits inclus dans la promotion. La disponibilité par succursale est choisie séparément ci-dessous.",
+  "supplierPromotionTitle": "Titre de la promotion *",
+  "supplierPromotionTitleHint": "Offre de gros pour la catégorie alimentaire",
+  "supplierPromotionTitlePlain": "Titre de la promotion",
+  "supplierPromotionsDescription": "Consultez, recherchez, créez, modifiez et supprimez les promotions de gros du fournisseur pour les produits, catégories, sous-catégories ou tous les produits.",
+  "supplierPromotionsShown": "{count} promotions affichées",
+  "@supplierPromotionsShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierRuleNamePlain": "Nom de la règle",
+  "supplierRulesShown": "{count} règles affichées",
+  "@supplierRulesShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierSelectCategoryFirst": "Sélectionnez d’abord une catégorie.",
+  "supplierSelectTargetHint": "Sélectionner {targetLabel}",
+  "@supplierSelectTargetHint": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierSelectTargetLabel": "Sélectionner {targetLabel} *",
+  "@supplierSelectTargetLabel": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierSelectedBranchesLoadedFromBackendBranchManagement": "Les succursales sélectionnées sont chargées depuis le module de gestion des succursales.",
+  "supplierSelectedItemNameShownHere": "Le nom de l’élément sélectionné s’affiche ici, mais le backend enregistre son ID dans targetValue.",
+  "supplierShippingCostPlain": "Frais de livraison",
+  "supplierShippingNameHint": "Livraison standard à Beyrouth",
+  "supplierSortOrderPositiveNumber": "L’ordre d’affichage doit être un nombre positif valide",
+  "supplierSortOrderRequired": "L’ordre d’affichage est requis",
+  "supplierTargetUrlRequired": "L’URL cible est requise",
+  "supplierTaxRatePlain": "Taux de taxe",
+  "supplierTitlePlain": "Titre",
+  "supplierValidFromBeforeValidTo": "La date de début doit être avant la date de fin",
+  "supplierScheduled": "Planifié",
+  "supplierExpired": "Expiré",
+  "supplierUsageLimitReached": "Limite d’utilisation atteinte",
+  "supplierFreePickup": "Retrait gratuit",
+  "supplierNoMinimum": "Aucun minimum",
+  "supplierMinimumValue": "minimum {value}",
+  "@supplierMinimumValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierNoFreeShipping": "Pas de livraison gratuite",
+  "supplierFreeAboveValue": "Gratuit au-dessus de {value}",
+  "@supplierFreeAboveValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierNoLocationSelected": "Aucun emplacement sélectionné",
+  "supplierNoBranchesSelected": "Aucune succursale sélectionnée",
+  "supplierNoTarget": "Aucune cible",
+  "supplierDrawerRfqs": "Demandes RFQ"
 }

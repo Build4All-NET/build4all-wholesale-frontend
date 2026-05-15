@@ -841,7 +841,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchRegionState => 'Search region / state...';
 
   @override
-  String get noRegionsFound => 'No regions found for your search';
+  String get noRegionsFound => 'No regions found';
 
   @override
   String get branchPhoneLabel => 'Phone Number *';
@@ -1743,4 +1743,977 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retryButton => 'Retry';
+
+  @override
+  String get noLabel => 'No';
+
+  @override
+  String get urlLabel => 'URL';
+
+  @override
+  String get yesLabel => 'Yes';
+
+  @override
+  String get copyButton => 'Copy';
+
+  @override
+  String get noneLabel => 'None';
+
+  @override
+  String get supplierUsed => 'Used';
+
+  @override
+  String get supplierFixed => 'Fixed';
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get activeLabel => 'Active';
+
+  @override
+  String get cancelButton => 'Cancel';
+
+  @override
+  String get supplierCustom => 'Custom';
+
+  @override
+  String get deleteButton => 'Delete';
+
+  @override
+  String get regionLabel => 'Region';
+
+  @override
+  String get searchLabel => 'Search';
+
+  @override
+  String get supplierTarget => 'Target';
+
+  @override
+  String get supplierBanners => 'Banners';
+
+  @override
+  String get countryLabel => 'Country';
+
+  @override
+  String get supplierPercent => 'Percent';
+
+  @override
+  String get refreshButton => 'Refresh';
+
+  @override
+  String get supplierTitle => 'Title *';
+
+  @override
+  String get supplierDiscount => 'Discount';
+
+  @override
+  String get supplierEndDate => 'End Date';
+
+  @override
+  String get inactiveLabel => 'Inactive';
+
+  @override
+  String get supplierLocation => 'Location';
+
+  @override
+  String get supplierMaxUses => 'Max Uses';
+
+  @override
+  String get regionRequiredLabel => 'Region *';
+
+  @override
+  String get supplierSubtitle => 'Subtitle';
+
+  @override
+  String get supplierValidTo => 'Valid To';
+
+  @override
+  String get supplierValidity => 'Validity';
+
+  @override
+  String get supplierMinOrder => 'Min order';
+
+  @override
+  String get noRegionLabel => 'No region';
+
+  @override
+  String get supplierRemaining => 'Remaining';
+
+  @override
+  String get supplierUnlimited => 'Unlimited';
+
+  @override
+  String get supplierValidNow => 'Valid now';
+
+  @override
+  String get supplierPromotions => 'Promotions';
+
+  @override
+  String get supplierStartDate => 'Start Date';
+
+  @override
+  String get supplierValidFrom => 'Valid From';
+
+  @override
+  String get supplierBannerList => 'Banner List';
+
+  @override
+  String get supplierCouponList => 'Coupon List';
+
+  @override
+  String get supplierCreateRule => 'Create Rule';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get supplierEditBanner => 'Edit Banner';
+
+  @override
+  String get supplierEditCoupon => 'Edit Coupon';
+
+  @override
+  String get supplierLebanonVat => 'Lebanon VAT';
+
+  @override
+  String get supplierPickupOnly => 'Pickup only';
+
+  @override
+  String get supplierRuleName => 'Rule Name *';
+
+  @override
+  String get supplierRulePreset => 'Rule Preset';
+
+  @override
+  String get subcategoryLabel => 'Subcategory';
+
+  @override
+  String get supplierUpdateRule => 'Update Rule';
+
+  @override
+  String get supplierValidNow2 => 'Valid now: ';
+
+  @override
+  String get supplierAllBranches => 'All Branches';
+
+  @override
+  String get supplierAllProducts => 'All Products';
+
+  @override
+  String get supplierAppliesTo => 'Applies To *';
+
+  @override
+  String get supplierBannerImage => 'Banner Image';
+
+  @override
+  String get supplierCouponRules => 'Coupon Rules';
+
+  @override
+  String get supplierEnabledOnly => 'Enabled only';
+
+  @override
+  String get supplierFixedAmount => 'Fixed Amount';
+
+  @override
+  String get supplierMaxDiscount => 'Max discount';
+
+  @override
+  String get supplierSortOrder => 'Sort Order *';
+
+  @override
+  String get supplierTargetUrl => 'Target URL *';
+
+  @override
+  String get supplierTaxRate => 'Tax Rate % *';
+
+  @override
+  String get supplierUploadImage => 'Upload Image';
+
+  @override
+  String get supplierUploading => 'Uploading...';
+
+  @override
+  String get supplierAlwaysActive => 'Always active';
+
+  @override
+  String get supplierCouponCode => 'Coupon Code *';
+
+  @override
+  String get supplierCreateBanner => 'Create Banner';
+
+  @override
+  String get supplierCreateCoupon => 'Create Coupon';
+
+  @override
+  String get supplierCreateMethod => 'Create Method';
+
+  @override
+  String get supplierDeleteBanner => 'Delete Banner';
+
+  @override
+  String get supplierDeleteCoupon => 'Delete Coupon';
+
+  @override
+  String get supplierDisabledOnly => 'Disabled only';
+
+  @override
+  String get supplierDisplayRules => 'Display Rules';
+
+  @override
+  String get supplierEditTaxRule => 'Edit Tax Rule';
+
+  @override
+  String get supplierFreeShipping => 'Free Shipping';
+
+  @override
+  String get supplierMethodName => 'Method Name *';
+
+  @override
+  String get supplierMethodType => 'Method Type *';
+
+  @override
+  String get searchRegionHint => 'Search region';
+
+  @override
+  String get selectRegionHint => 'Select region';
+
+  @override
+  String get supplierShippingCost => 'Shipping Cost';
+
+  @override
+  String get supplierTargetType => 'Target Type *';
+
+  @override
+  String get supplierTaxRuleList => 'Tax Rule List';
+
+  @override
+  String get supplierUpdateBanner => 'Update Banner';
+
+  @override
+  String get supplierUpdateCoupon => 'Update Coupon';
+
+  @override
+  String get supplierUpdateMethod => 'Update Method';
+
+  @override
+  String get supplierBannerImage2 => 'Banner Image *';
+
+  @override
+  String get supplierEditPromotion => 'Edit Promotion';
+
+  @override
+  String get supplierManageBanners => 'Manage Banners';
+
+  @override
+  String get supplierManageCoupons => 'Manage Coupons';
+
+  @override
+  String get supplierNoBannersYet => 'No banners yet';
+
+  @override
+  String get supplierNoCouponsYet => 'No coupons yet';
+
+  @override
+  String get supplierPickupIsFree => 'Pickup is free';
+
+  @override
+  String get supplierPromotionList => 'Promotion List';
+
+  @override
+  String get searchCountryHint => 'Search country';
+
+  @override
+  String get selectCountryHint => 'Select country';
+
+  @override
+  String get supplierStatusNotes => 'Status & Notes';
+
+  @override
+  String get supplierCreateTaxRule => 'Create Tax Rule';
+
+  @override
+  String get supplierDeleteTaxRule => 'Delete Tax Rule';
+
+  @override
+  String get supplierDiscountType => 'Discount Type *';
+
+  @override
+  String get supplierOrderLevelTax => 'Order-level tax';
+
+  @override
+  String get supplierPromotionRules => 'Promotion Rules';
+
+  @override
+  String get supplierSelectBranches => 'Select Branches';
+
+  @override
+  String get supplierWholesaleDeals => 'Wholesale Deals';
+
+  @override
+  String get supplierDeletePromotion => 'Delete Promotion';
+
+  @override
+  String get supplierDiscountValue => 'Discount Value *';
+
+  @override
+  String get supplierExpressDelivery => 'Express Delivery';
+
+  @override
+  String get supplierManageTaxRules => 'Manage Tax Rules';
+
+  @override
+  String get supplierMinOrderAmount => 'Min Order Amount';
+
+  @override
+  String get supplierNoResultsFound => 'No results found';
+
+  @override
+  String get supplierNoTaxRulesYet => 'No tax rules yet';
+
+  @override
+  String get supplierPleaseSelectA => 'Please select a ';
+
+  @override
+  String get supplierPricingTiming => 'Pricing & Timing';
+
+  @override
+  String get supplierPromotionName => 'Promotion Name *';
+
+  @override
+  String get supplierPromotionTarget => 'Promotion Target';
+
+  @override
+  String get supplierSearchTaxRules => 'Search tax rules';
+
+  @override
+  String get supplierSelectProduct => 'Select Product *';
+
+  @override
+  String get supplierUpdatePromotion => 'Update Promotion';
+
+  @override
+  String get supplierManagePromotions => 'Manage Promotions';
+
+  @override
+  String get supplierNoPromotionsYet => 'No promotions yet';
+
+  @override
+  String get supplierScheduleStatus => 'Schedule & Status';
+
+  @override
+  String get supplierSearchPromotions => 'Search promotions';
+
+  @override
+  String get supplierSelectCategory => 'Select Category *';
+
+  @override
+  String get supplierSelectedBranches => 'Selected Branches';
+
+  @override
+  String get supplierStandardDelivery => 'Standard Delivery';
+
+  @override
+  String get supplierTaxApplicability => 'Tax Applicability';
+
+  @override
+  String get supplierTaxConfiguration => 'Tax Configuration';
+
+  @override
+  String get supplierAutoGenerateName => 'Auto-generate name';
+
+  @override
+  String get supplierBannerInformation => 'Banner Information';
+
+  @override
+  String get supplierCouponInformation => 'Coupon Information';
+
+  @override
+  String get supplierMethodInformation => 'Method Information';
+
+  @override
+  String get supplierPickupFromBranch => 'Pickup from Branch';
+
+  @override
+  String get supplierPickupFromBranch2 => 'Pickup from branch';
+
+  @override
+  String get supplierCountryIsRequired => 'Country is required';
+
+  @override
+  String get supplierMaxDiscountAmount => 'Max Discount Amount';
+
+  @override
+  String get supplierNoMatchingBanners => 'No matching banners';
+
+  @override
+  String get supplierBranchApplicability => 'Branch Applicability';
+
+  @override
+  String get supplierDiscountValue2 => 'Discount Value (%) *';
+
+  @override
+  String get supplierEditShippingMethod => 'Edit Shipping Method';
+
+  @override
+  String get supplierMinimumOrderAmount => 'Minimum Order Amount';
+
+  @override
+  String get supplierSelectSubcategory => 'Select SubCategory *';
+
+  @override
+  String get supplierShippingMethodList => 'Shipping Method List';
+
+  @override
+  String get supplierTaxRuleInformation => 'Tax Rule Information';
+
+  @override
+  String get supplierNoMatchingTaxRules => 'No matching tax rules';
+
+  @override
+  String get supplierPromotionInformation => 'Promotion Information';
+
+  @override
+  String get supplierFieldnameIsRequired => '\$fieldName is required';
+
+  @override
+  String get supplierCouldNotLoadBanners => 'Could not load banners';
+
+  @override
+  String get supplierCouldNotLoadCoupons => 'Could not load coupons';
+
+  @override
+  String get supplierCreateShippingMethod => 'Create Shipping Method';
+
+  @override
+  String get supplierDeleteShippingMethod => 'Delete Shipping Method';
+
+  @override
+  String get supplierNoMatchingPromotions => 'No matching promotions';
+
+  @override
+  String get supplierPromotionTitleCopied => 'Promotion title copied';
+
+  @override
+  String get supplierSortOrderIsRequired => 'Sort order is required';
+
+  @override
+  String get supplierEstimatedDeliveryTime => 'Estimated Delivery Time';
+
+  @override
+  String get supplierFreeShippingThreshold => 'Free Shipping Threshold';
+
+  @override
+  String get supplierManageShippingMethods => 'Manage Shipping Methods';
+
+  @override
+  String get supplierNoShippingMethodsYet => 'No shipping methods yet';
+
+  @override
+  String get supplierPleaseSelectACountry => 'Please select a country';
+
+  @override
+  String get supplierSearchShippingMethods => 'Search shipping methods';
+
+  @override
+  String get supplierCouldNotLoadTaxRules => 'Could not load tax rules';
+
+  @override
+  String get supplierCouldNotLoadPromotions => 'Could not load promotions';
+
+  @override
+  String get supplierApplyTaxToShippingCost => 'Apply tax to shipping cost';
+
+  @override
+  String get supplierBannerCopiedSuccessfully => 'Banner copied successfully';
+
+  @override
+  String get supplierNoMatchingShippingMethods =>
+      'No matching shipping methods';
+
+  @override
+  String get supplierSpecialOffersForRetailers =>
+      'Special offers for retailers';
+
+  @override
+  String get supplierCouldNotLoadTargetOptions =>
+      'Could not load target options';
+
+  @override
+  String get supplierPleaseSelectACategoryFirst =>
+      'Please select a category first';
+
+  @override
+  String get supplierRegionIsRequiredForLebanon =>
+      'Region is required for Lebanon';
+
+  @override
+  String get supplierCouldNotLoadShippingMethods =>
+      'Could not load shipping methods';
+
+  @override
+  String get supplierTaxRateMustBeGreaterThan0 =>
+      'Tax rate must be greater than 0';
+
+  @override
+  String get supplierFieldnameMustBeAValidNumber =>
+      '\$fieldName must be a valid number';
+
+  @override
+  String get supplierFieldnameMustBeGreaterThan0 =>
+      '\$fieldName must be greater than 0';
+
+  @override
+  String get supplierPleaseSelectAtLeastOneBranch =>
+      'Please select at least one branch';
+
+  @override
+  String get supplierBannerImageUploadedSuccessfully =>
+      'Banner image uploaded successfully';
+
+  @override
+  String get supplierOptionalNotesAboutThisTaxRule =>
+      'Optional notes about this tax rule';
+
+  @override
+  String get supplierPleaseSelectARegionForLebanon =>
+      'Please select a region for Lebanon';
+
+  @override
+  String get supplierValidFromMustBeBeforeValidTo =>
+      'Valid From must be before Valid To';
+
+  @override
+  String get supplierTaxRateCannotBeGreaterThan100 =>
+      'Tax rate cannot be greater than 100';
+
+  @override
+  String get supplierUploadedImageUrlWillAppearHere =>
+      'Uploaded image URL will appear here';
+
+  @override
+  String get supplierNoRegionsAvailableForThisCountry =>
+      'No regions available for this country.';
+
+  @override
+  String get supplierUrlMustStartWithHttpOrHttps =>
+      'URL must start with http:// or https://';
+
+  @override
+  String get supplierOptionalNotesAboutThisShippingMethod =>
+      'Optional notes about this shipping method';
+
+  @override
+  String get supplierSortOrderMustBeAValidPositiveNumber =>
+      'Sort order must be a valid positive number';
+
+  @override
+  String get supplierPercentDiscountCannotBeGreaterThan100 =>
+      'Percent discount cannot be greater than 100';
+
+  @override
+  String get supplierFieldnameMustBeGreaterThanOrEqualTo0 =>
+      '\$fieldName must be greater than or equal to 0';
+
+  @override
+  String
+  get supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule =>
+      'Choose a preset or keep Custom and enter your own order-level tax rule.';
+
+  @override
+  String
+  get supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule =>
+      'Selected branches are loaded from the backend Branch Management module.';
+
+  @override
+  String
+  get supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst =>
+      'No active branches available. Add branches from Branch Management first.';
+
+  @override
+  String
+  get supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry =>
+      'Country is required because tax is calculated from the retailer delivery country.';
+
+  @override
+  String
+  get supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue =>
+      'The selected item name is shown here, but the backend saves its ID in targetValue.';
+
+  @override
+  String
+  get supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
+      'Create tax rules from the supplier dashboard quick action or tap the plus icon above.';
+
+  @override
+  String
+  get supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion =>
+      'Example: enter 11 for 11%. Tax is applied to the whole order based on country and region.';
+
+  @override
+  String
+  get supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions =>
+      'Country and region are used later by retailer checkout to show the correct shipping options.';
+
+  @override
+  String
+  get supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
+      'Create shipping methods from the supplier dashboard quick action or tap the plus icon above.';
+
+  @override
+  String
+  get supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule =>
+      'Choose No region for a country-level rule, or choose a specific region for a more specific rule.';
+
+  @override
+  String
+  get supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability =>
+      'Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.';
+
+  @override
+  String
+  get supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField =>
+      'Upload an image from your device. The backend returns a URL and stores it in the banner imageUrl field.';
+
+  @override
+  String
+  get supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax =>
+      'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.';
+
+  @override
+  String
+  get supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount =>
+      'If enabled, checkout tax will include shipping cost. If disabled, tax applies only to items after promotion discount.';
+
+  @override
+  String
+  get supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch =>
+      'Branches define where this shipping method is valid. Retailer checkout will later match shipping with fulfillment branch.';
+
+  @override
+  String supplierFieldRequired(Object fieldName) {
+    return '$fieldName is required';
+  }
+
+  @override
+  String supplierFieldGreaterThanZero(Object fieldName) {
+    return '$fieldName must be greater than 0';
+  }
+
+  @override
+  String supplierFieldGreaterThanOrEqualZero(Object fieldName) {
+    return '$fieldName must be greater than or equal to 0';
+  }
+
+  @override
+  String supplierFieldValidNumber(Object fieldName) {
+    return '$fieldName must be a valid number';
+  }
+
+  @override
+  String supplierBranchesValue(Object value) {
+    return 'Branches: $value';
+  }
+
+  @override
+  String supplierTargetValue(Object value) {
+    return 'Target: $value';
+  }
+
+  @override
+  String supplierOrderValue(Object value) {
+    return 'Order: $value';
+  }
+
+  @override
+  String supplierVisibleNowValue(Object value) {
+    return 'Visible now: $value';
+  }
+
+  @override
+  String supplierValidNowValue(Object value) {
+    return 'Valid now: $value';
+  }
+
+  @override
+  String get notRequiredLabel => 'Not required';
+
+  @override
+  String get pickButton => 'Pick';
+
+  @override
+  String get uploadingLabel => 'Uploading...';
+
+  @override
+  String get supplierBannerImagePlain => 'Banner Image';
+
+  @override
+  String get supplierBannersDescription =>
+      'View, create, edit, and delete supplier banners saved in the backend database. These banners will later appear for retailers on the home screen.';
+
+  @override
+  String get supplierBusinessDaysHint => '2-3 business days';
+
+  @override
+  String get supplierChooseCategory => 'Choose category';
+
+  @override
+  String get supplierCouponCodePlain => 'Coupon Code';
+
+  @override
+  String supplierCouponCopied(Object couponCode) {
+    return '$couponCode copied';
+  }
+
+  @override
+  String get supplierCouponDescriptionHint => 'Describe this coupon';
+
+  @override
+  String get supplierCouponsDescription =>
+      'View, create, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.';
+
+  @override
+  String get supplierCreateBannersFromDashboard =>
+      'Create banners from the supplier dashboard quick action or tap the plus icon above.';
+
+  @override
+  String get supplierCreateCouponsFromDashboard =>
+      'Create coupons from the supplier dashboard quick action or tap the plus icon above.';
+
+  @override
+  String get supplierCreatePromotionsFromDashboard =>
+      'Create promotions from the supplier dashboard quick action or tap the plus icon above.';
+
+  @override
+  String supplierDeleteBannerConfirmation(Object bannerTitle) {
+    return 'Are you sure you want to delete \"$bannerTitle\"?';
+  }
+
+  @override
+  String supplierDeleteCouponConfirmation(Object couponCode) {
+    return 'Are you sure you want to delete coupon \"$couponCode\"?';
+  }
+
+  @override
+  String supplierDeletePromotionConfirmation(Object promotionTitle) {
+    return 'Are you sure you want to delete \"$promotionTitle\"?';
+  }
+
+  @override
+  String supplierDeleteShippingMethodConfirmation(Object methodName) {
+    return 'Are you sure you want to delete \"$methodName\"?';
+  }
+
+  @override
+  String supplierDeleteTaxRuleConfirmation(Object ruleName) {
+    return 'Are you sure you want to delete \"$ruleName\"?';
+  }
+
+  @override
+  String get supplierDiscountValuePercent => 'Discount Value (%) *';
+
+  @override
+  String get supplierDiscountValuePlain => 'Discount Value';
+
+  @override
+  String get supplierEndDateAfterStartDate =>
+      'End date must be after start date';
+
+  @override
+  String get supplierEstimatedDeliveryTimePlain => 'Estimated Delivery Time';
+
+  @override
+  String get supplierFixedDiscountHelp =>
+      'Fixed discount means a fixed amount off, for example \$20 off.';
+
+  @override
+  String get supplierFreeShippingThresholdPlain => 'Free Shipping Threshold';
+
+  @override
+  String get supplierManageHomeBanners => 'Manage Home Banners';
+
+  @override
+  String get supplierMaxDiscountFixedHelp =>
+      'Maximum discount amount is not needed for fixed promotions.';
+
+  @override
+  String get supplierMaxDiscountPercentHelp =>
+      'Optional. It limits the total discount when using percent promotions.';
+
+  @override
+  String get supplierMaximumDiscountAmount => 'Maximum Discount Amount';
+
+  @override
+  String get supplierMaximumDiscountAmountPlain => 'Maximum Discount Amount';
+
+  @override
+  String get supplierMethodNamePlain => 'Method Name';
+
+  @override
+  String supplierMethodsShown(Object count) {
+    return '$count methods shown';
+  }
+
+  @override
+  String get supplierMinimumOrderAmountPlain => 'Minimum Order Amount';
+
+  @override
+  String get supplierNoActiveBranchesAvailableAddBranchesFirst =>
+      'No active branches available. Add branches from Branch Management first.';
+
+  @override
+  String get supplierNoActiveCategoriesAvailable =>
+      'No active categories available.';
+
+  @override
+  String get supplierNoActiveProductsAvailable =>
+      'No active products available.';
+
+  @override
+  String get supplierNoActiveSubcategoriesForCategory =>
+      'No active subcategories for this category.';
+
+  @override
+  String get supplierNoRegionsAvailableForCountry =>
+      'No regions available for this country.';
+
+  @override
+  String get supplierOnlyForPercentCoupons => 'Only for percent coupons';
+
+  @override
+  String get supplierOnlyForPercentDiscounts => 'Only for percent discounts';
+
+  @override
+  String get supplierPercentDiscountHelp =>
+      'Percent discount means percentage off, for example 10% off. Maximum discount amount can limit supplier loss.';
+
+  @override
+  String supplierPleaseSelectTarget(Object targetLabel) {
+    return 'Please select $targetLabel';
+  }
+
+  @override
+  String get supplierPromotionBranchesHelp =>
+      'Branches define where the promotion is valid. Product/category selection above is not filtered by branch.';
+
+  @override
+  String get supplierPromotionDescriptionHint =>
+      'Short description shown later to retailer side';
+
+  @override
+  String get supplierPromotionTargetHelp =>
+      'The target defines which products are included in the promotion. Branch availability is selected separately below.';
+
+  @override
+  String get supplierPromotionTitle => 'Promotion Title *';
+
+  @override
+  String get supplierPromotionTitleHint => 'Food category wholesale deal';
+
+  @override
+  String get supplierPromotionTitlePlain => 'Promotion Title';
+
+  @override
+  String get supplierPromotionsDescription =>
+      'View, search, create, edit, and delete supplier wholesale promotions for products, categories, subcategories, or all products.';
+
+  @override
+  String supplierPromotionsShown(Object count) {
+    return '$count promotions shown';
+  }
+
+  @override
+  String get supplierRuleNamePlain => 'Rule Name';
+
+  @override
+  String supplierRulesShown(Object count) {
+    return '$count rules shown';
+  }
+
+  @override
+  String get supplierSelectCategoryFirst => 'Select a category first.';
+
+  @override
+  String supplierSelectTargetHint(Object targetLabel) {
+    return 'Select $targetLabel';
+  }
+
+  @override
+  String supplierSelectTargetLabel(Object targetLabel) {
+    return 'Select $targetLabel *';
+  }
+
+  @override
+  String get supplierSelectedBranchesLoadedFromBackendBranchManagement =>
+      'Selected branches are loaded from the backend Branch Management module.';
+
+  @override
+  String get supplierSelectedItemNameShownHere =>
+      'The selected item name is shown here, but the backend saves its ID in targetValue.';
+
+  @override
+  String get supplierShippingCostPlain => 'Shipping Cost';
+
+  @override
+  String get supplierShippingNameHint => 'Beirut Standard Delivery';
+
+  @override
+  String get supplierSortOrderPositiveNumber =>
+      'Sort order must be a valid positive number';
+
+  @override
+  String get supplierSortOrderRequired => 'Sort order is required';
+
+  @override
+  String get supplierTargetUrlRequired => 'Target URL is required';
+
+  @override
+  String get supplierTaxRatePlain => 'Tax Rate';
+
+  @override
+  String get supplierTitlePlain => 'Title';
+
+  @override
+  String get supplierValidFromBeforeValidTo =>
+      'Valid From must be before Valid To';
+
+  @override
+  String get supplierScheduled => 'Scheduled';
+
+  @override
+  String get supplierExpired => 'Expired';
+
+  @override
+  String get supplierUsageLimitReached => 'Usage limit reached';
+
+  @override
+  String get supplierFreePickup => 'Free pickup';
+
+  @override
+  String get supplierNoMinimum => 'No minimum';
+
+  @override
+  String supplierMinimumValue(Object value) {
+    return '$value minimum';
+  }
+
+  @override
+  String get supplierNoFreeShipping => 'No free shipping';
+
+  @override
+  String supplierFreeAboveValue(Object value) {
+    return 'Free above $value';
+  }
+
+  @override
+  String get supplierNoLocationSelected => 'No location selected';
+
+  @override
+  String get supplierNoBranchesSelected => 'No branches selected';
+
+  @override
+  String get supplierNoTarget => 'No target';
+
+  @override
+  String get supplierDrawerRfqs => 'RFQ Requests';
 }

@@ -616,7 +616,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supplierAddProduct => 'إضافة منتج';
 
   @override
-  String get supplierCreatePromotion => 'إنشاء عرض';
+  String get supplierCreatePromotion => 'إنشاء عرض ترويجي';
 
   @override
   String get supplierManageBranches => 'إدارة الفروع';
@@ -634,7 +634,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supplierHomeBanners => 'بنرات الصفحة الرئيسية';
 
   @override
-  String get supplierCoupons => 'الكوبونات';
+  String get supplierCoupons => 'القسائم';
 
   @override
   String get supplierLoadingDashboardData => 'جارٍ تحميل بيانات لوحة التحكم...';
@@ -810,7 +810,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchCountry => 'ابحث عن الدولة...';
 
   @override
-  String get noCountriesFound => 'لم يتم العثور على دول';
+  String get noCountriesFound => 'لا توجد دول';
 
   @override
   String get countryRequiredError => 'الدولة مطلوبة';
@@ -835,7 +835,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchRegionState => 'ابحث عن المنطقة / المحافظة...';
 
   @override
-  String get noRegionsFound => 'لم يتم العثور على مناطق مطابقة';
+  String get noRegionsFound => 'لا توجد مناطق';
 
   @override
   String get branchPhoneLabel => 'رقم الهاتف *';
@@ -918,7 +918,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get assignProductToBranchTitle => 'إضافة منتج إلى الفرع';
 
   @override
-  String get productLabel => 'المنتج';
+  String get productLabel => 'منتج';
 
   @override
   String get stockQuantityLabel => 'كمية المخزون';
@@ -987,10 +987,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addCatalogFirst => 'أضف فئات وفئات فرعية لتنظيم منتجات المورد.';
 
   @override
-  String get categoryLabel => 'الفئة';
+  String get categoryLabel => 'فئة';
 
   @override
-  String get subCategoryLabel => 'الفئة الفرعية';
+  String get subCategoryLabel => 'فئة فرعية';
 
   @override
   String get addCategoryTitle => 'إضافة فئة';
@@ -1730,4 +1730,969 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get retryButton => 'إعادة المحاولة';
+
+  @override
+  String get noLabel => 'لا';
+
+  @override
+  String get urlLabel => 'رابط';
+
+  @override
+  String get yesLabel => 'نعم';
+
+  @override
+  String get copyButton => 'نسخ';
+
+  @override
+  String get noneLabel => 'لا شيء';
+
+  @override
+  String get supplierUsed => 'مستخدم';
+
+  @override
+  String get supplierFixed => 'ثابت';
+
+  @override
+  String get notesLabel => 'ملاحظات';
+
+  @override
+  String get activeLabel => 'نشط';
+
+  @override
+  String get cancelButton => 'إلغاء';
+
+  @override
+  String get supplierCustom => 'مخصص';
+
+  @override
+  String get deleteButton => 'حذف';
+
+  @override
+  String get regionLabel => 'المنطقة';
+
+  @override
+  String get searchLabel => 'بحث';
+
+  @override
+  String get supplierTarget => 'الهدف';
+
+  @override
+  String get supplierBanners => 'البنرات';
+
+  @override
+  String get countryLabel => 'الدولة';
+
+  @override
+  String get supplierPercent => 'نسبة مئوية';
+
+  @override
+  String get refreshButton => 'تحديث';
+
+  @override
+  String get supplierTitle => 'العنوان *';
+
+  @override
+  String get supplierDiscount => 'الخصم';
+
+  @override
+  String get supplierEndDate => 'تاريخ الانتهاء';
+
+  @override
+  String get inactiveLabel => 'غير نشط';
+
+  @override
+  String get supplierLocation => 'الموقع';
+
+  @override
+  String get supplierMaxUses => 'الحد الأقصى للاستخدام';
+
+  @override
+  String get regionRequiredLabel => 'المنطقة *';
+
+  @override
+  String get supplierSubtitle => 'العنوان الفرعي';
+
+  @override
+  String get supplierValidTo => 'صالحة حتى';
+
+  @override
+  String get supplierValidity => 'الصلاحية';
+
+  @override
+  String get supplierMinOrder => 'الحد الأدنى للطلب';
+
+  @override
+  String get noRegionLabel => 'بدون منطقة';
+
+  @override
+  String get supplierRemaining => 'متبقي';
+
+  @override
+  String get supplierUnlimited => 'غير محدود';
+
+  @override
+  String get supplierValidNow => 'صالح الآن';
+
+  @override
+  String get supplierPromotions => 'العروض الترويجية';
+
+  @override
+  String get supplierStartDate => 'تاريخ البدء';
+
+  @override
+  String get supplierValidFrom => 'صالحة من';
+
+  @override
+  String get supplierBannerList => 'قائمة البنرات';
+
+  @override
+  String get supplierCouponList => 'قائمة القسائم';
+
+  @override
+  String get supplierCreateRule => 'إنشاء القاعدة';
+
+  @override
+  String get descriptionLabel => 'الوصف';
+
+  @override
+  String get supplierEditBanner => 'تعديل البنر';
+
+  @override
+  String get supplierEditCoupon => 'تعديل القسيمة';
+
+  @override
+  String get supplierLebanonVat => 'ضريبة القيمة المضافة في لبنان';
+
+  @override
+  String get supplierPickupOnly => 'استلام فقط';
+
+  @override
+  String get supplierRuleName => 'اسم القاعدة *';
+
+  @override
+  String get supplierRulePreset => 'قالب القاعدة';
+
+  @override
+  String get subcategoryLabel => 'فئة فرعية';
+
+  @override
+  String get supplierUpdateRule => 'تحديث القاعدة';
+
+  @override
+  String get supplierValidNow2 => 'صالح الآن: ';
+
+  @override
+  String get supplierAllBranches => 'كل الفروع';
+
+  @override
+  String get supplierAllProducts => 'كل المنتجات';
+
+  @override
+  String get supplierAppliesTo => 'تنطبق على *';
+
+  @override
+  String get supplierBannerImage => 'صورة البنر';
+
+  @override
+  String get supplierCouponRules => 'قواعد القسيمة';
+
+  @override
+  String get supplierEnabledOnly => 'المفعّلة فقط';
+
+  @override
+  String get supplierFixedAmount => 'مبلغ ثابت';
+
+  @override
+  String get supplierMaxDiscount => 'الحد الأقصى للخصم';
+
+  @override
+  String get supplierSortOrder => 'ترتيب العرض *';
+
+  @override
+  String get supplierTargetUrl => 'رابط الهدف *';
+
+  @override
+  String get supplierTaxRate => 'نسبة الضريبة % *';
+
+  @override
+  String get supplierUploadImage => 'رفع صورة';
+
+  @override
+  String get supplierUploading => 'جاري الرفع...';
+
+  @override
+  String get supplierAlwaysActive => 'نشط دائماً';
+
+  @override
+  String get supplierCouponCode => 'رمز القسيمة *';
+
+  @override
+  String get supplierCreateBanner => 'إنشاء بنر';
+
+  @override
+  String get supplierCreateCoupon => 'إنشاء قسيمة';
+
+  @override
+  String get supplierCreateMethod => 'إنشاء الطريقة';
+
+  @override
+  String get supplierDeleteBanner => 'حذف البنر';
+
+  @override
+  String get supplierDeleteCoupon => 'حذف القسيمة';
+
+  @override
+  String get supplierDisabledOnly => 'غير المفعّلة فقط';
+
+  @override
+  String get supplierDisplayRules => 'قواعد العرض';
+
+  @override
+  String get supplierEditTaxRule => 'تعديل قاعدة ضريبية';
+
+  @override
+  String get supplierFreeShipping => 'شحن مجاني';
+
+  @override
+  String get supplierMethodName => 'اسم الطريقة *';
+
+  @override
+  String get supplierMethodType => 'نوع الطريقة *';
+
+  @override
+  String get searchRegionHint => 'البحث عن منطقة';
+
+  @override
+  String get selectRegionHint => 'اختيار المنطقة';
+
+  @override
+  String get supplierShippingCost => 'تكلفة الشحن';
+
+  @override
+  String get supplierTargetType => 'نوع الهدف *';
+
+  @override
+  String get supplierTaxRuleList => 'قائمة قواعد الضريبة';
+
+  @override
+  String get supplierUpdateBanner => 'تحديث البنر';
+
+  @override
+  String get supplierUpdateCoupon => 'تحديث القسيمة';
+
+  @override
+  String get supplierUpdateMethod => 'تحديث الطريقة';
+
+  @override
+  String get supplierBannerImage2 => 'صورة البنر *';
+
+  @override
+  String get supplierEditPromotion => 'تعديل العرض الترويجي';
+
+  @override
+  String get supplierManageBanners => 'إدارة البنرات';
+
+  @override
+  String get supplierManageCoupons => 'إدارة القسائم';
+
+  @override
+  String get supplierNoBannersYet => 'لا توجد بنرات بعد';
+
+  @override
+  String get supplierNoCouponsYet => 'لا توجد قسائم بعد';
+
+  @override
+  String get supplierPickupIsFree => 'الاستلام مجاني';
+
+  @override
+  String get supplierPromotionList => 'قائمة العروض';
+
+  @override
+  String get searchCountryHint => 'البحث عن دولة';
+
+  @override
+  String get selectCountryHint => 'اختيار الدولة';
+
+  @override
+  String get supplierStatusNotes => 'الحالة والملاحظات';
+
+  @override
+  String get supplierCreateTaxRule => 'إنشاء قاعدة ضريبية';
+
+  @override
+  String get supplierDeleteTaxRule => 'حذف قاعدة ضريبية';
+
+  @override
+  String get supplierDiscountType => 'نوع الخصم *';
+
+  @override
+  String get supplierOrderLevelTax => 'ضريبة على مستوى الطلب';
+
+  @override
+  String get supplierPromotionRules => 'قواعد العرض';
+
+  @override
+  String get supplierSelectBranches => 'اختيار الفروع';
+
+  @override
+  String get supplierWholesaleDeals => 'عروض الجملة';
+
+  @override
+  String get supplierDeletePromotion => 'حذف العرض الترويجي';
+
+  @override
+  String get supplierDiscountValue => 'قيمة الخصم *';
+
+  @override
+  String get supplierExpressDelivery => 'توصيل سريع';
+
+  @override
+  String get supplierManageTaxRules => 'إدارة قواعد الضريبة';
+
+  @override
+  String get supplierMinOrderAmount => 'الحد الأدنى لقيمة الطلب';
+
+  @override
+  String get supplierNoResultsFound => 'لا توجد نتائج';
+
+  @override
+  String get supplierNoTaxRulesYet => 'لا توجد قواعد ضريبية بعد';
+
+  @override
+  String get supplierPleaseSelectA => 'يرجى اختيار ';
+
+  @override
+  String get supplierPricingTiming => 'التسعير والوقت';
+
+  @override
+  String get supplierPromotionName => 'اسم العرض *';
+
+  @override
+  String get supplierPromotionTarget => 'هدف العرض';
+
+  @override
+  String get supplierSearchTaxRules => 'البحث في قواعد الضريبة';
+
+  @override
+  String get supplierSelectProduct => 'اختيار المنتج *';
+
+  @override
+  String get supplierUpdatePromotion => 'تحديث العرض';
+
+  @override
+  String get supplierManagePromotions => 'إدارة العروض الترويجية';
+
+  @override
+  String get supplierNoPromotionsYet => 'لا توجد عروض بعد';
+
+  @override
+  String get supplierScheduleStatus => 'الجدولة والحالة';
+
+  @override
+  String get supplierSearchPromotions => 'البحث في العروض';
+
+  @override
+  String get supplierSelectCategory => 'اختيار الفئة *';
+
+  @override
+  String get supplierSelectedBranches => 'فروع محددة';
+
+  @override
+  String get supplierStandardDelivery => 'توصيل عادي';
+
+  @override
+  String get supplierTaxApplicability => 'تطبيق الضريبة';
+
+  @override
+  String get supplierTaxConfiguration => 'إعدادات الضريبة';
+
+  @override
+  String get supplierAutoGenerateName => 'إنشاء الاسم تلقائياً';
+
+  @override
+  String get supplierBannerInformation => 'معلومات البنر';
+
+  @override
+  String get supplierCouponInformation => 'معلومات القسيمة';
+
+  @override
+  String get supplierMethodInformation => 'معلومات الطريقة';
+
+  @override
+  String get supplierPickupFromBranch => 'الاستلام من الفرع';
+
+  @override
+  String get supplierPickupFromBranch2 => 'الاستلام من الفرع';
+
+  @override
+  String get supplierCountryIsRequired => 'الدولة مطلوبة';
+
+  @override
+  String get supplierMaxDiscountAmount => 'الحد الأقصى للخصم';
+
+  @override
+  String get supplierNoMatchingBanners => 'لا توجد بنرات مطابقة';
+
+  @override
+  String get supplierBranchApplicability => 'تطبيق الفروع';
+
+  @override
+  String get supplierDiscountValue2 => 'قيمة الخصم (%) *';
+
+  @override
+  String get supplierEditShippingMethod => 'تعديل طريقة الشحن';
+
+  @override
+  String get supplierMinimumOrderAmount => 'الحد الأدنى لقيمة الطلب';
+
+  @override
+  String get supplierSelectSubcategory => 'اختيار الفئة الفرعية *';
+
+  @override
+  String get supplierShippingMethodList => 'قائمة طرق الشحن';
+
+  @override
+  String get supplierTaxRuleInformation => 'معلومات القاعدة الضريبية';
+
+  @override
+  String get supplierNoMatchingTaxRules => 'لا توجد قواعد ضريبية مطابقة';
+
+  @override
+  String get supplierPromotionInformation => 'معلومات العرض';
+
+  @override
+  String get supplierFieldnameIsRequired => '\$fieldName is required';
+
+  @override
+  String get supplierCouldNotLoadBanners => 'تعذر تحميل البنرات';
+
+  @override
+  String get supplierCouldNotLoadCoupons => 'تعذر تحميل القسائم';
+
+  @override
+  String get supplierCreateShippingMethod => 'إنشاء طريقة شحن';
+
+  @override
+  String get supplierDeleteShippingMethod => 'حذف طريقة شحن';
+
+  @override
+  String get supplierNoMatchingPromotions => 'لا توجد عروض مطابقة';
+
+  @override
+  String get supplierPromotionTitleCopied => 'تم نسخ عنوان العرض بنجاح';
+
+  @override
+  String get supplierSortOrderIsRequired => 'ترتيب العرض مطلوب';
+
+  @override
+  String get supplierEstimatedDeliveryTime => 'مدة التوصيل المتوقعة';
+
+  @override
+  String get supplierFreeShippingThreshold => 'حد الشحن المجاني';
+
+  @override
+  String get supplierManageShippingMethods => 'إدارة طرق الشحن';
+
+  @override
+  String get supplierNoShippingMethodsYet => 'لا توجد طرق شحن بعد';
+
+  @override
+  String get supplierPleaseSelectACountry => 'يرجى اختيار الدولة';
+
+  @override
+  String get supplierSearchShippingMethods => 'البحث في طرق الشحن';
+
+  @override
+  String get supplierCouldNotLoadTaxRules => 'تعذر تحميل قواعد الضريبة';
+
+  @override
+  String get supplierCouldNotLoadPromotions => 'تعذر تحميل العروض';
+
+  @override
+  String get supplierApplyTaxToShippingCost => 'تطبيق الضريبة على تكلفة الشحن';
+
+  @override
+  String get supplierBannerCopiedSuccessfully => 'تم نسخ البنر بنجاح';
+
+  @override
+  String get supplierNoMatchingShippingMethods => 'لا توجد طرق شحن مطابقة';
+
+  @override
+  String get supplierSpecialOffersForRetailers => 'عروض خاصة للتجار';
+
+  @override
+  String get supplierCouldNotLoadTargetOptions => 'تعذر تحميل خيارات الهدف';
+
+  @override
+  String get supplierPleaseSelectACategoryFirst => 'يرجى اختيار فئة أولاً';
+
+  @override
+  String get supplierRegionIsRequiredForLebanon => 'المنطقة مطلوبة للبنان';
+
+  @override
+  String get supplierCouldNotLoadShippingMethods => 'تعذر تحميل طرق الشحن';
+
+  @override
+  String get supplierTaxRateMustBeGreaterThan0 =>
+      'يجب أن تكون نسبة الضريبة أكبر من 0';
+
+  @override
+  String get supplierFieldnameMustBeAValidNumber =>
+      '\$fieldName must be a valid number';
+
+  @override
+  String get supplierFieldnameMustBeGreaterThan0 =>
+      '\$fieldName must be greater than 0';
+
+  @override
+  String get supplierPleaseSelectAtLeastOneBranch =>
+      'يرجى اختيار فرع واحد على الأقل';
+
+  @override
+  String get supplierBannerImageUploadedSuccessfully =>
+      'تم رفع صورة البنر بنجاح';
+
+  @override
+  String get supplierOptionalNotesAboutThisTaxRule =>
+      'ملاحظات اختيارية حول هذه القاعدة الضريبية';
+
+  @override
+  String get supplierPleaseSelectARegionForLebanon =>
+      'يرجى اختيار منطقة للبنان';
+
+  @override
+  String get supplierValidFromMustBeBeforeValidTo =>
+      'يجب أن يكون تاريخ البداية قبل تاريخ الانتهاء';
+
+  @override
+  String get supplierTaxRateCannotBeGreaterThan100 =>
+      'لا يمكن أن تكون نسبة الضريبة أكبر من 100';
+
+  @override
+  String get supplierUploadedImageUrlWillAppearHere =>
+      'سيظهر رابط الصورة المرفوعة هنا';
+
+  @override
+  String get supplierNoRegionsAvailableForThisCountry =>
+      'لا توجد مناطق متاحة لهذه الدولة.';
+
+  @override
+  String get supplierUrlMustStartWithHttpOrHttps =>
+      'يجب أن يبدأ الرابط بـ http:// أو https://';
+
+  @override
+  String get supplierOptionalNotesAboutThisShippingMethod =>
+      'ملاحظات اختيارية حول طريقة الشحن هذه';
+
+  @override
+  String get supplierSortOrderMustBeAValidPositiveNumber =>
+      'يجب أن يكون ترتيب العرض رقماً موجباً صالحاً';
+
+  @override
+  String get supplierPercentDiscountCannotBeGreaterThan100 =>
+      'لا يمكن أن تكون نسبة الخصم أكبر من 100';
+
+  @override
+  String get supplierFieldnameMustBeGreaterThanOrEqualTo0 =>
+      '\$fieldName must be greater than or equal to 0';
+
+  @override
+  String
+  get supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule =>
+      'اختاري قالباً جاهزاً أو أبقيه مخصصاً وأدخلي قاعدة ضريبة على مستوى الطلب.';
+
+  @override
+  String
+  get supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule =>
+      'يتم تحميل الفروع المحددة من وحدة إدارة الفروع في الخلفية.';
+
+  @override
+  String
+  get supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst =>
+      'لا توجد فروع نشطة. أضيفي الفروع أولاً من إدارة الفروع.';
+
+  @override
+  String
+  get supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry =>
+      'الدولة مطلوبة لأن الضريبة تُحسب حسب دولة توصيل التاجر.';
+
+  @override
+  String
+  get supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue =>
+      'يظهر اسم العنصر المحدد هنا، لكن الخادم يحفظ معرّفه في targetValue.';
+
+  @override
+  String
+  get supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
+      'أنشئي قواعد ضريبية من اختصار لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
+
+  @override
+  String
+  get supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion =>
+      'مثال: أدخلي 11 لنسبة 11%. يتم تطبيق الضريبة على الطلب حسب الدولة والمنطقة.';
+
+  @override
+  String
+  get supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions =>
+      'تُستخدم الدولة والمنطقة لاحقاً في دفع التاجر لعرض خيارات الشحن الصحيحة.';
+
+  @override
+  String
+  get supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
+      'أنشئي طرق الشحن من اختصار لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
+
+  @override
+  String
+  get supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule =>
+      'اختاري بدون منطقة لقاعدة على مستوى الدولة، أو اختاري منطقة محددة لقاعدة أدق.';
+
+  @override
+  String
+  get supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability =>
+      'أنشئي وأديري خيارات التوصيل أو الاستلام حسب الدولة والمنطقة والفروع والتكلفة والتوفر.';
+
+  @override
+  String
+  get supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField =>
+      'ارفعي صورة من جهازك. يرجع الخادم رابطاً ويحفظه في حقل imageUrl للبنر.';
+
+  @override
+  String
+  get supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax =>
+      'اضبطي ضريبة الطلب حسب الدولة والمنطقة. سيستخدم دفع التاجر هذه القواعد لحساب الضريبة.';
+
+  @override
+  String
+  get supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount =>
+      'عند التفعيل، تشمل ضريبة الدفع تكلفة الشحن. عند التعطيل، تطبق الضريبة فقط على المنتجات بعد خصم العرض.';
+
+  @override
+  String
+  get supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch =>
+      'تحدد الفروع أين تكون طريقة الشحن صالحة. سيطابق دفع التاجر لاحقاً الشحن مع فرع التنفيذ.';
+
+  @override
+  String supplierFieldRequired(Object fieldName) {
+    return '$fieldName مطلوب';
+  }
+
+  @override
+  String supplierFieldGreaterThanZero(Object fieldName) {
+    return 'يجب أن يكون $fieldName أكبر من 0';
+  }
+
+  @override
+  String supplierFieldGreaterThanOrEqualZero(Object fieldName) {
+    return 'يجب أن يكون $fieldName أكبر من أو يساوي 0';
+  }
+
+  @override
+  String supplierFieldValidNumber(Object fieldName) {
+    return 'يجب أن يكون $fieldName رقماً صالحاً';
+  }
+
+  @override
+  String supplierBranchesValue(Object value) {
+    return 'الفروع: $value';
+  }
+
+  @override
+  String supplierTargetValue(Object value) {
+    return 'الهدف: $value';
+  }
+
+  @override
+  String supplierOrderValue(Object value) {
+    return 'الترتيب: $value';
+  }
+
+  @override
+  String supplierVisibleNowValue(Object value) {
+    return 'ظاهر الآن: $value';
+  }
+
+  @override
+  String supplierValidNowValue(Object value) {
+    return 'صالح الآن: $value';
+  }
+
+  @override
+  String get notRequiredLabel => 'غير مطلوب';
+
+  @override
+  String get pickButton => 'اختيار';
+
+  @override
+  String get uploadingLabel => 'جاري الرفع...';
+
+  @override
+  String get supplierBannerImagePlain => 'صورة البنر';
+
+  @override
+  String get supplierBannersDescription =>
+      'اعرضي وأنشئي وعدّلي واحذفي بنرات المورد المحفوظة في قاعدة بيانات الخلفية. ستظهر هذه البنرات لاحقاً للتجار في الصفحة الرئيسية.';
+
+  @override
+  String get supplierBusinessDaysHint => '٢-٣ أيام عمل';
+
+  @override
+  String get supplierChooseCategory => 'اختيار الفئة';
+
+  @override
+  String get supplierCouponCodePlain => 'رمز القسيمة';
+
+  @override
+  String supplierCouponCopied(Object couponCode) {
+    return 'تم نسخ $couponCode';
+  }
+
+  @override
+  String get supplierCouponDescriptionHint => 'اكتب وصفاً لهذه القسيمة';
+
+  @override
+  String get supplierCouponsDescription =>
+      'اعرضي وأنشئي وعدّلي واحذفي قسائم المورد المحفوظة في قاعدة بيانات الخلفية. يمكن استخدامها لاحقاً في سلة التاجر وعملية الدفع.';
+
+  @override
+  String get supplierCreateBannersFromDashboard =>
+      'أنشئي البنرات من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
+
+  @override
+  String get supplierCreateCouponsFromDashboard =>
+      'أنشئي القسائم من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
+
+  @override
+  String get supplierCreatePromotionsFromDashboard =>
+      'أنشئي العروض من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
+
+  @override
+  String supplierDeleteBannerConfirmation(Object bannerTitle) {
+    return 'هل أنت متأكدة من حذف \"$bannerTitle\"؟';
+  }
+
+  @override
+  String supplierDeleteCouponConfirmation(Object couponCode) {
+    return 'هل أنت متأكدة من حذف القسيمة \"$couponCode\"؟';
+  }
+
+  @override
+  String supplierDeletePromotionConfirmation(Object promotionTitle) {
+    return 'هل أنت متأكدة من حذف \"$promotionTitle\"؟';
+  }
+
+  @override
+  String supplierDeleteShippingMethodConfirmation(Object methodName) {
+    return 'هل أنت متأكدة من حذف \"$methodName\"؟';
+  }
+
+  @override
+  String supplierDeleteTaxRuleConfirmation(Object ruleName) {
+    return 'هل أنت متأكدة من حذف \"$ruleName\"؟';
+  }
+
+  @override
+  String get supplierDiscountValuePercent => 'قيمة الخصم (%) *';
+
+  @override
+  String get supplierDiscountValuePlain => 'قيمة الخصم';
+
+  @override
+  String get supplierEndDateAfterStartDate =>
+      'يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء';
+
+  @override
+  String get supplierEstimatedDeliveryTimePlain => 'مدة التوصيل المتوقعة';
+
+  @override
+  String get supplierFixedDiscountHelp =>
+      'الخصم الثابت يعني مبلغاً ثابتاً يُخصم، مثل خصم 20 دولاراً.';
+
+  @override
+  String get supplierFreeShippingThresholdPlain => 'حد الشحن المجاني';
+
+  @override
+  String get supplierManageHomeBanners => 'إدارة بنرات الصفحة الرئيسية';
+
+  @override
+  String get supplierMaxDiscountFixedHelp =>
+      'الحد الأقصى للخصم غير مطلوب للعروض ذات الخصم الثابت.';
+
+  @override
+  String get supplierMaxDiscountPercentHelp =>
+      'اختياري. يحدد إجمالي الخصم عند استخدام عروض النسبة المئوية.';
+
+  @override
+  String get supplierMaximumDiscountAmount => 'الحد الأقصى للخصم';
+
+  @override
+  String get supplierMaximumDiscountAmountPlain => 'الحد الأقصى للخصم';
+
+  @override
+  String get supplierMethodNamePlain => 'اسم الطريقة';
+
+  @override
+  String supplierMethodsShown(Object count) {
+    return 'عدد الطرق المعروضة: $count';
+  }
+
+  @override
+  String get supplierMinimumOrderAmountPlain => 'الحد الأدنى لقيمة الطلب';
+
+  @override
+  String get supplierNoActiveBranchesAvailableAddBranchesFirst =>
+      'لا توجد فروع نشطة. أضيفي الفروع أولاً من إدارة الفروع.';
+
+  @override
+  String get supplierNoActiveCategoriesAvailable => 'لا توجد فئات نشطة.';
+
+  @override
+  String get supplierNoActiveProductsAvailable => 'لا توجد منتجات نشطة.';
+
+  @override
+  String get supplierNoActiveSubcategoriesForCategory =>
+      'لا توجد فئات فرعية نشطة لهذه الفئة.';
+
+  @override
+  String get supplierNoRegionsAvailableForCountry =>
+      'لا توجد مناطق متاحة لهذه الدولة.';
+
+  @override
+  String get supplierOnlyForPercentCoupons => 'فقط لقسائم النسبة المئوية';
+
+  @override
+  String get supplierOnlyForPercentDiscounts => 'فقط للخصومات بالنسبة المئوية';
+
+  @override
+  String get supplierPercentDiscountHelp =>
+      'خصم النسبة المئوية يعني خصماً بنسبة محددة، مثل 10%. يمكن للحد الأقصى للخصم أن يحد من خسارة المورد.';
+
+  @override
+  String supplierPleaseSelectTarget(Object targetLabel) {
+    return 'يرجى اختيار $targetLabel';
+  }
+
+  @override
+  String get supplierPromotionBranchesHelp =>
+      'تحدد الفروع أين يكون العرض صالحاً. اختيار المنتج أو الفئة أعلاه غير مفلتر حسب الفرع.';
+
+  @override
+  String get supplierPromotionDescriptionHint =>
+      'وصف قصير يظهر لاحقاً لجهة التاجر';
+
+  @override
+  String get supplierPromotionTargetHelp =>
+      'يحدد الهدف المنتجات المشمولة في العرض. يتم اختيار توفر الفروع بشكل منفصل أدناه.';
+
+  @override
+  String get supplierPromotionTitle => 'عنوان العرض *';
+
+  @override
+  String get supplierPromotionTitleHint => 'عرض جملة لفئة الطعام';
+
+  @override
+  String get supplierPromotionTitlePlain => 'عنوان العرض';
+
+  @override
+  String get supplierPromotionsDescription =>
+      'اعرضي وابحثي وأنشئي وعدّلي واحذفي عروض المورد بالجملة للمنتجات أو الفئات أو الفئات الفرعية أو كل المنتجات.';
+
+  @override
+  String supplierPromotionsShown(Object count) {
+    return 'عدد العروض المعروضة: $count';
+  }
+
+  @override
+  String get supplierRuleNamePlain => 'اسم القاعدة';
+
+  @override
+  String supplierRulesShown(Object count) {
+    return 'عدد القواعد المعروضة: $count';
+  }
+
+  @override
+  String get supplierSelectCategoryFirst => 'اختاري فئة أولاً.';
+
+  @override
+  String supplierSelectTargetHint(Object targetLabel) {
+    return 'اختيار $targetLabel';
+  }
+
+  @override
+  String supplierSelectTargetLabel(Object targetLabel) {
+    return 'اختيار $targetLabel *';
+  }
+
+  @override
+  String get supplierSelectedBranchesLoadedFromBackendBranchManagement =>
+      'يتم تحميل الفروع المحددة من وحدة إدارة الفروع في الخلفية.';
+
+  @override
+  String get supplierSelectedItemNameShownHere =>
+      'يظهر اسم العنصر المحدد هنا، لكن الخلفية تحفظ معرّفه في targetValue.';
+
+  @override
+  String get supplierShippingCostPlain => 'تكلفة الشحن';
+
+  @override
+  String get supplierShippingNameHint => 'توصيل بيروت العادي';
+
+  @override
+  String get supplierSortOrderPositiveNumber =>
+      'يجب أن يكون ترتيب العرض رقماً موجباً صالحاً';
+
+  @override
+  String get supplierSortOrderRequired => 'ترتيب العرض مطلوب';
+
+  @override
+  String get supplierTargetUrlRequired => 'رابط الهدف مطلوب';
+
+  @override
+  String get supplierTaxRatePlain => 'نسبة الضريبة';
+
+  @override
+  String get supplierTitlePlain => 'العنوان';
+
+  @override
+  String get supplierValidFromBeforeValidTo =>
+      'يجب أن يكون تاريخ البداية قبل تاريخ النهاية';
+
+  @override
+  String get supplierScheduled => 'مجدول';
+
+  @override
+  String get supplierExpired => 'منتهي';
+
+  @override
+  String get supplierUsageLimitReached => 'تم بلوغ حد الاستخدام';
+
+  @override
+  String get supplierFreePickup => 'استلام مجاني';
+
+  @override
+  String get supplierNoMinimum => 'لا يوجد حد أدنى';
+
+  @override
+  String supplierMinimumValue(Object value) {
+    return 'الحد الأدنى $value';
+  }
+
+  @override
+  String get supplierNoFreeShipping => 'لا يوجد شحن مجاني';
+
+  @override
+  String supplierFreeAboveValue(Object value) {
+    return 'مجاني فوق $value';
+  }
+
+  @override
+  String get supplierNoLocationSelected => 'لم يتم اختيار موقع';
+
+  @override
+  String get supplierNoBranchesSelected => 'لم يتم اختيار فروع';
+
+  @override
+  String get supplierNoTarget => 'بدون هدف';
+
+  @override
+  String get supplierDrawerRfqs => 'طلبات عروض الأسعار';
 }

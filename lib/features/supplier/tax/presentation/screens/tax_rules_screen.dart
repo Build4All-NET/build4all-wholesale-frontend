@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -76,23 +78,23 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Tax Rule',
+          title: Text(
+            context.l10n.supplierDeleteTaxRule,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete "${rule.ruleName}"?',
+            context.l10n.supplierDeleteTaxRuleConfirmation(rule.ruleName),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancelButton),
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text(
-                'Delete',
+              child: Text(
+                context.l10n.deleteButton,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -140,7 +142,7 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
             },
           ),
           title: Text(
-            'Tax Configuration',
+            context.l10n.supplierTaxConfiguration,
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -149,12 +151,12 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
           ),
           actions: [
             IconButton(
-              tooltip: 'Create Tax Rule',
+              tooltip: context.l10n.supplierCreateTaxRule,
               onPressed: () => context.go('/supplier-tax-rules/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
-              tooltip: 'Refresh',
+              tooltip: context.l10n.refreshButton,
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -262,19 +264,19 @@ class _StatusFilterBar extends StatelessWidget {
     return Row(
       children: [
         _StatusFilterButton(
-          label: 'Enabled only',
+          label: context.l10n.supplierEnabledOnly,
           selected: selected == _TaxStatusFilter.enabled,
           onTap: () => onChanged(_TaxStatusFilter.enabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
-          label: 'Disabled only',
+          label: context.l10n.supplierDisabledOnly,
           selected: selected == _TaxStatusFilter.disabled,
           onTap: () => onChanged(_TaxStatusFilter.disabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
-          label: 'All',
+          label: context.l10n.allLabel,
           selected: selected == _TaxStatusFilter.all,
           onTap: () => onChanged(_TaxStatusFilter.all),
         ),
@@ -358,12 +360,12 @@ class _HeaderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Tax Rules',
+                  context.l10n.supplierManageTaxRules,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -372,7 +374,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.',
+                  context.l10n.supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax,
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -402,7 +404,7 @@ class _SearchField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: 'Search tax rules',
+        hintText: context.l10n.supplierSearchTaxRules,
         hintStyle: const TextStyle(
           color: AppThemeTokens.textSecondary,
           fontWeight: FontWeight.w600,
@@ -440,8 +442,8 @@ class _SectionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Tax Rule List',
+        Text(
+          context.l10n.supplierTaxRuleList,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
@@ -450,7 +452,7 @@ class _SectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '$count rule${count == 1 ? '' : 's'} shown',
+          context.l10n.supplierRulesShown(count),
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
@@ -505,8 +507,8 @@ class _ErrorCard extends StatelessWidget {
         children: [
           const Icon(Icons.error_outline, color: Colors.red, size: 34),
           const SizedBox(height: 12),
-          const Text(
-            'Could not load tax rules',
+          Text(
+            context.l10n.supplierCouldNotLoadTaxRules,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
@@ -530,8 +532,8 @@ class _ErrorCard extends StatelessWidget {
               foregroundColor: Colors.white,
               elevation: 0,
             ),
-            child: const Text(
-              'Retry',
+            child: Text(
+              context.l10n.retryButton,
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
@@ -568,8 +570,8 @@ class _EmptyCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          const Text(
-            'No tax rules yet',
+          Text(
+            context.l10n.supplierNoTaxRulesYet,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -577,8 +579,8 @@ class _EmptyCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Create tax rules from the supplier dashboard quick action or tap the plus icon above.',
+          Text(
+            context.l10n.supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
@@ -611,8 +613,8 @@ class _NoSearchResultsCard extends StatelessWidget {
         children: [
           Icon(Icons.search_off, color: primary, size: 34),
           const SizedBox(height: 12),
-          const Text(
-            'No matching tax rules',
+          Text(
+            context.l10n.supplierNoMatchingTaxRules,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,

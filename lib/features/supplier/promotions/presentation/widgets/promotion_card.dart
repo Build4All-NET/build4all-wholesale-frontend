@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
+
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/promotion_entity.dart';
 
@@ -55,7 +57,7 @@ class PromotionCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${promotion.discountTypeLabel} • ${promotion.discountLabel}',
+                      '${_localizedOptionLabel(context, promotion.discountTypeLabel)} • ${promotion.discountLabel}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -68,7 +70,7 @@ class PromotionCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StatusPill(status: promotion.statusLabel),
+              _StatusPill(status: _localizedStatusLabel(context, promotion.statusLabel)),
             ],
           ),
           if (promotion.description != null &&
@@ -95,9 +97,9 @@ class PromotionCard extends StatelessWidget {
               _TextChip(text: promotion.validityLabel),
               _TextChip(text: promotion.minOrderLabel),
               _TextChip(text: promotion.maxDiscountLabel),
-              _TextChip(text: 'Branches: ${promotion.branchScopeLabel}'),
+              _TextChip(text: context.l10n.supplierBranchesValue(_localizedBranchScopeLabel(context, promotion.branchScopeLabel))),
               _TextChip(
-                text: 'Valid now: ${promotion.currentlyValid ? 'Yes' : 'No'}',
+                text: context.l10n.supplierValidNowValue(promotion.currentlyValid ? context.l10n.yesLabel : context.l10n.noLabel),
               ),
             ],
           ),
@@ -110,7 +112,7 @@ class PromotionCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.copy_outlined,
-                    label: 'Copy',
+                    label: context.l10n.copyButton,
                     onPressed: onCopy!,
                     borderColor: AppThemeTokens.border,
                     textColor: AppThemeTokens.textPrimary,
@@ -122,7 +124,7 @@ class PromotionCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.edit_outlined,
-                    label: 'Edit',
+                    label: context.l10n.editButton,
                     onPressed: onEdit!,
                     borderColor: primary.withValues(alpha: 0.35),
                     textColor: primary,
@@ -134,7 +136,7 @@ class PromotionCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.delete_outline,
-                    label: 'Delete',
+                    label: context.l10n.deleteButton,
                     onPressed: onDelete!,
                     borderColor: Colors.red.withValues(alpha: 0.45),
                     textColor: Colors.red,
@@ -221,7 +223,7 @@ class _StatusPill extends StatelessWidget {
 class _TextChip extends StatelessWidget {
   final String text;
 
-  const _TextChip({required this.text});
+  _TextChip({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -300,4 +302,67 @@ class _ActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedOptionLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
+  }
+}
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    case 'scheduled':
+      return context.l10n.supplierScheduled;
+    case 'expired':
+      return context.l10n.supplierExpired;
+    case 'usage limit reached':
+    case 'usage_limit_reached':
+      return context.l10n.supplierUsageLimitReached;
+    default:
+      return label;
+  }
+}
+
+String _localizedBranchScopeLabel(BuildContext context, String label) {
+  if (label == 'All Branches') return context.l10n.supplierAllBranches;
+  if (label == 'No branches selected') return context.l10n.supplierNoBranchesSelected;
+  return label;
 }

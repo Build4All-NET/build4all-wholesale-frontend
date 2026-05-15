@@ -199,17 +199,23 @@
   "supplierOrdersToday": "طلبات اليوم",
   "supplierNoLowStockAlerts": "لا توجد تنبيهات مخزون منخفض",
   "supplierAddProduct": "إضافة منتج",
-  "supplierCreatePromotion": "إنشاء عرض",
+  "supplierCreatePromotion": "إنشاء عرض ترويجي",
   "supplierManageBranches": "إدارة الفروع",
   "supplierShippingMethods": "طرق الشحن",
   "supplierConfigureTaxes": "إعداد الضرائب",
   "supplierImportExcel": "استيراد Excel",
   "supplierHomeBanners": "بنرات الصفحة الرئيسية",
-  "supplierCoupons": "الكوبونات",
+  "supplierCoupons": "القسائم",
   "supplierLoadingDashboardData": "جارٍ تحميل بيانات لوحة التحكم...",
   "supplierLowStockItem": "عنصر مخزونه منخفض",
   "supplierLowStockProduct": "منتج مخزونه منخفض",
   "supplierCurrentMinimumStock": "المخزون الحالي: {currentStock} | الحد الأدنى: {minimumStock}",
+  "@supplierCurrentMinimumStock": {
+    "placeholders": {
+      "currentStock": {},
+      "minimumStock": {}
+    }
+  },
   "supplierLogoutTitle": "تسجيل الخروج",
   "supplierLogoutConfirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
   "supplierDrawerDashboard": "لوحة التحكم",
@@ -262,7 +268,7 @@
   "loadingCountries": "جاري تحميل الدول...",
   "selectCountry": "اختر الدولة",
   "searchCountry": "ابحث عن الدولة...",
-  "noCountriesFound": "لم يتم العثور على دول",
+  "noCountriesFound": "لا توجد دول",
   "countryRequiredError": "الدولة مطلوبة",
   "branchRegionLabel": "المنطقة / الولاية",
   "selectCountryFirst": "اختر الدولة أولاً",
@@ -270,7 +276,7 @@
   "noPredefinedRegions": "لا توجد مناطق محددة، يمكنك المتابعة بالمدينة/المنطقة",
   "selectRegionState": "اختر المنطقة / المحافظة",
   "searchRegionState": "ابحث عن المنطقة / المحافظة...",
-  "noRegionsFound": "لم يتم العثور على مناطق مطابقة",
+  "noRegionsFound": "لا توجد مناطق",
   "branchPhoneLabel": "رقم الهاتف *",
   "enterPhoneNumber": "أدخل رقم الهاتف",
   "branchStatusLabel": "حالة الفرع *",
@@ -285,6 +291,11 @@
   "validPhoneForSelectedCountryError": "أدخل رقم هاتف صحيح للدولة المختارة",
   "deleteBranchTitle": "حذف الفرع",
   "deleteBranchConfirmation": "هل أنت متأكد أنك تريد حذف {branchName}؟",
+  "@deleteBranchConfirmation": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
   "searchBranchesHint": "ابحث في الفروع...",
   "noBranchesFound": "لم يتم العثور على فروع",
   "addBranchesEmptyMessage": "أضف فروعًا لإدارة المخزون حسب الموقع.",
@@ -293,9 +304,14 @@
   "totalStockLabel": "إجمالي المخزون",
   "viewInventoryButton": "عرض المخزون",
   "branchInventoryTitle": "مخزون {branchName}",
+  "@branchInventoryTitle": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
   "allProductsAssigned": "كل المنتجات المتاحة مضافة بالفعل لهذا الفرع",
   "assignProductToBranchTitle": "إضافة منتج إلى الفرع",
-  "productLabel": "المنتج",
+  "productLabel": "منتج",
   "stockQuantityLabel": "كمية المخزون",
   "stockQuantityHint": "مثال: 100",
   "inventoryRecordNote": "سيتم إنشاء سجل مخزون لهذا الفرع وهذا المنتج.",
@@ -306,17 +322,28 @@
   "updateButton": "تحديث",
   "removeProductFromBranchTitle": "إزالة المنتج من الفرع",
   "removeProductFromBranchConfirmation": "هل أنت متأكد أنك تريد إزالة {productName} من مخزون {branchName}؟",
+  "@removeProductFromBranchConfirmation": {
+    "placeholders": {
+      "productName": {},
+      "branchName": {}
+    }
+  },
   "removeButton": "إزالة",
   "noInventoryFound": "لا يوجد مخزون",
   "assignProductsToBranchEmpty": "أضف منتجات لهذا الفرع لبدء تتبع المخزون.",
   "assignProductButton": "إضافة منتج",
   "stockWithQuantity": "المخزون: {quantity}",
+  "@stockWithQuantity": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
   "catalogTitle": "إدارة الكتالوج",
   "searchCatalogHint": "ابحث في الفئات أو الفئات الفرعية...",
   "noCatalogItems": "لم يتم العثور على عناصر في الكتالوج",
   "addCatalogFirst": "أضف فئات وفئات فرعية لتنظيم منتجات المورد.",
-  "categoryLabel": "الفئة",
-  "subCategoryLabel": "الفئة الفرعية",
+  "categoryLabel": "فئة",
+  "subCategoryLabel": "فئة فرعية",
   "addCategoryTitle": "إضافة فئة",
   "editCategoryTitle": "تعديل الفئة",
   "addSubCategoryTitle": "إضافة فئة فرعية",
@@ -358,6 +385,11 @@
   "updateProductButton": "تحديث المنتج",
   "deleteProductTitle": "حذف المنتج",
   "deleteProductConfirmation": "هل أنت متأكد أنك تريد حذف {productName}؟",
+  "@deleteProductConfirmation": {
+    "placeholders": {
+      "productName": {}
+    }
+  },
   "manageStockButton": "إدارة المخزون",
   "priceLabel": "السعر",
   "moqLabel": "الحد الأدنى",
@@ -365,15 +397,30 @@
   "productBranchStockTitle": "إدارة مخزون المنتج في الفروع",
   "branchStockCardsTitle": "مخزون الفروع",
   "totalStockForProduct": "إجمالي المخزون: {quantity}",
+  "@totalStockForProduct": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
   "noBranchStockFound": "لا يوجد مخزون لهذا المنتج في الفروع",
   "assignStockToBranch": "أضف مخزونًا إلى فرع لبدء بيع هذا المنتج.",
   "removeStockTitle": "إزالة المخزون",
   "removeStockConfirmation": "هل أنت متأكد أنك تريد إزالة المخزون من {branchName}؟",
+  "@removeStockConfirmation": {
+    "placeholders": {
+      "branchName": {}
+    }
+  },
   "supplierOrdersTitle": "إدارة الطلبات",
   "orderDetailsTitle": "تفاصيل الطلب",
   "searchOrdersHint": "ابحث في الطلبات...",
   "noOrdersFound": "لم يتم العثور على طلبات",
   "orderNumberLabel": "طلب رقم {orderId}",
+  "@orderNumberLabel": {
+    "placeholders": {
+      "orderId": {}
+    }
+  },
   "customerLabel": "العميل",
   "retailerLabel": "التاجر",
   "orderItemsLabel": "عناصر الطلب",
@@ -416,53 +463,6 @@
   "warningsLabel": "تحذيرات",
   "duplicateProductWarning": "تحذير منتج مكرر",
   "supplierComingSoonMessage": "سيتم تنفيذ هذا الجزء من المورد خطوة بخطوة.",
-  "@supplierCurrentMinimumStock": {
-    "placeholders": {
-      "currentStock": {},
-      "minimumStock": {}
-    }
-  },
-  "@deleteBranchConfirmation": {
-    "placeholders": {
-      "branchName": {}
-    }
-  },
-  "@branchInventoryTitle": {
-    "placeholders": {
-      "branchName": {}
-    }
-  },
-  "@removeProductFromBranchConfirmation": {
-    "placeholders": {
-      "productName": {},
-      "branchName": {}
-    }
-  },
-  "@stockWithQuantity": {
-    "placeholders": {
-      "quantity": {}
-    }
-  },
-  "@totalStockForProduct": {
-    "placeholders": {
-      "quantity": {}
-    }
-  },
-  "@removeStockConfirmation": {
-    "placeholders": {
-      "branchName": {}
-    }
-  },
-  "@deleteProductConfirmation": {
-    "placeholders": {
-      "productName": {}
-    }
-  },
-  "@orderNumberLabel": {
-    "placeholders": {
-      "orderId": {}
-    }
-  },
   "addButton": "إضافة",
   "backButton": "رجوع",
   "menuTooltip": "القائمة",
@@ -484,13 +484,35 @@
   "deleteCategoryTitle": "حذف الفئة",
   "deleteSubCategoryTitle": "حذف الفئة الفرعية",
   "deleteCategoryPermanentConfirmation": "حذف \"{categoryName}\" نهائيًا؟ هذا مسموح فقط إذا لم تكن مرتبطة بمنتجات أو فئات فرعية.",
+  "@deleteCategoryPermanentConfirmation": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
   "deleteSubCategoryPermanentConfirmation": "حذف \"{subCategoryName}\" نهائيًا؟ هذا مسموح فقط إذا لم تكن مرتبطة بمنتجات.",
+  "@deleteSubCategoryPermanentConfirmation": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
   "noCategoriesFound": "لم يتم العثور على فئات",
   "noSubCategoriesFound": "لم يتم العثور على فئات فرعية",
   "searchCategoriesHint": "ابحث في الفئات...",
   "searchSubCategoriesHint": "ابحث في الفئات الفرعية...",
   "categoryStats": "{productCount} منتجات • {subCategoryCount} فئات فرعية",
+  "@categoryStats": {
+    "placeholders": {
+      "productCount": {},
+      "subCategoryCount": {}
+    }
+  },
   "subCategoryStats": "{categoryName} • {productCount} منتجات",
+  "@subCategoryStats": {
+    "placeholders": {
+      "categoryName": {},
+      "productCount": {}
+    }
+  },
   "linkedLabel": "مرتبط",
   "productInformationTitle": "معلومات المنتج",
   "productDescriptionRequiredError": "الوصف مطلوب",
@@ -521,9 +543,29 @@
   "selectedSubCategoryNotFound": "لم يتم العثور على الفئة الفرعية المحددة",
   "selectSubCategoryFirstMessage": "اختر فئة فرعية أولاً",
   "categoryAddedMessage": "تمت إضافة {categoryName}",
+  "@categoryAddedMessage": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
   "subCategoryAddedMessage": "تمت إضافة {subCategoryName}",
+  "@subCategoryAddedMessage": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
   "categoryDeletedMessage": "تم حذف {categoryName}",
+  "@categoryDeletedMessage": {
+    "placeholders": {
+      "categoryName": {}
+    }
+  },
   "subCategoryDeletedMessage": "تم حذف {subCategoryName}",
+  "@subCategoryDeletedMessage": {
+    "placeholders": {
+      "subCategoryName": {}
+    }
+  },
   "deleteCategoryHelp": "إذا كانت هذه الفئة مستخدمة في منتجات أو فئات فرعية، قد يمنع الخادم حذفها.",
   "deleteSubCategoryHelp": "إذا كانت هذه الفئة الفرعية مستخدمة في منتجات، قد يمنع الخادم حذفها.",
   "updateBranchStockTitle": "تحديث مخزون الفرع",
@@ -536,9 +578,19 @@
   "notAssignedYet": "غير مضاف بعد",
   "createBranchFirst": "أنشئ فرعًا أولاً، ثم أضف مخزون المنتج.",
   "totalBranchStockLabel": "إجمالي مخزون الفروع: {quantity}",
+  "@totalBranchStockLabel": {
+    "placeholders": {
+      "quantity": {}
+    }
+  },
   "noBranchStockAssigned": "لا يوجد مخزون فروع مضاف",
   "viewDetailsButton": "عرض التفاصيل",
   "itemsCountLabel": "{count} عناصر",
+  "@itemsCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "allLabel": "الكل",
   "incomingOrdersEmptyMessage": "ستظهر طلبات التجار الواردة هنا.",
   "orderNotFound": "الطلب غير موجود",
@@ -547,6 +599,12 @@
   "orderCancelledMessage": "تم إلغاء هذا الطلب.",
   "productsOrderedTitle": "المنتجات المطلوبة",
   "unitsTimesPrice": "{quantity} وحدات × {price}",
+  "@unitsTimesPrice": {
+    "placeholders": {
+      "quantity": {},
+      "price": {}
+    }
+  },
   "deliveryInformationTitle": "معلومات التسليم",
   "retailerPhoneLabel": "هاتف التاجر",
   "branchLabelPlain": "الفرع",
@@ -560,95 +618,37 @@
   "manageCategoriesButton": "إدارة الفئات",
   "importResultTitle": "نتيجة الاستيراد",
   "importedRowsSummary": "تم الاستيراد: {importedCount} / {totalRows}",
-  "resetButton": "إعادة ضبط",
-  "importingLabel": "جارٍ الاستيراد...",
-  "importProductsButton": "استيراد {count} منتجات",
-  "editRowTitle": "تعديل الصف {rowNumber}",
-  "editRowHelp": "صحّح معلومات المنتج قبل الاستيراد. هذا يحدّث المعاينة فقط ولا يغيّر ملف Excel على الهاتف.",
-  "saveChangesButton": "حفظ التغييرات",
-  "noSubcategory": "لا توجد فئة فرعية",
-  "noSubcategoriesForCategory": "لا توجد فئات فرعية لهذه الفئة",
-  "selectCategoryWithCurrent": "اختر الفئة ({categoryName})",
-  "rowNumberLabel": "الصف {rowNumber}",
-  "@deleteCategoryPermanentConfirmation": {
-    "placeholders": {
-      "categoryName": {}
-    }
-  },
-  "@deleteSubCategoryPermanentConfirmation": {
-    "placeholders": {
-      "subCategoryName": {}
-    }
-  },
-  "@categoryStats": {
-    "placeholders": {
-      "productCount": {},
-      "subCategoryCount": {}
-    }
-  },
-  "@subCategoryStats": {
-    "placeholders": {
-      "categoryName": {},
-      "productCount": {}
-    }
-  },
-  "@categoryAddedMessage": {
-    "placeholders": {
-      "categoryName": {}
-    }
-  },
-  "@subCategoryAddedMessage": {
-    "placeholders": {
-      "subCategoryName": {}
-    }
-  },
-  "@categoryDeletedMessage": {
-    "placeholders": {
-      "categoryName": {}
-    }
-  },
-  "@subCategoryDeletedMessage": {
-    "placeholders": {
-      "subCategoryName": {}
-    }
-  },
-  "@totalBranchStockLabel": {
-    "placeholders": {
-      "quantity": {}
-    }
-  },
-  "@itemsCountLabel": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "@unitsTimesPrice": {
-    "placeholders": {
-      "quantity": {},
-      "price": {}
-    }
-  },
   "@importedRowsSummary": {
     "placeholders": {
       "importedCount": {},
       "totalRows": {}
     }
   },
+  "resetButton": "إعادة ضبط",
+  "importingLabel": "جارٍ الاستيراد...",
+  "importProductsButton": "استيراد {count} منتجات",
   "@importProductsButton": {
     "placeholders": {
       "count": {}
     }
   },
+  "editRowTitle": "تعديل الصف {rowNumber}",
   "@editRowTitle": {
     "placeholders": {
       "rowNumber": {}
     }
   },
+  "editRowHelp": "صحّح معلومات المنتج قبل الاستيراد. هذا يحدّث المعاينة فقط ولا يغيّر ملف Excel على الهاتف.",
+  "saveChangesButton": "حفظ التغييرات",
+  "noSubcategory": "لا توجد فئة فرعية",
+  "noSubcategoriesForCategory": "لا توجد فئات فرعية لهذه الفئة",
+  "selectCategoryWithCurrent": "اختر الفئة ({categoryName})",
   "@selectCategoryWithCurrent": {
     "placeholders": {
       "categoryName": {}
     }
   },
+  "rowNumberLabel": "الصف {rowNumber}",
   "@rowNumberLabel": {
     "placeholders": {
       "rowNumber": {}
@@ -671,5 +671,404 @@
   "phoneCountryMustMatchSelectedCountry": "يجب أن تتطابق دولة الهاتف مع الدولة المختارة",
   "completeRequiredFieldsCorrectly": "يرجى إكمال جميع الحقول المطلوبة بشكل صحيح.",
   "businessTypeRequiredError": "نوع النشاط مطلوب",
-  "retryButton": "إعادة المحاولة"
+  "retryButton": "إعادة المحاولة",
+  "noLabel": "لا",
+  "urlLabel": "رابط",
+  "yesLabel": "نعم",
+  "copyButton": "نسخ",
+  "noneLabel": "لا شيء",
+  "supplierUsed": "مستخدم",
+  "supplierFixed": "ثابت",
+  "notesLabel": "ملاحظات",
+  "activeLabel": "نشط",
+  "cancelButton": "إلغاء",
+  "supplierCustom": "مخصص",
+  "deleteButton": "حذف",
+  "regionLabel": "المنطقة",
+  "searchLabel": "بحث",
+  "supplierTarget": "الهدف",
+  "supplierBanners": "البنرات",
+  "countryLabel": "الدولة",
+  "supplierPercent": "نسبة مئوية",
+  "refreshButton": "تحديث",
+  "supplierTitle": "العنوان *",
+  "supplierDiscount": "الخصم",
+  "supplierEndDate": "تاريخ الانتهاء",
+  "inactiveLabel": "غير نشط",
+  "supplierLocation": "الموقع",
+  "supplierMaxUses": "الحد الأقصى للاستخدام",
+  "regionRequiredLabel": "المنطقة *",
+  "supplierSubtitle": "العنوان الفرعي",
+  "supplierValidTo": "صالحة حتى",
+  "supplierValidity": "الصلاحية",
+  "supplierMinOrder": "الحد الأدنى للطلب",
+  "noRegionLabel": "بدون منطقة",
+  "supplierRemaining": "متبقي",
+  "supplierUnlimited": "غير محدود",
+  "supplierValidNow": "صالح الآن",
+  "supplierPromotions": "العروض الترويجية",
+  "supplierStartDate": "تاريخ البدء",
+  "supplierValidFrom": "صالحة من",
+  "supplierBannerList": "قائمة البنرات",
+  "supplierCouponList": "قائمة القسائم",
+  "supplierCreateRule": "إنشاء القاعدة",
+  "descriptionLabel": "الوصف",
+  "supplierEditBanner": "تعديل البنر",
+  "supplierEditCoupon": "تعديل القسيمة",
+  "supplierLebanonVat": "ضريبة القيمة المضافة في لبنان",
+  "supplierPickupOnly": "استلام فقط",
+  "supplierRuleName": "اسم القاعدة *",
+  "supplierRulePreset": "قالب القاعدة",
+  "subcategoryLabel": "فئة فرعية",
+  "supplierUpdateRule": "تحديث القاعدة",
+  "supplierValidNow2": "صالح الآن: ",
+  "supplierAllBranches": "كل الفروع",
+  "supplierAllProducts": "كل المنتجات",
+  "supplierAppliesTo": "تنطبق على *",
+  "supplierBannerImage": "صورة البنر",
+  "supplierCouponRules": "قواعد القسيمة",
+  "supplierEnabledOnly": "المفعّلة فقط",
+  "supplierFixedAmount": "مبلغ ثابت",
+  "supplierMaxDiscount": "الحد الأقصى للخصم",
+  "supplierSortOrder": "ترتيب العرض *",
+  "supplierTargetUrl": "رابط الهدف *",
+  "supplierTaxRate": "نسبة الضريبة % *",
+  "supplierUploadImage": "رفع صورة",
+  "supplierUploading": "جاري الرفع...",
+  "supplierAlwaysActive": "نشط دائماً",
+  "supplierCouponCode": "رمز القسيمة *",
+  "supplierCreateBanner": "إنشاء بنر",
+  "supplierCreateCoupon": "إنشاء قسيمة",
+  "supplierCreateMethod": "إنشاء الطريقة",
+  "supplierDeleteBanner": "حذف البنر",
+  "supplierDeleteCoupon": "حذف القسيمة",
+  "supplierDisabledOnly": "غير المفعّلة فقط",
+  "supplierDisplayRules": "قواعد العرض",
+  "supplierEditTaxRule": "تعديل قاعدة ضريبية",
+  "supplierFreeShipping": "شحن مجاني",
+  "supplierMethodName": "اسم الطريقة *",
+  "supplierMethodType": "نوع الطريقة *",
+  "searchRegionHint": "البحث عن منطقة",
+  "selectRegionHint": "اختيار المنطقة",
+  "supplierShippingCost": "تكلفة الشحن",
+  "supplierTargetType": "نوع الهدف *",
+  "supplierTaxRuleList": "قائمة قواعد الضريبة",
+  "supplierUpdateBanner": "تحديث البنر",
+  "supplierUpdateCoupon": "تحديث القسيمة",
+  "supplierUpdateMethod": "تحديث الطريقة",
+  "supplierBannerImage2": "صورة البنر *",
+  "supplierEditPromotion": "تعديل العرض الترويجي",
+  "supplierManageBanners": "إدارة البنرات",
+  "supplierManageCoupons": "إدارة القسائم",
+  "supplierNoBannersYet": "لا توجد بنرات بعد",
+  "supplierNoCouponsYet": "لا توجد قسائم بعد",
+  "supplierPickupIsFree": "الاستلام مجاني",
+  "supplierPromotionList": "قائمة العروض",
+  "searchCountryHint": "البحث عن دولة",
+  "selectCountryHint": "اختيار الدولة",
+  "supplierStatusNotes": "الحالة والملاحظات",
+  "supplierCreateTaxRule": "إنشاء قاعدة ضريبية",
+  "supplierDeleteTaxRule": "حذف قاعدة ضريبية",
+  "supplierDiscountType": "نوع الخصم *",
+  "supplierOrderLevelTax": "ضريبة على مستوى الطلب",
+  "supplierPromotionRules": "قواعد العرض",
+  "supplierSelectBranches": "اختيار الفروع",
+  "supplierWholesaleDeals": "عروض الجملة",
+  "supplierDeletePromotion": "حذف العرض الترويجي",
+  "supplierDiscountValue": "قيمة الخصم *",
+  "supplierExpressDelivery": "توصيل سريع",
+  "supplierManageTaxRules": "إدارة قواعد الضريبة",
+  "supplierMinOrderAmount": "الحد الأدنى لقيمة الطلب",
+  "supplierNoResultsFound": "لا توجد نتائج",
+  "supplierNoTaxRulesYet": "لا توجد قواعد ضريبية بعد",
+  "supplierPleaseSelectA": "يرجى اختيار ",
+  "supplierPricingTiming": "التسعير والوقت",
+  "supplierPromotionName": "اسم العرض *",
+  "supplierPromotionTarget": "هدف العرض",
+  "supplierSearchTaxRules": "البحث في قواعد الضريبة",
+  "supplierSelectProduct": "اختيار المنتج *",
+  "supplierUpdatePromotion": "تحديث العرض",
+  "supplierManagePromotions": "إدارة العروض الترويجية",
+  "supplierNoPromotionsYet": "لا توجد عروض بعد",
+  "supplierScheduleStatus": "الجدولة والحالة",
+  "supplierSearchPromotions": "البحث في العروض",
+  "supplierSelectCategory": "اختيار الفئة *",
+  "supplierSelectedBranches": "فروع محددة",
+  "supplierStandardDelivery": "توصيل عادي",
+  "supplierTaxApplicability": "تطبيق الضريبة",
+  "supplierTaxConfiguration": "إعدادات الضريبة",
+  "supplierAutoGenerateName": "إنشاء الاسم تلقائياً",
+  "supplierBannerInformation": "معلومات البنر",
+  "supplierCouponInformation": "معلومات القسيمة",
+  "supplierMethodInformation": "معلومات الطريقة",
+  "supplierPickupFromBranch": "الاستلام من الفرع",
+  "supplierPickupFromBranch2": "الاستلام من الفرع",
+  "supplierCountryIsRequired": "الدولة مطلوبة",
+  "supplierMaxDiscountAmount": "الحد الأقصى للخصم",
+  "supplierNoMatchingBanners": "لا توجد بنرات مطابقة",
+  "supplierBranchApplicability": "تطبيق الفروع",
+  "supplierDiscountValue2": "قيمة الخصم (%) *",
+  "supplierEditShippingMethod": "تعديل طريقة الشحن",
+  "supplierMinimumOrderAmount": "الحد الأدنى لقيمة الطلب",
+  "supplierSelectSubcategory": "اختيار الفئة الفرعية *",
+  "supplierShippingMethodList": "قائمة طرق الشحن",
+  "supplierTaxRuleInformation": "معلومات القاعدة الضريبية",
+  "supplierNoMatchingTaxRules": "لا توجد قواعد ضريبية مطابقة",
+  "supplierPromotionInformation": "معلومات العرض",
+  "supplierFieldnameIsRequired": "$fieldName is required",
+  "supplierCouldNotLoadBanners": "تعذر تحميل البنرات",
+  "supplierCouldNotLoadCoupons": "تعذر تحميل القسائم",
+  "supplierCreateShippingMethod": "إنشاء طريقة شحن",
+  "supplierDeleteShippingMethod": "حذف طريقة شحن",
+  "supplierNoMatchingPromotions": "لا توجد عروض مطابقة",
+  "supplierPromotionTitleCopied": "تم نسخ عنوان العرض بنجاح",
+  "supplierSortOrderIsRequired": "ترتيب العرض مطلوب",
+  "supplierEstimatedDeliveryTime": "مدة التوصيل المتوقعة",
+  "supplierFreeShippingThreshold": "حد الشحن المجاني",
+  "supplierManageShippingMethods": "إدارة طرق الشحن",
+  "supplierNoShippingMethodsYet": "لا توجد طرق شحن بعد",
+  "supplierPleaseSelectACountry": "يرجى اختيار الدولة",
+  "supplierSearchShippingMethods": "البحث في طرق الشحن",
+  "supplierCouldNotLoadTaxRules": "تعذر تحميل قواعد الضريبة",
+  "supplierCouldNotLoadPromotions": "تعذر تحميل العروض",
+  "supplierApplyTaxToShippingCost": "تطبيق الضريبة على تكلفة الشحن",
+  "supplierBannerCopiedSuccessfully": "تم نسخ البنر بنجاح",
+  "supplierNoMatchingShippingMethods": "لا توجد طرق شحن مطابقة",
+  "supplierSpecialOffersForRetailers": "عروض خاصة للتجار",
+  "supplierCouldNotLoadTargetOptions": "تعذر تحميل خيارات الهدف",
+  "supplierPleaseSelectACategoryFirst": "يرجى اختيار فئة أولاً",
+  "supplierRegionIsRequiredForLebanon": "المنطقة مطلوبة للبنان",
+  "supplierCouldNotLoadShippingMethods": "تعذر تحميل طرق الشحن",
+  "supplierTaxRateMustBeGreaterThan0": "يجب أن تكون نسبة الضريبة أكبر من 0",
+  "supplierFieldnameMustBeAValidNumber": "$fieldName must be a valid number",
+  "supplierFieldnameMustBeGreaterThan0": "$fieldName must be greater than 0",
+  "supplierPleaseSelectAtLeastOneBranch": "يرجى اختيار فرع واحد على الأقل",
+  "supplierBannerImageUploadedSuccessfully": "تم رفع صورة البنر بنجاح",
+  "supplierOptionalNotesAboutThisTaxRule": "ملاحظات اختيارية حول هذه القاعدة الضريبية",
+  "supplierPleaseSelectARegionForLebanon": "يرجى اختيار منطقة للبنان",
+  "supplierValidFromMustBeBeforeValidTo": "يجب أن يكون تاريخ البداية قبل تاريخ الانتهاء",
+  "supplierTaxRateCannotBeGreaterThan100": "لا يمكن أن تكون نسبة الضريبة أكبر من 100",
+  "supplierUploadedImageUrlWillAppearHere": "سيظهر رابط الصورة المرفوعة هنا",
+  "supplierNoRegionsAvailableForThisCountry": "لا توجد مناطق متاحة لهذه الدولة.",
+  "supplierUrlMustStartWithHttpOrHttps": "يجب أن يبدأ الرابط بـ http:// أو https://",
+  "supplierOptionalNotesAboutThisShippingMethod": "ملاحظات اختيارية حول طريقة الشحن هذه",
+  "supplierSortOrderMustBeAValidPositiveNumber": "يجب أن يكون ترتيب العرض رقماً موجباً صالحاً",
+  "supplierPercentDiscountCannotBeGreaterThan100": "لا يمكن أن تكون نسبة الخصم أكبر من 100",
+  "supplierFieldnameMustBeGreaterThanOrEqualTo0": "$fieldName must be greater than or equal to 0",
+  "supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule": "اختاري قالباً جاهزاً أو أبقيه مخصصاً وأدخلي قاعدة ضريبة على مستوى الطلب.",
+  "supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule": "يتم تحميل الفروع المحددة من وحدة إدارة الفروع في الخلفية.",
+  "supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst": "لا توجد فروع نشطة. أضيفي الفروع أولاً من إدارة الفروع.",
+  "supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry": "الدولة مطلوبة لأن الضريبة تُحسب حسب دولة توصيل التاجر.",
+  "supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue": "يظهر اسم العنصر المحدد هنا، لكن الخادم يحفظ معرّفه في targetValue.",
+  "supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove": "أنشئي قواعد ضريبية من اختصار لوحة المورد أو اضغطي على زر الإضافة أعلاه.",
+  "supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion": "مثال: أدخلي 11 لنسبة 11%. يتم تطبيق الضريبة على الطلب حسب الدولة والمنطقة.",
+  "supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions": "تُستخدم الدولة والمنطقة لاحقاً في دفع التاجر لعرض خيارات الشحن الصحيحة.",
+  "supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove": "أنشئي طرق الشحن من اختصار لوحة المورد أو اضغطي على زر الإضافة أعلاه.",
+  "supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule": "اختاري بدون منطقة لقاعدة على مستوى الدولة، أو اختاري منطقة محددة لقاعدة أدق.",
+  "supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability": "أنشئي وأديري خيارات التوصيل أو الاستلام حسب الدولة والمنطقة والفروع والتكلفة والتوفر.",
+  "supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField": "ارفعي صورة من جهازك. يرجع الخادم رابطاً ويحفظه في حقل imageUrl للبنر.",
+  "supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax": "اضبطي ضريبة الطلب حسب الدولة والمنطقة. سيستخدم دفع التاجر هذه القواعد لحساب الضريبة.",
+  "supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount": "عند التفعيل، تشمل ضريبة الدفع تكلفة الشحن. عند التعطيل، تطبق الضريبة فقط على المنتجات بعد خصم العرض.",
+  "supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch": "تحدد الفروع أين تكون طريقة الشحن صالحة. سيطابق دفع التاجر لاحقاً الشحن مع فرع التنفيذ.",
+  "supplierFieldRequired": "{fieldName} مطلوب",
+  "@supplierFieldRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldGreaterThanZero": "يجب أن يكون {fieldName} أكبر من 0",
+  "@supplierFieldGreaterThanZero": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldGreaterThanOrEqualZero": "يجب أن يكون {fieldName} أكبر من أو يساوي 0",
+  "@supplierFieldGreaterThanOrEqualZero": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierFieldValidNumber": "يجب أن يكون {fieldName} رقماً صالحاً",
+  "@supplierFieldValidNumber": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "supplierBranchesValue": "الفروع: {value}",
+  "@supplierBranchesValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierTargetValue": "الهدف: {value}",
+  "@supplierTargetValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierOrderValue": "الترتيب: {value}",
+  "@supplierOrderValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierVisibleNowValue": "ظاهر الآن: {value}",
+  "@supplierVisibleNowValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierValidNowValue": "صالح الآن: {value}",
+  "@supplierValidNowValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "notRequiredLabel": "غير مطلوب",
+  "pickButton": "اختيار",
+  "uploadingLabel": "جاري الرفع...",
+  "supplierBannerImagePlain": "صورة البنر",
+  "supplierBannersDescription": "اعرضي وأنشئي وعدّلي واحذفي بنرات المورد المحفوظة في قاعدة بيانات الخلفية. ستظهر هذه البنرات لاحقاً للتجار في الصفحة الرئيسية.",
+  "supplierBusinessDaysHint": "٢-٣ أيام عمل",
+  "supplierChooseCategory": "اختيار الفئة",
+  "supplierCouponCodePlain": "رمز القسيمة",
+  "supplierCouponCopied": "تم نسخ {couponCode}",
+  "@supplierCouponCopied": {
+    "placeholders": {
+      "couponCode": {}
+    }
+  },
+  "supplierCouponDescriptionHint": "اكتب وصفاً لهذه القسيمة",
+  "supplierCouponsDescription": "اعرضي وأنشئي وعدّلي واحذفي قسائم المورد المحفوظة في قاعدة بيانات الخلفية. يمكن استخدامها لاحقاً في سلة التاجر وعملية الدفع.",
+  "supplierCreateBannersFromDashboard": "أنشئي البنرات من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.",
+  "supplierCreateCouponsFromDashboard": "أنشئي القسائم من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.",
+  "supplierCreatePromotionsFromDashboard": "أنشئي العروض من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.",
+  "supplierDeleteBannerConfirmation": "هل أنت متأكدة من حذف \"{bannerTitle}\"؟",
+  "@supplierDeleteBannerConfirmation": {
+    "placeholders": {
+      "bannerTitle": {}
+    }
+  },
+  "supplierDeleteCouponConfirmation": "هل أنت متأكدة من حذف القسيمة \"{couponCode}\"؟",
+  "@supplierDeleteCouponConfirmation": {
+    "placeholders": {
+      "couponCode": {}
+    }
+  },
+  "supplierDeletePromotionConfirmation": "هل أنت متأكدة من حذف \"{promotionTitle}\"؟",
+  "@supplierDeletePromotionConfirmation": {
+    "placeholders": {
+      "promotionTitle": {}
+    }
+  },
+  "supplierDeleteShippingMethodConfirmation": "هل أنت متأكدة من حذف \"{methodName}\"؟",
+  "@supplierDeleteShippingMethodConfirmation": {
+    "placeholders": {
+      "methodName": {}
+    }
+  },
+  "supplierDeleteTaxRuleConfirmation": "هل أنت متأكدة من حذف \"{ruleName}\"؟",
+  "@supplierDeleteTaxRuleConfirmation": {
+    "placeholders": {
+      "ruleName": {}
+    }
+  },
+  "supplierDiscountValuePercent": "قيمة الخصم (%) *",
+  "supplierDiscountValuePlain": "قيمة الخصم",
+  "supplierEndDateAfterStartDate": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+  "supplierEstimatedDeliveryTimePlain": "مدة التوصيل المتوقعة",
+  "supplierFixedDiscountHelp": "الخصم الثابت يعني مبلغاً ثابتاً يُخصم، مثل خصم 20 دولاراً.",
+  "supplierFreeShippingThresholdPlain": "حد الشحن المجاني",
+  "supplierManageHomeBanners": "إدارة بنرات الصفحة الرئيسية",
+  "supplierMaxDiscountFixedHelp": "الحد الأقصى للخصم غير مطلوب للعروض ذات الخصم الثابت.",
+  "supplierMaxDiscountPercentHelp": "اختياري. يحدد إجمالي الخصم عند استخدام عروض النسبة المئوية.",
+  "supplierMaximumDiscountAmount": "الحد الأقصى للخصم",
+  "supplierMaximumDiscountAmountPlain": "الحد الأقصى للخصم",
+  "supplierMethodNamePlain": "اسم الطريقة",
+  "supplierMethodsShown": "عدد الطرق المعروضة: {count}",
+  "@supplierMethodsShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierMinimumOrderAmountPlain": "الحد الأدنى لقيمة الطلب",
+  "supplierNoActiveBranchesAvailableAddBranchesFirst": "لا توجد فروع نشطة. أضيفي الفروع أولاً من إدارة الفروع.",
+  "supplierNoActiveCategoriesAvailable": "لا توجد فئات نشطة.",
+  "supplierNoActiveProductsAvailable": "لا توجد منتجات نشطة.",
+  "supplierNoActiveSubcategoriesForCategory": "لا توجد فئات فرعية نشطة لهذه الفئة.",
+  "supplierNoRegionsAvailableForCountry": "لا توجد مناطق متاحة لهذه الدولة.",
+  "supplierOnlyForPercentCoupons": "فقط لقسائم النسبة المئوية",
+  "supplierOnlyForPercentDiscounts": "فقط للخصومات بالنسبة المئوية",
+  "supplierPercentDiscountHelp": "خصم النسبة المئوية يعني خصماً بنسبة محددة، مثل 10%. يمكن للحد الأقصى للخصم أن يحد من خسارة المورد.",
+  "supplierPleaseSelectTarget": "يرجى اختيار {targetLabel}",
+  "@supplierPleaseSelectTarget": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierPromotionBranchesHelp": "تحدد الفروع أين يكون العرض صالحاً. اختيار المنتج أو الفئة أعلاه غير مفلتر حسب الفرع.",
+  "supplierPromotionDescriptionHint": "وصف قصير يظهر لاحقاً لجهة التاجر",
+  "supplierPromotionTargetHelp": "يحدد الهدف المنتجات المشمولة في العرض. يتم اختيار توفر الفروع بشكل منفصل أدناه.",
+  "supplierPromotionTitle": "عنوان العرض *",
+  "supplierPromotionTitleHint": "عرض جملة لفئة الطعام",
+  "supplierPromotionTitlePlain": "عنوان العرض",
+  "supplierPromotionsDescription": "اعرضي وابحثي وأنشئي وعدّلي واحذفي عروض المورد بالجملة للمنتجات أو الفئات أو الفئات الفرعية أو كل المنتجات.",
+  "supplierPromotionsShown": "عدد العروض المعروضة: {count}",
+  "@supplierPromotionsShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierRuleNamePlain": "اسم القاعدة",
+  "supplierRulesShown": "عدد القواعد المعروضة: {count}",
+  "@supplierRulesShown": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierSelectCategoryFirst": "اختاري فئة أولاً.",
+  "supplierSelectTargetHint": "اختيار {targetLabel}",
+  "@supplierSelectTargetHint": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierSelectTargetLabel": "اختيار {targetLabel} *",
+  "@supplierSelectTargetLabel": {
+    "placeholders": {
+      "targetLabel": {}
+    }
+  },
+  "supplierSelectedBranchesLoadedFromBackendBranchManagement": "يتم تحميل الفروع المحددة من وحدة إدارة الفروع في الخلفية.",
+  "supplierSelectedItemNameShownHere": "يظهر اسم العنصر المحدد هنا، لكن الخلفية تحفظ معرّفه في targetValue.",
+  "supplierShippingCostPlain": "تكلفة الشحن",
+  "supplierShippingNameHint": "توصيل بيروت العادي",
+  "supplierSortOrderPositiveNumber": "يجب أن يكون ترتيب العرض رقماً موجباً صالحاً",
+  "supplierSortOrderRequired": "ترتيب العرض مطلوب",
+  "supplierTargetUrlRequired": "رابط الهدف مطلوب",
+  "supplierTaxRatePlain": "نسبة الضريبة",
+  "supplierTitlePlain": "العنوان",
+  "supplierValidFromBeforeValidTo": "يجب أن يكون تاريخ البداية قبل تاريخ النهاية",
+  "supplierScheduled": "مجدول",
+  "supplierExpired": "منتهي",
+  "supplierUsageLimitReached": "تم بلوغ حد الاستخدام",
+  "supplierFreePickup": "استلام مجاني",
+  "supplierNoMinimum": "لا يوجد حد أدنى",
+  "supplierMinimumValue": "الحد الأدنى {value}",
+  "@supplierMinimumValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierNoFreeShipping": "لا يوجد شحن مجاني",
+  "supplierFreeAboveValue": "مجاني فوق {value}",
+  "@supplierFreeAboveValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "supplierNoLocationSelected": "لم يتم اختيار موقع",
+  "supplierNoBranchesSelected": "لم يتم اختيار فروع",
+  "supplierNoTarget": "بدون هدف",
+  "supplierDrawerRfqs": "طلبات عروض الأسعار"
 }

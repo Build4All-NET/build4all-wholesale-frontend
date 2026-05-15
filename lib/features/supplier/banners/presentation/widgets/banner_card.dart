@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -28,8 +30,8 @@ class BannerCard extends StatelessWidget {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Banner copied successfully'),
+      SnackBar(
+        content: Text(context.l10n.supplierBannerCopiedSuccessfully),
       ),
     );
   }
@@ -38,8 +40,7 @@ class BannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final statusColor = _statusColor();
-    final enabledText = banner.active ? 'Enabled' : 'Disabled';
-    final visibleText = banner.currentlyVisible ? 'Visible now' : 'Not visible now';
+    final visibleText = banner.currentlyVisible ? context.l10n.yesLabel : context.l10n.noLabel;
 
     return Container(
       width: double.infinity,
@@ -63,8 +64,6 @@ class BannerCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   banner.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -108,10 +107,15 @@ class BannerCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(text: enabledText),
-              _InfoChip(text: visibleText),
-              _InfoChip(text: 'Target: ${banner.targetLabelText}'),
-              _InfoChip(text: 'Order: ${banner.sortOrder}'),
+              _InfoChip(
+                text: context.l10n.supplierTargetValue(_localizedTargetLabel(context, banner.targetLabelText)),
+              ),
+              _InfoChip(
+                text: context.l10n.supplierOrderValue(banner.sortOrder.toString()),
+              ),
+              _InfoChip(
+                text: context.l10n.supplierVisibleNowValue(visibleText),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -122,7 +126,7 @@ class BannerCard extends StatelessWidget {
               Expanded(
                 child: _ActionButton(
                   icon: Icons.copy_outlined,
-                  label: 'Copy',
+                  label: context.l10n.copyButton,
                   onPressed: () => _copyBanner(context),
                   color: AppThemeTokens.textSecondary,
                   borderColor: AppThemeTokens.border,
@@ -132,20 +136,20 @@ class BannerCard extends StatelessWidget {
               Expanded(
                 child: _ActionButton(
                   icon: Icons.edit_outlined,
-                  label: 'Edit',
+                  label: context.l10n.editButton,
                   onPressed: onEdit,
                   color: primary,
-                  borderColor: primary.withValues(alpha: 0.35),
+                  borderColor: primary.withOpacity(0.35),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _ActionButton(
                   icon: Icons.delete_outline,
-                  label: 'Delete',
+                  label: context.l10n.deleteButton,
                   onPressed: onDelete,
                   color: Colors.red,
-                  borderColor: Colors.red.withValues(alpha: 0.35),
+                  borderColor: Colors.red.withOpacity(0.35),
                 ),
               ),
             ],
@@ -187,7 +191,7 @@ class _BannerImage extends StatelessWidget {
       width: double.infinity,
       height: 150,
       decoration: BoxDecoration(
-        color: primary.withValues(alpha: 0.06),
+        color: primary.withOpacity(0.06),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppThemeTokens.border),
       ),
@@ -227,10 +231,10 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 115),
+      constraints: const BoxConstraints(maxWidth: 105),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -250,14 +254,14 @@ class _StatusBadge extends StatelessWidget {
 class _InfoChip extends StatelessWidget {
   final String text;
 
-  const _InfoChip({
+  _InfoChip({
     required this.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 300),
+      constraints: const BoxConstraints(maxWidth: 280),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
@@ -266,7 +270,6 @@ class _InfoChip extends StatelessWidget {
       ),
       child: Text(
         text,
-        maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 12,
@@ -297,42 +300,63 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 48,
-      child: OutlinedButton(
+      child: OutlinedButton.icon(
         onPressed: onPressed,
+        icon: Icon(
+          icon,
+          size: 16,
+          color: color,
+        ),
+        label: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.clip,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            color: color,
+          ),
+        ),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 6),
           side: BorderSide(color: borderColor),
-          minimumSize: const Size(0, 48),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 16,
-                color: color,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
+  }
+}
+
+String _localizedTargetLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    case 'No target':
+      return context.l10n.supplierNoTarget;
+    default:
+      return label;
+  }
+}
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    case 'scheduled':
+      return context.l10n.supplierScheduled;
+    case 'expired':
+      return context.l10n.supplierExpired;
+    default:
+      return label;
   }
 }

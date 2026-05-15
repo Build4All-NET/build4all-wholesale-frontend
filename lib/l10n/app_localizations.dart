@@ -1723,7 +1723,7 @@ abstract class AppLocalizations {
   /// No description provided for @noRegionsFound.
   ///
   /// In en, this message translates to:
-  /// **'No regions found for your search'**
+  /// **'No regions found'**
   String get noRegionsFound;
 
   /// No description provided for @branchPhoneLabel.
@@ -3348,6 +3348,1724 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retryButton;
+
+  /// No description provided for @noLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get noLabel;
+
+  /// No description provided for @urlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get urlLabel;
+
+  /// No description provided for @yesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yesLabel;
+
+  /// No description provided for @copyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyButton;
+
+  /// No description provided for @noneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get noneLabel;
+
+  /// No description provided for @supplierUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get supplierUsed;
+
+  /// No description provided for @supplierFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed'**
+  String get supplierFixed;
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesLabel;
+
+  /// No description provided for @activeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activeLabel;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
+
+  /// No description provided for @supplierCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get supplierCustom;
+
+  /// No description provided for @deleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteButton;
+
+  /// No description provided for @regionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get regionLabel;
+
+  /// No description provided for @searchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchLabel;
+
+  /// No description provided for @supplierTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get supplierTarget;
+
+  /// No description provided for @supplierBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Banners'**
+  String get supplierBanners;
+
+  /// No description provided for @countryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get countryLabel;
+
+  /// No description provided for @supplierPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent'**
+  String get supplierPercent;
+
+  /// No description provided for @refreshButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refreshButton;
+
+  /// No description provided for @supplierTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title *'**
+  String get supplierTitle;
+
+  /// No description provided for @supplierDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get supplierDiscount;
+
+  /// No description provided for @supplierEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get supplierEndDate;
+
+  /// No description provided for @inactiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactiveLabel;
+
+  /// No description provided for @supplierLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get supplierLocation;
+
+  /// No description provided for @supplierMaxUses.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Uses'**
+  String get supplierMaxUses;
+
+  /// No description provided for @regionRequiredLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region *'**
+  String get regionRequiredLabel;
+
+  /// No description provided for @supplierSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle'**
+  String get supplierSubtitle;
+
+  /// No description provided for @supplierValidTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid To'**
+  String get supplierValidTo;
+
+  /// No description provided for @supplierValidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Validity'**
+  String get supplierValidity;
+
+  /// No description provided for @supplierMinOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Min order'**
+  String get supplierMinOrder;
+
+  /// No description provided for @noRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No region'**
+  String get noRegionLabel;
+
+  /// No description provided for @supplierRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get supplierRemaining;
+
+  /// No description provided for @supplierUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get supplierUnlimited;
+
+  /// No description provided for @supplierValidNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid now'**
+  String get supplierValidNow;
+
+  /// No description provided for @supplierPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions'**
+  String get supplierPromotions;
+
+  /// No description provided for @supplierStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get supplierStartDate;
+
+  /// No description provided for @supplierValidFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid From'**
+  String get supplierValidFrom;
+
+  /// No description provided for @supplierBannerList.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner List'**
+  String get supplierBannerList;
+
+  /// No description provided for @supplierCouponList.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon List'**
+  String get supplierCouponList;
+
+  /// No description provided for @supplierCreateRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Rule'**
+  String get supplierCreateRule;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get descriptionLabel;
+
+  /// No description provided for @supplierEditBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Banner'**
+  String get supplierEditBanner;
+
+  /// No description provided for @supplierEditCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Coupon'**
+  String get supplierEditCoupon;
+
+  /// No description provided for @supplierLebanonVat.
+  ///
+  /// In en, this message translates to:
+  /// **'Lebanon VAT'**
+  String get supplierLebanonVat;
+
+  /// No description provided for @supplierPickupOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup only'**
+  String get supplierPickupOnly;
+
+  /// No description provided for @supplierRuleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Name *'**
+  String get supplierRuleName;
+
+  /// No description provided for @supplierRulePreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Preset'**
+  String get supplierRulePreset;
+
+  /// No description provided for @subcategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory'**
+  String get subcategoryLabel;
+
+  /// No description provided for @supplierUpdateRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Rule'**
+  String get supplierUpdateRule;
+
+  /// No description provided for @supplierValidNow2.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid now: '**
+  String get supplierValidNow2;
+
+  /// No description provided for @supplierAllBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'All Branches'**
+  String get supplierAllBranches;
+
+  /// No description provided for @supplierAllProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'All Products'**
+  String get supplierAllProducts;
+
+  /// No description provided for @supplierAppliesTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies To *'**
+  String get supplierAppliesTo;
+
+  /// No description provided for @supplierBannerImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner Image'**
+  String get supplierBannerImage;
+
+  /// No description provided for @supplierCouponRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon Rules'**
+  String get supplierCouponRules;
+
+  /// No description provided for @supplierEnabledOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled only'**
+  String get supplierEnabledOnly;
+
+  /// No description provided for @supplierFixedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed Amount'**
+  String get supplierFixedAmount;
+
+  /// No description provided for @supplierMaxDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Max discount'**
+  String get supplierMaxDiscount;
+
+  /// No description provided for @supplierSortOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort Order *'**
+  String get supplierSortOrder;
+
+  /// No description provided for @supplierTargetUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Target URL *'**
+  String get supplierTargetUrl;
+
+  /// No description provided for @supplierTaxRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Rate % *'**
+  String get supplierTaxRate;
+
+  /// No description provided for @supplierUploadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Image'**
+  String get supplierUploadImage;
+
+  /// No description provided for @supplierUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading...'**
+  String get supplierUploading;
+
+  /// No description provided for @supplierAlwaysActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Always active'**
+  String get supplierAlwaysActive;
+
+  /// No description provided for @supplierCouponCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon Code *'**
+  String get supplierCouponCode;
+
+  /// No description provided for @supplierCreateBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Banner'**
+  String get supplierCreateBanner;
+
+  /// No description provided for @supplierCreateCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Coupon'**
+  String get supplierCreateCoupon;
+
+  /// No description provided for @supplierCreateMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Method'**
+  String get supplierCreateMethod;
+
+  /// No description provided for @supplierDeleteBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Banner'**
+  String get supplierDeleteBanner;
+
+  /// No description provided for @supplierDeleteCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Coupon'**
+  String get supplierDeleteCoupon;
+
+  /// No description provided for @supplierDisabledOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled only'**
+  String get supplierDisabledOnly;
+
+  /// No description provided for @supplierDisplayRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Rules'**
+  String get supplierDisplayRules;
+
+  /// No description provided for @supplierEditTaxRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Tax Rule'**
+  String get supplierEditTaxRule;
+
+  /// No description provided for @supplierFreeShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Shipping'**
+  String get supplierFreeShipping;
+
+  /// No description provided for @supplierMethodName.
+  ///
+  /// In en, this message translates to:
+  /// **'Method Name *'**
+  String get supplierMethodName;
+
+  /// No description provided for @supplierMethodType.
+  ///
+  /// In en, this message translates to:
+  /// **'Method Type *'**
+  String get supplierMethodType;
+
+  /// No description provided for @searchRegionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search region'**
+  String get searchRegionHint;
+
+  /// No description provided for @selectRegionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select region'**
+  String get selectRegionHint;
+
+  /// No description provided for @supplierShippingCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Cost'**
+  String get supplierShippingCost;
+
+  /// No description provided for @supplierTargetType.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Type *'**
+  String get supplierTargetType;
+
+  /// No description provided for @supplierTaxRuleList.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Rule List'**
+  String get supplierTaxRuleList;
+
+  /// No description provided for @supplierUpdateBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Banner'**
+  String get supplierUpdateBanner;
+
+  /// No description provided for @supplierUpdateCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Coupon'**
+  String get supplierUpdateCoupon;
+
+  /// No description provided for @supplierUpdateMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Method'**
+  String get supplierUpdateMethod;
+
+  /// No description provided for @supplierBannerImage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner Image *'**
+  String get supplierBannerImage2;
+
+  /// No description provided for @supplierEditPromotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Promotion'**
+  String get supplierEditPromotion;
+
+  /// No description provided for @supplierManageBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Banners'**
+  String get supplierManageBanners;
+
+  /// No description provided for @supplierManageCoupons.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Coupons'**
+  String get supplierManageCoupons;
+
+  /// No description provided for @supplierNoBannersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No banners yet'**
+  String get supplierNoBannersYet;
+
+  /// No description provided for @supplierNoCouponsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No coupons yet'**
+  String get supplierNoCouponsYet;
+
+  /// No description provided for @supplierPickupIsFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup is free'**
+  String get supplierPickupIsFree;
+
+  /// No description provided for @supplierPromotionList.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion List'**
+  String get supplierPromotionList;
+
+  /// No description provided for @searchCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country'**
+  String get searchCountryHint;
+
+  /// No description provided for @selectCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select country'**
+  String get selectCountryHint;
+
+  /// No description provided for @supplierStatusNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Status & Notes'**
+  String get supplierStatusNotes;
+
+  /// No description provided for @supplierCreateTaxRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Tax Rule'**
+  String get supplierCreateTaxRule;
+
+  /// No description provided for @supplierDeleteTaxRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Tax Rule'**
+  String get supplierDeleteTaxRule;
+
+  /// No description provided for @supplierDiscountType.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Type *'**
+  String get supplierDiscountType;
+
+  /// No description provided for @supplierOrderLevelTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Order-level tax'**
+  String get supplierOrderLevelTax;
+
+  /// No description provided for @supplierPromotionRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion Rules'**
+  String get supplierPromotionRules;
+
+  /// No description provided for @supplierSelectBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Branches'**
+  String get supplierSelectBranches;
+
+  /// No description provided for @supplierWholesaleDeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Wholesale Deals'**
+  String get supplierWholesaleDeals;
+
+  /// No description provided for @supplierDeletePromotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Promotion'**
+  String get supplierDeletePromotion;
+
+  /// No description provided for @supplierDiscountValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Value *'**
+  String get supplierDiscountValue;
+
+  /// No description provided for @supplierExpressDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Express Delivery'**
+  String get supplierExpressDelivery;
+
+  /// No description provided for @supplierManageTaxRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Tax Rules'**
+  String get supplierManageTaxRules;
+
+  /// No description provided for @supplierMinOrderAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Order Amount'**
+  String get supplierMinOrderAmount;
+
+  /// No description provided for @supplierNoResultsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get supplierNoResultsFound;
+
+  /// No description provided for @supplierNoTaxRulesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No tax rules yet'**
+  String get supplierNoTaxRulesYet;
+
+  /// No description provided for @supplierPleaseSelectA.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a '**
+  String get supplierPleaseSelectA;
+
+  /// No description provided for @supplierPricingTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing & Timing'**
+  String get supplierPricingTiming;
+
+  /// No description provided for @supplierPromotionName.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion Name *'**
+  String get supplierPromotionName;
+
+  /// No description provided for @supplierPromotionTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion Target'**
+  String get supplierPromotionTarget;
+
+  /// No description provided for @supplierSearchTaxRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tax rules'**
+  String get supplierSearchTaxRules;
+
+  /// No description provided for @supplierSelectProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Product *'**
+  String get supplierSelectProduct;
+
+  /// No description provided for @supplierUpdatePromotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Promotion'**
+  String get supplierUpdatePromotion;
+
+  /// No description provided for @supplierManagePromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Promotions'**
+  String get supplierManagePromotions;
+
+  /// No description provided for @supplierNoPromotionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No promotions yet'**
+  String get supplierNoPromotionsYet;
+
+  /// No description provided for @supplierScheduleStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule & Status'**
+  String get supplierScheduleStatus;
+
+  /// No description provided for @supplierSearchPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Search promotions'**
+  String get supplierSearchPromotions;
+
+  /// No description provided for @supplierSelectCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Category *'**
+  String get supplierSelectCategory;
+
+  /// No description provided for @supplierSelectedBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Branches'**
+  String get supplierSelectedBranches;
+
+  /// No description provided for @supplierStandardDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard Delivery'**
+  String get supplierStandardDelivery;
+
+  /// No description provided for @supplierTaxApplicability.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Applicability'**
+  String get supplierTaxApplicability;
+
+  /// No description provided for @supplierTaxConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Configuration'**
+  String get supplierTaxConfiguration;
+
+  /// No description provided for @supplierAutoGenerateName.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-generate name'**
+  String get supplierAutoGenerateName;
+
+  /// No description provided for @supplierBannerInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner Information'**
+  String get supplierBannerInformation;
+
+  /// No description provided for @supplierCouponInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon Information'**
+  String get supplierCouponInformation;
+
+  /// No description provided for @supplierMethodInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Method Information'**
+  String get supplierMethodInformation;
+
+  /// No description provided for @supplierPickupFromBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup from Branch'**
+  String get supplierPickupFromBranch;
+
+  /// No description provided for @supplierPickupFromBranch2.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup from branch'**
+  String get supplierPickupFromBranch2;
+
+  /// No description provided for @supplierCountryIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Country is required'**
+  String get supplierCountryIsRequired;
+
+  /// No description provided for @supplierMaxDiscountAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Discount Amount'**
+  String get supplierMaxDiscountAmount;
+
+  /// No description provided for @supplierNoMatchingBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching banners'**
+  String get supplierNoMatchingBanners;
+
+  /// No description provided for @supplierBranchApplicability.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Applicability'**
+  String get supplierBranchApplicability;
+
+  /// No description provided for @supplierDiscountValue2.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Value (%) *'**
+  String get supplierDiscountValue2;
+
+  /// No description provided for @supplierEditShippingMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Shipping Method'**
+  String get supplierEditShippingMethod;
+
+  /// No description provided for @supplierMinimumOrderAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Order Amount'**
+  String get supplierMinimumOrderAmount;
+
+  /// No description provided for @supplierSelectSubcategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select SubCategory *'**
+  String get supplierSelectSubcategory;
+
+  /// No description provided for @supplierShippingMethodList.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Method List'**
+  String get supplierShippingMethodList;
+
+  /// No description provided for @supplierTaxRuleInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Rule Information'**
+  String get supplierTaxRuleInformation;
+
+  /// No description provided for @supplierNoMatchingTaxRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching tax rules'**
+  String get supplierNoMatchingTaxRules;
+
+  /// No description provided for @supplierPromotionInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion Information'**
+  String get supplierPromotionInformation;
+
+  /// No description provided for @supplierFieldnameIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'\$fieldName is required'**
+  String get supplierFieldnameIsRequired;
+
+  /// No description provided for @supplierCouldNotLoadBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load banners'**
+  String get supplierCouldNotLoadBanners;
+
+  /// No description provided for @supplierCouldNotLoadCoupons.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load coupons'**
+  String get supplierCouldNotLoadCoupons;
+
+  /// No description provided for @supplierCreateShippingMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Shipping Method'**
+  String get supplierCreateShippingMethod;
+
+  /// No description provided for @supplierDeleteShippingMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Shipping Method'**
+  String get supplierDeleteShippingMethod;
+
+  /// No description provided for @supplierNoMatchingPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching promotions'**
+  String get supplierNoMatchingPromotions;
+
+  /// No description provided for @supplierPromotionTitleCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion title copied'**
+  String get supplierPromotionTitleCopied;
+
+  /// No description provided for @supplierSortOrderIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort order is required'**
+  String get supplierSortOrderIsRequired;
+
+  /// No description provided for @supplierEstimatedDeliveryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Delivery Time'**
+  String get supplierEstimatedDeliveryTime;
+
+  /// No description provided for @supplierFreeShippingThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Shipping Threshold'**
+  String get supplierFreeShippingThreshold;
+
+  /// No description provided for @supplierManageShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Shipping Methods'**
+  String get supplierManageShippingMethods;
+
+  /// No description provided for @supplierNoShippingMethodsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No shipping methods yet'**
+  String get supplierNoShippingMethodsYet;
+
+  /// No description provided for @supplierPleaseSelectACountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a country'**
+  String get supplierPleaseSelectACountry;
+
+  /// No description provided for @supplierSearchShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Search shipping methods'**
+  String get supplierSearchShippingMethods;
+
+  /// No description provided for @supplierCouldNotLoadTaxRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load tax rules'**
+  String get supplierCouldNotLoadTaxRules;
+
+  /// No description provided for @supplierCouldNotLoadPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load promotions'**
+  String get supplierCouldNotLoadPromotions;
+
+  /// No description provided for @supplierApplyTaxToShippingCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply tax to shipping cost'**
+  String get supplierApplyTaxToShippingCost;
+
+  /// No description provided for @supplierBannerCopiedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner copied successfully'**
+  String get supplierBannerCopiedSuccessfully;
+
+  /// No description provided for @supplierNoMatchingShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching shipping methods'**
+  String get supplierNoMatchingShippingMethods;
+
+  /// No description provided for @supplierSpecialOffersForRetailers.
+  ///
+  /// In en, this message translates to:
+  /// **'Special offers for retailers'**
+  String get supplierSpecialOffersForRetailers;
+
+  /// No description provided for @supplierCouldNotLoadTargetOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load target options'**
+  String get supplierCouldNotLoadTargetOptions;
+
+  /// No description provided for @supplierPleaseSelectACategoryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a category first'**
+  String get supplierPleaseSelectACategoryFirst;
+
+  /// No description provided for @supplierRegionIsRequiredForLebanon.
+  ///
+  /// In en, this message translates to:
+  /// **'Region is required for Lebanon'**
+  String get supplierRegionIsRequiredForLebanon;
+
+  /// No description provided for @supplierCouldNotLoadShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load shipping methods'**
+  String get supplierCouldNotLoadShippingMethods;
+
+  /// No description provided for @supplierTaxRateMustBeGreaterThan0.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rate must be greater than 0'**
+  String get supplierTaxRateMustBeGreaterThan0;
+
+  /// No description provided for @supplierFieldnameMustBeAValidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'\$fieldName must be a valid number'**
+  String get supplierFieldnameMustBeAValidNumber;
+
+  /// No description provided for @supplierFieldnameMustBeGreaterThan0.
+  ///
+  /// In en, this message translates to:
+  /// **'\$fieldName must be greater than 0'**
+  String get supplierFieldnameMustBeGreaterThan0;
+
+  /// No description provided for @supplierPleaseSelectAtLeastOneBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one branch'**
+  String get supplierPleaseSelectAtLeastOneBranch;
+
+  /// No description provided for @supplierBannerImageUploadedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner image uploaded successfully'**
+  String get supplierBannerImageUploadedSuccessfully;
+
+  /// No description provided for @supplierOptionalNotesAboutThisTaxRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional notes about this tax rule'**
+  String get supplierOptionalNotesAboutThisTaxRule;
+
+  /// No description provided for @supplierPleaseSelectARegionForLebanon.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a region for Lebanon'**
+  String get supplierPleaseSelectARegionForLebanon;
+
+  /// No description provided for @supplierValidFromMustBeBeforeValidTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid From must be before Valid To'**
+  String get supplierValidFromMustBeBeforeValidTo;
+
+  /// No description provided for @supplierTaxRateCannotBeGreaterThan100.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rate cannot be greater than 100'**
+  String get supplierTaxRateCannotBeGreaterThan100;
+
+  /// No description provided for @supplierUploadedImageUrlWillAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded image URL will appear here'**
+  String get supplierUploadedImageUrlWillAppearHere;
+
+  /// No description provided for @supplierNoRegionsAvailableForThisCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'No regions available for this country.'**
+  String get supplierNoRegionsAvailableForThisCountry;
+
+  /// No description provided for @supplierUrlMustStartWithHttpOrHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'URL must start with http:// or https://'**
+  String get supplierUrlMustStartWithHttpOrHttps;
+
+  /// No description provided for @supplierOptionalNotesAboutThisShippingMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional notes about this shipping method'**
+  String get supplierOptionalNotesAboutThisShippingMethod;
+
+  /// No description provided for @supplierSortOrderMustBeAValidPositiveNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort order must be a valid positive number'**
+  String get supplierSortOrderMustBeAValidPositiveNumber;
+
+  /// No description provided for @supplierPercentDiscountCannotBeGreaterThan100.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent discount cannot be greater than 100'**
+  String get supplierPercentDiscountCannotBeGreaterThan100;
+
+  /// No description provided for @supplierFieldnameMustBeGreaterThanOrEqualTo0.
+  ///
+  /// In en, this message translates to:
+  /// **'\$fieldName must be greater than or equal to 0'**
+  String get supplierFieldnameMustBeGreaterThanOrEqualTo0;
+
+  /// No description provided for @supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a preset or keep Custom and enter your own order-level tax rule.'**
+  String get supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule;
+
+  /// No description provided for @supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected branches are loaded from the backend Branch Management module.'**
+  String
+  get supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule;
+
+  /// No description provided for @supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'No active branches available. Add branches from Branch Management first.'**
+  String
+  get supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst;
+
+  /// No description provided for @supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country is required because tax is calculated from the retailer delivery country.'**
+  String
+  get supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry;
+
+  /// No description provided for @supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected item name is shown here, but the backend saves its ID in targetValue.'**
+  String
+  get supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue;
+
+  /// No description provided for @supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Create tax rules from the supplier dashboard quick action or tap the plus icon above.'**
+  String
+  get supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove;
+
+  /// No description provided for @supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: enter 11 for 11%. Tax is applied to the whole order based on country and region.'**
+  String
+  get supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion;
+
+  /// No description provided for @supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Country and region are used later by retailer checkout to show the correct shipping options.'**
+  String
+  get supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions;
+
+  /// No description provided for @supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Create shipping methods from the supplier dashboard quick action or tap the plus icon above.'**
+  String
+  get supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove;
+
+  /// No description provided for @supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose No region for a country-level rule, or choose a specific region for a more specific rule.'**
+  String
+  get supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule;
+
+  /// No description provided for @supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.'**
+  String
+  get supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability;
+
+  /// No description provided for @supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload an image from your device. The backend returns a URL and stores it in the banner imageUrl field.'**
+  String
+  get supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField;
+
+  /// No description provided for @supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure order-level tax by country and region. Retailer checkout will use these rules to calculate tax.'**
+  String
+  get supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax;
+
+  /// No description provided for @supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'If enabled, checkout tax will include shipping cost. If disabled, tax applies only to items after promotion discount.'**
+  String
+  get supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount;
+
+  /// No description provided for @supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches define where this shipping method is valid. Retailer checkout will later match shipping with fulfillment branch.'**
+  String
+  get supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch;
+
+  /// No description provided for @supplierFieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} is required'**
+  String supplierFieldRequired(Object fieldName);
+
+  /// No description provided for @supplierFieldGreaterThanZero.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} must be greater than 0'**
+  String supplierFieldGreaterThanZero(Object fieldName);
+
+  /// No description provided for @supplierFieldGreaterThanOrEqualZero.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} must be greater than or equal to 0'**
+  String supplierFieldGreaterThanOrEqualZero(Object fieldName);
+
+  /// No description provided for @supplierFieldValidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} must be a valid number'**
+  String supplierFieldValidNumber(Object fieldName);
+
+  /// No description provided for @supplierBranchesValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches: {value}'**
+  String supplierBranchesValue(Object value);
+
+  /// No description provided for @supplierTargetValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Target: {value}'**
+  String supplierTargetValue(Object value);
+
+  /// No description provided for @supplierOrderValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Order: {value}'**
+  String supplierOrderValue(Object value);
+
+  /// No description provided for @supplierVisibleNowValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible now: {value}'**
+  String supplierVisibleNowValue(Object value);
+
+  /// No description provided for @supplierValidNowValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid now: {value}'**
+  String supplierValidNowValue(Object value);
+
+  /// No description provided for @notRequiredLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not required'**
+  String get notRequiredLabel;
+
+  /// No description provided for @pickButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick'**
+  String get pickButton;
+
+  /// No description provided for @uploadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading...'**
+  String get uploadingLabel;
+
+  /// No description provided for @supplierBannerImagePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner Image'**
+  String get supplierBannerImagePlain;
+
+  /// No description provided for @supplierBannersDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View, create, edit, and delete supplier banners saved in the backend database. These banners will later appear for retailers on the home screen.'**
+  String get supplierBannersDescription;
+
+  /// No description provided for @supplierBusinessDaysHint.
+  ///
+  /// In en, this message translates to:
+  /// **'2-3 business days'**
+  String get supplierBusinessDaysHint;
+
+  /// No description provided for @supplierChooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose category'**
+  String get supplierChooseCategory;
+
+  /// No description provided for @supplierCouponCodePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon Code'**
+  String get supplierCouponCodePlain;
+
+  /// No description provided for @supplierCouponCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'{couponCode} copied'**
+  String supplierCouponCopied(Object couponCode);
+
+  /// No description provided for @supplierCouponDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe this coupon'**
+  String get supplierCouponDescriptionHint;
+
+  /// No description provided for @supplierCouponsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View, create, edit, and delete supplier coupons saved in the backend database. These coupons can later be consumed by the retailer cart and checkout flow.'**
+  String get supplierCouponsDescription;
+
+  /// No description provided for @supplierCreateBannersFromDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Create banners from the supplier dashboard quick action or tap the plus icon above.'**
+  String get supplierCreateBannersFromDashboard;
+
+  /// No description provided for @supplierCreateCouponsFromDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Create coupons from the supplier dashboard quick action or tap the plus icon above.'**
+  String get supplierCreateCouponsFromDashboard;
+
+  /// No description provided for @supplierCreatePromotionsFromDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Create promotions from the supplier dashboard quick action or tap the plus icon above.'**
+  String get supplierCreatePromotionsFromDashboard;
+
+  /// No description provided for @supplierDeleteBannerConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{bannerTitle}\"?'**
+  String supplierDeleteBannerConfirmation(Object bannerTitle);
+
+  /// No description provided for @supplierDeleteCouponConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete coupon \"{couponCode}\"?'**
+  String supplierDeleteCouponConfirmation(Object couponCode);
+
+  /// No description provided for @supplierDeletePromotionConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{promotionTitle}\"?'**
+  String supplierDeletePromotionConfirmation(Object promotionTitle);
+
+  /// No description provided for @supplierDeleteShippingMethodConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{methodName}\"?'**
+  String supplierDeleteShippingMethodConfirmation(Object methodName);
+
+  /// No description provided for @supplierDeleteTaxRuleConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{ruleName}\"?'**
+  String supplierDeleteTaxRuleConfirmation(Object ruleName);
+
+  /// No description provided for @supplierDiscountValuePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Value (%) *'**
+  String get supplierDiscountValuePercent;
+
+  /// No description provided for @supplierDiscountValuePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount Value'**
+  String get supplierDiscountValuePlain;
+
+  /// No description provided for @supplierEndDateAfterStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End date must be after start date'**
+  String get supplierEndDateAfterStartDate;
+
+  /// No description provided for @supplierEstimatedDeliveryTimePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Delivery Time'**
+  String get supplierEstimatedDeliveryTimePlain;
+
+  /// No description provided for @supplierFixedDiscountHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed discount means a fixed amount off, for example \$20 off.'**
+  String get supplierFixedDiscountHelp;
+
+  /// No description provided for @supplierFreeShippingThresholdPlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Shipping Threshold'**
+  String get supplierFreeShippingThresholdPlain;
+
+  /// No description provided for @supplierManageHomeBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Home Banners'**
+  String get supplierManageHomeBanners;
+
+  /// No description provided for @supplierMaxDiscountFixedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum discount amount is not needed for fixed promotions.'**
+  String get supplierMaxDiscountFixedHelp;
+
+  /// No description provided for @supplierMaxDiscountPercentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. It limits the total discount when using percent promotions.'**
+  String get supplierMaxDiscountPercentHelp;
+
+  /// No description provided for @supplierMaximumDiscountAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum Discount Amount'**
+  String get supplierMaximumDiscountAmount;
+
+  /// No description provided for @supplierMaximumDiscountAmountPlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum Discount Amount'**
+  String get supplierMaximumDiscountAmountPlain;
+
+  /// No description provided for @supplierMethodNamePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Method Name'**
+  String get supplierMethodNamePlain;
+
+  /// No description provided for @supplierMethodsShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} methods shown'**
+  String supplierMethodsShown(Object count);
+
+  /// No description provided for @supplierMinimumOrderAmountPlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Order Amount'**
+  String get supplierMinimumOrderAmountPlain;
+
+  /// No description provided for @supplierNoActiveBranchesAvailableAddBranchesFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'No active branches available. Add branches from Branch Management first.'**
+  String get supplierNoActiveBranchesAvailableAddBranchesFirst;
+
+  /// No description provided for @supplierNoActiveCategoriesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No active categories available.'**
+  String get supplierNoActiveCategoriesAvailable;
+
+  /// No description provided for @supplierNoActiveProductsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No active products available.'**
+  String get supplierNoActiveProductsAvailable;
+
+  /// No description provided for @supplierNoActiveSubcategoriesForCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No active subcategories for this category.'**
+  String get supplierNoActiveSubcategoriesForCategory;
+
+  /// No description provided for @supplierNoRegionsAvailableForCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'No regions available for this country.'**
+  String get supplierNoRegionsAvailableForCountry;
+
+  /// No description provided for @supplierOnlyForPercentCoupons.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for percent coupons'**
+  String get supplierOnlyForPercentCoupons;
+
+  /// No description provided for @supplierOnlyForPercentDiscounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for percent discounts'**
+  String get supplierOnlyForPercentDiscounts;
+
+  /// No description provided for @supplierPercentDiscountHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent discount means percentage off, for example 10% off. Maximum discount amount can limit supplier loss.'**
+  String get supplierPercentDiscountHelp;
+
+  /// No description provided for @supplierPleaseSelectTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select {targetLabel}'**
+  String supplierPleaseSelectTarget(Object targetLabel);
+
+  /// No description provided for @supplierPromotionBranchesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches define where the promotion is valid. Product/category selection above is not filtered by branch.'**
+  String get supplierPromotionBranchesHelp;
+
+  /// No description provided for @supplierPromotionDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Short description shown later to retailer side'**
+  String get supplierPromotionDescriptionHint;
+
+  /// No description provided for @supplierPromotionTargetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The target defines which products are included in the promotion. Branch availability is selected separately below.'**
+  String get supplierPromotionTargetHelp;
+
+  /// No description provided for @supplierPromotionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion Title *'**
+  String get supplierPromotionTitle;
+
+  /// No description provided for @supplierPromotionTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Food category wholesale deal'**
+  String get supplierPromotionTitleHint;
+
+  /// No description provided for @supplierPromotionTitlePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion Title'**
+  String get supplierPromotionTitlePlain;
+
+  /// No description provided for @supplierPromotionsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View, search, create, edit, and delete supplier wholesale promotions for products, categories, subcategories, or all products.'**
+  String get supplierPromotionsDescription;
+
+  /// No description provided for @supplierPromotionsShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} promotions shown'**
+  String supplierPromotionsShown(Object count);
+
+  /// No description provided for @supplierRuleNamePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Name'**
+  String get supplierRuleNamePlain;
+
+  /// No description provided for @supplierRulesShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} rules shown'**
+  String supplierRulesShown(Object count);
+
+  /// No description provided for @supplierSelectCategoryFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a category first.'**
+  String get supplierSelectCategoryFirst;
+
+  /// No description provided for @supplierSelectTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select {targetLabel}'**
+  String supplierSelectTargetHint(Object targetLabel);
+
+  /// No description provided for @supplierSelectTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select {targetLabel} *'**
+  String supplierSelectTargetLabel(Object targetLabel);
+
+  /// No description provided for @supplierSelectedBranchesLoadedFromBackendBranchManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected branches are loaded from the backend Branch Management module.'**
+  String get supplierSelectedBranchesLoadedFromBackendBranchManagement;
+
+  /// No description provided for @supplierSelectedItemNameShownHere.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected item name is shown here, but the backend saves its ID in targetValue.'**
+  String get supplierSelectedItemNameShownHere;
+
+  /// No description provided for @supplierShippingCostPlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Cost'**
+  String get supplierShippingCostPlain;
+
+  /// No description provided for @supplierShippingNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Beirut Standard Delivery'**
+  String get supplierShippingNameHint;
+
+  /// No description provided for @supplierSortOrderPositiveNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort order must be a valid positive number'**
+  String get supplierSortOrderPositiveNumber;
+
+  /// No description provided for @supplierSortOrderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort order is required'**
+  String get supplierSortOrderRequired;
+
+  /// No description provided for @supplierTargetUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Target URL is required'**
+  String get supplierTargetUrlRequired;
+
+  /// No description provided for @supplierTaxRatePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Rate'**
+  String get supplierTaxRatePlain;
+
+  /// No description provided for @supplierTitlePlain.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get supplierTitlePlain;
+
+  /// No description provided for @supplierValidFromBeforeValidTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid From must be before Valid To'**
+  String get supplierValidFromBeforeValidTo;
+
+  /// No description provided for @supplierScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get supplierScheduled;
+
+  /// No description provided for @supplierExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get supplierExpired;
+
+  /// No description provided for @supplierUsageLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage limit reached'**
+  String get supplierUsageLimitReached;
+
+  /// No description provided for @supplierFreePickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Free pickup'**
+  String get supplierFreePickup;
+
+  /// No description provided for @supplierNoMinimum.
+  ///
+  /// In en, this message translates to:
+  /// **'No minimum'**
+  String get supplierNoMinimum;
+
+  /// No description provided for @supplierMinimumValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} minimum'**
+  String supplierMinimumValue(Object value);
+
+  /// No description provided for @supplierNoFreeShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'No free shipping'**
+  String get supplierNoFreeShipping;
+
+  /// No description provided for @supplierFreeAboveValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Free above {value}'**
+  String supplierFreeAboveValue(Object value);
+
+  /// No description provided for @supplierNoLocationSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No location selected'**
+  String get supplierNoLocationSelected;
+
+  /// No description provided for @supplierNoBranchesSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No branches selected'**
+  String get supplierNoBranchesSelected;
+
+  /// No description provided for @supplierNoTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'No target'**
+  String get supplierNoTarget;
+
+  /// No description provided for @supplierDrawerRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ Requests'**
+  String get supplierDrawerRfqs;
 }
 
 class _AppLocalizationsDelegate

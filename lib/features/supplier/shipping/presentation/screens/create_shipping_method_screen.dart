@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../../injection_container.dart';
 import '../../data/models/shipping_location_model.dart';
 import '../../data/services/shipping_location_api_service.dart';
@@ -89,16 +92,6 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
     final matches = _countries.where(
       (country) => country.id == _selectedCountryId,
-    );
-
-    return matches.isEmpty ? null : matches.first;
-  }
-
-  ShippingRegionModel? get _selectedRegion {
-    if (_selectedRegionId == null) return null;
-
-    final matches = _regions.where(
-      (region) => region.id == _selectedRegionId,
     );
 
     return matches.isEmpty ? null : matches.first;
@@ -376,7 +369,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
 
     return null;
@@ -389,7 +382,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     final parsed = double.tryParse(value!.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be greater than or equal to 0';
+      return context.l10n.supplierFieldGreaterThanOrEqualZero(fieldName);
     }
 
     return null;
@@ -401,7 +394,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     final parsed = double.tryParse(value.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
     return null;
@@ -415,7 +408,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
   bool _validateLocation(BuildContext context) {
     if (_selectedCountryId == null || _selectedCountryId!.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a country')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectACountry)),
       );
       return false;
     }
@@ -423,7 +416,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     if (_selectedCountryIsLebanon &&
         (_selectedRegionId == null || _selectedRegionId!.trim().isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a region for Lebanon')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectARegionForLebanon)),
       );
       return false;
     }
@@ -439,7 +432,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     if (_branchScope == ShippingBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one branch')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch)),
       );
       return;
     }
@@ -455,8 +448,18 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
       countryIso2Code: _selectedCountry?.iso2Code,
       countryIso3Code: _selectedCountry?.iso3Code,
       regionId: _selectedRegionId,
-      regionName: _selectedRegion?.name,
-      regionCode: _selectedRegion?.code,
+      regionName: _selectedRegionId == null
+          ? null
+          : _regions
+              .where((region) => region.id == _selectedRegionId)
+              .map((region) => region.name)
+              .firstOrNull,
+      regionCode: _selectedRegionId == null
+          ? null
+          : _regions
+              .where((region) => region.id == _selectedRegionId)
+              .map((region) => region.code)
+              .firstOrNull,
       cost: _isPickup
           ? 0
           : double.tryParse(_shippingCostController.text.trim()) ?? 0,
@@ -549,8 +552,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
               ),
               title: Text(
                 _isEditMode
-                    ? 'Edit Shipping Method'
-                    : 'Create Shipping Method',
+                    ? context.l10n.supplierEditShippingMethod
+                    : context.l10n.supplierCreateShippingMethod,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 22,
@@ -582,8 +585,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
+                          child: Text(
+                            context.l10n.cancelButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -619,8 +622,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                 )
                               : Text(
                                   _isEditMode
-                                      ? 'Update Method'
-                                      : 'Create Method',
+                                      ? context.l10n.supplierUpdateMethod
+                                      : context.l10n.supplierCreateMethod,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -641,18 +644,18 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Method Information',
+                        title: context.l10n.supplierMethodInformation,
                         children: [
-                          _FieldLabel('Method Name *'),
+                          _FieldLabel(context.l10n.supplierMethodName),
                           _InputField(
                             controller: _methodNameController,
-                            hintText: 'Beirut Standard Delivery',
+                            hintText: context.l10n.supplierShippingNameHint,
                             validator: (value) {
-                              return _required(value, 'Method Name');
+                              return _required(value, context.l10n.supplierMethodNamePlain);
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Method Type *'),
+                          _FieldLabel(context.l10n.supplierMethodType),
                           _MethodTypeDropdown(
                             value: _methodType,
                             onChanged: _handleMethodTypeChanged,
@@ -663,18 +666,18 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Location',
+                        title: context.l10n.supplierLocation,
                         children: [
                           Row(
                             children: [
-                              const Expanded(
-                                child: _FieldLabel('Country *'),
+                              Expanded(
+                                child: _FieldLabel(context.l10n.countryRequiredLabel),
                               ),
                               TextButton(
                                 onPressed:
                                     _loadingCountries ? null : _loadCountries,
-                                child: const Text(
-                                  'Refresh',
+                                child: Text(
+                                  context.l10n.refreshButton,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w900,
                                   ),
@@ -690,15 +693,15 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                           else if (_countryErrorMessage != null)
                             _ErrorText(message: _countryErrorMessage!)
                           else
-                            _CountrySearchField(
+                            _CountryDropdown(
                               countries: _countries,
                               selectedCountryId: _selectedCountryId,
                               onChanged: _handleCountryChanged,
                             ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'Country and region are used later by retailer checkout to show the correct shipping options.',
+                                context.l10n.supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions,
                           ),
                           const _DividerSpace(),
                           Row(
@@ -706,8 +709,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               Expanded(
                                 child: _FieldLabel(
                                   _selectedCountryIsLebanon
-                                      ? 'Region *'
-                                      : 'Region',
+                                      ? context.l10n.regionRequiredLabel
+                                      : context.l10n.regionLabel,
                                 ),
                               ),
                               TextButton(
@@ -717,8 +720,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                     : () => _loadRegionsForSelectedCountry(
                                           resetRegionIfNeeded: false,
                                         ),
-                                child: const Text(
-                                  'Refresh',
+                                child: Text(
+                                  context.l10n.refreshButton,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w900,
                                   ),
@@ -734,8 +737,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                           else if (_regionErrorMessage != null)
                             _ErrorText(message: _regionErrorMessage!)
                           else if (_regions.isEmpty)
-                            const Text(
-                              'No regions available for this country.',
+                            Text(
+                              context.l10n.supplierNoRegionsAvailableForCountry,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -743,7 +746,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               ),
                             )
                           else
-                            _RegionSearchField(
+                            _RegionDropdown(
                               regions: _regions,
                               selectedRegionId: _selectedRegionId,
                               required: _selectedCountryIsLebanon,
@@ -757,12 +760,12 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Pricing & Timing',
+                        title: context.l10n.supplierPricingTiming,
                         children: [
-                          _FieldLabel('Shipping Cost'),
+                          _FieldLabel(context.l10n.supplierShippingCost),
                           _InputField(
                             controller: _shippingCostController,
-                            hintText: _isPickup ? 'Pickup is free' : '5',
+                            hintText: _isPickup ? context.l10n.supplierPickupIsFree : '5',
                             enabled: !_isPickup,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -773,29 +776,29 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
                               return _requiredPositiveOrZeroNumber(
                                 value,
-                                'Shipping Cost',
+                                context.l10n.supplierShippingCostPlain,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Estimated Delivery Time'),
+                          _FieldLabel(context.l10n.supplierEstimatedDeliveryTime),
                           _InputField(
                             controller: _estimatedDeliveryTimeController,
                             hintText: _isPickup
-                                ? 'Pickup from branch'
-                                : '2-3 business days',
+                                ? context.l10n.supplierPickupFromBranch
+                                : context.l10n.supplierBusinessDaysHint,
                             enabled: !_isPickup,
                             validator: (value) {
                               if (_isPickup) return null;
 
                               return _required(
                                 value,
-                                'Estimated Delivery Time',
+                                context.l10n.supplierEstimatedDeliveryTimePlain,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Minimum Order Amount'),
+                          _FieldLabel(context.l10n.supplierMinimumOrderAmount),
                           _InputField(
                             controller: _minimumOrderAmountController,
                             hintText: '50',
@@ -806,15 +809,16 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             validator: (value) {
                               return _optionalPositiveOrZeroNumber(
                                 value,
-                                'Minimum Order Amount',
+                                context.l10n.supplierMinimumOrderAmountPlain,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Free Shipping Threshold'),
+                          _FieldLabel(context.l10n.supplierFreeShippingThreshold),
                           _InputField(
                             controller: _freeShippingThresholdController,
-                            hintText: _isPickup ? 'Pickup only' : '200',
+                            hintText:
+                                _isPickup ? context.l10n.supplierPickupOnly : '200',
                             enabled: !_isPickup,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -825,7 +829,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
                               return _optionalPositiveOrZeroNumber(
                                 value,
-                                'Free Shipping Threshold',
+                                context.l10n.supplierFreeShippingThresholdPlain,
                               );
                             },
                           ),
@@ -833,9 +837,9 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Branch Applicability',
+                        title: context.l10n.supplierBranchApplicability,
                         children: [
-                          _FieldLabel('Applies To *'),
+                          _FieldLabel(context.l10n.supplierAppliesTo),
                           _BranchScopeDropdown(
                             value: _branchScope,
                             onChanged: (value) {
@@ -853,23 +857,23 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             },
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'Branches define where this shipping method is valid. Retailer checkout will later match shipping with fulfillment branch.',
+                                context.l10n.supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch,
                           ),
                           if (_branchScope ==
                               ShippingBranchScope.selectedBranches) ...[
                             const _DividerSpace(),
                             Row(
                               children: [
-                                const Expanded(
-                                  child: _FieldLabel('Select Branches'),
+                                Expanded(
+                                  child: _FieldLabel(context.l10n.supplierSelectBranches),
                                 ),
                                 TextButton(
                                   onPressed:
                                       _loadingBranches ? null : _loadBranches,
-                                  child: const Text(
-                                    'Refresh',
+                                  child: Text(
+                                    context.l10n.refreshButton,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w900,
                                     ),
@@ -887,8 +891,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             else if (_branchErrorMessage != null)
                               _ErrorText(message: _branchErrorMessage!)
                             else if (_branches.isEmpty)
-                              const Text(
-                                'No active branches available. Add branches from Branch Management first.',
+                              Text(
+                                context.l10n.supplierNoActiveBranchesAvailableAddBranchesFirst,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -920,13 +924,13 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Status & Notes',
+                        title: context.l10n.supplierStatusNotes,
                         children: [
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
+                                  context.l10n.activeStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -949,11 +953,11 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             ],
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Notes'),
+                          _FieldLabel(context.l10n.notesLabel),
                           _InputField(
                             controller: _notesController,
                             hintText:
-                                'Optional notes about this shipping method',
+                                context.l10n.supplierOptionalNotesAboutThisShippingMethod,
                             maxLines: 3,
                           ),
                         ],
@@ -974,7 +978,7 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({
+  _SectionCard({
     required this.title,
     required this.children,
   });
@@ -1019,7 +1023,7 @@ class _SectionCard extends StatelessWidget {
 class _FieldLabel extends StatelessWidget {
   final String text;
 
-  const _FieldLabel(this.text);
+  _FieldLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -1045,7 +1049,7 @@ class _InputField extends StatelessWidget {
   final int maxLines;
   final String? Function(String?)? validator;
 
-  const _InputField({
+  _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType,
@@ -1111,20 +1115,21 @@ class _MethodTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingMethodType>(
-      isExpanded: true,
       initialValue: value,
-      selectedItemBuilder: (context) {
-        return ShippingMethodType.values.map((type) {
-          return _DropdownText(type.label);
-        }).toList();
-      },
-      items: ShippingMethodType.values.map((type) {
-        return DropdownMenuItem<ShippingMethodType>(
-          value: type,
-          child: _DropdownText(type.label),
-        );
-      }).toList(),
+      items: ShippingMethodType.values
+          .map(
+            (type) => DropdownMenuItem<ShippingMethodType>(
+              value: type,
+              child: Text(_localizedEnumLabel(context, type.label)),
+            ),
+          )
+          .toList(),
       onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
       decoration: _dropdownDecoration(context),
     );
   }
@@ -1142,583 +1147,105 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingBranchScope>(
-      isExpanded: true,
       initialValue: value,
-      selectedItemBuilder: (context) {
-        return ShippingBranchScope.values.map((scope) {
-          return _DropdownText(scope.label);
-        }).toList();
-      },
-      items: ShippingBranchScope.values.map((scope) {
-        return DropdownMenuItem<ShippingBranchScope>(
-          value: scope,
-          child: _DropdownText(scope.label),
-        );
-      }).toList(),
+      items: ShippingBranchScope.values
+          .map(
+            (scope) => DropdownMenuItem<ShippingBranchScope>(
+              value: scope,
+              child: Text(_localizedEnumLabel(context, scope.label)),
+            ),
+          )
+          .toList(),
       onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppThemeTokens.textPrimary,
+      ),
       decoration: _dropdownDecoration(context),
     );
   }
 }
 
-class _CountrySearchField extends StatelessWidget {
+class _CountryDropdown extends StatelessWidget {
   final List<ShippingCountryModel> countries;
   final String? selectedCountryId;
   final ValueChanged<String?> onChanged;
 
-  const _CountrySearchField({
+  const _CountryDropdown({
     required this.countries,
     required this.selectedCountryId,
     required this.onChanged,
   });
 
-  ShippingCountryModel? get _selectedCountry {
-    if (selectedCountryId == null) return null;
-
-    final matches = countries.where(
-      (country) => country.id == selectedCountryId,
-    );
-
-    return matches.isEmpty ? null : matches.first;
-  }
-
-  Future<void> _openCountryPicker(BuildContext context) async {
-    final selected = await showModalBottomSheet<ShippingCountryModel>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) {
-        return _CountryPickerSheet(
-          countries: countries,
-          selectedCountryId: selectedCountryId,
-        );
-      },
-    );
-
-    if (selected == null) return;
-
-    onChanged(selected.id);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _SearchableSelectionField(
-      value: _selectedCountry?.name,
-      hintText: 'Search and select country',
-      onTap: () => _openCountryPicker(context),
-      validator: () {
-        if (selectedCountryId == null || selectedCountryId!.trim().isEmpty) {
-          return 'Country is required';
-        }
+    ShippingCountryModel? selectedCountry;
+    for (final country in countries) {
+      if (country.id == selectedCountryId) {
+        selectedCountry = country;
+        break;
+      }
+    }
 
+    return SearchableSelectionField<ShippingCountryModel>(
+      label: context.l10n.countryRequiredLabel,
+      hintText: context.l10n.selectCountryHint,
+      searchHintText: context.l10n.searchCountryHint,
+      items: countries,
+      itemLabel: (country) => country.name,
+      value: selectedCountry,
+      onSelected: (country) => onChanged(country.id),
+      validator: (country) {
+        if (country == null || country.id.trim().isEmpty) {
+          return context.l10n.supplierCountryIsRequired;
+        }
         return null;
       },
+      emptyText: context.l10n.noCountriesFound,
     );
   }
 }
 
-class _RegionSearchField extends StatelessWidget {
+class _RegionDropdown extends StatelessWidget {
   final List<ShippingRegionModel> regions;
   final String? selectedRegionId;
   final bool required;
   final ValueChanged<String?> onChanged;
 
-  const _RegionSearchField({
+  const _RegionDropdown({
     required this.regions,
     required this.selectedRegionId,
     required this.required,
     required this.onChanged,
   });
 
-  ShippingRegionModel? get _selectedRegion {
-    if (selectedRegionId == null) return null;
-
-    final matches = regions.where(
-      (region) => region.id == selectedRegionId,
-    );
-
-    return matches.isEmpty ? null : matches.first;
-  }
-
-  Future<void> _openRegionPicker(BuildContext context) async {
-    final selected = await showModalBottomSheet<ShippingRegionModel>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) {
-        return _RegionPickerSheet(
-          regions: regions,
-          selectedRegionId: selectedRegionId,
-        );
-      },
-    );
-
-    if (selected == null) return;
-
-    onChanged(selected.id);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _SearchableSelectionField(
-      value: _selectedRegion?.name,
-      hintText: 'Search and select region',
-      onTap: () => _openRegionPicker(context),
-      validator: () {
+    ShippingRegionModel? selectedRegion;
+    for (final region in regions) {
+      if (region.id == selectedRegionId) {
+        selectedRegion = region;
+        break;
+      }
+    }
+
+    return SearchableSelectionField<ShippingRegionModel>(
+      label: required ? context.l10n.regionRequiredLabel : context.l10n.regionLabel,
+      hintText: context.l10n.selectRegionHint,
+      searchHintText: context.l10n.searchRegionHint,
+      items: regions,
+      itemLabel: (region) => region.name,
+      value: selectedRegion,
+      onSelected: (region) => onChanged(region.id),
+      validator: (region) {
         if (!required) return null;
-
-        if (selectedRegionId == null || selectedRegionId!.trim().isEmpty) {
-          return 'Region is required for Lebanon';
+        if (region == null || region.id.trim().isEmpty) {
+          return context.l10n.supplierRegionIsRequiredForLebanon;
         }
-
         return null;
       },
-    );
-  }
-}
-
-class _SearchableSelectionField extends FormField<String> {
-  _SearchableSelectionField({
-    required String? value,
-    required String hintText,
-    required VoidCallback onTap,
-    required String? Function() validator,
-  }) : super(
-          initialValue: value,
-          validator: (_) => validator(),
-          builder: (field) {
-            final hasValue = value != null && value.trim().isNotEmpty;
-            final hasError = field.hasError;
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: onTap,
-                  borderRadius: BorderRadius.circular(6),
-                  child: InputDecorator(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppThemeTokens.surface,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 13,
-                      ),
-                      border: _fieldBorder(),
-                      enabledBorder: _fieldBorder(),
-                      focusedBorder: _fieldBorder(
-                        color: Theme.of(field.context).colorScheme.primary,
-                      ),
-                      errorBorder: _fieldBorder(color: Colors.red),
-                      focusedErrorBorder: _fieldBorder(color: Colors.red),
-                      errorText: hasError ? field.errorText : null,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            hasValue ? value.trim() : hintText,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight:
-                                  hasValue ? FontWeight.w700 : FontWeight.w600,
-                              color: hasValue
-                                  ? AppThemeTokens.textPrimary
-                                  : AppThemeTokens.textSecondary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        const Icon(
-                          Icons.search,
-                          size: 20,
-                          color: AppThemeTokens.textSecondary,
-                        ),
-                        const SizedBox(width: 6),
-                        const Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 24,
-                          color: AppThemeTokens.textSecondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-
-  static OutlineInputBorder _fieldBorder({
-    Color color = AppThemeTokens.border,
-  }) {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
-      borderSide: BorderSide(color: color, width: 1.2),
-    );
-  }
-}
-
-class _CountryPickerSheet extends StatefulWidget {
-  final List<ShippingCountryModel> countries;
-  final String? selectedCountryId;
-
-  const _CountryPickerSheet({
-    required this.countries,
-    required this.selectedCountryId,
-  });
-
-  @override
-  State<_CountryPickerSheet> createState() => _CountryPickerSheetState();
-}
-
-class _CountryPickerSheetState extends State<_CountryPickerSheet> {
-  final TextEditingController _searchController = TextEditingController();
-
-  String _query = '';
-
-  List<ShippingCountryModel> get _filteredCountries {
-    final normalizedQuery = _query.trim().toLowerCase();
-
-    if (normalizedQuery.isEmpty) {
-      return widget.countries;
-    }
-
-    return widget.countries.where((country) {
-      return country.name.toLowerCase().contains(normalizedQuery) ||
-          country.iso2Code.toLowerCase().contains(normalizedQuery) ||
-          country.iso3Code.toLowerCase().contains(normalizedQuery);
-    }).toList();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _SearchBottomSheetContainer(
-      title: 'Select Country',
-      searchHint: 'Search country...',
-      searchController: _searchController,
-      onSearchChanged: (value) {
-        setState(() {
-          _query = value;
-        });
-      },
-      emptyMessage: 'No country found',
-      itemCount: _filteredCountries.length,
-      itemBuilder: (context, index) {
-        final country = _filteredCountries[index];
-        final selected = country.id == widget.selectedCountryId;
-
-        return _PickerTile(
-          title: country.name,
-          subtitle: _countrySubtitle(country),
-          selected: selected,
-          onTap: () => Navigator.of(context).pop(country),
-        );
-      },
-    );
-  }
-
-  String _countrySubtitle(ShippingCountryModel country) {
-    final codes = [
-      country.iso2Code.trim(),
-      country.iso3Code.trim(),
-    ].where((code) => code.isNotEmpty).join(' • ');
-
-    return codes.isEmpty ? 'Country' : codes;
-  }
-}
-
-class _RegionPickerSheet extends StatefulWidget {
-  final List<ShippingRegionModel> regions;
-  final String? selectedRegionId;
-
-  const _RegionPickerSheet({
-    required this.regions,
-    required this.selectedRegionId,
-  });
-
-  @override
-  State<_RegionPickerSheet> createState() => _RegionPickerSheetState();
-}
-
-class _RegionPickerSheetState extends State<_RegionPickerSheet> {
-  final TextEditingController _searchController = TextEditingController();
-
-  String _query = '';
-
-  List<ShippingRegionModel> get _filteredRegions {
-    final normalizedQuery = _query.trim().toLowerCase();
-
-    if (normalizedQuery.isEmpty) {
-      return widget.regions;
-    }
-
-    return widget.regions.where((region) {
-      return region.name.toLowerCase().contains(normalizedQuery) ||
-          region.code.toLowerCase().contains(normalizedQuery) ||
-          region.countryName.toLowerCase().contains(normalizedQuery);
-    }).toList();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _SearchBottomSheetContainer(
-      title: 'Select Region',
-      searchHint: 'Search region...',
-      searchController: _searchController,
-      onSearchChanged: (value) {
-        setState(() {
-          _query = value;
-        });
-      },
-      emptyMessage: 'No region found',
-      itemCount: _filteredRegions.length,
-      itemBuilder: (context, index) {
-        final region = _filteredRegions[index];
-        final selected = region.id == widget.selectedRegionId;
-
-        return _PickerTile(
-          title: region.name,
-          subtitle: _regionSubtitle(region),
-          selected: selected,
-          onTap: () => Navigator.of(context).pop(region),
-        );
-      },
-    );
-  }
-
-  String _regionSubtitle(ShippingRegionModel region) {
-    final parts = [
-      region.code.trim(),
-      region.countryName.trim(),
-    ].where((part) => part.isNotEmpty).join(' • ');
-
-    return parts.isEmpty ? 'Region' : parts;
-  }
-}
-
-class _SearchBottomSheetContainer extends StatelessWidget {
-  final String title;
-  final String searchHint;
-  final TextEditingController searchController;
-  final ValueChanged<String> onSearchChanged;
-  final String emptyMessage;
-  final int itemCount;
-  final IndexedWidgetBuilder itemBuilder;
-
-  const _SearchBottomSheetContainer({
-    required this.title,
-    required this.searchHint,
-    required this.searchController,
-    required this.onSearchChanged,
-    required this.emptyMessage,
-    required this.itemCount,
-    required this.itemBuilder,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final height = MediaQuery.of(context).size.height * 0.78;
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Container(
-        height: height,
-        decoration: const BoxDecoration(
-          color: AppThemeTokens.surface,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Container(
-                width: 48,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: AppThemeTokens.border,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 12, 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                          color: AppThemeTokens.textPrimary,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: onSearchChanged,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: searchHint,
-                    hintStyle: const TextStyle(
-                      color: AppThemeTokens.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFFF8FAFC),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 13,
-                    ),
-                    border: _border(),
-                    enabledBorder: _border(),
-                    focusedBorder: _border(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ),
-              const Divider(height: 1, color: AppThemeTokens.border),
-              Expanded(
-                child: itemCount == 0
-                    ? Center(
-                        child: Text(
-                          emptyMessage,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: AppThemeTokens.textSecondary,
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
-                        itemCount: itemCount,
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 4);
-                        },
-                        itemBuilder: itemBuilder,
-                      ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide(color: color, width: 1.2),
-    );
-  }
-}
-
-class _PickerTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _PickerTile({
-    required this.title,
-    required this.subtitle,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
-    return Material(
-      color: selected ? primary.withValues(alpha: 0.10) : Colors.transparent,
-      borderRadius: BorderRadius.circular(14),
-      child: ListTile(
-        onTap: onTap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-        title: Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
-            color: AppThemeTokens.textPrimary,
-          ),
-        ),
-        subtitle: subtitle.trim().isEmpty
-            ? null
-            : Text(
-                subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppThemeTokens.textSecondary,
-                ),
-              ),
-        trailing: selected
-            ? Icon(
-                Icons.check_circle,
-                color: primary,
-              )
-            : const Icon(
-                Icons.chevron_right,
-                color: AppThemeTokens.textSecondary,
-              ),
-      ),
-    );
-  }
-}
-
-class _DropdownText extends StatelessWidget {
-  final String text;
-
-  const _DropdownText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      maxLines: 1,
-      softWrap: false,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
+      emptyText: context.l10n.noRegionsFound,
     );
   }
 }
@@ -1726,7 +1253,7 @@ class _DropdownText extends StatelessWidget {
 class _HelpText extends StatelessWidget {
   final String text;
 
-  const _HelpText({required this.text});
+  _HelpText({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -1769,6 +1296,46 @@ class _DividerSpace extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 14),
       child: Divider(height: 1, color: AppThemeTokens.border),
     );
+  }
+}
+
+
+String _localizedEnumLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
   }
 }
 

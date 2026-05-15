@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,23 +83,23 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Shipping Method',
+          title: Text(
+            context.l10n.supplierDeleteShippingMethod,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete "${method.name}"?',
+            context.l10n.supplierDeleteShippingMethodConfirmation(method.name),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancelButton),
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text(
-                'Delete',
+              child: Text(
+                context.l10n.deleteButton,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -147,7 +149,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
             },
           ),
           title: Text(
-            'Shipping Methods',
+            context.l10n.supplierShippingMethods,
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -156,12 +158,12 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
           ),
           actions: [
             IconButton(
-              tooltip: 'Create Shipping Method',
+              tooltip: context.l10n.supplierCreateShippingMethod,
               onPressed: () => context.go('/supplier-shipping/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
-              tooltip: 'Refresh',
+              tooltip: context.l10n.refreshButton,
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -269,19 +271,19 @@ class _StatusFilterBar extends StatelessWidget {
     return Row(
       children: [
         _StatusFilterButton(
-          label: 'Enabled only',
+          label: context.l10n.supplierEnabledOnly,
           selected: selected == _ShippingStatusFilter.enabled,
           onTap: () => onChanged(_ShippingStatusFilter.enabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
-          label: 'Disabled only',
+          label: context.l10n.supplierDisabledOnly,
           selected: selected == _ShippingStatusFilter.disabled,
           onTap: () => onChanged(_ShippingStatusFilter.disabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
-          label: 'All',
+          label: context.l10n.allLabel,
           selected: selected == _ShippingStatusFilter.all,
           onTap: () => onChanged(_ShippingStatusFilter.all),
         ),
@@ -365,12 +367,12 @@ class _HeaderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Shipping Methods',
+                  context.l10n.supplierManageShippingMethods,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -379,7 +381,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'Create and manage delivery or pickup options by country, region, branch scope, cost, and availability.',
+                  context.l10n.supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability,
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -409,7 +411,7 @@ class _SearchField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: 'Search shipping methods',
+        hintText: context.l10n.supplierSearchShippingMethods,
         hintStyle: const TextStyle(
           color: AppThemeTokens.textSecondary,
           fontWeight: FontWeight.w600,
@@ -447,8 +449,8 @@ class _SectionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Shipping Method List',
+        Text(
+          context.l10n.supplierShippingMethodList,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
@@ -457,7 +459,7 @@ class _SectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '$count method${count == 1 ? '' : 's'} shown',
+          context.l10n.supplierMethodsShown(count),
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
@@ -512,8 +514,8 @@ class _ErrorCard extends StatelessWidget {
         children: [
           const Icon(Icons.error_outline, color: Colors.red, size: 34),
           const SizedBox(height: 12),
-          const Text(
-            'Could not load shipping methods',
+          Text(
+            context.l10n.supplierCouldNotLoadShippingMethods,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
@@ -537,8 +539,8 @@ class _ErrorCard extends StatelessWidget {
               foregroundColor: Colors.white,
               elevation: 0,
             ),
-            child: const Text(
-              'Retry',
+            child: Text(
+              context.l10n.retryButton,
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
@@ -575,8 +577,8 @@ class _EmptyCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          const Text(
-            'No shipping methods yet',
+          Text(
+            context.l10n.supplierNoShippingMethodsYet,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -584,8 +586,8 @@ class _EmptyCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Create shipping methods from the supplier dashboard quick action or tap the plus icon above.',
+          Text(
+            context.l10n.supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
@@ -618,8 +620,8 @@ class _NoSearchResultsCard extends StatelessWidget {
         children: [
           Icon(Icons.search_off, color: primary, size: 34),
           const SizedBox(height: 12),
-          const Text(
-            'No matching shipping methods',
+          Text(
+            context.l10n.supplierNoMatchingShippingMethods,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,

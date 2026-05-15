@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -77,7 +79,7 @@ class _PromotionsViewState extends State<_PromotionsView> {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Promotion title copied')),
+      SnackBar(content: Text(context.l10n.supplierPromotionTitleCopied)),
     );
   }
 
@@ -89,23 +91,23 @@ class _PromotionsViewState extends State<_PromotionsView> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Promotion',
+          title: Text(
+            context.l10n.supplierDeletePromotion,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete "${promotion.title}"?',
+            context.l10n.supplierDeletePromotionConfirmation(promotion.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancelButton),
             ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text(
-                'Delete',
+              child: Text(
+                context.l10n.deleteButton,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
@@ -155,7 +157,7 @@ class _PromotionsViewState extends State<_PromotionsView> {
             },
           ),
           title: Text(
-            'Promotions',
+            context.l10n.supplierPromotions,
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -164,12 +166,12 @@ class _PromotionsViewState extends State<_PromotionsView> {
           ),
           actions: [
             IconButton(
-              tooltip: 'Create Promotion',
+              tooltip: context.l10n.supplierCreatePromotion,
               onPressed: () => context.go('/supplier-promotions/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
-              tooltip: 'Refresh',
+              tooltip: context.l10n.refreshButton,
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh),
             ),
@@ -282,19 +284,19 @@ class _StatusFilterBar extends StatelessWidget {
     return Row(
       children: [
         _StatusFilterButton(
-          label: 'Enabled only',
+          label: context.l10n.supplierEnabledOnly,
           selected: selected == _PromotionStatusFilter.enabled,
           onTap: () => onChanged(_PromotionStatusFilter.enabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
-          label: 'Disabled only',
+          label: context.l10n.supplierDisabledOnly,
           selected: selected == _PromotionStatusFilter.disabled,
           onTap: () => onChanged(_PromotionStatusFilter.disabled),
         ),
         const SizedBox(width: 8),
         _StatusFilterButton(
-          label: 'All',
+          label: context.l10n.allLabel,
           selected: selected == _PromotionStatusFilter.all,
           onTap: () => onChanged(_PromotionStatusFilter.all),
         ),
@@ -378,12 +380,12 @@ class _HeaderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Manage Promotions',
+                  context.l10n.supplierManagePromotions,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -392,7 +394,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  'View, search, create, edit, and delete supplier wholesale promotions for products, categories, subcategories, or all products.',
+                  context.l10n.supplierPromotionsDescription,
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -422,7 +424,7 @@ class _SearchField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: 'Search promotions',
+        hintText: context.l10n.supplierSearchPromotions,
         hintStyle: const TextStyle(
           color: AppThemeTokens.textSecondary,
           fontWeight: FontWeight.w600,
@@ -460,8 +462,8 @@ class _SectionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Promotion List',
+        Text(
+          context.l10n.supplierPromotionList,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
@@ -470,7 +472,7 @@ class _SectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '$count promotion${count == 1 ? '' : 's'} shown',
+          context.l10n.supplierPromotionsShown(count),
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
@@ -525,8 +527,8 @@ class _ErrorCard extends StatelessWidget {
         children: [
           const Icon(Icons.error_outline, color: Colors.red, size: 34),
           const SizedBox(height: 12),
-          const Text(
-            'Could not load promotions',
+          Text(
+            context.l10n.supplierCouldNotLoadPromotions,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
@@ -550,8 +552,8 @@ class _ErrorCard extends StatelessWidget {
               foregroundColor: Colors.white,
               elevation: 0,
             ),
-            child: const Text(
-              'Retry',
+            child: Text(
+              context.l10n.retryButton,
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
@@ -588,8 +590,8 @@ class _EmptyPromotionsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          const Text(
-            'No promotions yet',
+          Text(
+            context.l10n.supplierNoPromotionsYet,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -597,8 +599,8 @@ class _EmptyPromotionsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Create promotions from the supplier dashboard quick action or tap the plus icon above.',
+          Text(
+            context.l10n.supplierCreatePromotionsFromDashboard,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
@@ -631,8 +633,8 @@ class _NoSearchResultsCard extends StatelessWidget {
         children: [
           Icon(Icons.search_off, color: primary, size: 34),
           const SizedBox(height: 12),
-          const Text(
-            'No matching promotions',
+          Text(
+            context.l10n.supplierNoMatchingPromotions,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w900,
