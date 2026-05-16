@@ -620,13 +620,19 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode
-                                      ? context.l10n.supplierUpdateMethod
-                                      : context.l10n.supplierCreateMethod,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                                  : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? context.l10n.supplierUpdateMethod
+                                        : context.l10n.supplierCreateMethod,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -668,22 +674,18 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                       _SectionCard(
                         title: context.l10n.supplierLocation,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _FieldLabel(context.l10n.countryRequiredLabel),
-                              ),
-                              TextButton(
-                                onPressed:
-                                    _loadingCountries ? null : _loadCountries,
-                                child: Text(
-                                  context.l10n.refreshButton,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                            Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: TextButton(
+                              onPressed:
+                                  _loadingCountries ? null : _loadCountries,
+                              child: Text(
+                                context.l10n.refreshButton,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                           if (_loadingCountries)
                             const Padding(
@@ -704,30 +706,22 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                                 context.l10n.supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions,
                           ),
                           const _DividerSpace(),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _FieldLabel(
-                                  _selectedCountryIsLebanon
-                                      ? context.l10n.regionRequiredLabel
-                                      : context.l10n.regionLabel,
+                            Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: TextButton(
+                              onPressed: _selectedCountryId == null ||
+                                      _loadingRegions
+                                  ? null
+                                  : () => _loadRegionsForSelectedCountry(
+                                        resetRegionIfNeeded: false,
+                                      ),
+                              child: Text(
+                                context.l10n.refreshButton,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                              TextButton(
-                                onPressed: _selectedCountryId == null ||
-                                        _loadingRegions
-                                    ? null
-                                    : () => _loadRegionsForSelectedCountry(
-                                          resetRegionIfNeeded: false,
-                                        ),
-                                child: Text(
-                                  context.l10n.refreshButton,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                           if (_loadingRegions)
                             const Padding(

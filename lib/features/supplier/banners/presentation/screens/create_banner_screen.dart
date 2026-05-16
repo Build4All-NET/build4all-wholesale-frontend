@@ -295,7 +295,21 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     );
   }
 
-  bool _validateDates() {
+   bool _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startsAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidFrom,
+      );
+      return false;
+    }
+
+    if (requireBothDates && _expiresAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidTo,
+      );
+      return false;
+    }
+
     if (_startsAt != null &&
         _expiresAt != null &&
         _startsAt!.isAfter(_expiresAt!)) {
@@ -306,7 +320,6 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     _dateError = null;
     return true;
   }
-
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return context.l10n.supplierFieldRequired(fieldName);
@@ -374,8 +387,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
   void _saveBanner(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
-
-    if (!_validateDates()) {
+    if (!_validateDates(requireBothDates: true)) {
       setState(() {});
       return;
     }
@@ -546,13 +558,19 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode
-                                      ? context.l10n.supplierUpdateBanner
-                                      : context.l10n.supplierCreateBanner,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                                 : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? context.l10n.supplierUpdateBanner
+                                        : context.l10n.supplierCreateBanner,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -1272,50 +1290,98 @@ class _DateTimePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: onPick,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppThemeTokens.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppThemeTokens.border),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppThemeTokens.border),
+        color: AppThemeTokens.surface,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear),
-        ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppThemeTokens.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 44,
+                  child: OutlinedButton(
+                    onPressed: onClear,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppThemeTokens.textPrimary,
+                      side: const BorderSide(color: AppThemeTokens.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.l10n.clearButton,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SizedBox(
+                  height: 44,
+                  child: ElevatedButton(
+                    onPressed: onPick,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      minimumSize: const Size(0, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.l10n.pickButton,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
