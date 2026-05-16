@@ -278,4 +278,10 @@ class ApiConfig {
   static String acceptRetailerRfqQuotation(int rfqId, int quotationId) {
     return '/retailer/rfqs/$rfqId/quotations/$quotationId/accept';
   }
+
+  // =========================
+  // Retailer Product AI
+  // =========================
+  static String retailerProductAiChat(int productId) =>
+      '/retailer-ai/products/$productId/chat';
 }

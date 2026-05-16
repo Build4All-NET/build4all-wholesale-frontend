@@ -5066,6 +5066,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'RFQ Requests'**
   String get supplierDrawerRfqs;
+
+  /// No description provided for @shipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping'**
+  String get shipping;
+
+  /// No description provided for @calculatedAtCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculated at checkout'**
+  String get calculatedAtCheckout;
+
+  /// No description provided for @totalBeforeShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Total before shipping'**
+  String get totalBeforeShipping;
+
+  /// No description provided for @productAiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Product AI Assistant'**
+  String get productAiAssistant;
+
+  /// No description provided for @askAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI'**
+  String get askAi;
+
+  /// No description provided for @askAboutThisProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about this product...'**
+  String get askAboutThisProduct;
+
+  /// No description provided for @aiThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking...'**
+  String get aiThinking;
+
+  /// No description provided for @aiWelcomeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything about this product. I can help with MOQ, stock, price, and whether it fits your store.'**
+  String get aiWelcomeMessage;
+
+  /// No description provided for @aiSuggestionFitStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this product good for my store?'**
+  String get aiSuggestionFitStore;
+
+  /// No description provided for @aiSuggestionOrderQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'How many units should I order?'**
+  String get aiSuggestionOrderQuantity;
+
+  /// No description provided for @aiSuggestionMoqStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain the MOQ and stock.'**
+  String get aiSuggestionMoqStock;
+
+  /// No description provided for @aiUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'AI assistant is temporarily unavailable. Please try again later.'**
+  String get aiUnavailable;
+
+  /// No description provided for @aiTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI assistant took too long. Please try again.'**
+  String get aiTimeout;
+
+  /// No description provided for @aiEmptyAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not generate an answer. Please try again.'**
+  String get aiEmptyAnswer;
 }
 
 class _AppLocalizationsDelegate

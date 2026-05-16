@@ -9,7 +9,10 @@ import 'core/storage/locale_storage.dart';
 import 'core/theme/theme_cubit.dart';
 import 'core/theme/locale_cubit.dart';
 import 'core/theme/runtime_theme_service.dart';
-
+import 'features/retailer/product_ai/data/repositories/retailer_product_ai_repository_impl.dart';
+import 'features/retailer/product_ai/data/services/retailer_product_ai_service.dart';
+import 'features/retailer/product_ai/domain/repositories/retailer_product_ai_repository.dart';
+import 'features/retailer/product_ai/presentation/cubit/retailer_product_ai_cubit.dart';
 // =========================
 // AUTH
 // =========================
@@ -30,7 +33,6 @@ import 'features/supplier_profile/data/services/supplier_profile_service.dart';
 import 'features/supplier_profile/domain/repositories/supplier_profile_repository.dart';
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
-
 
 // =========================
 // SUPPLIER PROFILE DISPLAY - BUILD4ALL READ ONLY
@@ -371,6 +373,8 @@ Future<void> init() async {
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
+
+
 
   // =========================
   // REPOSITORIES
@@ -817,8 +821,7 @@ Future<void> init() async {
 
   sl.registerFactory<SupplierProfileDisplayBloc>(
     () => SupplierProfileDisplayBloc(
-      getSupplierProfileDisplayUseCase:
-          sl<GetSupplierProfileDisplayUseCase>(),
+      getSupplierProfileDisplayUseCase: sl<GetSupplierProfileDisplayUseCase>(),
     ),
   );
 
@@ -948,7 +951,6 @@ Future<void> init() async {
       updateSupplierOrderStatusUseCase: sl<UpdateSupplierOrderStatusUseCase>(),
     ),
   );
-
   sl.registerFactory<SupplierDashboardBloc>(
     () => SupplierDashboardBloc(
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
@@ -983,6 +985,26 @@ Future<void> init() async {
       cancelRfqUseCase: sl<CancelRfqUseCase>(),
       deleteRfqUseCase: sl<DeleteRfqUseCase>(),
       acceptRfqQuotationUseCase: sl<AcceptRfqQuotationUseCase>(),
+    ),
+  );
+    // =========================
+  // RETAILER PRODUCT AI
+  // =========================
+  sl.registerLazySingleton<RetailerProductAiService>(
+    () => RetailerProductAiService(
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<RetailerProductAiRepository>(
+    () => RetailerProductAiRepositoryImpl(
+      retailerProductAiService: sl<RetailerProductAiService>(),
+    ),
+  );
+
+  sl.registerFactory<RetailerProductAiCubit>(
+    () => RetailerProductAiCubit(
+      repository: sl<RetailerProductAiRepository>(),
     ),
   );
 }

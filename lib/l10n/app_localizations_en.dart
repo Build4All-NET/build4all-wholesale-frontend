@@ -2716,4 +2716,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supplierDrawerRfqs => 'RFQ Requests';
+
+  @override
+  String get shipping => 'Shipping';
+
+  @override
+  String get calculatedAtCheckout => 'Calculated at checkout';
+
+  @override
+  String get totalBeforeShipping => 'Total before shipping';
+
+  @override
+  String get productAiAssistant => 'Product AI Assistant';
+
+  @override
+  String get askAi => 'Ask AI';
+
+  @override
+  String get askAboutThisProduct => 'Ask about this product...';
+
+  @override
+  String get aiThinking => 'Thinking...';
+
+  @override
+  String get aiWelcomeMessage =>
+      'Ask me anything about this product. I can help with MOQ, stock, price, and whether it fits your store.';
+
+  @override
+  String get aiSuggestionFitStore => 'Is this product good for my store?';
+
+  @override
+  String get aiSuggestionOrderQuantity => 'How many units should I order?';
+
+  @override
+  String get aiSuggestionMoqStock => 'Explain the MOQ and stock.';
+
+  @override
+  String get aiUnavailable =>
+      'AI assistant is temporarily unavailable. Please try again later.';
+
+  @override
+  String get aiTimeout => 'The AI assistant took too long. Please try again.';
+
+  @override
+  String get aiEmptyAnswer =>
+      'I could not generate an answer. Please try again.';
 }

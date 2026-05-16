@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
+import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
+import 'retailer_product_image.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
   final List<HomeProductModel> products;
@@ -57,7 +59,7 @@ class FeaturedProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 380,
+          height: 438,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
@@ -106,7 +108,7 @@ class _ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.035),
+            color: Colors.black.withValues(alpha: 0.035),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -185,6 +187,17 @@ class _ProductCard extends StatelessWidget {
                     text: '${l10n.stock}: ${product.totalStock}',
                   ),
                   const Spacer(),
+
+                  /// Product-specific AI button.
+                  /// Kept full-width and separated from Add button to avoid overflow.
+                  RetailerProductAiButton(
+                    productId: product.id,
+                    productName: product.name,
+                    imageUrl: product.imageUrl,
+                    expanded: true,
+                  ),
+                  const SizedBox(height: 8),
+
                   SizedBox(
                     width: double.infinity,
                     height: 40,
@@ -267,29 +280,12 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = product.imageUrl;
-
-    return Container(
-      height: 108,
+    return RetailerProductImage(
+      imageUrl: product.imageUrl,
       width: double.infinity,
-      color: AppThemeTokens.background,
-      child: imageUrl == null || imageUrl.trim().isEmpty
-          ? const Icon(
-              Icons.inventory_2_outlined,
-              size: 46,
-              color: AppThemeTokens.textSecondary,
-            )
-          : Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.inventory_2_outlined,
-                  size: 46,
-                  color: AppThemeTokens.textSecondary,
-                );
-              },
-            ),
+      height: 108,
+      borderRadius: 0,
+      iconSize: 46,
     );
   }
 }

@@ -2767,4 +2767,50 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierDrawerRfqs => 'Demandes RFQ';
+
+  @override
+  String get shipping => 'Livraison';
+
+  @override
+  String get calculatedAtCheckout => 'Calculée au paiement';
+
+  @override
+  String get totalBeforeShipping => 'Total avant livraison';
+
+  @override
+  String get productAiAssistant => 'مساعد المنتج الذكي';
+
+  @override
+  String get askAi => 'اسأل الذكاء';
+
+  @override
+  String get askAboutThisProduct => 'اسأل عن هذا المنتج...';
+
+  @override
+  String get aiThinking => 'جارٍ التفكير...';
+
+  @override
+  String get aiWelcomeMessage =>
+      'اسألني أي شيء عن هذا المنتج. يمكنني مساعدتك في الحد الأدنى للطلب والمخزون والسعر ومدى مناسبته لمتجرك.';
+
+  @override
+  String get aiSuggestionFitStore => 'هل هذا المنتج مناسب لمتجري؟';
+
+  @override
+  String get aiSuggestionOrderQuantity => 'كم وحدة يجب أن أطلب؟';
+
+  @override
+  String get aiSuggestionMoqStock => 'اشرح الحد الأدنى للطلب والمخزون.';
+
+  @override
+  String get aiUnavailable =>
+      'مساعد الذكاء غير متاح مؤقتًا. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get aiTimeout =>
+      'استغرق مساعد الذكاء وقتًا طويلًا. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get aiEmptyAnswer =>
+      'لم أتمكن من إنشاء إجابة. يرجى المحاولة مرة أخرى.';
 }

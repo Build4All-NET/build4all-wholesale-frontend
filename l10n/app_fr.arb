@@ -1070,5 +1070,19 @@
   "supplierNoLocationSelected": "Aucun emplacement sélectionné",
   "supplierNoBranchesSelected": "Aucune succursale sélectionnée",
   "supplierNoTarget": "Aucune cible",
-  "supplierDrawerRfqs": "Demandes RFQ"
+  "supplierDrawerRfqs": "Demandes RFQ",
+  "shipping": "Livraison",
+"calculatedAtCheckout": "Calculée au paiement",
+"totalBeforeShipping": "Total avant livraison",
+"productAiAssistant": "مساعد المنتج الذكي",
+"askAi": "اسأل الذكاء",
+"askAboutThisProduct": "اسأل عن هذا المنتج...",
+"aiThinking": "جارٍ التفكير...",
+"aiWelcomeMessage": "اسألني أي شيء عن هذا المنتج. يمكنني مساعدتك في الحد الأدنى للطلب والمخزون والسعر ومدى مناسبته لمتجرك.",
+"aiSuggestionFitStore": "هل هذا المنتج مناسب لمتجري؟",
+"aiSuggestionOrderQuantity": "كم وحدة يجب أن أطلب؟",
+"aiSuggestionMoqStock": "اشرح الحد الأدنى للطلب والمخزون.",
+"aiUnavailable": "مساعد الذكاء غير متاح مؤقتًا. يرجى المحاولة لاحقًا.",
+"aiTimeout": "استغرق مساعد الذكاء وقتًا طويلًا. يرجى المحاولة مرة أخرى.",
+"aiEmptyAnswer": "لم أتمكن من إنشاء إجابة. يرجى المحاولة مرة أخرى."
 }

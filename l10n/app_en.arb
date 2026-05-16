@@ -1070,5 +1070,19 @@
   "supplierNoLocationSelected": "No location selected",
   "supplierNoBranchesSelected": "No branches selected",
   "supplierNoTarget": "No target",
-  "supplierDrawerRfqs": "RFQ Requests"
+  "supplierDrawerRfqs": "RFQ Requests",
+  "shipping": "Shipping",
+"calculatedAtCheckout": "Calculated at checkout",
+"totalBeforeShipping": "Total before shipping",
+"productAiAssistant": "Product AI Assistant",
+"askAi": "Ask AI",
+"askAboutThisProduct": "Ask about this product...",
+"aiThinking": "Thinking...",
+"aiWelcomeMessage": "Ask me anything about this product. I can help with MOQ, stock, price, and whether it fits your store.",
+"aiSuggestionFitStore": "Is this product good for my store?",
+"aiSuggestionOrderQuantity": "How many units should I order?",
+"aiSuggestionMoqStock": "Explain the MOQ and stock.",
+"aiUnavailable": "AI assistant is temporarily unavailable. Please try again later.",
+"aiTimeout": "The AI assistant took too long. Please try again.",
+"aiEmptyAnswer": "I could not generate an answer. Please try again."
 }
