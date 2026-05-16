@@ -71,6 +71,19 @@ import 'features/retailer/rfq/domain/usecases/get_my_rfqs_usecase.dart';
 import 'features/retailer/rfq/domain/usecases/get_rfq_details_usecase.dart';
 import 'features/retailer/rfq/presentation/cubit/retailer_rfq_cubit.dart';
 import 'features/retailer/rfq/domain/usecases/update_rfq_usecase.dart';
+
+// =========================
+// SUPPLIER RFQ
+// =========================
+import 'features/supplier/rfq/data/repositories/supplier_rfq_repository_impl.dart';
+import 'features/supplier/rfq/data/services/supplier_rfq_api_service.dart';
+import 'features/supplier/rfq/domain/repositories/supplier_rfq_repository.dart';
+import 'features/supplier/rfq/domain/usecases/get_open_supplier_rfqs_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/get_supplier_rfq_details_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/submit_supplier_rfq_quotation_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/update_supplier_rfq_quotation_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/withdraw_supplier_rfq_quotation_usecase.dart';
+import 'features/supplier/rfq/presentation/cubit/supplier_rfq_cubit.dart';
 // =========================
 // SUPPLIER CATEGORIES / CATALOG
 // =========================
@@ -290,6 +303,12 @@ Future<void> init() async {
         RetailerRfqApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
+  sl.registerLazySingleton<SupplierRfqApiService>(
+    () => SupplierRfqApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierProfileService>(
     () =>
         SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
@@ -411,6 +430,12 @@ Future<void> init() async {
     () => RetailerRfqRepositoryImpl(apiService: sl<RetailerRfqApiService>()),
   );
 
+  sl.registerLazySingleton<SupplierRfqRepository>(
+    () => SupplierRfqRepositoryImpl(
+      apiService: sl<SupplierRfqApiService>(),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierCategoryRepository>(
     () => SupplierCategoryRepositoryImpl(
       apiService: sl<SupplierCategoryApiService>(),
@@ -497,6 +522,29 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AcceptRfqQuotationUseCase>(
     () => AcceptRfqQuotationUseCase(sl<RetailerRfqRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER RFQ USE CASES
+  // =========================
+  sl.registerLazySingleton<GetOpenSupplierRfqsUseCase>(
+    () => GetOpenSupplierRfqsUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<GetSupplierRfqDetailsUseCase>(
+    () => GetSupplierRfqDetailsUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<SubmitSupplierRfqQuotationUseCase>(
+    () => SubmitSupplierRfqQuotationUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateSupplierRfqQuotationUseCase>(
+    () => UpdateSupplierRfqQuotationUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<WithdrawSupplierRfqQuotationUseCase>(
+    () => WithdrawSupplierRfqQuotationUseCase(sl<SupplierRfqRepository>()),
   );
 
   // =========================
@@ -983,6 +1031,19 @@ Future<void> init() async {
       cancelRfqUseCase: sl<CancelRfqUseCase>(),
       deleteRfqUseCase: sl<DeleteRfqUseCase>(),
       acceptRfqQuotationUseCase: sl<AcceptRfqQuotationUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierRfqCubit>(
+    () => SupplierRfqCubit(
+      getOpenSupplierRfqsUseCase: sl<GetOpenSupplierRfqsUseCase>(),
+      getSupplierRfqDetailsUseCase: sl<GetSupplierRfqDetailsUseCase>(),
+      submitSupplierRfqQuotationUseCase:
+          sl<SubmitSupplierRfqQuotationUseCase>(),
+      updateSupplierRfqQuotationUseCase:
+          sl<UpdateSupplierRfqQuotationUseCase>(),
+      withdrawSupplierRfqQuotationUseCase:
+          sl<WithdrawSupplierRfqQuotationUseCase>(),
     ),
   );
 }

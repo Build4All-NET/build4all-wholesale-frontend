@@ -1053,41 +1053,57 @@ class _StatusSelector extends StatelessWidget {
   final ProductStatus selectedStatus;
   final ValueChanged<ProductStatus?> onChanged;
 
-  _StatusSelector({
+  const _StatusSelector({
     required this.selectedStatus,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isActive = selectedStatus == ProductStatus.active;
+    final statusLabel = isActive
+        ? context.l10n.activeStatus
+        : context.l10n.inactiveStatus;
+    final statusColor = isActive
+        ? Theme.of(context).colorScheme.primary
+        : AppThemeTokens.textSecondary;
+
     return Padding(
-      padding: EdgeInsets.only(bottom: 17),
+      padding: const EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             context.l10n.productStatusLabel,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
-          DropdownButtonFormField<ProductStatus>(
-            initialValue: selectedStatus,
-            items: [
-              DropdownMenuItem(
-                value: ProductStatus.active,
-                child: Text(context.l10n.activeStatus),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  statusLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: statusColor,
+                  ),
+                ),
               ),
-              DropdownMenuItem(
-                value: ProductStatus.inactive,
-                child: Text(context.l10n.inactiveStatus),
+              Switch.adaptive(
+                value: isActive,
+                activeColor: Theme.of(context).colorScheme.primary,
+                onChanged: (value) {
+                  onChanged(value ? ProductStatus.active : ProductStatus.inactive);
+                },
               ),
             ],
-            onChanged: onChanged,
-            decoration: _dropdownDecoration(context.l10n.selectProductStatus),
           ),
         ],
       ),

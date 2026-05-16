@@ -62,6 +62,9 @@ import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
 
+import '../features/supplier/rfq/presentation/screens/supplier_rfq_details_screen.dart';
+import '../features/supplier/rfq/presentation/screens/supplier_rfq_list_screen.dart';
+
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
 import '../l10n/app_localizations.dart';
@@ -216,6 +219,25 @@ class AppRouter {
           final order = state.extra as SupplierOrderEntity;
 
           return SupplierOrderDetailsScreen(order: order);
+        },
+      ),
+      GoRoute(
+        path: '/supplier-rfqs',
+        builder: (context, state) => SupplierRfqListScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-rfqs/:rfqId',
+        builder: (context, state) {
+          final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
+
+          if (rfqId == null) {
+            return SupplierComingSoonScreen(
+              title: 'RFQ not found',
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return SupplierRfqDetailsScreen(rfqId: rfqId);
         },
       ),
       GoRoute(
