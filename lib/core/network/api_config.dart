@@ -284,4 +284,9 @@ class ApiConfig {
   // =========================
   static String retailerProductAiChat(int productId) =>
       '/retailer-ai/products/$productId/chat';
+  // =========================
+  // Retailer RFQ AI
+  // =========================
+  static const String retailerRfqAiRequirements =
+      '/retailer-ai/rfq/requirements';
 }

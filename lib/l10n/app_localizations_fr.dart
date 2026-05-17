@@ -2778,39 +2778,380 @@ class AppLocalizationsFr extends AppLocalizations {
   String get totalBeforeShipping => 'Total avant livraison';
 
   @override
-  String get productAiAssistant => 'مساعد المنتج الذكي';
+  String get productAiAssistant => 'Assistant IA du produit';
 
   @override
-  String get askAi => 'اسأل الذكاء';
+  String get askAi => 'Demander à l’IA';
 
   @override
-  String get askAboutThisProduct => 'اسأل عن هذا المنتج...';
+  String get askAboutThisProduct => 'Posez une question sur ce produit...';
 
   @override
-  String get aiThinking => 'جارٍ التفكير...';
+  String get aiThinking => 'Réflexion...';
 
   @override
   String get aiWelcomeMessage =>
-      'اسألني أي شيء عن هذا المنتج. يمكنني مساعدتك في الحد الأدنى للطلب والمخزون والسعر ومدى مناسبته لمتجرك.';
+      'Posez-moi une question sur ce produit. Je peux vous aider avec le MOQ, le stock, le prix et son adéquation à votre magasin.';
 
   @override
-  String get aiSuggestionFitStore => 'هل هذا المنتج مناسب لمتجري؟';
+  String get aiSuggestionFitStore => 'Ce produit convient-il à mon magasin ?';
 
   @override
-  String get aiSuggestionOrderQuantity => 'كم وحدة يجب أن أطلب؟';
+  String get aiSuggestionOrderQuantity =>
+      'Combien d’unités devrais-je commander ?';
 
   @override
-  String get aiSuggestionMoqStock => 'اشرح الحد الأدنى للطلب والمخزون.';
+  String get aiSuggestionMoqStock => 'Expliquez le MOQ et le stock.';
 
   @override
   String get aiUnavailable =>
-      'مساعد الذكاء غير متاح مؤقتًا. يرجى المحاولة لاحقًا.';
+      'L’assistant IA est temporairement indisponible. Veuillez réessayer plus tard.';
 
   @override
   String get aiTimeout =>
-      'استغرق مساعد الذكاء وقتًا طويلًا. يرجى المحاولة مرة أخرى.';
+      'L’assistant IA a pris trop de temps. Veuillez réessayer.';
 
   @override
   String get aiEmptyAnswer =>
-      'لم أتمكن من إنشاء إجابة. يرجى المحاولة مرة أخرى.';
+      'Je n’ai pas pu générer de réponse. Veuillez réessayer.';
+
+  @override
+  String get rfqMyRfqs => 'Mes RFQ';
+
+  @override
+  String get rfqCreate => 'Créer une RFQ';
+
+  @override
+  String get rfqEdit => 'Modifier la RFQ';
+
+  @override
+  String get rfqDetails => 'Détails de la RFQ';
+
+  @override
+  String get rfqRequestsYouPosted => 'Demandes publiées';
+
+  @override
+  String get rfqHowWorksTitle => 'Fonctionnement de la RFQ';
+
+  @override
+  String get rfqHowWorksMessage =>
+      'Publiez une demande de produit lorsque vous ne trouvez pas ce dont vous avez besoin. Les fournisseurs l’examineront et enverront des devis avec le prix, la quantité et les détails de livraison.';
+
+  @override
+  String get rfqNoRfqsYet => 'Aucune RFQ pour le moment';
+
+  @override
+  String get rfqNoRfqsYetMessage =>
+      'Créez votre première demande et laissez les fournisseurs vous envoyer des devis.';
+
+  @override
+  String get rfqProductRequest => 'Demande de produit';
+
+  @override
+  String get rfqProductName => 'Nom du produit *';
+
+  @override
+  String get rfqProductNameHint => 'Exemple : cartons de lait biologique';
+
+  @override
+  String get rfqProductNameRequired => 'Le nom du produit est obligatoire';
+
+  @override
+  String get rfqProductNameTooShort =>
+      'Le nom du produit doit contenir au moins 2 caractères';
+
+  @override
+  String get rfqUploadProductImage => 'Téléverser une image du produit';
+
+  @override
+  String get rfqUploadProductImageHint =>
+      'Optionnel. Cette photo apparaîtra aussi aux fournisseurs lorsqu’ils consulteront votre RFQ.';
+
+  @override
+  String get rfqCategory => 'Catégorie';
+
+  @override
+  String get rfqCategoryHint => 'Alimentation, Électronique...';
+
+  @override
+  String get rfqSubcategory => 'Sous-catégorie';
+
+  @override
+  String get rfqSubcategoryHint => 'Produits laitiers, Téléphones...';
+
+  @override
+  String get rfqDetailedRequirements => 'Exigences détaillées';
+
+  @override
+  String get rfqRequirements => 'Exigences *';
+
+  @override
+  String get rfqRequirementsHint =>
+      'Décrivez les spécifications, la qualité, l’emballage, les marques préférées, la taille, la couleur, les normes...';
+
+  @override
+  String get rfqRequirementsRequired => 'Les exigences sont obligatoires';
+
+  @override
+  String get rfqRequirementsTooShort =>
+      'Les exigences doivent contenir au moins 10 caractères';
+
+  @override
+  String get rfqWriteWithAi => 'Rédiger les exigences avec l’IA';
+
+  @override
+  String get rfqWritingWithAi => 'Rédaction...';
+
+  @override
+  String get rfqAiProductNameRequired => 'Saisissez d’abord le nom du produit.';
+
+  @override
+  String get rfqAiReplaceTitle => 'Remplacer les exigences ?';
+
+  @override
+  String get rfqAiReplaceMessage =>
+      'Le champ des exigences contient déjà du texte. Voulez-vous le remplacer par des exigences générées par l’IA ?';
+
+  @override
+  String get rfqAiReplaceAction => 'Remplacer';
+
+  @override
+  String get rfqAiKeepAction => 'Garder le texte actuel';
+
+  @override
+  String get rfqQuantityAndDelivery => 'Quantité et livraison';
+
+  @override
+  String get rfqMinimumQuantity => 'Quantité minimale *';
+
+  @override
+  String get rfqMinimumQuantityHint => '500';
+
+  @override
+  String get rfqEnterValidQuantity => 'Saisissez une quantité valide';
+
+  @override
+  String get rfqUnit => 'Unité';
+
+  @override
+  String get rfqUnitHint => 'unités';
+
+  @override
+  String get rfqTargetUnitPrice => 'Prix unitaire cible';
+
+  @override
+  String get rfqOptional => 'Optionnel';
+
+  @override
+  String get rfqPreferredDeliveryTime => 'Délai de livraison préféré';
+
+  @override
+  String get rfqChooseDeliveryTime => 'Choisir le délai de livraison';
+
+  @override
+  String get rfqDeliveryWithin24Hours => 'Sous 24 heures';
+
+  @override
+  String get rfqDelivery2To3Days => 'Sous 2-3 jours';
+
+  @override
+  String get rfqDeliveryWithin1Week => 'Sous une semaine';
+
+  @override
+  String get rfqDeliveryWithin2Weeks => 'Sous deux semaines';
+
+  @override
+  String get rfqDeliveryFlexible => 'Flexible';
+
+  @override
+  String get rfqSelectDeadlineDate => 'Sélectionner la date limite';
+
+  @override
+  String get rfqDeliveryLocation => 'Lieu de livraison';
+
+  @override
+  String get rfqCity => 'Ville';
+
+  @override
+  String get rfqCityHint => 'Exemple : Beyrouth';
+
+  @override
+  String get rfqDeliveryAddress => 'Adresse de livraison';
+
+  @override
+  String get rfqDeliveryAddressHint => 'Rue, bâtiment, zone, notes...';
+
+  @override
+  String get rfqPost => 'Publier la RFQ';
+
+  @override
+  String get rfqPosting => 'Publication de la RFQ...';
+
+  @override
+  String get rfqSaveChanges => 'Enregistrer les modifications';
+
+  @override
+  String get rfqSavingChanges => 'Enregistrement...';
+
+  @override
+  String get rfqNotFound => 'RFQ introuvable';
+
+  @override
+  String get rfqCannotEditTitle => 'Cette RFQ ne peut pas être modifiée';
+
+  @override
+  String get rfqCannotEditSupplierMessage =>
+      'Un fournisseur a déjà interagi avec cette demande. Pour garder les devis justes et valides, annulez la RFQ et créez-en une nouvelle si vous avez besoin de changements.';
+
+  @override
+  String get rfqCannotEditStatusMessage =>
+      'Le statut de cette RFQ ne permet pas la modification.';
+
+  @override
+  String get rfqBackToDetails => 'Retour aux détails';
+
+  @override
+  String get rfqSupplierQuotations => 'Devis des fournisseurs';
+
+  @override
+  String get rfqNoQuotesYet =>
+      'Aucun devis fournisseur pour le moment. Les offres apparaîtront ici lorsque les fournisseurs répondront.';
+
+  @override
+  String get rfqCancel => 'Annuler la RFQ';
+
+  @override
+  String get rfqCancelQuestion => 'Annuler la RFQ ?';
+
+  @override
+  String get rfqCancelMessage =>
+      'Cela annulera votre RFQ et les fournisseurs ne pourront plus envoyer de devis.';
+
+  @override
+  String get rfqCancelWithQuotesMessage =>
+      'Cette RFQ contient déjà des devis fournisseurs. L’annulation conserve l’historique mais empêche de nouvelles actions des fournisseurs.';
+
+  @override
+  String get rfqKeep => 'Garder la RFQ';
+
+  @override
+  String get rfqDeleteQuestion => 'Supprimer la RFQ ?';
+
+  @override
+  String get rfqDeleteMessage =>
+      'Cette RFQ n’a pas encore de devis fournisseur, elle peut donc être supprimée en toute sécurité. Cette action est irréversible.';
+
+  @override
+  String get rfqDelete => 'Supprimer';
+
+  @override
+  String get rfqEditRequest => 'Modifier la demande';
+
+  @override
+  String get rfqCancelRequest => 'Annuler la demande';
+
+  @override
+  String get rfqDeleteRequest => 'Supprimer la demande';
+
+  @override
+  String get rfqViewDetails => 'Voir les détails';
+
+  @override
+  String get rfqOpen => 'Ouverte';
+
+  @override
+  String get rfqQuoted => 'Devis reçus';
+
+  @override
+  String get rfqAccepted => 'Acceptée';
+
+  @override
+  String get rfqClosed => 'Fermée';
+
+  @override
+  String get rfqCancelled => 'Annulée';
+
+  @override
+  String get rfqExpired => 'Expirée';
+
+  @override
+  String rfqQuotesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devis',
+      one: '1 devis',
+      zero: '0 devis',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rfqQuantityLabel(int quantity, String unit) {
+    return '$quantity $unit';
+  }
+
+  @override
+  String get rfqNoDeliveryLocation => 'Aucun lieu de livraison ajouté';
+
+  @override
+  String get rfqLocation => 'Lieu';
+
+  @override
+  String get rfqDelivery => 'Livraison';
+
+  @override
+  String get rfqQuantity => 'Quantité';
+
+  @override
+  String get rfqTargetPrice => 'Prix cible';
+
+  @override
+  String get rfqUnitPrice => 'Prix unitaire';
+
+  @override
+  String get rfqTotal => 'Total';
+
+  @override
+  String get rfqShippingNotSpecified => 'Livraison non spécifiée';
+
+  @override
+  String rfqShippingCost(String amount) {
+    return 'Livraison $amount';
+  }
+
+  @override
+  String get rfqAcceptQuotation => 'Accepter le devis';
+
+  @override
+  String get rfqAcceptQuotationQuestion => 'Accepter le devis ?';
+
+  @override
+  String get rfqAcceptQuotationMessage =>
+      'Cela marquera le devis fournisseur sélectionné comme accepté et fermera la RFQ.';
+
+  @override
+  String get rfqReviewMore => 'Voir plus';
+
+  @override
+  String get rfqAccept => 'Accepter';
+
+  @override
+  String get rfqPostedSuccessfully => 'تم نشر طلب التسعير بنجاح';
+
+  @override
+  String get rfqUpdatedSuccessfully => 'تم تحديث طلب التسعير بنجاح';
+
+  @override
+  String get rfqCancelledSuccessfully => 'تم إلغاء طلب التسعير بنجاح';
+
+  @override
+  String get rfqDeletedSuccessfully => 'تم حذف طلب التسعير بنجاح';
+
+  @override
+  String get rfqQuotationAcceptedSuccessfully => 'تم قبول عرض السعر بنجاح';
+
+  @override
+  String get rfqAiGeneratedSuccessfully =>
+      'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
 }

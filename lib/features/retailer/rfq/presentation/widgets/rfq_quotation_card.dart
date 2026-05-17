@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../domain/entities/rfq_quotation_entity.dart';
 
 class RfqQuotationCard extends StatelessWidget {
@@ -17,7 +18,9 @@ class RfqQuotationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accepted = quotation.isAccepted;
+    final l10n = AppLocalizations.of(context)!;
+    final normalizedStatus = quotation.status.toUpperCase();
+    final isAccepted = normalizedStatus == 'ACCEPTED';
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -25,9 +28,16 @@ class RfqQuotationCard extends StatelessWidget {
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: accepted ? const Color(0xFF16A34A) : AppThemeTokens.border,
-          width: accepted ? 1.4 : 1,
+          color: isAccepted ? const Color(0xFF16A34A) : AppThemeTokens.border,
+          width: isAccepted ? 1.4 : 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +57,7 @@ class RfqQuotationCard extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  quotation.supplierUsername?.trim().isNotEmpty == true
-                      ? quotation.supplierUsername!
-                      : 'Supplier',
+                  _supplierName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -59,7 +67,8 @@ class RfqQuotationCard extends StatelessWidget {
                   ),
                 ),
               ),
-              _QuotationStatus(status: quotation.status),
+              const SizedBox(width: 8),
+              _QuotationStatusChip(status: quotation.status),
             ],
           ),
           const SizedBox(height: 14),
@@ -67,14 +76,14 @@ class RfqQuotationCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _PriceBox(
-                  title: 'Unit price',
+                  title: l10n.rfqUnitPrice,
                   value: '\$${quotation.unitPrice.toStringAsFixed(2)}',
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _PriceBox(
-                  title: 'Total',
+                  title: l10n.rfqTotal,
                   value: '\$${quotation.totalPrice.toStringAsFixed(2)}',
                 ),
               ),
@@ -87,13 +96,18 @@ class RfqQuotationCard extends StatelessWidget {
             children: [
               _MetaChip(
                 icon: Icons.inventory_2_outlined,
-                label: '${quotation.availableQuantity ?? 0} units',
+                label: l10n.rfqQuantityLabel(
+                  quotation.availableQuantity ?? 0,
+                  'units',
+                ),
               ),
               _MetaChip(
                 icon: Icons.local_shipping_outlined,
                 label: quotation.shippingCost == null
-                    ? 'Shipping not specified'
-                    : 'Shipping \$${quotation.shippingCost!.toStringAsFixed(2)}',
+                    ? l10n.rfqShippingNotSpecified
+                    : l10n.rfqShippingCost(
+                        '\$${quotation.shippingCost!.toStringAsFixed(2)}',
+                      ),
               ),
               if (quotation.deliveryDate != null)
                 _MetaChip(
@@ -128,7 +142,10 @@ class RfqQuotationCard extends StatelessWidget {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.check_circle_outline_rounded),
-                label: const Text('Accept quotation'),
+                label: Text(
+                  l10n.rfqAcceptQuotation,
+                  style: const TextStyle(fontWeight: FontWeight.w900),
+                ),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: Theme.of(context).colorScheme.primary,
@@ -146,6 +163,20 @@ class RfqQuotationCard extends StatelessWidget {
     );
   }
 
+  String get _supplierName {
+    final username = quotation.supplierUsername?.trim();
+    if (username != null && username.isNotEmpty) {
+      return username;
+    }
+
+    final email = quotation.supplierEmail?.trim();
+    if (email != null && email.isNotEmpty) {
+      return email;
+    }
+
+    return 'Supplier';
+  }
+
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}/'
         '${date.month.toString().padLeft(2, '0')}/'
@@ -153,36 +184,79 @@ class RfqQuotationCard extends StatelessWidget {
   }
 }
 
-class _QuotationStatus extends StatelessWidget {
+class _QuotationStatusChip extends StatelessWidget {
   final String status;
 
-  const _QuotationStatus({required this.status});
+  const _QuotationStatusChip({required this.status});
 
   @override
   Widget build(BuildContext context) {
     final normalized = status.toUpperCase();
-    final color = normalized == 'ACCEPTED'
-        ? const Color(0xFF16A34A)
-        : normalized == 'REJECTED'
-        ? const Color(0xFFDC2626)
-        : AppThemeTokens.textSecondary;
+
+    final config = switch (normalized) {
+      'ACCEPTED' => const _QuotationStatusConfig(
+        label: 'ACCEPTED',
+        icon: Icons.check_circle_outline_rounded,
+        color: Color(0xFF16A34A),
+        background: Color(0xFFDCFCE7),
+      ),
+      'REJECTED' => const _QuotationStatusConfig(
+        label: 'REJECTED',
+        icon: Icons.cancel_outlined,
+        color: Color(0xFFDC2626),
+        background: Color(0xFFFEE2E2),
+      ),
+      'WITHDRAWN' => const _QuotationStatusConfig(
+        label: 'WITHDRAWN',
+        icon: Icons.undo_rounded,
+        color: Color(0xFFB45309),
+        background: Color(0xFFFEF3C7),
+      ),
+      _ => const _QuotationStatusConfig(
+        label: 'PENDING',
+        icon: Icons.hourglass_empty_rounded,
+        color: Color(0xFF475569),
+        background: Color(0xFFF1F5F9),
+      ),
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
+        color: config.background,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        normalized,
-        style: TextStyle(
-          color: color,
-          fontSize: 11,
-          fontWeight: FontWeight.w900,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(config.icon, size: 14, color: config.color),
+          const SizedBox(width: 5),
+          Text(
+            config.label,
+            style: TextStyle(
+              color: config.color,
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _QuotationStatusConfig {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Color background;
+
+  const _QuotationStatusConfig({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.background,
+  });
 }
 
 class _PriceBox extends StatelessWidget {

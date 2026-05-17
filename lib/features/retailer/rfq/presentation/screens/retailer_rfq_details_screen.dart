@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/config/app_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../domain/entities/rfq_request_entity.dart';
 import '../cubit/retailer_rfq_cubit.dart';
 import '../cubit/retailer_rfq_state.dart';
+import '../widgets/rfq_info_banner.dart';
 import '../widgets/rfq_quotation_card.dart';
 import '../widgets/rfq_status_chip.dart';
 
@@ -29,8 +32,18 @@ class _RetailerRfqDetailsView extends StatelessWidget {
 
   const _RetailerRfqDetailsView({required this.rfqId});
 
+  void _goBack(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/retailer-rfqs');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<RetailerRfqCubit, RetailerRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
@@ -43,9 +56,11 @@ class _RetailerRfqDetailsView extends StatelessWidget {
 
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_successMessage(l10n, state.successMessage!)),
+            ),
+          );
           context.read<RetailerRfqCubit>().clearMessages();
         }
       },
@@ -57,9 +72,15 @@ class _RetailerRfqDetailsView extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: AppThemeTokens.background,
             elevation: 0,
-            title: const Text(
-              'RFQ Details',
-              style: TextStyle(
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              onPressed: () => _goBack(context),
+              icon: const Icon(Icons.arrow_back_rounded),
+            ),
+            title: Text(
+              l10n.rfqDetails,
+              style: const TextStyle(
                 color: AppThemeTokens.textPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -94,6 +115,20 @@ class _RetailerRfqDetailsView extends StatelessWidget {
       },
     );
   }
+
+  String _successMessage(AppLocalizations l10n, String message) {
+    return switch (message) {
+      'RFQ posted successfully' => l10n.rfqPostedSuccessfully,
+      'RFQ updated successfully' => l10n.rfqUpdatedSuccessfully,
+      'RFQ cancelled successfully' => l10n.rfqCancelledSuccessfully,
+      'RFQ deleted successfully' => l10n.rfqDeletedSuccessfully,
+      'Quotation accepted successfully' =>
+        l10n.rfqQuotationAcceptedSuccessfully,
+      'AI requirements generated successfully' =>
+        l10n.rfqAiGeneratedSuccessfully,
+      _ => message,
+    };
+  }
 }
 
 class _DetailsContent extends StatelessWidget {
@@ -104,12 +139,15 @@ class _DetailsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final imageUrl = _buildImageUrl(rfq.imageUrl);
 
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       children: [
+        const RfqInfoBanner(),
+        const SizedBox(height: 14),
         Container(
           decoration: BoxDecoration(
             color: AppThemeTokens.surface,
@@ -173,9 +211,13 @@ class _DetailsContent extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: isSubmitting
                   ? null
-                  : () => _confirmCancel(context, rfq.id),
+                  : () => _confirmCancel(
+                      context,
+                      rfqId: rfq.id,
+                      hasSupplierQuotations: rfq.hasSupplierQuotations,
+                    ),
               icon: const Icon(Icons.cancel_outlined),
-              label: const Text('Cancel RFQ'),
+              label: Text(l10n.rfqCancel),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppThemeTokens.error,
                 side: const BorderSide(color: AppThemeTokens.error),
@@ -189,10 +231,10 @@ class _DetailsContent extends StatelessWidget {
         const SizedBox(height: 24),
         Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
-                'Supplier quotations',
-                style: TextStyle(
+                l10n.rfqSupplierQuotations,
+                style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
@@ -212,13 +254,17 @@ class _DetailsContent extends StatelessWidget {
         if (rfq.quotations.isEmpty)
           const _NoQuotesYet()
         else
-          ...rfq.quotations.map(
-            (quotation) => Padding(
+          ...rfq.quotations.map((quotation) {
+            final canAcceptQuotation =
+                (rfq.isOpen || rfq.isQuoted) &&
+                quotation.status.toUpperCase() == 'PENDING';
+
+            return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: RfqQuotationCard(
                 quotation: quotation,
                 isSubmitting: isSubmitting,
-                onAccept: rfq.isOpen || rfq.isQuoted
+                onAccept: canAcceptQuotation
                     ? () => _confirmAccept(
                         context,
                         rfqId: rfq.id,
@@ -226,8 +272,8 @@ class _DetailsContent extends StatelessWidget {
                       )
                     : null,
               ),
-            ),
-          ),
+            );
+          }),
       ],
     );
   }
@@ -235,7 +281,9 @@ class _DetailsContent extends StatelessWidget {
   String? _buildImageUrl(String? value) {
     final clean = value?.trim();
 
-    if (clean == null || clean.isEmpty) return null;
+    if (clean == null || clean.isEmpty) {
+      return null;
+    }
 
     if (clean.startsWith('http://') || clean.startsWith('https://')) {
       return clean;
@@ -253,28 +301,36 @@ class _DetailsContent extends StatelessWidget {
     return '$base/$clean';
   }
 
-  void _confirmCancel(BuildContext context, int rfqId) {
+  void _confirmCancel(
+    BuildContext context, {
+    required int rfqId,
+    required bool hasSupplierQuotations,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Cancel RFQ?'),
-          content: const Text(
-            'Suppliers will no longer be able to send quotations for this request.',
+          title: Text(l10n.rfqCancelQuestion),
+          content: Text(
+            hasSupplierQuotations
+                ? l10n.rfqCancelWithQuotesMessage
+                : l10n.rfqCancelMessage,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Keep RFQ'),
+              child: Text(l10n.rfqKeep),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 context.read<RetailerRfqCubit>().cancelRfq(rfqId);
               },
-              child: const Text(
-                'Cancel RFQ',
-                style: TextStyle(color: AppThemeTokens.error),
+              child: Text(
+                l10n.rfqCancel,
+                style: const TextStyle(color: AppThemeTokens.error),
               ),
             ),
           ],
@@ -288,18 +344,18 @@ class _DetailsContent extends StatelessWidget {
     required int rfqId,
     required int quotationId,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Accept quotation?'),
-          content: const Text(
-            'This will mark the selected supplier quotation as accepted and close the RFQ.',
-          ),
+          title: Text(l10n.rfqAcceptQuotationQuestion),
+          content: Text(l10n.rfqAcceptQuotationMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Review more'),
+              child: Text(l10n.rfqReviewMore),
             ),
             TextButton(
               onPressed: () {
@@ -309,7 +365,7 @@ class _DetailsContent extends StatelessWidget {
                   quotationId: quotationId,
                 );
               },
-              child: const Text('Accept'),
+              child: Text(l10n.rfqAccept),
             ),
           ],
         );
@@ -325,32 +381,40 @@ class _InfoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = [
+    final l10n = AppLocalizations.of(context)!;
+
+    final items = <_InfoItem>[
       _InfoItem(
         icon: Icons.inventory_2_outlined,
-        title: 'Quantity',
-        value: rfq.quantityLabel,
+        title: l10n.rfqQuantity,
+        value: l10n.rfqQuantityLabel(rfq.quantity, rfq.unit),
       ),
       _InfoItem(
         icon: Icons.local_shipping_outlined,
-        title: 'Delivery',
-        value: rfq.preferredDeliveryLabel,
+        title: l10n.rfqDelivery,
+        value: _deliveryLabel(l10n, rfq.preferredDeliveryLabel),
       ),
       _InfoItem(
         icon: Icons.location_on_outlined,
-        title: 'Location',
-        value: rfq.deliveryLocationLabel,
+        title: l10n.rfqLocation,
+        value: _locationLabel(l10n, rfq),
       ),
-      if (rfq.categoryName != null)
+      if (rfq.categoryName != null && rfq.categoryName!.trim().isNotEmpty)
         _InfoItem(
           icon: Icons.category_outlined,
-          title: 'Category',
+          title: l10n.rfqCategory,
           value: rfq.categoryName!,
+        ),
+      if (rfq.subCategoryName != null && rfq.subCategoryName!.trim().isNotEmpty)
+        _InfoItem(
+          icon: Icons.account_tree_outlined,
+          title: l10n.rfqSubcategory,
+          value: rfq.subCategoryName!,
         ),
       if (rfq.targetUnitPrice != null)
         _InfoItem(
           icon: Icons.attach_money_rounded,
-          title: 'Target price',
+          title: l10n.rfqTargetPrice,
           value: '\$${rfq.targetUnitPrice!.toStringAsFixed(2)} / ${rfq.unit}',
         ),
     ];
@@ -365,6 +429,31 @@ class _InfoGrid extends StatelessWidget {
           )
           .toList(),
     );
+  }
+
+  String _deliveryLabel(AppLocalizations l10n, String value) {
+    return switch (value) {
+      'Within 24 hours' => l10n.rfqDeliveryWithin24Hours,
+      'Within 2-3 days' => l10n.rfqDelivery2To3Days,
+      'Within 1 week' => l10n.rfqDeliveryWithin1Week,
+      'Within 2 weeks' => l10n.rfqDeliveryWithin2Weeks,
+      'Flexible' => l10n.rfqDeliveryFlexible,
+      _ => value,
+    };
+  }
+
+  String _locationLabel(AppLocalizations l10n, RfqRequestEntity rfq) {
+    final parts = [
+      rfq.deliveryCity,
+      rfq.deliveryRegionName,
+      rfq.deliveryCountryName,
+    ].where((value) => value != null && value.trim().isNotEmpty).toList();
+
+    if (parts.isEmpty) {
+      return l10n.rfqNoDeliveryLocation;
+    }
+
+    return parts.join(', ');
   }
 }
 
@@ -446,6 +535,8 @@ class _NoQuotesYet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -453,17 +544,17 @@ class _NoQuotesYet extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.hourglass_empty_rounded,
             color: AppThemeTokens.textSecondary,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'No supplier quotations yet. You will see offers here when suppliers respond.',
-              style: TextStyle(
+              l10n.rfqNoQuotesYet,
+              style: const TextStyle(
                 color: AppThemeTokens.textSecondary,
                 height: 1.35,
                 fontWeight: FontWeight.w500,
@@ -481,10 +572,12 @@ class _NotFoundView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
       child: Text(
-        'RFQ not found',
-        style: TextStyle(
+        l10n.rfqNotFound,
+        style: const TextStyle(
           color: AppThemeTokens.textSecondary,
           fontWeight: FontWeight.w800,
         ),

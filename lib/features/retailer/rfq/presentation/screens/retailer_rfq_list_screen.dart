@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../domain/entities/rfq_request_entity.dart';
 import '../cubit/retailer_rfq_cubit.dart';
 import '../cubit/retailer_rfq_state.dart';
@@ -27,6 +28,8 @@ class _RetailerRfqListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<RetailerRfqCubit, RetailerRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
@@ -39,9 +42,11 @@ class _RetailerRfqListView extends StatelessWidget {
 
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_successMessage(l10n, state.successMessage!)),
+            ),
+          );
           context.read<RetailerRfqCubit>().clearMessages();
         }
       },
@@ -51,9 +56,9 @@ class _RetailerRfqListView extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: AppThemeTokens.background,
             elevation: 0,
-            title: const Text(
-              'My RFQs',
-              style: TextStyle(
+            title: Text(
+              l10n.rfqMyRfqs,
+              style: const TextStyle(
                 color: AppThemeTokens.textPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -78,22 +83,26 @@ class _RetailerRfqListView extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
             icon: const Icon(Icons.add_rounded),
-            label: const Text(
-              'Create RFQ',
-              style: TextStyle(fontWeight: FontWeight.w900),
+            label: Text(
+              l10n.rfqCreate,
+              style: const TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
           body: RefreshIndicator(
             color: Theme.of(context).colorScheme.primary,
             onRefresh: () => context.read<RetailerRfqCubit>().loadMyRfqs(),
-            child: _buildBody(context, state),
+            child: _buildBody(context, state, l10n),
           ),
         );
       },
     );
   }
 
-  Widget _buildBody(BuildContext context, RetailerRfqState state) {
+  Widget _buildBody(
+    BuildContext context,
+    RetailerRfqState state,
+    AppLocalizations l10n,
+  ) {
     if (state.isLoading && state.rfqs.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
@@ -110,10 +119,10 @@ class _RetailerRfqListView extends StatelessWidget {
         const SizedBox(height: 18),
         Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
-                'Requests you posted',
-                style: TextStyle(
+                l10n.rfqRequestsYouPosted,
+                style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
@@ -149,10 +158,10 @@ class _RetailerRfqListView extends StatelessWidget {
                       }
                     : null,
                 onCancel: rfq.canCancel
-                    ? () => _confirmCancel(context, rfq)
+                    ? () => _confirmCancel(context, rfq, l10n)
                     : null,
                 onDelete: rfq.canDelete
-                    ? () => _confirmDelete(context, rfq)
+                    ? () => _confirmDelete(context, rfq, l10n)
                     : null,
               ),
             ),
@@ -161,30 +170,34 @@ class _RetailerRfqListView extends StatelessWidget {
     );
   }
 
-  void _confirmCancel(BuildContext context, RfqRequestEntity rfq) {
+  void _confirmCancel(
+    BuildContext context,
+    RfqRequestEntity rfq,
+    AppLocalizations l10n,
+  ) {
     showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Cancel RFQ?'),
+          title: Text(l10n.rfqCancelQuestion),
           content: Text(
             rfq.hasSupplierQuotations
-                ? 'This RFQ already has supplier quotations. Cancelling keeps the history but prevents new supplier actions.'
-                : 'This will cancel your RFQ and suppliers will not be able to quote it.',
+                ? l10n.rfqCancelWithQuotesMessage
+                : l10n.rfqCancelMessage,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Keep RFQ'),
+              child: Text(l10n.rfqKeep),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 context.read<RetailerRfqCubit>().cancelRfq(rfq.id);
               },
-              child: const Text(
-                'Cancel RFQ',
-                style: TextStyle(color: AppThemeTokens.error),
+              child: Text(
+                l10n.rfqCancel,
+                style: const TextStyle(color: AppThemeTokens.error),
               ),
             ),
           ],
@@ -193,34 +206,50 @@ class _RetailerRfqListView extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context, RfqRequestEntity rfq) {
+  void _confirmDelete(
+    BuildContext context,
+    RfqRequestEntity rfq,
+    AppLocalizations l10n,
+  ) {
     showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Delete RFQ?'),
-          content: const Text(
-            'This RFQ has no supplier quotations yet, so it can be safely deleted. This action cannot be undone.',
-          ),
+          title: Text(l10n.rfqDeleteQuestion),
+          content: Text(l10n.rfqDeleteMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Keep RFQ'),
+              child: Text(l10n.rfqKeep),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 context.read<RetailerRfqCubit>().deleteRfq(rfq.id);
               },
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: AppThemeTokens.error),
+              child: Text(
+                l10n.rfqDelete,
+                style: const TextStyle(color: AppThemeTokens.error),
               ),
             ),
           ],
         );
       },
     );
+  }
+
+  String _successMessage(AppLocalizations l10n, String message) {
+    return switch (message) {
+      'RFQ posted successfully' => l10n.rfqPostedSuccessfully,
+      'RFQ updated successfully' => l10n.rfqUpdatedSuccessfully,
+      'RFQ cancelled successfully' => l10n.rfqCancelledSuccessfully,
+      'RFQ deleted successfully' => l10n.rfqDeletedSuccessfully,
+      'Quotation accepted successfully' =>
+        l10n.rfqQuotationAcceptedSuccessfully,
+      'AI requirements generated successfully' =>
+        l10n.rfqAiGeneratedSuccessfully,
+      _ => message,
+    };
   }
 }
 
@@ -231,6 +260,8 @@ class _EmptyRfqsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -256,19 +287,19 @@ class _EmptyRfqsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'No RFQs yet',
-            style: TextStyle(
+          Text(
+            l10n.rfqNoRfqsYet,
+            style: const TextStyle(
               color: AppThemeTokens.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.w900,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Create your first request and let suppliers send you quotations.',
+          Text(
+            l10n.rfqNoRfqsYetMessage,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppThemeTokens.textSecondary,
               height: 1.35,
               fontWeight: FontWeight.w500,
@@ -278,7 +309,7 @@ class _EmptyRfqsView extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onCreate,
             icon: const Icon(Icons.add_rounded),
-            label: const Text('Create RFQ'),
+            label: Text(l10n.rfqCreate),
             style: ElevatedButton.styleFrom(
               elevation: 0,
               backgroundColor: Theme.of(context).colorScheme.primary,

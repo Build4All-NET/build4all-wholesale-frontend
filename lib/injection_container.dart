@@ -13,6 +13,7 @@ import 'features/retailer/product_ai/data/repositories/retailer_product_ai_repos
 import 'features/retailer/product_ai/data/services/retailer_product_ai_service.dart';
 import 'features/retailer/product_ai/domain/repositories/retailer_product_ai_repository.dart';
 import 'features/retailer/product_ai/presentation/cubit/retailer_product_ai_cubit.dart';
+import 'features/retailer/rfq/domain/usecases/generate_rfq_requirements_usecase.dart';
 // =========================
 // AUTH
 // =========================
@@ -374,8 +375,6 @@ Future<void> init() async {
     ),
   );
 
-
-
   // =========================
   // REPOSITORIES
   // =========================
@@ -490,6 +489,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<UpdateRfqUseCase>(
     () => UpdateRfqUseCase(sl<RetailerRfqRepository>()),
+  );
+  sl.registerLazySingleton<GenerateRfqRequirementsUseCase>(
+    () => GenerateRfqRequirementsUseCase(sl<RetailerRfqRepository>()),
   );
   sl.registerLazySingleton<CancelRfqUseCase>(
     () => CancelRfqUseCase(sl<RetailerRfqRepository>()),
@@ -985,9 +987,10 @@ Future<void> init() async {
       cancelRfqUseCase: sl<CancelRfqUseCase>(),
       deleteRfqUseCase: sl<DeleteRfqUseCase>(),
       acceptRfqQuotationUseCase: sl<AcceptRfqQuotationUseCase>(),
+      generateRfqRequirementsUseCase: sl<GenerateRfqRequirementsUseCase>(),
     ),
   );
-    // =========================
+  // =========================
   // RETAILER PRODUCT AI
   // =========================
   sl.registerLazySingleton<RetailerProductAiService>(
@@ -1003,8 +1006,6 @@ Future<void> init() async {
   );
 
   sl.registerFactory<RetailerProductAiCubit>(
-    () => RetailerProductAiCubit(
-      repository: sl<RetailerProductAiRepository>(),
-    ),
+    () => RetailerProductAiCubit(repository: sl<RetailerProductAiRepository>()),
   );
 }
