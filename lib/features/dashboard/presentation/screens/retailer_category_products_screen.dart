@@ -5,8 +5,10 @@ import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../../data/models/retailer_home_model.dart';
+import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_product_image.dart';
 
 class RetailerCategoryProductsScreen extends StatelessWidget {
   final HomeCategoryModel category;
@@ -461,16 +463,26 @@ class RetailerProductListCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                SizedBox(
-                  height: 40,
-                  child: Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: _AddButton(
+
+                /// AI + Add actions.
+                /// They are separated and constrained to avoid button overflow.
+                Row(
+                  children: [
+                    Expanded(
+                      child: RetailerProductAiButton(
+                        productId: product.id,
+                        productName: product.name,
+                        imageUrl: product.imageUrl,
+                        expanded: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _AddButton(
                       isAdding: isAdding,
                       disabled: isOutOfStock,
                       onPressed: onAdd,
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -502,34 +514,12 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cleanImageUrl = imageUrl?.trim();
-
-    return Container(
+    return RetailerProductImage(
+      imageUrl: imageUrl,
       width: 86,
       height: 96,
-      decoration: BoxDecoration(
-        color: AppThemeTokens.background,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: cleanImageUrl == null || cleanImageUrl.isEmpty
-          ? const Icon(
-              Icons.inventory_2_outlined,
-              color: AppThemeTokens.textSecondary,
-              size: 34,
-            )
-          : Image.network(
-              cleanImageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.inventory_2_outlined,
-                  color: AppThemeTokens.textSecondary,
-                  size: 34,
-                );
-              },
-            ),
+      borderRadius: 18,
+      iconSize: 34,
     );
   }
 }

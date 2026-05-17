@@ -155,6 +155,43 @@ class RetailerRfqApiService {
     }
   }
 
+  Future<String> generateRequirementsWithAi(
+    GenerateRfqRequirementsParams params,
+  ) async {
+    try {
+      final response = await apiClient.dio.post(
+        ApiConfig.retailerRfqAiRequirements,
+        data: {
+          'productId': params.productId,
+          'productName': _emptyToNull(params.productName),
+          'categoryName': _emptyToNull(params.categoryName),
+          'subCategoryName': _emptyToNull(params.subCategoryName),
+          'quantity': params.quantity,
+          'unit': _emptyToNull(params.unit),
+          'targetUnitPrice': params.targetUnitPrice,
+          'preferredDeliveryLabel': _emptyToNull(params.preferredDeliveryLabel),
+          'deliveryCity': _emptyToNull(params.deliveryCity),
+          'deliveryAddress': _emptyToNull(params.deliveryAddress),
+          'notes': _emptyToNull(params.notes),
+        },
+      );
+
+      final data = response.data;
+
+      if (data is Map && data['requirements'] != null) {
+        final requirements = data['requirements'].toString().trim();
+
+        if (requirements.isNotEmpty) {
+          return requirements;
+        }
+      }
+
+      throw AppException('AI could not write RFQ requirements.');
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   Map<String, dynamic> _buildCreateBody(
     CreateRfqParams params,
     String? imageUrl,

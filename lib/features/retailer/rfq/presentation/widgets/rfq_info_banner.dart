@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class RfqInfoBanner extends StatelessWidget {
   const RfqInfoBanner({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -35,22 +38,22 @@ class RfqInfoBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'How RFQ works',
-                  style: TextStyle(
+                  l10n.rfqHowWorksTitle,
+                  style: const TextStyle(
                     color: AppThemeTokens.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  'Post a product request when you cannot find what you need. Suppliers will review it and send quotations with price, quantity, and delivery details.',
-                  style: TextStyle(
+                  l10n.rfqHowWorksMessage,
+                  style: const TextStyle(
                     color: AppThemeTokens.textSecondary,
                     height: 1.35,
                     fontSize: 13,

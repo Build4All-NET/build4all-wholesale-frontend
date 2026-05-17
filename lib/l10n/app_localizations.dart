@@ -5066,6 +5066,714 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'RFQ Requests'**
   String get supplierDrawerRfqs;
+
+  /// No description provided for @shipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping'**
+  String get shipping;
+
+  /// No description provided for @calculatedAtCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculated at checkout'**
+  String get calculatedAtCheckout;
+
+  /// No description provided for @totalBeforeShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Total before shipping'**
+  String get totalBeforeShipping;
+
+  /// No description provided for @productAiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Product AI Assistant'**
+  String get productAiAssistant;
+
+  /// No description provided for @askAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI'**
+  String get askAi;
+
+  /// No description provided for @askAboutThisProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about this product...'**
+  String get askAboutThisProduct;
+
+  /// No description provided for @aiThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking...'**
+  String get aiThinking;
+
+  /// No description provided for @aiWelcomeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything about this product. I can help with MOQ, stock, price, and whether it fits your store.'**
+  String get aiWelcomeMessage;
+
+  /// No description provided for @aiSuggestionFitStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this product good for my store?'**
+  String get aiSuggestionFitStore;
+
+  /// No description provided for @aiSuggestionOrderQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'How many units should I order?'**
+  String get aiSuggestionOrderQuantity;
+
+  /// No description provided for @aiSuggestionMoqStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain the MOQ and stock.'**
+  String get aiSuggestionMoqStock;
+
+  /// No description provided for @aiUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'AI assistant is temporarily unavailable. Please try again later.'**
+  String get aiUnavailable;
+
+  /// No description provided for @aiTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI assistant took too long. Please try again.'**
+  String get aiTimeout;
+
+  /// No description provided for @aiEmptyAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'I could not generate an answer. Please try again.'**
+  String get aiEmptyAnswer;
+
+  /// No description provided for @rfqMyRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'My RFQs'**
+  String get rfqMyRfqs;
+
+  /// No description provided for @rfqCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create RFQ'**
+  String get rfqCreate;
+
+  /// No description provided for @rfqEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit RFQ'**
+  String get rfqEdit;
+
+  /// No description provided for @rfqDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ Details'**
+  String get rfqDetails;
+
+  /// No description provided for @rfqRequestsYouPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests you posted'**
+  String get rfqRequestsYouPosted;
+
+  /// No description provided for @rfqHowWorksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How RFQ works'**
+  String get rfqHowWorksTitle;
+
+  /// No description provided for @rfqHowWorksMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Post a product request when you cannot find what you need. Suppliers will review it and send quotations with price, quantity, and delivery details.'**
+  String get rfqHowWorksMessage;
+
+  /// No description provided for @rfqNoRfqsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No RFQs yet'**
+  String get rfqNoRfqsYet;
+
+  /// No description provided for @rfqNoRfqsYetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first request and let suppliers send you quotations.'**
+  String get rfqNoRfqsYetMessage;
+
+  /// No description provided for @rfqProductRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Product request'**
+  String get rfqProductRequest;
+
+  /// No description provided for @rfqProductName.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name *'**
+  String get rfqProductName;
+
+  /// No description provided for @rfqProductNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Organic milk cartons'**
+  String get rfqProductNameHint;
+
+  /// No description provided for @rfqProductNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name is required'**
+  String get rfqProductNameRequired;
+
+  /// No description provided for @rfqProductNameTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name must be at least 2 characters'**
+  String get rfqProductNameTooShort;
+
+  /// No description provided for @rfqUploadProductImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload product image'**
+  String get rfqUploadProductImage;
+
+  /// No description provided for @rfqUploadProductImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. This photo will also appear for suppliers when they view your RFQ.'**
+  String get rfqUploadProductImageHint;
+
+  /// No description provided for @rfqCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get rfqCategory;
+
+  /// No description provided for @rfqCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Food, Electronics...'**
+  String get rfqCategoryHint;
+
+  /// No description provided for @rfqSubcategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory'**
+  String get rfqSubcategory;
+
+  /// No description provided for @rfqSubcategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Dairy, Phones...'**
+  String get rfqSubcategoryHint;
+
+  /// No description provided for @rfqDetailedRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed requirements'**
+  String get rfqDetailedRequirements;
+
+  /// No description provided for @rfqRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirements *'**
+  String get rfqRequirements;
+
+  /// No description provided for @rfqRequirementsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe specs, quality, packaging, preferred brands, size, color, standards...'**
+  String get rfqRequirementsHint;
+
+  /// No description provided for @rfqRequirementsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirements are required'**
+  String get rfqRequirementsRequired;
+
+  /// No description provided for @rfqRequirementsTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirements must be at least 10 characters'**
+  String get rfqRequirementsTooShort;
+
+  /// No description provided for @rfqWriteWithAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Write requirements with AI'**
+  String get rfqWriteWithAi;
+
+  /// No description provided for @rfqWritingWithAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing...'**
+  String get rfqWritingWithAi;
+
+  /// No description provided for @rfqAiProductNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the product name first.'**
+  String get rfqAiProductNameRequired;
+
+  /// No description provided for @rfqAiReplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace requirements?'**
+  String get rfqAiReplaceTitle;
+
+  /// No description provided for @rfqAiReplaceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The requirements field already has text. Do you want to replace it with AI-generated requirements?'**
+  String get rfqAiReplaceMessage;
+
+  /// No description provided for @rfqAiReplaceAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get rfqAiReplaceAction;
+
+  /// No description provided for @rfqAiKeepAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep current text'**
+  String get rfqAiKeepAction;
+
+  /// No description provided for @rfqQuantityAndDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity and delivery'**
+  String get rfqQuantityAndDelivery;
+
+  /// No description provided for @rfqMinimumQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum quantity *'**
+  String get rfqMinimumQuantity;
+
+  /// No description provided for @rfqMinimumQuantityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'500'**
+  String get rfqMinimumQuantityHint;
+
+  /// No description provided for @rfqEnterValidQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter valid quantity'**
+  String get rfqEnterValidQuantity;
+
+  /// No description provided for @rfqUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get rfqUnit;
+
+  /// No description provided for @rfqUnitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'units'**
+  String get rfqUnitHint;
+
+  /// No description provided for @rfqTargetUnitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Target unit price'**
+  String get rfqTargetUnitPrice;
+
+  /// No description provided for @rfqOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get rfqOptional;
+
+  /// No description provided for @rfqPreferredDeliveryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred delivery time'**
+  String get rfqPreferredDeliveryTime;
+
+  /// No description provided for @rfqChooseDeliveryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose delivery time'**
+  String get rfqChooseDeliveryTime;
+
+  /// No description provided for @rfqDeliveryWithin24Hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 24 hours'**
+  String get rfqDeliveryWithin24Hours;
+
+  /// No description provided for @rfqDelivery2To3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 2-3 days'**
+  String get rfqDelivery2To3Days;
+
+  /// No description provided for @rfqDeliveryWithin1Week.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 1 week'**
+  String get rfqDeliveryWithin1Week;
+
+  /// No description provided for @rfqDeliveryWithin2Weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 2 weeks'**
+  String get rfqDeliveryWithin2Weeks;
+
+  /// No description provided for @rfqDeliveryFlexible.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible'**
+  String get rfqDeliveryFlexible;
+
+  /// No description provided for @rfqSelectDeadlineDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select deadline date'**
+  String get rfqSelectDeadlineDate;
+
+  /// No description provided for @rfqDeliveryLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery location'**
+  String get rfqDeliveryLocation;
+
+  /// No description provided for @rfqCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get rfqCity;
+
+  /// No description provided for @rfqCityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Beirut'**
+  String get rfqCityHint;
+
+  /// No description provided for @rfqDeliveryAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery address'**
+  String get rfqDeliveryAddress;
+
+  /// No description provided for @rfqDeliveryAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Street, building, area, notes...'**
+  String get rfqDeliveryAddressHint;
+
+  /// No description provided for @rfqPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Post your RFQ'**
+  String get rfqPost;
+
+  /// No description provided for @rfqPosting.
+  ///
+  /// In en, this message translates to:
+  /// **'Posting RFQ...'**
+  String get rfqPosting;
+
+  /// No description provided for @rfqSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get rfqSaveChanges;
+
+  /// No description provided for @rfqSavingChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving changes...'**
+  String get rfqSavingChanges;
+
+  /// No description provided for @rfqNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ not found'**
+  String get rfqNotFound;
+
+  /// No description provided for @rfqCannotEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This RFQ cannot be edited'**
+  String get rfqCannotEditTitle;
+
+  /// No description provided for @rfqCannotEditSupplierMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A supplier has already interacted with this request. To keep quotations fair and valid, cancel the RFQ and create a new one if you need changes.'**
+  String get rfqCannotEditSupplierMessage;
+
+  /// No description provided for @rfqCannotEditStatusMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This RFQ status does not allow editing.'**
+  String get rfqCannotEditStatusMessage;
+
+  /// No description provided for @rfqBackToDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to details'**
+  String get rfqBackToDetails;
+
+  /// No description provided for @rfqSupplierQuotations.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier quotations'**
+  String get rfqSupplierQuotations;
+
+  /// No description provided for @rfqNoQuotesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplier quotations yet. You will see offers here when suppliers respond.'**
+  String get rfqNoQuotesYet;
+
+  /// No description provided for @rfqCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel RFQ'**
+  String get rfqCancel;
+
+  /// No description provided for @rfqCancelQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel RFQ?'**
+  String get rfqCancelQuestion;
+
+  /// No description provided for @rfqCancelMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will cancel your RFQ and suppliers will not be able to quote it.'**
+  String get rfqCancelMessage;
+
+  /// No description provided for @rfqCancelWithQuotesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This RFQ already has supplier quotations. Cancelling keeps the history but prevents new supplier actions.'**
+  String get rfqCancelWithQuotesMessage;
+
+  /// No description provided for @rfqKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep RFQ'**
+  String get rfqKeep;
+
+  /// No description provided for @rfqDeleteQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete RFQ?'**
+  String get rfqDeleteQuestion;
+
+  /// No description provided for @rfqDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This RFQ has no supplier quotations yet, so it can be safely deleted. This action cannot be undone.'**
+  String get rfqDeleteMessage;
+
+  /// No description provided for @rfqDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get rfqDelete;
+
+  /// No description provided for @rfqEditRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit request'**
+  String get rfqEditRequest;
+
+  /// No description provided for @rfqCancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request'**
+  String get rfqCancelRequest;
+
+  /// No description provided for @rfqDeleteRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete request'**
+  String get rfqDeleteRequest;
+
+  /// No description provided for @rfqViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get rfqViewDetails;
+
+  /// No description provided for @rfqOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get rfqOpen;
+
+  /// No description provided for @rfqQuoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Quoted'**
+  String get rfqQuoted;
+
+  /// No description provided for @rfqAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get rfqAccepted;
+
+  /// No description provided for @rfqClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get rfqClosed;
+
+  /// No description provided for @rfqCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get rfqCancelled;
+
+  /// No description provided for @rfqExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get rfqExpired;
+
+  /// No description provided for @rfqQuotesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 quotes} =1{1 quote} other{{count} quotes}}'**
+  String rfqQuotesCount(int count);
+
+  /// No description provided for @rfqQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{quantity} {unit}'**
+  String rfqQuantityLabel(int quantity, String unit);
+
+  /// No description provided for @rfqNoDeliveryLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'No delivery location added'**
+  String get rfqNoDeliveryLocation;
+
+  /// No description provided for @rfqLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get rfqLocation;
+
+  /// No description provided for @rfqDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get rfqDelivery;
+
+  /// No description provided for @rfqQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get rfqQuantity;
+
+  /// No description provided for @rfqTargetPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Target price'**
+  String get rfqTargetPrice;
+
+  /// No description provided for @rfqUnitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit price'**
+  String get rfqUnitPrice;
+
+  /// No description provided for @rfqTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get rfqTotal;
+
+  /// No description provided for @rfqShippingNotSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping not specified'**
+  String get rfqShippingNotSpecified;
+
+  /// No description provided for @rfqShippingCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping {amount}'**
+  String rfqShippingCost(String amount);
+
+  /// No description provided for @rfqAcceptQuotation.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept quotation'**
+  String get rfqAcceptQuotation;
+
+  /// No description provided for @rfqAcceptQuotationQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept quotation?'**
+  String get rfqAcceptQuotationQuestion;
+
+  /// No description provided for @rfqAcceptQuotationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will mark the selected supplier quotation as accepted and close the RFQ.'**
+  String get rfqAcceptQuotationMessage;
+
+  /// No description provided for @rfqReviewMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Review more'**
+  String get rfqReviewMore;
+
+  /// No description provided for @rfqAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get rfqAccept;
+
+  /// No description provided for @rfqPostedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ posted successfully'**
+  String get rfqPostedSuccessfully;
+
+  /// No description provided for @rfqUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ updated successfully'**
+  String get rfqUpdatedSuccessfully;
+
+  /// No description provided for @rfqCancelledSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ cancelled successfully'**
+  String get rfqCancelledSuccessfully;
+
+  /// No description provided for @rfqDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'RFQ deleted successfully'**
+  String get rfqDeletedSuccessfully;
+
+  /// No description provided for @rfqQuotationAcceptedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotation accepted successfully'**
+  String get rfqQuotationAcceptedSuccessfully;
+
+  /// No description provided for @rfqAiGeneratedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'AI requirements generated successfully'**
+  String get rfqAiGeneratedSuccessfully;
 }
 
 class _AppLocalizationsDelegate

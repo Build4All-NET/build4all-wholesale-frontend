@@ -372,14 +372,29 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     );
   }
 
-  void _validateDates() {
+  void _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startDate == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierStartDate,
+      );
+      return;
+    }
+
+    if (requireBothDates && _endDate == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierEndDate,
+      );
+      return;
+    }
+
     if (_startDate != null &&
         _endDate != null &&
         _startDate!.isAfter(_endDate!)) {
       _dateError = context.l10n.supplierEndDateAfterStartDate;
-    } else {
-      _dateError = null;
+      return;
     }
+
+    _dateError = null;
   }
 
   List<_PromotionLookupOption> get _filteredSubCategories {
@@ -414,7 +429,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
   void _savePromotion(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    _validateDates();
+    _validateDates(requireBothDates: true);
     if (_dateError != null) {
       setState(() {});
       return;
@@ -600,13 +615,19 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode
-                                      ? context.l10n.supplierUpdatePromotion
-                                      : context.l10n.supplierCreatePromotion,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                              : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? context.l10n.supplierUpdatePromotion
+                                        : context.l10n.supplierCreatePromotion,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -1433,9 +1454,14 @@ class _DateTimePickerRow extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text(
-                      context.l10n.clearButton,
-                      style: TextStyle(fontWeight: FontWeight.w900),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.l10n.clearButton,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(fontWeight: FontWeight.w900),
+                      ),
                     ),
                   ),
                 ),
@@ -1455,9 +1481,14 @@ class _DateTimePickerRow extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text(
-                      context.l10n.pickButton,
-                      style: TextStyle(fontWeight: FontWeight.w900),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.l10n.pickButton,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(fontWeight: FontWeight.w900),
+                      ),
                     ),
                   ),
                 ),

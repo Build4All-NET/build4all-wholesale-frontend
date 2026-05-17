@@ -568,11 +568,19 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode ? context.l10n.supplierUpdateRule : context.l10n.supplierCreateRule,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                                  : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? context.l10n.supplierUpdateRule
+                                        : context.l10n.supplierCreateRule,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -658,22 +666,18 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                       _SectionCard(
                         title: context.l10n.supplierLocation,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _FieldLabel(context.l10n.countryRequiredLabel),
-                              ),
-                              TextButton(
-                                onPressed:
-                                    _loadingCountries ? null : _loadCountries,
-                                child: Text(
-                                  context.l10n.refreshButton,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                            Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: TextButton(
+                              onPressed:
+                                  _loadingCountries ? null : _loadCountries,
+                              child: Text(
+                                context.l10n.refreshButton,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                           if (_loadingCountries)
                             const Padding(
@@ -694,26 +698,22 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                                 context.l10n.supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry,
                           ),
                           const _DividerSpace(),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _FieldLabel(context.l10n.regionLabel),
-                              ),
-                              TextButton(
-                                onPressed: _selectedCountryId == null ||
-                                        _loadingRegions
-                                    ? null
-                                    : () => _loadRegionsForSelectedCountry(
-                                          resetRegion: false,
-                                        ),
-                                child: Text(
-                                  context.l10n.refreshButton,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                            Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: TextButton(
+                              onPressed: _selectedCountryId == null ||
+                                      _loadingRegions
+                                  ? null
+                                  : () => _loadRegionsForSelectedCountry(
+                                        resetRegion: false,
+                                      ),
+                              child: Text(
+                                context.l10n.refreshButton,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                           if (_loadingRegions)
                             const Padding(
@@ -723,11 +723,12 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                           else if (_regionErrorMessage != null)
                             _ErrorText(message: _regionErrorMessage!)
                           else
-                            _RegionDropdown(
+                             _RegionDropdown(
                               regions: _regions,
                               selectedRegionValue:
                                   _selectedRegionValue ?? _noRegionValue,
                               noRegionValue: _noRegionValue,
+                              enabled: _regions.isNotEmpty,
                               onChanged: (value) {
                                 setState(() {
                                   _selectedRegionValue =
@@ -1034,20 +1035,30 @@ class _RegionDropdown extends StatelessWidget {
   final List<TaxRegionModel> regions;
   final String selectedRegionValue;
   final String noRegionValue;
+  final bool enabled;
   final ValueChanged<String?> onChanged;
 
   const _RegionDropdown({
     required this.regions,
     required this.selectedRegionValue,
     required this.noRegionValue,
+    required this.enabled,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     final options = <_TaxRegionOption>[
-      _TaxRegionOption(id: noRegionValue, name: context.l10n.noRegionLabel),
-      ...regions.map((region) => _TaxRegionOption(id: region.id, name: region.name)),
+      _TaxRegionOption(
+        id: noRegionValue,
+        name: context.l10n.noRegionLabel,
+      ),
+      ...regions.map(
+        (region) => _TaxRegionOption(
+          id: region.id,
+          name: region.name,
+        ),
+      ),
     ];
 
     final selectedOption = options.firstWhere(
@@ -1062,6 +1073,7 @@ class _RegionDropdown extends StatelessWidget {
       items: options,
       itemLabel: (option) => option.name,
       value: selectedOption,
+      enabled: enabled,
       onSelected: (option) => onChanged(option.id),
       emptyText: context.l10n.noRegionsFound,
     );
