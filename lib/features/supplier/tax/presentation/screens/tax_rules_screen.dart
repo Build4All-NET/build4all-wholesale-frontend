@@ -56,13 +56,7 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
 
       if (query.isEmpty) return true;
 
-      return rule.ruleName.toLowerCase().contains(query) ||
-          rule.rateLabel.toLowerCase().contains(query) ||
-          rule.locationLabel.toLowerCase().contains(query) ||
-          rule.scopeLabel.toLowerCase().contains(query) ||
-          rule.shippingTaxLabel.toLowerCase().contains(query) ||
-          rule.statusLabel.toLowerCase().contains(query) ||
-          (rule.notes ?? '').toLowerCase().contains(query);
+      return rule.ruleName.toLowerCase().contains(query);
     }).toList();
   }
 
