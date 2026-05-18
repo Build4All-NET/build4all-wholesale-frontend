@@ -16,6 +16,7 @@ class UpdateProductUseCase {
     required int minimumOrderQuantity,
     required ProductStatus status,
     String? imagePath,
+    String? existingImageUrl,
   }) {
     return repository.updateProduct(
       productId: productId,
@@ -27,6 +28,7 @@ class UpdateProductUseCase {
       minimumOrderQuantity: minimumOrderQuantity,
       status: status,
       imagePath: imagePath,
+      existingImageUrl: existingImageUrl,
     );
   }
 }

@@ -78,12 +78,16 @@ class _ProductBranchInventoryScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          scrollable: true,
+          insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           title: Text(
             isUpdate ? context.l10n.updateBranchStockTitle : context.l10n.assignStockToBranchTitle,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+          content: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
             children: [
               _DialogInfoRow(
                 label: context.l10n.productLabel,
@@ -123,6 +127,7 @@ class _ProductBranchInventoryScreenState
                 ),
               ),
             ],
+          ),
           ),
           actions: [
             TextButton(
@@ -175,6 +180,8 @@ class _ProductBranchInventoryScreenState
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          scrollable: true,
+          insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           title: Text(
             context.l10n.removeProductFromBranchTitle,
             style: TextStyle(fontWeight: FontWeight.w900),

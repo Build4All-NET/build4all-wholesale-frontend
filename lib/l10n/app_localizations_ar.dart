@@ -2695,4 +2695,391 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supplierDrawerRfqs => 'طلبات عروض الأسعار';
+
+  @override
+  String get shipping => 'الشحن';
+
+  @override
+  String get calculatedAtCheckout => 'يُحسب عند إتمام الطلب';
+
+  @override
+  String get totalBeforeShipping => 'الإجمالي قبل الشحن';
+
+  @override
+  String get productAiAssistant => 'مساعد المنتج الذكي';
+
+  @override
+  String get askAi => 'اسأل الذكاء';
+
+  @override
+  String get askAboutThisProduct => 'اسأل عن هذا المنتج...';
+
+  @override
+  String get aiThinking => 'جارٍ التفكير...';
+
+  @override
+  String get aiWelcomeMessage =>
+      'اسألني أي شيء عن هذا المنتج. يمكنني مساعدتك في الحد الأدنى للطلب والمخزون والسعر ومدى مناسبته لمتجرك.';
+
+  @override
+  String get aiSuggestionFitStore => 'هل هذا المنتج مناسب لمتجري؟';
+
+  @override
+  String get aiSuggestionOrderQuantity => 'كم وحدة يجب أن أطلب؟';
+
+  @override
+  String get aiSuggestionMoqStock => 'اشرح الحد الأدنى للطلب والمخزون.';
+
+  @override
+  String get aiUnavailable =>
+      'مساعد الذكاء غير متاح مؤقتًا. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get aiTimeout =>
+      'استغرق مساعد الذكاء وقتًا طويلًا. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get aiEmptyAnswer =>
+      'لم أتمكن من إنشاء إجابة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get rfqMyRfqs => 'طلبات التسعير الخاصة بي';
+
+  @override
+  String get rfqCreate => 'إنشاء طلب تسعير';
+
+  @override
+  String get rfqEdit => 'تعديل طلب التسعير';
+
+  @override
+  String get rfqDetails => 'تفاصيل طلب التسعير';
+
+  @override
+  String get rfqRequestsYouPosted => 'الطلبات التي نشرتها';
+
+  @override
+  String get rfqHowWorksTitle => 'كيف يعمل طلب التسعير';
+
+  @override
+  String get rfqHowWorksMessage =>
+      'انشر طلب منتج عندما لا تجد ما تحتاجه. سيقوم الموردون بمراجعته وإرسال عروض أسعار تتضمن السعر والكمية وتفاصيل التسليم.';
+
+  @override
+  String get rfqNoRfqsYet => 'لا توجد طلبات تسعير بعد';
+
+  @override
+  String get rfqNoRfqsYetMessage =>
+      'أنشئ أول طلب ودع الموردين يرسلون لك عروض الأسعار.';
+
+  @override
+  String get rfqProductRequest => 'طلب المنتج';
+
+  @override
+  String get rfqProductName => 'اسم المنتج *';
+
+  @override
+  String get rfqProductNameHint => 'مثال: كراتين حليب عضوي';
+
+  @override
+  String get rfqProductNameRequired => 'اسم المنتج مطلوب';
+
+  @override
+  String get rfqProductNameTooShort =>
+      'يجب أن يتكون اسم المنتج من حرفين على الأقل';
+
+  @override
+  String get rfqUploadProductImage => 'رفع صورة المنتج';
+
+  @override
+  String get rfqUploadProductImageHint =>
+      'اختياري. ستظهر هذه الصورة أيضاً للموردين عند عرض طلب التسعير.';
+
+  @override
+  String get rfqCategory => 'الفئة';
+
+  @override
+  String get rfqCategoryHint => 'أغذية، إلكترونيات...';
+
+  @override
+  String get rfqSubcategory => 'الفئة الفرعية';
+
+  @override
+  String get rfqSubcategoryHint => 'ألبان، هواتف...';
+
+  @override
+  String get rfqDetailedRequirements => 'المتطلبات التفصيلية';
+
+  @override
+  String get rfqRequirements => 'المتطلبات *';
+
+  @override
+  String get rfqRequirementsHint =>
+      'اكتب المواصفات، الجودة، التغليف، العلامات المفضلة، الحجم، اللون، المعايير...';
+
+  @override
+  String get rfqRequirementsRequired => 'المتطلبات مطلوبة';
+
+  @override
+  String get rfqRequirementsTooShort =>
+      'يجب أن تكون المتطلبات 10 أحرف على الأقل';
+
+  @override
+  String get rfqWriteWithAi => 'اكتب المتطلبات بالذكاء الاصطناعي';
+
+  @override
+  String get rfqWritingWithAi => 'جارٍ الكتابة...';
+
+  @override
+  String get rfqAiProductNameRequired => 'اكتب اسم المنتج أولاً.';
+
+  @override
+  String get rfqAiReplaceTitle => 'استبدال المتطلبات؟';
+
+  @override
+  String get rfqAiReplaceMessage =>
+      'حقل المتطلبات يحتوي على نص بالفعل. هل تريد استبداله بمتطلبات مولّدة بالذكاء الاصطناعي؟';
+
+  @override
+  String get rfqAiReplaceAction => 'استبدال';
+
+  @override
+  String get rfqAiKeepAction => 'الاحتفاظ بالنص الحالي';
+
+  @override
+  String get rfqQuantityAndDelivery => 'الكمية والتسليم';
+
+  @override
+  String get rfqMinimumQuantity => 'الحد الأدنى للكمية *';
+
+  @override
+  String get rfqMinimumQuantityHint => '500';
+
+  @override
+  String get rfqEnterValidQuantity => 'أدخل كمية صحيحة';
+
+  @override
+  String get rfqUnit => 'الوحدة';
+
+  @override
+  String get rfqUnitHint => 'وحدات';
+
+  @override
+  String get rfqTargetUnitPrice => 'السعر المستهدف للوحدة';
+
+  @override
+  String get rfqOptional => 'اختياري';
+
+  @override
+  String get rfqPreferredDeliveryTime => 'وقت التسليم المفضل';
+
+  @override
+  String get rfqChooseDeliveryTime => 'اختر وقت التسليم';
+
+  @override
+  String get rfqDeliveryWithin24Hours => 'خلال 24 ساعة';
+
+  @override
+  String get rfqDelivery2To3Days => 'خلال 2-3 أيام';
+
+  @override
+  String get rfqDeliveryWithin1Week => 'خلال أسبوع';
+
+  @override
+  String get rfqDeliveryWithin2Weeks => 'خلال أسبوعين';
+
+  @override
+  String get rfqDeliveryFlexible => 'مرن';
+
+  @override
+  String get rfqSelectDeadlineDate => 'اختر تاريخ الموعد النهائي';
+
+  @override
+  String get rfqDeliveryLocation => 'موقع التسليم';
+
+  @override
+  String get rfqCity => 'المدينة';
+
+  @override
+  String get rfqCityHint => 'مثال: بيروت';
+
+  @override
+  String get rfqDeliveryAddress => 'عنوان التسليم';
+
+  @override
+  String get rfqDeliveryAddressHint => 'الشارع، المبنى، المنطقة، الملاحظات...';
+
+  @override
+  String get rfqPost => 'نشر طلب التسعير';
+
+  @override
+  String get rfqPosting => 'جارٍ نشر طلب التسعير...';
+
+  @override
+  String get rfqSaveChanges => 'حفظ التعديلات';
+
+  @override
+  String get rfqSavingChanges => 'جارٍ حفظ التعديلات...';
+
+  @override
+  String get rfqNotFound => 'لم يتم العثور على طلب التسعير';
+
+  @override
+  String get rfqCannotEditTitle => 'لا يمكن تعديل طلب التسعير هذا';
+
+  @override
+  String get rfqCannotEditSupplierMessage =>
+      'لقد تفاعل مورد مع هذا الطلب بالفعل. للحفاظ على عدالة وصحة عروض الأسعار، قم بإلغاء الطلب وأنشئ طلباً جديداً إذا كنت تحتاج إلى تغييرات.';
+
+  @override
+  String get rfqCannotEditStatusMessage =>
+      'حالة طلب التسعير هذه لا تسمح بالتعديل.';
+
+  @override
+  String get rfqBackToDetails => 'العودة إلى التفاصيل';
+
+  @override
+  String get rfqSupplierQuotations => 'عروض أسعار الموردين';
+
+  @override
+  String get rfqNoQuotesYet =>
+      'لا توجد عروض أسعار من الموردين بعد. ستظهر العروض هنا عندما يرد الموردون.';
+
+  @override
+  String get rfqCancel => 'إلغاء طلب التسعير';
+
+  @override
+  String get rfqCancelQuestion => 'إلغاء طلب التسعير؟';
+
+  @override
+  String get rfqCancelMessage =>
+      'سيتم إلغاء طلب التسعير ولن يتمكن الموردون من تقديم عروض عليه.';
+
+  @override
+  String get rfqCancelWithQuotesMessage =>
+      'يحتوي طلب التسعير هذا على عروض من الموردين. الإلغاء يحافظ على السجل ولكنه يمنع أي إجراءات جديدة من الموردين.';
+
+  @override
+  String get rfqKeep => 'الاحتفاظ بالطلب';
+
+  @override
+  String get rfqDeleteQuestion => 'حذف طلب التسعير؟';
+
+  @override
+  String get rfqDeleteMessage =>
+      'لا يحتوي طلب التسعير هذا على عروض من الموردين بعد، لذلك يمكن حذفه بأمان. لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get rfqDelete => 'حذف';
+
+  @override
+  String get rfqEditRequest => 'تعديل الطلب';
+
+  @override
+  String get rfqCancelRequest => 'إلغاء الطلب';
+
+  @override
+  String get rfqDeleteRequest => 'حذف الطلب';
+
+  @override
+  String get rfqViewDetails => 'عرض التفاصيل';
+
+  @override
+  String get rfqOpen => 'مفتوح';
+
+  @override
+  String get rfqQuoted => 'تم تقديم عروض';
+
+  @override
+  String get rfqAccepted => 'مقبول';
+
+  @override
+  String get rfqClosed => 'مغلق';
+
+  @override
+  String get rfqCancelled => 'ملغي';
+
+  @override
+  String get rfqExpired => 'منتهي';
+
+  @override
+  String rfqQuotesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عروض',
+      two: 'عرضان',
+      one: 'عرض واحد',
+      zero: '0 عروض',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rfqQuantityLabel(int quantity, String unit) {
+    return '$quantity $unit';
+  }
+
+  @override
+  String get rfqNoDeliveryLocation => 'لم تتم إضافة موقع التسليم';
+
+  @override
+  String get rfqLocation => 'الموقع';
+
+  @override
+  String get rfqDelivery => 'التسليم';
+
+  @override
+  String get rfqQuantity => 'الكمية';
+
+  @override
+  String get rfqTargetPrice => 'السعر المستهدف';
+
+  @override
+  String get rfqUnitPrice => 'سعر الوحدة';
+
+  @override
+  String get rfqTotal => 'الإجمالي';
+
+  @override
+  String get rfqShippingNotSpecified => 'لم يتم تحديد الشحن';
+
+  @override
+  String rfqShippingCost(String amount) {
+    return 'الشحن $amount';
+  }
+
+  @override
+  String get rfqAcceptQuotation => 'قبول عرض السعر';
+
+  @override
+  String get rfqAcceptQuotationQuestion => 'قبول عرض السعر؟';
+
+  @override
+  String get rfqAcceptQuotationMessage =>
+      'سيتم تحديد عرض المورد المختار كمقبول وإغلاق طلب التسعير.';
+
+  @override
+  String get rfqReviewMore => 'مراجعة المزيد';
+
+  @override
+  String get rfqAccept => 'قبول';
+
+  @override
+  String get rfqPostedSuccessfully => 'تم نشر طلب التسعير بنجاح';
+
+  @override
+  String get rfqUpdatedSuccessfully => 'تم تحديث طلب التسعير بنجاح';
+
+  @override
+  String get rfqCancelledSuccessfully => 'تم إلغاء طلب التسعير بنجاح';
+
+  @override
+  String get rfqDeletedSuccessfully => 'تم حذف طلب التسعير بنجاح';
+
+  @override
+  String get rfqQuotationAcceptedSuccessfully => 'تم قبول عرض السعر بنجاح';
+
+  @override
+  String get rfqAiGeneratedSuccessfully =>
+      'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
 }

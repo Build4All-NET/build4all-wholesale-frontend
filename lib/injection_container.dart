@@ -11,6 +11,14 @@ import 'core/theme/locale_cubit.dart';
 import 'core/theme/runtime_theme_service.dart';
 
 // =========================
+// RETAILER PRODUCT AI
+// =========================
+import 'features/retailer/product_ai/data/repositories/retailer_product_ai_repository_impl.dart';
+import 'features/retailer/product_ai/data/services/retailer_product_ai_service.dart';
+import 'features/retailer/product_ai/domain/repositories/retailer_product_ai_repository.dart';
+import 'features/retailer/product_ai/presentation/cubit/retailer_product_ai_cubit.dart';
+
+// =========================
 // AUTH
 // =========================
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -66,10 +74,25 @@ import 'features/retailer/rfq/domain/usecases/accept_rfq_quotation_usecase.dart'
 import 'features/retailer/rfq/domain/usecases/cancel_rfq_usecase.dart';
 import 'features/retailer/rfq/domain/usecases/create_rfq_usecase.dart';
 import 'features/retailer/rfq/domain/usecases/delete_rfq_usecase.dart';
+import 'features/retailer/rfq/domain/usecases/generate_rfq_requirements_usecase.dart';
 import 'features/retailer/rfq/domain/usecases/get_my_rfqs_usecase.dart';
 import 'features/retailer/rfq/domain/usecases/get_rfq_details_usecase.dart';
-import 'features/retailer/rfq/presentation/cubit/retailer_rfq_cubit.dart';
 import 'features/retailer/rfq/domain/usecases/update_rfq_usecase.dart';
+import 'features/retailer/rfq/presentation/cubit/retailer_rfq_cubit.dart';
+
+// =========================
+// SUPPLIER RFQ
+// =========================
+import 'features/supplier/rfq/data/repositories/supplier_rfq_repository_impl.dart';
+import 'features/supplier/rfq/data/services/supplier_rfq_api_service.dart';
+import 'features/supplier/rfq/domain/repositories/supplier_rfq_repository.dart';
+import 'features/supplier/rfq/domain/usecases/get_open_supplier_rfqs_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/get_supplier_rfq_details_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/submit_supplier_rfq_quotation_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/update_supplier_rfq_quotation_usecase.dart';
+import 'features/supplier/rfq/domain/usecases/withdraw_supplier_rfq_quotation_usecase.dart';
+import 'features/supplier/rfq/presentation/cubit/supplier_rfq_cubit.dart';
+
 // =========================
 // SUPPLIER CATEGORIES / CATALOG
 // =========================
@@ -289,6 +312,12 @@ Future<void> init() async {
         RetailerRfqApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
+  sl.registerLazySingleton<SupplierRfqApiService>(
+    () => SupplierRfqApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierProfileService>(
     () =>
         SupplierProfileService(sl<ApiClient>(instanceName: 'projectApiClient')),
@@ -371,6 +400,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<RetailerProductAiService>(
+    () => RetailerProductAiService(
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   // =========================
   // REPOSITORIES
   // =========================
@@ -408,6 +443,18 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RetailerRfqRepository>(
     () => RetailerRfqRepositoryImpl(apiService: sl<RetailerRfqApiService>()),
+  );
+
+  sl.registerLazySingleton<SupplierRfqRepository>(
+    () => SupplierRfqRepositoryImpl(
+      apiService: sl<SupplierRfqApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<RetailerProductAiRepository>(
+    () => RetailerProductAiRepositoryImpl(
+      retailerProductAiService: sl<RetailerProductAiService>(),
+    ),
   );
 
   sl.registerLazySingleton<SupplierCategoryRepository>(
@@ -483,9 +530,15 @@ Future<void> init() async {
   sl.registerLazySingleton<CreateRfqUseCase>(
     () => CreateRfqUseCase(sl<RetailerRfqRepository>()),
   );
+
   sl.registerLazySingleton<UpdateRfqUseCase>(
     () => UpdateRfqUseCase(sl<RetailerRfqRepository>()),
   );
+
+  sl.registerLazySingleton<GenerateRfqRequirementsUseCase>(
+    () => GenerateRfqRequirementsUseCase(sl<RetailerRfqRepository>()),
+  );
+
   sl.registerLazySingleton<CancelRfqUseCase>(
     () => CancelRfqUseCase(sl<RetailerRfqRepository>()),
   );
@@ -496,6 +549,29 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AcceptRfqQuotationUseCase>(
     () => AcceptRfqQuotationUseCase(sl<RetailerRfqRepository>()),
+  );
+
+  // =========================
+  // SUPPLIER RFQ USE CASES
+  // =========================
+  sl.registerLazySingleton<GetOpenSupplierRfqsUseCase>(
+    () => GetOpenSupplierRfqsUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<GetSupplierRfqDetailsUseCase>(
+    () => GetSupplierRfqDetailsUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<SubmitSupplierRfqQuotationUseCase>(
+    () => SubmitSupplierRfqQuotationUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<UpdateSupplierRfqQuotationUseCase>(
+    () => UpdateSupplierRfqQuotationUseCase(sl<SupplierRfqRepository>()),
+  );
+
+  sl.registerLazySingleton<WithdrawSupplierRfqQuotationUseCase>(
+    () => WithdrawSupplierRfqQuotationUseCase(sl<SupplierRfqRepository>()),
   );
 
   // =========================
@@ -981,6 +1057,24 @@ Future<void> init() async {
       cancelRfqUseCase: sl<CancelRfqUseCase>(),
       deleteRfqUseCase: sl<DeleteRfqUseCase>(),
       acceptRfqQuotationUseCase: sl<AcceptRfqQuotationUseCase>(),
+      generateRfqRequirementsUseCase: sl<GenerateRfqRequirementsUseCase>(),
     ),
+  );
+
+  sl.registerFactory<SupplierRfqCubit>(
+    () => SupplierRfqCubit(
+      getOpenSupplierRfqsUseCase: sl<GetOpenSupplierRfqsUseCase>(),
+      getSupplierRfqDetailsUseCase: sl<GetSupplierRfqDetailsUseCase>(),
+      submitSupplierRfqQuotationUseCase:
+          sl<SubmitSupplierRfqQuotationUseCase>(),
+      updateSupplierRfqQuotationUseCase:
+          sl<UpdateSupplierRfqQuotationUseCase>(),
+      withdrawSupplierRfqQuotationUseCase:
+          sl<WithdrawSupplierRfqQuotationUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<RetailerProductAiCubit>(
+    () => RetailerProductAiCubit(repository: sl<RetailerProductAiRepository>()),
   );
 }
