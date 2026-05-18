@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
-import 'package:flutter/services.dart';
-
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/banner_entity.dart';
 
@@ -18,29 +17,13 @@ class BannerCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  Future<void> _copyBanner(BuildContext context) async {
-    final textToCopy = banner.imageUrl.trim().isNotEmpty
-        ? banner.imageUrl.trim()
-        : banner.title.trim();
-
-    await Clipboard.setData(
-      ClipboardData(text: textToCopy),
-    );
-
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.l10n.supplierBannerCopiedSuccessfully),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final statusColor = _statusColor();
-    final visibleText = banner.currentlyVisible ? context.l10n.yesLabel : context.l10n.noLabel;
+    final visibleText = banner.currentlyVisible
+        ? context.l10n.yesLabel
+        : context.l10n.noLabel;
 
     return Container(
       width: double.infinity,
@@ -73,7 +56,7 @@ class BannerCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               _StatusBadge(
-                text: banner.statusLabel,
+                text: _localizedStatusLabel(context, banner.statusLabel),
                 color: statusColor,
               ),
             ],
@@ -95,7 +78,7 @@ class BannerCard extends StatelessWidget {
           ],
           const SizedBox(height: 12),
           Text(
-            banner.validityLabel,
+            _localizedValidityLabel(context, banner),
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
@@ -108,10 +91,14 @@ class BannerCard extends StatelessWidget {
             runSpacing: 8,
             children: [
               _InfoChip(
-                text: context.l10n.supplierTargetValue(_localizedTargetLabel(context, banner.targetLabelText)),
+                text: context.l10n.supplierTargetValue(
+                  _localizedTargetLabel(context, banner.targetLabelText),
+                ),
               ),
               _InfoChip(
-                text: context.l10n.supplierOrderValue(banner.sortOrder.toString()),
+                text: context.l10n.supplierOrderValue(
+                  banner.sortOrder.toString(),
+                ),
               ),
               _InfoChip(
                 text: context.l10n.supplierVisibleNowValue(visibleText),
@@ -125,16 +112,6 @@ class BannerCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _ActionButton(
-                  icon: Icons.copy_outlined,
-                  label: context.l10n.copyButton,
-                  onPressed: () => _copyBanner(context),
-                  color: AppThemeTokens.textSecondary,
-                  borderColor: AppThemeTokens.border,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _ActionButton(
                   icon: Icons.edit_outlined,
                   label: context.l10n.editButton,
                   onPressed: onEdit,
@@ -142,7 +119,7 @@ class BannerCard extends StatelessWidget {
                   borderColor: primary.withOpacity(0.35),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: _ActionButton(
                   icon: Icons.delete_outline,
@@ -254,9 +231,7 @@ class _StatusBadge extends StatelessWidget {
 class _InfoChip extends StatelessWidget {
   final String text;
 
-  _InfoChip({
-    required this.text,
-  });
+  const _InfoChip({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -300,32 +275,107 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 48,
-      child: OutlinedButton.icon(
+      child: OutlinedButton(
         onPressed: onPressed,
-        icon: Icon(
-          icon,
-          size: 16,
-          color: color,
-        ),
-        label: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
-            color: color,
-          ),
-        ),
         style: OutlinedButton.styleFrom(
+          foregroundColor: color,
           padding: const EdgeInsets.symmetric(horizontal: 6),
           side: BorderSide(color: borderColor),
+          minimumSize: const Size(0, 48),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+}
+
+String _localizedValidityLabel(BuildContext context, BannerEntity banner) {
+  final startsAt = banner.startsAt;
+  final expiresAt = banner.expiresAt;
+
+  if (startsAt == null && expiresAt == null) {
+    return _localizedNoValidityDates(context);
+  }
+
+  final from = startsAt == null
+      ? _localizedNoStartDate(context)
+      : _formatLocalizedDateTime(context, startsAt);
+  final to = expiresAt == null
+      ? _localizedNoEndDate(context)
+      : _formatLocalizedDateTime(context, expiresAt);
+
+  return '$from → $to';
+}
+
+String _formatLocalizedDateTime(BuildContext context, DateTime date) {
+  final locale = Localizations.localeOf(context).toLanguageTag();
+
+  try {
+    return DateFormat('MMM d, yyyy • h:mm a', locale).format(date);
+  } catch (_) {
+    return DateFormat('MMM d, yyyy • h:mm a').format(date);
+  }
+}
+
+String _localizedNoValidityDates(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+
+  switch (languageCode) {
+    case 'ar':
+      return 'لا توجد تواريخ صلاحية';
+    case 'fr':
+      return 'Aucune date de validité';
+    default:
+      return 'No validity dates';
+  }
+}
+
+String _localizedNoStartDate(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+
+  switch (languageCode) {
+    case 'ar':
+      return 'لا يوجد تاريخ بداية';
+    case 'fr':
+      return 'Aucun début';
+    default:
+      return 'No start';
+  }
+}
+
+String _localizedNoEndDate(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+
+  switch (languageCode) {
+    case 'ar':
+      return 'لا يوجد تاريخ نهاية';
+    case 'fr':
+      return 'Aucune fin';
+    default:
+      return 'No end';
   }
 }
 

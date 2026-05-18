@@ -31,7 +31,6 @@ import 'features/supplier_profile/domain/repositories/supplier_profile_repositor
 import 'features/supplier_profile/domain/usecases/create_supplier_profile_usecase.dart';
 import 'features/supplier_profile/presentation/bloc/supplier_profile_cubit.dart';
 
-
 // =========================
 // SUPPLIER PROFILE DISPLAY - BUILD4ALL READ ONLY
 // =========================
@@ -817,8 +816,7 @@ Future<void> init() async {
 
   sl.registerFactory<SupplierProfileDisplayBloc>(
     () => SupplierProfileDisplayBloc(
-      getSupplierProfileDisplayUseCase:
-          sl<GetSupplierProfileDisplayUseCase>(),
+      getSupplierProfileDisplayUseCase: sl<GetSupplierProfileDisplayUseCase>(),
     ),
   );
 

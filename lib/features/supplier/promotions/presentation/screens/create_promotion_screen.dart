@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -334,13 +335,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
   String _formatDateTime(DateTime? date) {
     if (date == null) return '—';
 
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
+    final localeTag = Localizations.localeOf(context).toLanguageTag();
 
-    return '$year-$month-$day $hour:$minute';
+    return DateFormat('yyyy-MM-dd h:mm a', localeTag).format(date);
   }
 
   Future<DateTime?> _pickDateTime(DateTime? initial) async {
@@ -352,6 +349,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       initialDate: base,
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 5),
+      locale: Localizations.localeOf(context),
     );
 
     if (pickedDate == null || !mounted) return null;

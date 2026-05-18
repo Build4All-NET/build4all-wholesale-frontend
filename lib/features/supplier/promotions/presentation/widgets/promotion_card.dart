@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 
@@ -7,14 +8,12 @@ import '../../domain/entities/promotion_entity.dart';
 
 class PromotionCard extends StatelessWidget {
   final PromotionEntity promotion;
-  final VoidCallback? onCopy;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   const PromotionCard({
     super.key,
     required this.promotion,
-    this.onCopy,
     this.onEdit,
     this.onDelete,
   });
@@ -70,7 +69,10 @@ class PromotionCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StatusPill(status: _localizedStatusLabel(context, promotion.statusLabel)),
+              _StatusPill(
+                status: _localizedStatusLabel(context, promotion.statusLabel),
+                rawStatus: promotion.statusLabel,
+              ),
             ],
           ),
           if (promotion.description != null &&
@@ -93,10 +95,10 @@ class PromotionCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _TextChip(text: promotion.targetLabel),
-              _TextChip(text: promotion.validityLabel),
-              _TextChip(text: promotion.minOrderLabel),
-              _TextChip(text: promotion.maxDiscountLabel),
+              _TextChip(text: _localizedTargetLabel(context, promotion)),
+              _TextChip(text: _localizedValidityLabel(context, promotion)),
+              _TextChip(text: _localizedMinOrderLabel(context, promotion)),
+              _TextChip(text: _localizedMaxDiscountLabel(context, promotion)),
               _TextChip(text: context.l10n.supplierBranchesValue(_localizedBranchScopeLabel(context, promotion.branchScopeLabel))),
               _TextChip(
                 text: context.l10n.supplierValidNowValue(promotion.currentlyValid ? context.l10n.yesLabel : context.l10n.noLabel),
@@ -108,18 +110,6 @@ class PromotionCard extends StatelessWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-              if (onCopy != null) ...[
-                Expanded(
-                  child: _ActionButton(
-                    icon: Icons.copy_outlined,
-                    label: context.l10n.copyButton,
-                    onPressed: onCopy!,
-                    borderColor: AppThemeTokens.border,
-                    textColor: AppThemeTokens.textPrimary,
-                  ),
-                ),
-                const SizedBox(width: 10),
-              ],
               if (onEdit != null) ...[
                 Expanded(
                   child: _ActionButton(
@@ -175,12 +165,16 @@ class _PromotionBadge extends StatelessWidget {
 
 class _StatusPill extends StatelessWidget {
   final String status;
+  final String rawStatus;
 
-  const _StatusPill({required this.status});
+  const _StatusPill({
+    required this.status,
+    required this.rawStatus,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final normalized = status.toLowerCase();
+    final normalized = rawStatus.toLowerCase();
 
     final active = normalized == 'active';
     final scheduled = normalized == 'scheduled';
@@ -302,6 +296,75 @@ class _ActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+
+String _localizedTargetLabel(BuildContext context, PromotionEntity promotion) {
+  if (promotion.targetType == PromotionTargetType.allProducts) {
+    return context.l10n.supplierAllProducts;
+  }
+
+  final safeName = promotion.targetName?.trim();
+  final targetTypeLabel = _localizedOptionLabel(context, promotion.targetType.label);
+
+  if (safeName != null && safeName.isNotEmpty) {
+    return '$targetTypeLabel: $safeName';
+  }
+
+  return targetTypeLabel;
+}
+
+String _localizedValidityLabel(BuildContext context, PromotionEntity promotion) {
+  final start = promotion.startDate;
+  final end = promotion.endDate;
+
+  if (start == null && end == null) {
+    return '—';
+  }
+
+  if (start != null && end != null) {
+    return '${_formatPromotionDate(context, start)} → ${_formatPromotionDate(context, end)}';
+  }
+
+  return _formatPromotionDate(context, start ?? end!);
+}
+
+String _localizedMinOrderLabel(BuildContext context, PromotionEntity promotion) {
+  final minOrderAmount = promotion.minOrderAmount;
+
+  if (minOrderAmount == null) {
+    return context.l10n.supplierNoMinimum;
+  }
+
+  return context.l10n.supplierMinimumValue(_formatCurrencyAmount(minOrderAmount));
+}
+
+String _localizedMaxDiscountLabel(BuildContext context, PromotionEntity promotion) {
+  if (!promotion.isPercent) {
+    return context.l10n.noneLabel;
+  }
+
+  final maxDiscountAmount = promotion.maxDiscountAmount;
+
+  if (maxDiscountAmount == null) {
+    return context.l10n.supplierUnlimited;
+  }
+
+  return '${context.l10n.supplierMaxDiscount}: ${_formatCurrencyAmount(maxDiscountAmount)}';
+}
+
+String _formatPromotionDate(BuildContext context, DateTime value) {
+  final localeTag = Localizations.localeOf(context).toLanguageTag();
+
+  return DateFormat('yyyy-MM-dd h:mm a', localeTag).format(value);
+}
+
+String _formatCurrencyAmount(double value) {
+  final formatted = value == value.roundToDouble()
+      ? value.toInt().toString()
+      : value.toStringAsFixed(2);
+
+  return '\$$formatted';
 }
 
 String _localizedOptionLabel(BuildContext context, String label) {
