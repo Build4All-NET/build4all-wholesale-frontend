@@ -490,85 +490,91 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _saveProduct() async {
-    if (_isSavingProduct) return;
-    if (!_formKey.currentState!.validate()) return;
+  if (_isSavingProduct) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    final selectedCategory = _categories
-        .where((category) => category.id == _selectedCategoryId)
-        .cast<SupplierCategoryEntity?>()
-        .firstWhere((category) => category != null, orElse: () => null);
+  final selectedCategory = _categories
+      .where((category) => category.id == _selectedCategoryId)
+      .cast<SupplierCategoryEntity?>()
+      .firstWhere((category) => category != null, orElse: () => null);
 
-    if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
-      );
-      return;
-    }
-
-    final selectedSubCategory = _selectedSubCategoryId == null
-        ? null
-        : _subCategories
-              .where((subCategory) => subCategory.id == _selectedSubCategoryId)
-              .cast<SupplierSubCategoryEntity?>()
-              .firstWhere(
-                (subCategory) => subCategory != null,
-                orElse: () => null,
-              );
-
-    setState(() {
-      _isSavingProduct = true;
-    });
-
-    try {
-      final ProductEntity product;
-
-      if (widget.isEditMode) {
-        product = await _productRepository.updateProduct(
-          productId: widget.productToEdit!.id,
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          categoryId: selectedCategory.id,
-          subCategoryId: selectedSubCategory?.id,
-          price: double.parse(_priceController.text.trim()),
-          minimumOrderQuantity: int.parse(
-            _minimumOrderQuantityController.text.trim(),
-          ),
-          status: _selectedStatus,
-          imagePath: _selectedImagePath,
-        );
-      } else {
-        product = await _productRepository.createProduct(
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          categoryId: selectedCategory.id,
-          subCategoryId: selectedSubCategory?.id,
-          price: double.parse(_priceController.text.trim()),
-          minimumOrderQuantity: int.parse(
-            _minimumOrderQuantityController.text.trim(),
-          ),
-          status: _selectedStatus,
-          imagePath: _selectedImagePath,
-        );
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _isSavingProduct = false;
-      });
-
-      context.pop(product);
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isSavingProduct = false;
-      });
-
-      _showError(e);
-    }
+  if (selectedCategory == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
+    );
+    return;
   }
 
+  final selectedSubCategory = _selectedSubCategoryId == null
+      ? null
+      : _subCategories
+            .where((subCategory) => subCategory.id == _selectedSubCategoryId)
+            .cast<SupplierSubCategoryEntity?>()
+            .firstWhere(
+              (subCategory) => subCategory != null,
+              orElse: () => null,
+            );
+
+  setState(() {
+    _isSavingProduct = true;
+  });
+
+  try {
+    final ProductEntity product;
+
+    if (widget.isEditMode) {
+      product = await _productRepository.updateProduct(
+        productId: widget.productToEdit!.id,
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        categoryId: selectedCategory.id,
+        subCategoryId: selectedSubCategory?.id,
+        price: double.parse(_priceController.text.trim()),
+        minimumOrderQuantity: int.parse(
+          _minimumOrderQuantityController.text.trim(),
+        ),
+        status: _selectedStatus,
+
+        // If supplier selected a new local image, this path will be uploaded.
+        // If not, this remains the old backend image path from productToEdit.
+        imagePath: _selectedImagePath,
+
+        // Important:
+        // Keep old product image when editing without selecting a new image.
+        existingImageUrl: widget.productToEdit?.imagePath,
+      );
+    } else {
+      product = await _productRepository.createProduct(
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        categoryId: selectedCategory.id,
+        subCategoryId: selectedSubCategory?.id,
+        price: double.parse(_priceController.text.trim()),
+        minimumOrderQuantity: int.parse(
+          _minimumOrderQuantityController.text.trim(),
+        ),
+        status: _selectedStatus,
+        imagePath: _selectedImagePath,
+      );
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingProduct = false;
+    });
+
+    context.pop(product);
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingProduct = false;
+    });
+
+    _showError(e);
+  }
+}
   void _showError(Object error) {
     final message = error is AppException
         ? error.message
