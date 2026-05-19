@@ -13,6 +13,12 @@ import '../bloc/coupons_event.dart';
 import '../bloc/coupons_state.dart';
 import '../widgets/coupon_card.dart';
 
+enum _CouponStatusFilter {
+  enabled,
+  disabled,
+  all,
+}
+
 class CouponsScreen extends StatelessWidget {
   const CouponsScreen({super.key});
 
@@ -33,6 +39,26 @@ class _CouponsView extends StatefulWidget {
 }
 
 class _CouponsViewState extends State<_CouponsView> {
+  String _searchQuery = '';
+  _CouponStatusFilter _statusFilter = _CouponStatusFilter.enabled;
+
+  List<CouponEntity> _filteredCoupons(List<CouponEntity> coupons) {
+    final query = _searchQuery.trim().toLowerCase();
+
+    return coupons.where((coupon) {
+      final matchesStatus = switch (_statusFilter) {
+        _CouponStatusFilter.enabled => coupon.active,
+        _CouponStatusFilter.disabled => !coupon.active,
+        _CouponStatusFilter.all => true,
+      };
+
+      if (!matchesStatus) return false;
+      if (query.isEmpty) return true;
+
+      return coupon.code.toLowerCase().contains(query);
+    }).toList();
+  }
+
   Future<void> _refresh(BuildContext context) async {
     context.read<CouponsBloc>().add(const LoadCouponsRequested());
   }
@@ -137,26 +163,41 @@ class _CouponsViewState extends State<_CouponsView> {
         body: SafeArea(
           child: BlocBuilder<CouponsBloc, CouponsState>(
             builder: (context, state) {
+              final filteredCoupons = _filteredCoupons(state.coupons);
+
               return RefreshIndicator(
                 onRefresh: () => _refresh(context),
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(
+                  padding: const EdgeInsets.fromLTRB(
                     AppThemeTokens.screenHorizontalPadding,
+                    16,
+                    AppThemeTokens.screenHorizontalPadding,
+                    28,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _HeaderCard(primary: primary),
-                      const SizedBox(height: 20),
-                      Text(
-                        context.l10n.supplierCouponList,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          color: AppThemeTokens.textPrimary,
-                        ),
+                      const SizedBox(height: 18),
+                      _StatusFilterBar(
+                        selected: _statusFilter,
+                        onChanged: (value) {
+                          setState(() {
+                            _statusFilter = value;
+                          });
+                        },
                       ),
+                      const SizedBox(height: 14),
+                      _SearchField(
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      _SectionHeader(count: filteredCoupons.length),
                       const SizedBox(height: 12),
                       if (state.loading)
                         const _LoadingCard()
@@ -167,16 +208,18 @@ class _CouponsViewState extends State<_CouponsView> {
                         )
                       else if (state.coupons.isEmpty)
                         _EmptyCouponsCard(primary: primary)
+                      else if (filteredCoupons.isEmpty)
+                        _NoSearchResultsCard(primary: primary)
                       else
                         ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.coupons.length,
+                          itemCount: filteredCoupons.length,
                           separatorBuilder: (context, index) {
                             return const SizedBox(height: 16);
                           },
                           itemBuilder: (context, index) {
-                            final coupon = state.coupons[index];
+                            final coupon = filteredCoupons[index];
 
                             return CouponCard(
                               coupon: coupon,
@@ -255,6 +298,187 @@ class _HeaderCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class _StatusFilterBar extends StatelessWidget {
+  final _CouponStatusFilter selected;
+  final ValueChanged<_CouponStatusFilter> onChanged;
+
+  const _StatusFilterBar({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: [
+        _FilterChipButton(
+          label: context.l10n.supplierEnabledOnly,
+          selected: selected == _CouponStatusFilter.enabled,
+          onTap: () => onChanged(_CouponStatusFilter.enabled),
+        ),
+        _FilterChipButton(
+          label: context.l10n.supplierDisabledOnly,
+          selected: selected == _CouponStatusFilter.disabled,
+          onTap: () => onChanged(_CouponStatusFilter.disabled),
+        ),
+        _FilterChipButton(
+          label: context.l10n.allLabel,
+          selected: selected == _CouponStatusFilter.all,
+          onTap: () => onChanged(_CouponStatusFilter.all),
+        ),
+      ],
+    );
+  }
+}
+
+class _FilterChipButton extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _FilterChipButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? primary.withOpacity(0.12) : AppThemeTokens.surface,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: selected ? primary.withOpacity(0.45) : AppThemeTokens.border,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w900,
+            color: selected ? primary : AppThemeTokens.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+
+  const _SearchField({required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.search),
+        hintText: context.l10n.supplierCouponCodePlain,
+        hintStyle: const TextStyle(
+          color: AppThemeTokens.textSecondary,
+          fontWeight: FontWeight.w600,
+        ),
+        filled: true,
+        fillColor: AppThemeTokens.surface,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 13,
+        ),
+        border: _border(),
+        enabledBorder: _border(),
+        focusedBorder: _border(
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
+  }
+
+  OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: color, width: 1.2),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final int count;
+
+  const _SectionHeader({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.l10n.supplierCouponList,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+            color: AppThemeTokens.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          '$count ${context.l10n.supplierCoupons}',
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: AppThemeTokens.textSecondary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NoSearchResultsCard extends StatelessWidget {
+  final Color primary;
+
+  const _NoSearchResultsCard({required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.search_off, color: primary, size: 34),
+          const SizedBox(height: 12),
+          Text(
+            context.l10n.supplierNoResultsFound,
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
             ),
           ),
         ],
