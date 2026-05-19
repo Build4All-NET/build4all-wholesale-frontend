@@ -95,15 +95,6 @@ class _SupplierDashboardView extends StatelessWidget {
                 size: 27,
               ),
             ),
-            IconButton(
-              tooltip: context.l10n.supplierDashboardSettingsTooltip,
-              onPressed: () => context.go('/supplier-settings'),
-              icon: Icon(
-                Icons.settings_outlined,
-                color: primary,
-                size: 27,
-              ),
-            ),
             SizedBox(width: 8),
           ],
         ),

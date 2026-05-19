@@ -232,11 +232,6 @@ class SupplierAppDrawer extends StatelessWidget {
                     title: l10n.supplierDrawerTaxes,
                     route: '/supplier-tax-rules',
                   ),
-                  _DrawerItem(
-                    icon: Icons.settings_outlined,
-                    title: l10n.supplierDrawerSettings,
-                    route: '/supplier-settings',
-                  ),
                 ],
               ),
             ),

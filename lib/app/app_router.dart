@@ -339,13 +339,6 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: '/supplier-settings',
-        builder: (context, state) => SupplierComingSoonScreen(
-          title: 'Settings',
-          icon: Icons.settings_outlined,
-        ),
-      ),
-      GoRoute(
         path: '/supplier-excel-import',
         builder: (context, state) => SupplierExcelImportScreen(),
       ),
