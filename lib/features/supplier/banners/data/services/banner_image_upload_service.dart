@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
+import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 
 class BannerImageUploadService {
   final ApiClient apiClient;
@@ -31,7 +32,7 @@ class BannerImageUploadService {
         final imageUrl = data['imageUrl']?.toString();
 
         if (imageUrl != null && imageUrl.trim().isNotEmpty) {
-          return imageUrl.trim();
+          return UploadedImageUrlResolver.normalizeForBackend(imageUrl);
         }
       }
 

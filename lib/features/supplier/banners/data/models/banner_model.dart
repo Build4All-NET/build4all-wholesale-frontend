@@ -1,3 +1,4 @@
+import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../domain/entities/banner_entity.dart';
 
 class BannerModel extends BannerEntity {
@@ -62,7 +63,9 @@ class BannerModel extends BannerEntity {
       id: json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
       subtitle: _toNullableString(json['subtitle']),
-      imageUrl: json['imageUrl']?.toString() ?? '',
+      imageUrl: UploadedImageUrlResolver.normalizeForBackend(
+        json['imageUrl']?.toString(),
+      ),
       targetType: backendTargetType,
       targetValue: targetValue,
       targetLabel: targetLabel,
@@ -81,7 +84,7 @@ class BannerModel extends BannerEntity {
       'subtitle': subtitle == null || subtitle!.trim().isEmpty
           ? null
           : subtitle!.trim(),
-      'imageUrl': imageUrl.trim(),
+      'imageUrl': UploadedImageUrlResolver.normalizeForBackend(imageUrl),
       'targetType': targetType.backendValue,
       'targetValue': targetType == BannerTargetType.none
           ? null

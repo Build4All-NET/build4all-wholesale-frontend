@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../domain/entities/banner_entity.dart';
 
 class BannerCard extends StatelessWidget {
@@ -162,7 +163,7 @@ class _BannerImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cleanUrl = imageUrl.trim();
+    final cleanUrl = UploadedImageUrlResolver.resolve(imageUrl);
 
     return Container(
       width: double.infinity,
@@ -172,7 +173,7 @@ class _BannerImage extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: cleanUrl.isEmpty
+      child: cleanUrl == null
           ? Icon(
               Icons.image_outlined,
               color: primary,
