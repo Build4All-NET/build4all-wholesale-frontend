@@ -3112,7 +3112,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqDelivery => 'Livraison';
 
   @override
-  String get rfqQuantity => 'QuantitÃ©';
+  String get rfqQuantity => 'Quantite';
 
   @override
   String get rfqTargetPrice => 'Prix cible';
