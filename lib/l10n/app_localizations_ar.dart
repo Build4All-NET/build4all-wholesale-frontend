@@ -3082,4 +3082,65 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get rfqAiGeneratedSuccessfully =>
       'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
+
+  @override
+  String get productDeletedSuccessfully => 'تم حذف المنتج بنجاح';
+
+  @override
+  String get stockAssignedSuccessfully => 'تم تعيين المخزون بنجاح';
+
+  @override
+  String get stockUpdatedSuccessfully => 'تم تحديث المخزون بنجاح';
+
+  @override
+  String get inventoryItemRemovedSuccessfully => 'تمت إزالة عنصر المخزون بنجاح';
+
+  @override
+  String get categoryAddedSuccessfully => 'تمت إضافة الفئة بنجاح';
+
+  @override
+  String get categoryUpdatedSuccessfully => 'تم تحديث الفئة بنجاح';
+
+  @override
+  String get categoryStatusUpdatedSuccessfully => 'تم تحديث حالة الفئة بنجاح';
+
+  @override
+  String get categoryDeletedSuccessfully => 'تم حذف الفئة بنجاح';
+
+  @override
+  String get subCategoryAddedSuccessfully => 'تمت إضافة الفئة الفرعية بنجاح';
+
+  @override
+  String get subCategoryUpdatedSuccessfully => 'تم تحديث الفئة الفرعية بنجاح';
+
+  @override
+  String get subCategoryStatusUpdatedSuccessfully =>
+      'تم تحديث حالة الفئة الفرعية بنجاح';
+
+  @override
+  String get subCategoryDeletedSuccessfully => 'تم حذف الفئة الفرعية بنجاح';
+
+  @override
+  String get branchDeletedSuccessfully => 'تم حذف الفرع بنجاح';
+
+  @override
+  String get productAssignedToBranchSuccessfully =>
+      'تم تعيين المنتج للفرع بنجاح';
+
+  @override
+  String get orderUpdatedSuccessfully => 'تم تحديث الطلب بنجاح';
+
+  @override
+  String orderMarkedAsStatus(String status) {
+    return 'تم تغيير حالة الطلب إلى $status';
+  }
+
+  @override
+  String get paymentCashOnDelivery => 'الدفع عند الاستلام';
+
+  @override
+  String get paymentCard => 'الدفع بالبطاقة';
+
+  @override
+  String get paymentBankTransfer => 'تحويل مصرفي';
 }

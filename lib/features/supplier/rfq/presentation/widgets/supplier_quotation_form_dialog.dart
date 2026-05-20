@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../domain/entities/supplier_rfq_quotation_entity.dart';
 import '../../domain/repositories/supplier_rfq_repository.dart';
 import '../utils/supplier_rfq_i18n.dart';
@@ -92,14 +93,14 @@ class _SupplierQuotationFormDialogState extends State<SupplierQuotationFormDialo
                 _NumberField(
                   controller: _unitPriceController,
                   label: "${l.t('unitPrice')} *",
-                  hint: 'Example: 12.50',
+                  hint: l.t('unitPriceHint'),
                   validator: (value) => _positiveDoubleValidator(value, l.t('unitPrice')),
                 ),
                 const SizedBox(height: 12),
                 _NumberField(
                   controller: _availableQuantityController,
                   label: "${l.t('availableQuantity')} *",
-                  hint: 'Example: 500',
+                  hint: l.t('availableQuantityHint'),
                   allowDecimal: false,
                   validator: (value) => _positiveIntValidator(value, l.t('availableQuantity')),
                 ),
@@ -115,7 +116,7 @@ class _SupplierQuotationFormDialogState extends State<SupplierQuotationFormDialo
                           child: Text(
                             _deliveryDate == null
                                 ? l.t('deliveryDate')
-                                : _formatDate(_deliveryDate!),
+                                : formatSupplierShortDate(context, _deliveryDate!),
                             style: TextStyle(
                               color: _deliveryDate == null
                                   ? AppThemeTokens.textSecondary
@@ -133,7 +134,7 @@ class _SupplierQuotationFormDialogState extends State<SupplierQuotationFormDialo
                 _NumberField(
                   controller: _shippingCostController,
                   label: "${l.t('shippingCost')} *",
-                  hint: '0 for free shipping',
+                  hint: l.t('freeShippingHint'),
                   validator: (value) => _nonNegativeDoubleValidator(value, l.t('shippingCost')),
                 ),
                 const SizedBox(height: 12),
@@ -225,12 +226,6 @@ class _SupplierQuotationFormDialogState extends State<SupplierQuotationFormDialo
     final number = int.tryParse(value?.trim() ?? '');
     if (number == null || number <= 0) return '$label ${SupplierRfqI18n(context).t('mustBeGreaterThanZero')}';
     return null;
-  }
-
-  String _formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    return '$day/$month/${date.year}';
   }
 
   String _trimDouble(double value) {

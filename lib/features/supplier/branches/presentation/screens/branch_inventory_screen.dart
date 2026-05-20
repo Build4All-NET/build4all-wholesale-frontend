@@ -318,6 +318,23 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
     );
   }
 
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'productAssignedToBranch':
+      case 'Product assigned to branch':
+        return context.l10n.productAssignedToBranchSuccessfully;
+      case 'stockUpdated':
+      case 'Stock updated':
+        return context.l10n.stockUpdatedSuccessfully;
+      case 'inventoryItemRemoved':
+      case 'Inventory item removed':
+        return context.l10n.inventoryItemRemovedSuccessfully;
+      default:
+        return message;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<BranchInventoryBloc>.value(
@@ -337,7 +354,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },

@@ -3154,4 +3154,70 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get rfqAiGeneratedSuccessfully =>
       'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
+
+  @override
+  String get productDeletedSuccessfully => 'Produit supprimé avec succès';
+
+  @override
+  String get stockAssignedSuccessfully => 'Stock attribué avec succès';
+
+  @override
+  String get stockUpdatedSuccessfully => 'Stock mis à jour avec succès';
+
+  @override
+  String get inventoryItemRemovedSuccessfully =>
+      'Élément de stock supprimé avec succès';
+
+  @override
+  String get categoryAddedSuccessfully => 'Catégorie ajoutée avec succès';
+
+  @override
+  String get categoryUpdatedSuccessfully => 'Catégorie mise à jour avec succès';
+
+  @override
+  String get categoryStatusUpdatedSuccessfully =>
+      'Statut de la catégorie mis à jour avec succès';
+
+  @override
+  String get categoryDeletedSuccessfully => 'Catégorie supprimée avec succès';
+
+  @override
+  String get subCategoryAddedSuccessfully =>
+      'Sous-catégorie ajoutée avec succès';
+
+  @override
+  String get subCategoryUpdatedSuccessfully =>
+      'Sous-catégorie mise à jour avec succès';
+
+  @override
+  String get subCategoryStatusUpdatedSuccessfully =>
+      'Statut de la sous-catégorie mis à jour avec succès';
+
+  @override
+  String get subCategoryDeletedSuccessfully =>
+      'Sous-catégorie supprimée avec succès';
+
+  @override
+  String get branchDeletedSuccessfully => 'Branche supprimée avec succès';
+
+  @override
+  String get productAssignedToBranchSuccessfully =>
+      'Produit attribué à la branche avec succès';
+
+  @override
+  String get orderUpdatedSuccessfully => 'Commande mise à jour avec succès';
+
+  @override
+  String orderMarkedAsStatus(String status) {
+    return 'Commande marquée comme $status';
+  }
+
+  @override
+  String get paymentCashOnDelivery => 'Paiement à la livraison';
+
+  @override
+  String get paymentCard => 'Paiement par carte';
+
+  @override
+  String get paymentBankTransfer => 'Virement bancaire';
 }

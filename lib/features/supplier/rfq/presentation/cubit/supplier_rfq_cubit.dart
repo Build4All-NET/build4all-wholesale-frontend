@@ -61,7 +61,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
           isSubmitting: false,
           selectedRfq: updated,
           rfqs: _replaceInList(updated),
-          successMessage: 'Quotation submitted successfully',
+          successMessage: 'quotationSubmittedSuccessfully',
         ),
       );
 
@@ -90,7 +90,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
           isSubmitting: false,
           selectedRfq: updated,
           rfqs: updated == null ? state.rfqs : _replaceInList(updated),
-          successMessage: 'Quotation updated successfully',
+          successMessage: 'quotationUpdatedSuccessfully',
         ),
       );
 
@@ -116,7 +116,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
           isSubmitting: false,
           selectedRfq: updated,
           rfqs: updated == null ? state.rfqs : _replaceInList(updated),
-          successMessage: 'Quotation withdrawn successfully',
+          successMessage: 'quotationWithdrawnSuccessfully',
         ),
       );
     } catch (error) {

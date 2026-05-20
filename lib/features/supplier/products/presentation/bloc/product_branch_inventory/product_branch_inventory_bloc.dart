@@ -96,7 +96,7 @@ class ProductBranchInventoryBloc
           product: event.product,
           branches: branches,
           productInventory: productInventory,
-          successMessage: 'Stock assigned',
+          successMessage: 'stockAssigned',
         ),
       );
     } catch (e) {
@@ -130,7 +130,7 @@ class ProductBranchInventoryBloc
           isSaving: false,
           product: event.product,
           productInventory: productInventory,
-          successMessage: 'Stock updated',
+          successMessage: 'stockUpdated',
         ),
       );
     } catch (e) {
@@ -163,7 +163,7 @@ class ProductBranchInventoryBloc
           isDeleting: false,
           product: event.product,
           productInventory: productInventory,
-          successMessage: 'Inventory item removed',
+          successMessage: 'inventoryItemRemoved',
         ),
       );
     } catch (e) {

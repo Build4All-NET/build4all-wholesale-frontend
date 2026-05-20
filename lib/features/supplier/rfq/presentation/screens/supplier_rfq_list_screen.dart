@@ -58,7 +58,7 @@ class _SupplierRfqListViewState extends State<_SupplierRfqListView> {
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
+            SnackBar(content: Text(SupplierRfqI18n(context).t(state.successMessage!))),
           );
           context.read<SupplierRfqCubit>().clearMessages();
         }

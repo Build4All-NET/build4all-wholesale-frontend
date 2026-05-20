@@ -88,7 +88,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
         state.copyWith(
           isDeleting: false,
           products: updatedProducts,
-          successMessage: 'Product deleted',
+          successMessage: 'productDeleted',
         ),
       );
     } catch (e) {

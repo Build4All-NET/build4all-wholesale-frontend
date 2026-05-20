@@ -5774,6 +5774,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI requirements generated successfully'**
   String get rfqAiGeneratedSuccessfully;
+
+  /// No description provided for @productDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Product deleted successfully'**
+  String get productDeletedSuccessfully;
+
+  /// No description provided for @stockAssignedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock assigned successfully'**
+  String get stockAssignedSuccessfully;
+
+  /// No description provided for @stockUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock updated successfully'**
+  String get stockUpdatedSuccessfully;
+
+  /// No description provided for @inventoryItemRemovedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory item removed successfully'**
+  String get inventoryItemRemovedSuccessfully;
+
+  /// No description provided for @categoryAddedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Category added successfully'**
+  String get categoryAddedSuccessfully;
+
+  /// No description provided for @categoryUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Category updated successfully'**
+  String get categoryUpdatedSuccessfully;
+
+  /// No description provided for @categoryStatusUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Category status updated successfully'**
+  String get categoryStatusUpdatedSuccessfully;
+
+  /// No description provided for @categoryDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Category deleted successfully'**
+  String get categoryDeletedSuccessfully;
+
+  /// No description provided for @subCategoryAddedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory added successfully'**
+  String get subCategoryAddedSuccessfully;
+
+  /// No description provided for @subCategoryUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory updated successfully'**
+  String get subCategoryUpdatedSuccessfully;
+
+  /// No description provided for @subCategoryStatusUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory status updated successfully'**
+  String get subCategoryStatusUpdatedSuccessfully;
+
+  /// No description provided for @subCategoryDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory deleted successfully'**
+  String get subCategoryDeletedSuccessfully;
+
+  /// No description provided for @branchDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch deleted successfully'**
+  String get branchDeletedSuccessfully;
+
+  /// No description provided for @productAssignedToBranchSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Product assigned to branch successfully'**
+  String get productAssignedToBranchSuccessfully;
+
+  /// No description provided for @orderUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order updated successfully'**
+  String get orderUpdatedSuccessfully;
+
+  /// No description provided for @orderMarkedAsStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Order marked as {status}'**
+  String orderMarkedAsStatus(String status);
+
+  /// No description provided for @paymentCashOnDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on delivery'**
+  String get paymentCashOnDelivery;
+
+  /// No description provided for @paymentCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payment'**
+  String get paymentCard;
+
+  /// No description provided for @paymentBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get paymentBankTransfer;
 }
 
 class _AppLocalizationsDelegate

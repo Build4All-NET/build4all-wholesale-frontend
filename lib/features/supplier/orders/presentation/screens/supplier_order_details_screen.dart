@@ -3,12 +3,51 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../../domain/entities/supplier_order_entity.dart';
 import '../bloc/supplier_order_details/supplier_order_details_bloc.dart';
 import '../bloc/supplier_order_details/supplier_order_details_event.dart';
 import '../bloc/supplier_order_details/supplier_order_details_state.dart';
 import '../widgets/order_status_badge.dart';
+
+
+String _localizedSuccessMessage(
+  BuildContext context,
+  String message,
+  SupplierOrderDetailsState state,
+) {
+  switch (message) {
+    case 'orderStatusUpdated':
+      final status = state.order?.status;
+      if (status == null) return context.l10n.orderUpdatedSuccessfully;
+      return context.l10n.orderMarkedAsStatus(
+        _supplierOrderStatusLabel(context, status),
+      );
+    default:
+      return message;
+  }
+}
+
+String _supplierOrderStatusLabel(
+  BuildContext context,
+  SupplierOrderStatus status,
+) {
+  switch (status) {
+    case SupplierOrderStatus.pending:
+      return context.l10n.orderStatusPending;
+    case SupplierOrderStatus.accepted:
+      return context.l10n.orderStatusAccepted;
+    case SupplierOrderStatus.preparing:
+      return context.l10n.orderStatusPreparing;
+    case SupplierOrderStatus.shipped:
+      return context.l10n.orderStatusShipped;
+    case SupplierOrderStatus.delivered:
+      return context.l10n.orderStatusDelivered;
+    case SupplierOrderStatus.cancelled:
+      return context.l10n.orderStatusCancelled;
+  }
+}
 
 class SupplierOrderDetailsScreen extends StatelessWidget {
   final SupplierOrderEntity order;
@@ -52,7 +91,11 @@ class _SupplierOrderDetailsView extends StatelessWidget {
 
         if (state.successMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
+            SnackBar(
+              content: Text(
+                _localizedSuccessMessage(context, state.successMessage!, state),
+              ),
+            ),
           );
         }
       },
@@ -218,17 +261,17 @@ class _OrderDetailsContent extends StatelessWidget {
               children: [
                 _InfoRow(
                   label: context.l10n.orderDateLabel,
-                  value: _formatFullDate(order.orderDate),
+                  value: formatSupplierFullDateTime(context, order.orderDate),
                 ),
                 SizedBox(height: 14),
                 _InfoRow(
                   label: context.l10n.paymentMethodLabel,
-                  value: order.paymentMethod,
+                  value: _localizedPaymentMethod(context, order.paymentMethod),
                 ),
                 SizedBox(height: 14),
                 _InfoRow(
                   label: context.l10n.totalAmountLabel,
-                  value: _formatMoney(order.totalAmount),
+                  value: formatSupplierCurrency(context, order.totalAmount),
                   valueColor: primary,
                 ),
               ],
@@ -376,7 +419,7 @@ class _OrderDetailsContent extends StatelessWidget {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            context.l10n.unitsTimesPrice(item.quantity, _formatMoney(item.unitPrice)),
+                            context.l10n.unitsTimesPrice(item.quantity, formatSupplierCurrency(context, item.unitPrice)),
                             style: TextStyle(
                               color: AppThemeTokens.textSecondary,
                               fontWeight: FontWeight.w600,
@@ -386,7 +429,7 @@ class _OrderDetailsContent extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _formatMoney(item.totalPrice),
+                      formatSupplierCurrency(context, item.totalPrice),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
@@ -637,41 +680,24 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  String _formatMoney(double amount) {
-    return '\$${amount.toStringAsFixed(2)}';
-  }
+  String _localizedPaymentMethod(BuildContext context, String value) {
+    final normalized = value.trim().toUpperCase().replaceAll(' ', '_');
 
-  String _formatFullDate(DateTime date) {
-    final month = _monthName(date.month);
-    final hour = date.hour > 12
-        ? date.hour - 12
-        : date.hour == 0
-            ? 12
-            : date.hour;
-    final minute = date.minute.toString().padLeft(2, '0');
-    final period = date.hour >= 12 ? 'PM' : 'AM';
-
-    return '$month ${date.day}, ${date.year}, $hour:$minute $period';
-  }
-
-  String _monthName(int month) {
-    const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
-    return months[month];
+    switch (normalized) {
+      case 'CASH':
+      case 'CASH_ON_DELIVERY':
+      case 'COD':
+        return context.l10n.paymentCashOnDelivery;
+      case 'CARD':
+      case 'CREDIT_CARD':
+      case 'DEBIT_CARD':
+        return context.l10n.paymentCard;
+      case 'BANK_TRANSFER':
+      case 'TRANSFER':
+        return context.l10n.paymentBankTransfer;
+      default:
+        return value.trim().isEmpty ? context.l10n.supplierNotProvided : value;
+    }
   }
 
   String _statusLabel(BuildContext context, SupplierOrderStatus status) {

@@ -46,7 +46,7 @@ class SupplierProfileHeaderCard extends StatelessWidget {
           ),
           SizedBox(height: 14),
           Text(
-            profile.fullName,
+            _displayName(context, profile),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -75,7 +75,7 @@ class SupplierProfileHeaderCard extends StatelessWidget {
               ),
             ),
             child: Text(
-              profile.displayRole,
+              _roleLabel(context, profile.role),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w800,
@@ -85,6 +85,35 @@ class SupplierProfileHeaderCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+
+  String _displayName(BuildContext context, SupplierProfileDisplayEntity profile) {
+    final first = profile.firstName?.trim() ?? '';
+    final last = profile.lastName?.trim() ?? '';
+    final fullName = '$first $last'.trim();
+
+    if (fullName.isNotEmpty) return fullName;
+    if ((profile.username ?? '').trim().isNotEmpty) return profile.username!.trim();
+    if ((profile.email ?? '').trim().isNotEmpty) return profile.email!.trim();
+
+    return context.l10n.supplierManager;
+  }
+
+  String _roleLabel(BuildContext context, String? role) {
+    final value = role?.trim();
+
+    if (value == null || value.isEmpty || value.toLowerCase() == 'null') {
+      return context.l10n.supplierNotProvided;
+    }
+
+    switch (value.toUpperCase()) {
+      case 'OWNER':
+      case 'SUPPLIER':
+        return context.l10n.supplierOwnerLabel;
+      default:
+        return value;
+    }
   }
 
   String _initials(SupplierProfileDisplayEntity profile) {
