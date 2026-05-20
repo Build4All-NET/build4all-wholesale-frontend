@@ -1402,12 +1402,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount products • $subCategoryCount sub categories';
+    return '$productCount products â€¢ $subCategoryCount sub categories';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName • $productCount products';
+    return '$categoryName â€¢ $productCount products';
   }
 
   @override
@@ -1601,7 +1601,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity units × $price';
+    return '$quantity units Ã— $price';
   }
 
   @override
@@ -3103,7 +3103,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'AI requirements generated successfully';
 
   @override
-<<<<<<< HEAD
   String get completeRetailerProfileTitle => 'Complete Retailer Profile';
 
   @override
@@ -3250,7 +3249,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learnMore => 'Learn More';
-=======
+
+  @override
   String get productDeletedSuccessfully => 'Product deleted successfully';
 
   @override
@@ -3314,5 +3314,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'Bank transfer';
->>>>>>> origin/fz-supplier-work
 }

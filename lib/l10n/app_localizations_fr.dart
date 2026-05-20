@@ -24,7 +24,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get password => 'Mot de passe';
 
   @override
-  String get forgotPassword => 'Mot de passe oublié ?';
+  String get forgotPassword => 'Mot de passe oubliÃ© ?';
 
   @override
   String get continueLabel => 'Continuer';
@@ -34,16 +34,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loginSubtitle =>
-      'Connectez-vous pour accéder à votre compte wholesale';
+      'Connectez-vous pour accÃ©der Ã  votre compte wholesale';
 
   @override
   String get dontHaveAccount => 'Vous n\'avez pas de compte ?';
 
   @override
-  String get alreadyHaveAccount => 'Vous avez déjà un compte ?';
+  String get alreadyHaveAccount => 'Vous avez dÃ©jÃ  un compte ?';
 
   @override
-  String get createRetailerAccount => 'Créer un compte détaillant';
+  String get createRetailerAccount => 'CrÃ©er un compte dÃ©taillant';
 
   @override
   String get joinMarketplace => 'Rejoignez notre marketplace wholesale';
@@ -55,7 +55,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get storeName => 'Nom du magasin';
 
   @override
-  String get phoneNumber => 'Numéro de téléphone';
+  String get phoneNumber => 'NumÃ©ro de tÃ©lÃ©phone';
 
   @override
   String get confirmPassword => 'Confirmer le mot de passe';
@@ -67,17 +67,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get city => 'Ville';
 
   @override
-  String get businessType => 'Type d\'activité';
+  String get businessType => 'Type d\'activitÃ©';
 
   @override
-  String get createAccount => 'Créer un compte';
+  String get createAccount => 'CrÃ©er un compte';
 
   @override
-  String get completeSupplierProfile => 'Compléter le profil fournisseur';
+  String get completeSupplierProfile => 'ComplÃ©ter le profil fournisseur';
 
   @override
   String get completeSupplierProfileTitle =>
-      'Complétez votre profil fournisseur';
+      'ComplÃ©tez votre profil fournisseur';
 
   @override
   String get completeSupplierProfileSubtitle =>
@@ -102,13 +102,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierDashboard => 'Tableau de bord fournisseur';
 
   @override
-  String get retailerDashboard => 'Tableau de bord détaillant';
+  String get retailerDashboard => 'Tableau de bord dÃ©taillant';
 
   @override
   String get dashboardPlaceholder => 'Espace tableau de bord';
 
   @override
-  String get resetPassword => 'Réinitialiser le mot de passe';
+  String get resetPassword => 'RÃ©initialiser le mot de passe';
 
   @override
   String get newPassword => 'Nouveau mot de passe';
@@ -117,7 +117,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get confirmNewPassword => 'Confirmer le nouveau mot de passe';
 
   @override
-  String get resetToken => 'Jeton de réinitialisation';
+  String get resetToken => 'Jeton de rÃ©initialisation';
 
   @override
   String get orContinueWith => 'Ou continuer avec';
@@ -127,7 +127,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get enterValidLebanesePhone =>
-      'Entrez un numéro de téléphone libanais valide';
+      'Entrez un numÃ©ro de tÃ©lÃ©phone libanais valide';
 
   @override
   String get userSessionNotFound =>
@@ -135,11 +135,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierProfileSavedSuccessfully =>
-      'Le profil fournisseur a été enregistré avec succès';
+      'Le profil fournisseur a Ã©tÃ© enregistrÃ© avec succÃ¨s';
 
   @override
   String get retailerProfileUpdatedSuccessfully =>
-      'Le profil détaillant a été mis à jour avec succès';
+      'Le profil dÃ©taillant a Ã©tÃ© mis Ã  jour avec succÃ¨s';
 
   @override
   String get provideBusinessInfoToContinue =>
@@ -152,25 +152,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enterCompanyAddress => 'Entrez l\'adresse de votre entreprise';
 
   @override
-  String get selectCity => 'Sélectionnez une ville';
+  String get selectCity => 'SÃ©lectionnez une ville';
 
   @override
-  String get selectBusinessType => 'Sélectionnez un type d\'activité';
+  String get selectBusinessType => 'SÃ©lectionnez un type d\'activitÃ©';
 
   @override
   String get tellAboutBusiness =>
-      'Parlez aux détaillants de votre entreprise et de vos produits';
+      'Parlez aux dÃ©taillants de votre entreprise et de vos produits';
 
   @override
-  String get pasteResetToken => 'Collez votre jeton de réinitialisation';
+  String get pasteResetToken => 'Collez votre jeton de rÃ©initialisation';
 
   @override
   String get enterEmailToGenerateResetToken =>
-      'Entrez votre e-mail pour générer un jeton de réinitialisation';
+      'Entrez votre e-mail pour gÃ©nÃ©rer un jeton de rÃ©initialisation';
 
   @override
   String get enterResetTokenAndPassword =>
-      'Entrez votre jeton de réinitialisation et choisissez un nouveau mot de passe';
+      'Entrez votre jeton de rÃ©initialisation et choisissez un nouveau mot de passe';
 
   @override
   String get saveLanguage => 'Enregistrer la langue';
@@ -182,7 +182,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get english => 'Anglais';
 
   @override
-  String get french => 'Français';
+  String get french => 'FranÃ§ais';
 
   @override
   String get arabic => 'Arabe';
@@ -200,7 +200,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cityTyre => 'Tyr';
 
   @override
-  String get cityZahle => 'Zahlé';
+  String get cityZahle => 'ZahlÃ©';
 
   @override
   String get cityJounieh => 'Jounieh';
@@ -221,7 +221,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get businessMiniMarket => 'Mini-market';
 
   @override
-  String get businessSupermarket => 'Supermarché';
+  String get businessSupermarket => 'SupermarchÃ©';
 
   @override
   String get businessPharmacy => 'Pharmacie';
@@ -230,16 +230,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get businessRestaurant => 'Restaurant';
 
   @override
-  String get businessCafe => 'Café';
+  String get businessCafe => 'CafÃ©';
 
   @override
-  String get businessRetailShop => 'Magasin de détail';
+  String get businessRetailShop => 'Magasin de dÃ©tail';
 
   @override
-  String get businessBuildingMaterials => 'Matériaux de construction';
+  String get businessBuildingMaterials => 'MatÃ©riaux de construction';
 
   @override
-  String get businessElectricalSupplies => 'Fournitures électriques';
+  String get businessElectricalSupplies => 'Fournitures Ã©lectriques';
 
   @override
   String get businessPlumbing => 'Plomberie';
@@ -248,10 +248,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get businessToolsHardware => 'Outils et quincaillerie';
 
   @override
-  String get businessIndustrialEquipment => 'Équipement industriel';
+  String get businessIndustrialEquipment => 'Ã‰quipement industriel';
 
   @override
-  String get businessHomeImprovement => 'Amélioration de l\'habitat';
+  String get businessHomeImprovement => 'AmÃ©lioration de l\'habitat';
 
   @override
   String get businessWholesaleDistribution => 'Distribution en gros';
@@ -266,7 +266,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchProducts => 'Rechercher des produits...';
 
   @override
-  String get categories => 'Catégories';
+  String get categories => 'CatÃ©gories';
 
   @override
   String get seeAll => 'Voir tout';
@@ -300,69 +300,70 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get couldNotLoadRetailerHome =>
-      'Impossible de charger l’accueil détaillant';
+      'Impossible de charger lâ€™accueil dÃ©taillant';
 
   @override
   String get checkConnectionTryAgain =>
-      'Veuillez vérifier votre connexion et réessayer.';
+      'Veuillez vÃ©rifier votre connexion et rÃ©essayer.';
 
   @override
-  String get retry => 'Réessayer';
+  String get retry => 'RÃ©essayer';
 
   @override
   String get cart => 'Panier';
 
   @override
-  String get cartComingSoon => 'La page panier sera bientôt disponible';
+  String get cartComingSoon => 'La page panier sera bientÃ´t disponible';
 
   @override
   String get notifications => 'Notifications';
 
   @override
   String get notificationsComingSoon =>
-      'La page notifications sera bientôt disponible';
+      'La page notifications sera bientÃ´t disponible';
 
   @override
   String get promotions => 'Promotions';
 
   @override
   String get promotionsComingSoon =>
-      'Les promotions seront bientôt disponibles';
+      'Les promotions seront bientÃ´t disponibles';
 
   @override
   String get topRankingComingSoon =>
-      'Les produits les mieux classés apparaîtront bientôt ici';
+      'Les produits les mieux classÃ©s apparaÃ®tront bientÃ´t ici';
 
   @override
-  String get ordersComingSoon => 'Vos commandes apparaîtront bientôt ici';
+  String get ordersComingSoon => 'Vos commandes apparaÃ®tront bientÃ´t ici';
 
   @override
-  String get rfqComingSoon => 'Les demandes RFQ apparaîtront bientôt ici';
+  String get rfqComingSoon => 'Les demandes RFQ apparaÃ®tront bientÃ´t ici';
 
   @override
   String get aiAssistant => 'Assistant IA';
 
   @override
-  String get aiAssistantComingSoon => 'L’assistant IA sera bientôt disponible';
+  String get aiAssistantComingSoon =>
+      'Lâ€™assistant IA sera bientÃ´t disponible';
 
   @override
   String get liveChat => 'Chat en direct';
 
   @override
-  String get liveChatComingSoon => 'Le chat en direct sera bientôt disponible';
+  String get liveChatComingSoon => 'Le chat en direct sera bientÃ´t disponible';
 
   @override
-  String get loyaltyPoints => 'Points de fidélité';
+  String get loyaltyPoints => 'Points de fidÃ©litÃ©';
 
   @override
   String get loyaltyComingSoon =>
-      'Les points de fidélité seront bientôt disponibles';
+      'Les points de fidÃ©litÃ© seront bientÃ´t disponibles';
 
   @override
   String get profileTitle => 'Profil';
 
   @override
-  String get settings => 'Paramètres';
+  String get settings => 'ParamÃ¨tres';
 
   @override
   String get editProfile => 'Modifier le profil';
@@ -371,13 +372,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get basicInformation => 'Informations de base';
 
   @override
-  String get system => 'Système';
+  String get system => 'SystÃ¨me';
 
   @override
-  String get logout => 'Déconnexion';
+  String get logout => 'DÃ©connexion';
 
   @override
-  String get logoutQuestion => 'Voulez-vous vous déconnecter ?';
+  String get logoutQuestion => 'Voulez-vous vous dÃ©connecter ?';
 
   @override
   String get cancel => 'Annuler';
@@ -396,19 +397,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get passwordManagedByBuild4All =>
-      'Le changement de mot de passe nécessite la vérification Build4All et sera ajouté ensuite.';
+      'Le changement de mot de passe nÃ©cessite la vÃ©rification Build4All et sera ajoutÃ© ensuite.';
 
   @override
-  String get username => 'Nom d’utilisateur';
+  String get username => 'Nom dâ€™utilisateur';
 
   @override
-  String get firstName => 'Prénom';
+  String get firstName => 'PrÃ©nom';
 
   @override
   String get lastName => 'Nom';
 
   @override
-  String get phoneLebanon => 'Numéro de téléphone (Liban)';
+  String get phoneLebanon => 'NumÃ©ro de tÃ©lÃ©phone (Liban)';
 
   @override
   String get address => 'Adresse';
@@ -417,65 +418,65 @@ class AppLocalizationsFr extends AppLocalizations {
   String get saveChanges => 'Enregistrer';
 
   @override
-  String get profileUpdatedSuccessfully => 'Profil mis à jour avec succès';
+  String get profileUpdatedSuccessfully => 'Profil mis Ã  jour avec succÃ¨s';
 
   @override
   String get walletBalance => 'Solde du portefeuille';
 
   @override
-  String get creditBalance => 'Solde de crédit';
+  String get creditBalance => 'Solde de crÃ©dit';
 
   @override
-  String get comingSoon => 'Bientôt disponible';
+  String get comingSoon => 'BientÃ´t disponible';
 
   @override
-  String get languageSettings => 'Paramètres de langue';
+  String get languageSettings => 'ParamÃ¨tres de langue';
 
   @override
   String get languageSettingsComingSoon =>
-      'Les paramètres de langue seront bientôt disponibles';
+      'Les paramÃ¨tres de langue seront bientÃ´t disponibles';
 
   @override
   String get walletComingSoon =>
-      'Les détails du portefeuille seront bientôt disponibles';
+      'Les dÃ©tails du portefeuille seront bientÃ´t disponibles';
 
   @override
   String get creditComingSoon =>
-      'Les détails du crédit seront bientôt disponibles';
+      'Les dÃ©tails du crÃ©dit seront bientÃ´t disponibles';
 
   @override
   String get chooseLanguage => 'Choisissez une langue';
 
   @override
   String get emailVerificationRequired =>
-      'Un code de vérification a été envoyé à votre nouvel e-mail.';
+      'Un code de vÃ©rification a Ã©tÃ© envoyÃ© Ã  votre nouvel e-mail.';
 
   @override
-  String get verifyEmail => 'Vérifier l’e-mail';
+  String get verifyEmail => 'VÃ©rifier lâ€™e-mail';
 
   @override
   String get resendCode => 'Renvoyer le code';
 
   @override
-  String get verificationCode => 'Code de vérification';
+  String get verificationCode => 'Code de vÃ©rification';
 
   @override
-  String get emailUpdatedSuccessfully => 'E-mail mis à jour avec succès';
+  String get emailUpdatedSuccessfully => 'E-mail mis Ã  jour avec succÃ¨s';
 
   @override
   String get passwordVerificationCodeSent =>
-      'Code de vérification du mot de passe envoyé';
+      'Code de vÃ©rification du mot de passe envoyÃ©';
 
   @override
   String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
 
   @override
   String get passwordUpdatedSuccessfully =>
-      'Mot de passe mis à jour avec succès';
+      'Mot de passe mis Ã  jour avec succÃ¨s';
 
   @override
   String get passwordMinLength =>
-      'Le mot de passe doit contenir au moins 6 caractères';
+      'Le mot de passe doit contenir au moins 6 caractÃ¨res';
 
   @override
   String get dangerZone => 'Zone dangereuse';
@@ -488,14 +489,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get deleteAccountWarningMessage =>
-      'La suppression de votre compte est permanente. Cette action est irréversible.';
+      'La suppression de votre compte est permanente. Cette action est irrÃ©versible.';
 
   @override
   String get deleteAccountConfirmTitle => 'Supprimer le compte';
 
   @override
   String get deleteAccountConfirmMessage =>
-      'Êtes-vous sûr de vouloir supprimer votre compte ? Cela supprimera votre compte Build4All et votre profil détaillant.';
+      'ÃŠtes-vous sÃ»r de vouloir supprimer votre compte ? Cela supprimera votre compte Build4All et votre profil dÃ©taillant.';
 
   @override
   String get delete => 'Supprimer';
@@ -504,7 +505,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get currentPassword => 'Mot de passe actuel';
 
   @override
-  String get accountDeletedSuccessfully => 'Compte supprimé avec succès';
+  String get accountDeletedSuccessfully => 'Compte supprimÃ© avec succÃ¨s';
 
   @override
   String get currentPasswordRequired => 'Le mot de passe actuel est requis';
@@ -523,19 +524,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get emptyCartMessage =>
-      'Ajoutez des produits depuis la page d’accueil pour commencer votre commande.';
+      'Ajoutez des produits depuis la page dâ€™accueil pour commencer votre commande.';
 
   @override
-  String get perUnit => 'par unité';
+  String get perUnit => 'par unitÃ©';
 
   @override
-  String get orderSummary => 'Résumé de la commande';
+  String get orderSummary => 'RÃ©sumÃ© de la commande';
 
   @override
   String get subtotal => 'Sous-total';
 
   @override
-  String get shippingEstimated => 'Livraison (estimée)';
+  String get shippingEstimated => 'Livraison (estimÃ©e)';
 
   @override
   String get total => 'Total';
@@ -544,13 +545,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get continueShopping => 'Continuer les achats';
 
   @override
-  String get proceedToCheckout => 'Passer à la caisse';
+  String get proceedToCheckout => 'Passer Ã  la caisse';
 
   @override
-  String get checkoutComingSoon => 'Le paiement sera bientôt disponible';
+  String get checkoutComingSoon => 'Le paiement sera bientÃ´t disponible';
 
   @override
-  String get createRfq => 'Créer une RFQ';
+  String get createRfq => 'CrÃ©er une RFQ';
 
   @override
   String get smartRecommendations => 'Recommandations intelligentes';
@@ -559,7 +560,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get requestQuotesQuickly => 'Demandez des devis rapidement';
 
   @override
-  String get trackYourRewards => 'Suivez vos récompenses';
+  String get trackYourRewards => 'Suivez vos rÃ©compenses';
 
   @override
   String get viewAvailableDeals => 'Voir les offres disponibles';
@@ -580,10 +581,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get outOfStock => 'Rupture';
 
   @override
-  String get noProductsInCategory => 'Aucun produit dans cette catégorie';
+  String get noProductsInCategory => 'Aucun produit dans cette catÃ©gorie';
 
   @override
-  String get productAddedToCart => 'Produit ajouté au panier';
+  String get productAddedToCart => 'Produit ajoutÃ© au panier';
 
   @override
   String get supplierDashboardTitle => 'Tableau de bord fournisseur';
@@ -595,7 +596,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierDashboardRefreshTooltip => 'Actualiser';
 
   @override
-  String get supplierDashboardSettingsTooltip => 'Paramètres';
+  String get supplierDashboardSettingsTooltip => 'ParamÃ¨tres';
 
   @override
   String get supplierDashboardLowStockAlerts => 'Alertes de stock faible';
@@ -610,13 +611,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierActiveOrders => 'Commandes actives';
 
   @override
-  String get supplierShippedOrders => 'Commandes expédiées';
+  String get supplierShippedOrders => 'Commandes expÃ©diÃ©es';
 
   @override
-  String get supplierCompletedOrders => 'Commandes terminées';
+  String get supplierCompletedOrders => 'Commandes terminÃ©es';
 
   @override
-  String get supplierFinancialSummary => 'Résumé financier';
+  String get supplierFinancialSummary => 'RÃ©sumÃ© financier';
 
   @override
   String get supplierTodaySales => 'Ventes du jour';
@@ -625,7 +626,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierMonthlyRevenue => 'Revenu mensuel';
 
   @override
-  String get supplierOrdersToday => 'Commandes aujourd’hui';
+  String get supplierOrdersToday => 'Commandes aujourdâ€™hui';
 
   @override
   String get supplierNoLowStockAlerts => 'Aucune alerte de stock faible';
@@ -634,13 +635,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierAddProduct => 'Ajouter un produit';
 
   @override
-  String get supplierCreatePromotion => 'Créer une promotion';
+  String get supplierCreatePromotion => 'CrÃ©er une promotion';
 
   @override
-  String get supplierManageBranches => 'Gérer les succursales';
+  String get supplierManageBranches => 'GÃ©rer les succursales';
 
   @override
-  String get supplierShippingMethods => 'Méthodes de livraison';
+  String get supplierShippingMethods => 'MÃ©thodes de livraison';
 
   @override
   String get supplierConfigureTaxes => 'Configurer les taxes';
@@ -649,14 +650,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierImportExcel => 'Importer Excel';
 
   @override
-  String get supplierHomeBanners => 'Bannières d’accueil';
+  String get supplierHomeBanners => 'BanniÃ¨res dâ€™accueil';
 
   @override
   String get supplierCoupons => 'Coupons';
 
   @override
   String get supplierLoadingDashboardData =>
-      'Chargement des données du tableau de bord...';
+      'Chargement des donnÃ©es du tableau de bord...';
 
   @override
   String get supplierLowStockItem => 'Article en stock faible';
@@ -670,11 +671,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get supplierLogoutTitle => 'Déconnexion';
+  String get supplierLogoutTitle => 'DÃ©connexion';
 
   @override
   String get supplierLogoutConfirmation =>
-      'Voulez-vous vraiment vous déconnecter ?';
+      'Voulez-vous vraiment vous dÃ©connecter ?';
 
   @override
   String get supplierDrawerDashboard => 'Tableau de bord';
@@ -701,16 +702,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierDrawerCoupons => 'Coupons';
 
   @override
-  String get supplierDrawerHomeBanners => 'Bannières d’accueil';
+  String get supplierDrawerHomeBanners => 'BanniÃ¨res dâ€™accueil';
 
   @override
-  String get supplierDrawerShippingMethods => 'Méthodes de livraison';
+  String get supplierDrawerShippingMethods => 'MÃ©thodes de livraison';
 
   @override
   String get supplierDrawerTaxes => 'Taxes';
 
   @override
-  String get supplierDrawerSettings => 'Paramètres';
+  String get supplierDrawerSettings => 'ParamÃ¨tres';
 
   @override
   String get supplierProfileTitle => 'Profil fournisseur';
@@ -720,7 +721,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierProfileNoData =>
-      'Aucune donnée de profil fournisseur trouvée';
+      'Aucune donnÃ©e de profil fournisseur trouvÃ©e';
 
   @override
   String get supplierProfileInformation => 'Informations du profil';
@@ -729,29 +730,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierFullNameLabel => 'Nom complet';
 
   @override
-  String get supplierUsernameLabel => 'Nom d’utilisateur';
+  String get supplierUsernameLabel => 'Nom dâ€™utilisateur';
 
   @override
   String get supplierEmailLabel => 'E-mail';
 
   @override
-  String get supplierPhoneNumberLabel => 'Numéro de téléphone';
+  String get supplierPhoneNumberLabel => 'NumÃ©ro de tÃ©lÃ©phone';
 
   @override
   String get supplierAccountTypeLabel => 'Type de compte';
 
   @override
-  String get supplierOwnerLabel => 'Propriétaire';
+  String get supplierOwnerLabel => 'PropriÃ©taire';
 
   @override
   String get supplierUnableToLoadProfile =>
       'Impossible de charger le profil fournisseur';
 
   @override
-  String get supplierTryAgain => 'Réessayer';
+  String get supplierTryAgain => 'RÃ©essayer';
 
   @override
-  String get supplierNotProvided => 'Non renseigné';
+  String get supplierNotProvided => 'Non renseignÃ©';
 
   @override
   String get branchManagementTitle => 'Gestion\ndes succursales';
@@ -763,7 +764,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editBranchTitle => 'Modifier la succursale';
 
   @override
-  String get updateBranchButton => 'Mettre à jour la succursale';
+  String get updateBranchButton => 'Mettre Ã  jour la succursale';
 
   @override
   String get saveBranchButton => 'Enregistrer la succursale';
@@ -773,13 +774,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get branchInformationSubtitle =>
-      'Créez une succursale ou un entrepôt fournisseur utilisé ensuite pour l’inventaire et l’allocation du stock.';
+      'CrÃ©ez une succursale ou un entrepÃ´t fournisseur utilisÃ© ensuite pour lâ€™inventaire et lâ€™allocation du stock.';
 
   @override
   String get branchNameLabel => 'Nom de la succursale *';
 
   @override
-  String get branchNameHint => 'ex. Entrepôt principal';
+  String get branchNameHint => 'ex. EntrepÃ´t principal';
 
   @override
   String get branchNameRequiredError =>
@@ -787,7 +788,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get branchNameMinError =>
-      'Le nom de la succursale doit contenir au moins 3 caractères';
+      'Le nom de la succursale doit contenir au moins 3 caractÃ¨res';
 
   @override
   String get branchNameTooLongError => 'Le nom de la succursale est trop long';
@@ -800,25 +801,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get cityAreaMinError =>
-      'La ville / zone doit contenir au moins 2 caractères';
+      'La ville / zone doit contenir au moins 2 caractÃ¨res';
 
   @override
   String get cityAreaTooLongError => 'La ville / zone est trop longue';
 
   @override
-  String get fullAddressLabel => 'Adresse complète *';
+  String get fullAddressLabel => 'Adresse complÃ¨te *';
 
   @override
-  String get fullAddressHint => 'ex. Bâtiment, rue, zone industrielle';
+  String get fullAddressHint => 'ex. BÃ¢timent, rue, zone industrielle';
 
   @override
-  String get addressRequiredError => 'L’adresse est obligatoire';
+  String get addressRequiredError => 'Lâ€™adresse est obligatoire';
 
   @override
-  String get addressSpecificError => 'L’adresse doit être plus précise';
+  String get addressSpecificError => 'Lâ€™adresse doit Ãªtre plus prÃ©cise';
 
   @override
-  String get addressTooLongError => 'L’adresse est trop longue';
+  String get addressTooLongError => 'Lâ€™adresse est trop longue';
 
   @override
   String get branchCountryLabel => 'Pays *';
@@ -827,44 +828,44 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loadingCountries => 'Chargement des pays...';
 
   @override
-  String get selectCountry => 'Sélectionner un pays';
+  String get selectCountry => 'SÃ©lectionner un pays';
 
   @override
   String get searchCountry => 'Rechercher un pays...';
 
   @override
-  String get noCountriesFound => 'Aucun pays trouvé';
+  String get noCountriesFound => 'Aucun pays trouvÃ©';
 
   @override
   String get countryRequiredError => 'Le pays est obligatoire';
 
   @override
-  String get branchRegionLabel => 'Région / État';
+  String get branchRegionLabel => 'RÃ©gion / Ã‰tat';
 
   @override
-  String get selectCountryFirst => 'Sélectionnez d’abord un pays';
+  String get selectCountryFirst => 'SÃ©lectionnez dâ€™abord un pays';
 
   @override
-  String get loadingRegions => 'Chargement des régions...';
+  String get loadingRegions => 'Chargement des rÃ©gions...';
 
   @override
   String get noPredefinedRegions =>
-      'Aucune région prédéfinie, continuez avec la ville/zone';
+      'Aucune rÃ©gion prÃ©dÃ©finie, continuez avec la ville/zone';
 
   @override
-  String get selectRegionState => 'Sélectionner une région / un état';
+  String get selectRegionState => 'SÃ©lectionner une rÃ©gion / un Ã©tat';
 
   @override
-  String get searchRegionState => 'Rechercher une région / un état...';
+  String get searchRegionState => 'Rechercher une rÃ©gion / un Ã©tat...';
 
   @override
-  String get noRegionsFound => 'Aucune région trouvée';
+  String get noRegionsFound => 'Aucune rÃ©gion trouvÃ©e';
 
   @override
-  String get branchPhoneLabel => 'Numéro de téléphone *';
+  String get branchPhoneLabel => 'NumÃ©ro de tÃ©lÃ©phone *';
 
   @override
-  String get enterPhoneNumber => 'Entrez le numéro de téléphone';
+  String get enterPhoneNumber => 'Entrez le numÃ©ro de tÃ©lÃ©phone';
 
   @override
   String get branchStatusLabel => 'Statut de la succursale *';
@@ -876,29 +877,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get inactiveStatus => 'Inactif';
 
   @override
-  String get selectStatus => 'Sélectionner le statut';
+  String get selectStatus => 'SÃ©lectionner le statut';
 
   @override
-  String get pleaseSelectCountry => 'Veuillez sélectionner un pays.';
+  String get pleaseSelectCountry => 'Veuillez sÃ©lectionner un pays.';
 
   @override
-  String get phoneRequiredError => 'Le numéro de téléphone est obligatoire';
+  String get phoneRequiredError => 'Le numÃ©ro de tÃ©lÃ©phone est obligatoire';
 
   @override
   String get phoneSelectCountryFirstError =>
-      'Veuillez d’abord sélectionner un pays';
+      'Veuillez dâ€™abord sÃ©lectionner un pays';
 
   @override
   String get phoneCountryMismatchError =>
-      'Le pays du téléphone doit correspondre au pays sélectionné';
+      'Le pays du tÃ©lÃ©phone doit correspondre au pays sÃ©lectionnÃ©';
 
   @override
   String get lebanesePhoneDigitsError =>
-      'Les numéros libanais doivent contenir 8 chiffres après +961';
+      'Les numÃ©ros libanais doivent contenir 8 chiffres aprÃ¨s +961';
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'Entrez un numéro de téléphone valide avec l’indicatif du pays';
+      'Entrez un numÃ©ro de tÃ©lÃ©phone valide avec lâ€™indicatif du pays';
 
   @override
   String get deleteBranchTitle => 'Supprimer la succursale';
@@ -912,11 +913,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchBranchesHint => 'Rechercher des succursales...';
 
   @override
-  String get noBranchesFound => 'Aucune succursale trouvée';
+  String get noBranchesFound => 'Aucune succursale trouvÃ©e';
 
   @override
   String get addBranchesEmptyMessage =>
-      'Ajoutez des succursales pour gérer le stock et l’inventaire par emplacement.';
+      'Ajoutez des succursales pour gÃ©rer le stock et lâ€™inventaire par emplacement.';
 
   @override
   String get editButton => 'Modifier';
@@ -928,7 +929,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get totalStockLabel => 'Stock total';
 
   @override
-  String get viewInventoryButton => 'Voir l’inventaire';
+  String get viewInventoryButton => 'Voir lâ€™inventaire';
 
   @override
   String branchInventoryTitle(Object branchName) {
@@ -937,39 +938,39 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get allProductsAssigned =>
-      'Tous les produits disponibles sont déjà affectés à cette succursale';
+      'Tous les produits disponibles sont dÃ©jÃ  affectÃ©s Ã  cette succursale';
 
   @override
   String get assignProductToBranchTitle =>
-      'Affecter un produit à la succursale';
+      'Affecter un produit Ã  la succursale';
 
   @override
   String get productLabel => 'Produit';
 
   @override
-  String get stockQuantityLabel => 'Quantité en stock';
+  String get stockQuantityLabel => 'QuantitÃ© en stock';
 
   @override
   String get stockQuantityHint => 'ex. 100';
 
   @override
   String get inventoryRecordNote =>
-      'Cela crée un enregistrement d’inventaire pour cette succursale et ce produit.';
+      'Cela crÃ©e un enregistrement dâ€™inventaire pour cette succursale et ce produit.';
 
   @override
   String get assignButton => 'Affecter';
 
   @override
-  String get updateStockTitle => 'Mettre à jour le stock';
+  String get updateStockTitle => 'Mettre Ã  jour le stock';
 
   @override
-  String get stockQuantityFieldLabel => 'Quantité en stock';
+  String get stockQuantityFieldLabel => 'QuantitÃ© en stock';
 
   @override
   String get stockQuantityUpdateHint => 'ex. 500';
 
   @override
-  String get updateButton => 'Mettre à jour';
+  String get updateButton => 'Mettre Ã  jour';
 
   @override
   String get removeProductFromBranchTitle =>
@@ -980,18 +981,18 @@ class AppLocalizationsFr extends AppLocalizations {
     Object productName,
     Object branchName,
   ) {
-    return 'Voulez-vous vraiment retirer $productName de l’inventaire de $branchName ?';
+    return 'Voulez-vous vraiment retirer $productName de lâ€™inventaire de $branchName ?';
   }
 
   @override
   String get removeButton => 'Retirer';
 
   @override
-  String get noInventoryFound => 'Aucun inventaire trouvé';
+  String get noInventoryFound => 'Aucun inventaire trouvÃ©';
 
   @override
   String get assignProductsToBranchEmpty =>
-      'Affectez des produits à cette succursale pour commencer à suivre le stock.';
+      'Affectez des produits Ã  cette succursale pour commencer Ã  suivre le stock.';
 
   @override
   String get assignProductButton => 'Affecter un produit';
@@ -1006,53 +1007,53 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get searchCatalogHint =>
-      'Rechercher des catégories ou sous-catégories...';
+      'Rechercher des catÃ©gories ou sous-catÃ©gories...';
 
   @override
-  String get noCatalogItems => 'Aucun élément de catalogue trouvé';
+  String get noCatalogItems => 'Aucun Ã©lÃ©ment de catalogue trouvÃ©';
 
   @override
   String get addCatalogFirst =>
-      'Ajoutez des catégories et sous-catégories pour organiser les produits fournisseur.';
+      'Ajoutez des catÃ©gories et sous-catÃ©gories pour organiser les produits fournisseur.';
 
   @override
-  String get categoryLabel => 'Catégorie';
+  String get categoryLabel => 'CatÃ©gorie';
 
   @override
-  String get subCategoryLabel => 'Sous-catégorie';
+  String get subCategoryLabel => 'Sous-catÃ©gorie';
 
   @override
-  String get addCategoryTitle => 'Ajouter une catégorie';
+  String get addCategoryTitle => 'Ajouter une catÃ©gorie';
 
   @override
-  String get editCategoryTitle => 'Modifier la catégorie';
+  String get editCategoryTitle => 'Modifier la catÃ©gorie';
 
   @override
-  String get addSubCategoryTitle => 'Ajouter une sous-catégorie';
+  String get addSubCategoryTitle => 'Ajouter une sous-catÃ©gorie';
 
   @override
-  String get editSubCategoryTitle => 'Modifier la sous-catégorie';
+  String get editSubCategoryTitle => 'Modifier la sous-catÃ©gorie';
 
   @override
-  String get categoryNameLabel => 'Nom de la catégorie';
+  String get categoryNameLabel => 'Nom de la catÃ©gorie';
 
   @override
-  String get subCategoryNameLabel => 'Nom de la sous-catégorie';
+  String get subCategoryNameLabel => 'Nom de la sous-catÃ©gorie';
 
   @override
-  String get parentCategoryLabel => 'Catégorie parente';
+  String get parentCategoryLabel => 'CatÃ©gorie parente';
 
   @override
-  String get categoryRequiredError => 'La catégorie est obligatoire';
+  String get categoryRequiredError => 'La catÃ©gorie est obligatoire';
 
   @override
-  String get subCategoryRequiredError => 'La sous-catégorie est obligatoire';
+  String get subCategoryRequiredError => 'La sous-catÃ©gorie est obligatoire';
 
   @override
   String get activateButton => 'Activer';
 
   @override
-  String get deactivateButton => 'Désactiver';
+  String get deactivateButton => 'DÃ©sactiver';
 
   @override
   String get productManagementTitle => 'Gestion\ndes produits';
@@ -1061,11 +1062,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchProductsHint => 'Rechercher des produits...';
 
   @override
-  String get noProductsFound => 'Aucun produit trouvé';
+  String get noProductsFound => 'Aucun produit trouvÃ©';
 
   @override
   String get addProductsEmptyMessage =>
-      'Ajoutez des produits pour commencer à construire votre catalogue fournisseur.';
+      'Ajoutez des produits pour commencer Ã  construire votre catalogue fournisseur.';
 
   @override
   String get productNameLabel => 'Nom du produit';
@@ -1075,7 +1076,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get productNameMinError =>
-      'Le nom du produit doit contenir au moins 3 caractères';
+      'Le nom du produit doit contenir au moins 3 caractÃ¨res';
 
   @override
   String get productNameTooLongError => 'Le nom du produit est trop long';
@@ -1085,7 +1086,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get productDescriptionHint =>
-      'Détails du produit, emballage, notes...';
+      'DÃ©tails du produit, emballage, notes...';
 
   @override
   String get productPriceLabel => 'Prix';
@@ -1097,15 +1098,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get productPriceInvalidError => 'Saisissez un prix valide';
 
   @override
-  String get minimumOrderQuantityLabel => 'Quantité minimale de commande';
+  String get minimumOrderQuantityLabel => 'QuantitÃ© minimale de commande';
 
   @override
   String get minimumOrderQuantityRequiredError =>
-      'La quantité minimale de commande est obligatoire';
+      'La quantitÃ© minimale de commande est obligatoire';
 
   @override
   String get minimumOrderQuantityInvalidError =>
-      'Saisissez une quantité minimale de commande valide';
+      'Saisissez une quantitÃ© minimale de commande valide';
 
   @override
   String get productStatusLabel => 'Statut du produit';
@@ -1114,22 +1115,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get productImageLabel => 'Image du produit';
 
   @override
-  String get uploadImageButton => 'Téléverser une image';
+  String get uploadImageButton => 'TÃ©lÃ©verser une image';
 
   @override
-  String get changeImageButton => 'Changer l’image';
+  String get changeImageButton => 'Changer lâ€™image';
 
   @override
-  String get categoryDropdownLabel => 'Catégorie';
+  String get categoryDropdownLabel => 'CatÃ©gorie';
 
   @override
-  String get subCategoryDropdownLabel => 'Sous-catégorie';
+  String get subCategoryDropdownLabel => 'Sous-catÃ©gorie';
 
   @override
-  String get selectCategoryHint => 'Sélectionner une catégorie';
+  String get selectCategoryHint => 'SÃ©lectionner une catÃ©gorie';
 
   @override
-  String get selectSubCategoryHint => 'Sélectionner une sous-catégorie';
+  String get selectSubCategoryHint => 'SÃ©lectionner une sous-catÃ©gorie';
 
   @override
   String get addProductTitle => 'Ajouter un produit';
@@ -1141,7 +1142,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get saveProductButton => 'Enregistrer le produit';
 
   @override
-  String get updateProductButton => 'Mettre à jour le produit';
+  String get updateProductButton => 'Mettre Ã  jour le produit';
 
   @override
   String get deleteProductTitle => 'Supprimer le produit';
@@ -1152,7 +1153,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get manageStockButton => 'Gérer le stock';
+  String get manageStockButton => 'GÃ©rer le stock';
 
   @override
   String get priceLabel => 'Prix';
@@ -1165,7 +1166,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get productBranchStockTitle =>
-      'Gérer le stock du produit par succursale';
+      'GÃ©rer le stock du produit par succursale';
 
   @override
   String get branchStockCardsTitle => 'Stock par succursale';
@@ -1176,11 +1177,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get noBranchStockFound => 'Aucun stock par succursale trouvé';
+  String get noBranchStockFound => 'Aucun stock par succursale trouvÃ©';
 
   @override
   String get assignStockToBranch =>
-      'Affectez du stock à une succursale pour commencer à vendre ce produit.';
+      'Affectez du stock Ã  une succursale pour commencer Ã  vendre ce produit.';
 
   @override
   String get removeStockTitle => 'Retirer le stock';
@@ -1194,24 +1195,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierOrdersTitle => 'Gestion des commandes';
 
   @override
-  String get orderDetailsTitle => 'Détails de la commande';
+  String get orderDetailsTitle => 'DÃ©tails de la commande';
 
   @override
   String get searchOrdersHint => 'Rechercher des commandes...';
 
   @override
-  String get noOrdersFound => 'Aucune commande trouvée';
+  String get noOrdersFound => 'Aucune commande trouvÃ©e';
 
   @override
   String orderNumberLabel(Object orderId) {
-    return 'Commande n°$orderId';
+    return 'Commande nÂ°$orderId';
   }
 
   @override
   String get customerLabel => 'Client';
 
   @override
-  String get retailerLabel => 'Détaillant';
+  String get retailerLabel => 'DÃ©taillant';
 
   @override
   String get orderItemsLabel => 'Articles de la commande';
@@ -1223,31 +1224,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orderStatusPending => 'En attente';
 
   @override
-  String get orderStatusAccepted => 'Acceptée';
+  String get orderStatusAccepted => 'AcceptÃ©e';
 
   @override
-  String get orderStatusPreparing => 'En préparation';
+  String get orderStatusPreparing => 'En prÃ©paration';
 
   @override
-  String get orderStatusShipped => 'Expédiée';
+  String get orderStatusShipped => 'ExpÃ©diÃ©e';
 
   @override
-  String get orderStatusDelivered => 'Livrée';
+  String get orderStatusDelivered => 'LivrÃ©e';
 
   @override
-  String get orderStatusCancelled => 'Annulée';
+  String get orderStatusCancelled => 'AnnulÃ©e';
 
   @override
   String get acceptOrderButton => 'Accepter la commande';
 
   @override
-  String get markPreparingButton => 'Marquer en préparation';
+  String get markPreparingButton => 'Marquer en prÃ©paration';
 
   @override
-  String get shipOrderButton => 'Expédier la commande';
+  String get shipOrderButton => 'ExpÃ©dier la commande';
 
   @override
-  String get markDeliveredButton => 'Marquer comme livrée';
+  String get markDeliveredButton => 'Marquer comme livrÃ©e';
 
   @override
   String get cancelOrderButton => 'Annuler la commande';
@@ -1265,22 +1266,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paymentStatusLabel => 'Statut du paiement';
 
   @override
-  String get quantityLabel => 'Quantité';
+  String get quantityLabel => 'QuantitÃ©';
 
   @override
   String get importExcelTitle => 'Importer Excel';
 
   @override
-  String get uploadExcelFile => 'Téléverser un fichier Excel';
+  String get uploadExcelFile => 'TÃ©lÃ©verser un fichier Excel';
 
   @override
-  String get acceptedExcelFormat => 'Format accepté : .xlsx';
+  String get acceptedExcelFormat => 'Format acceptÃ© : .xlsx';
 
   @override
   String get readingFile => 'Lecture du fichier...';
 
   @override
-  String get selectExcel => 'Sélectionner Excel';
+  String get selectExcel => 'SÃ©lectionner Excel';
 
   @override
   String get clearButton => 'Effacer';
@@ -1294,25 +1295,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get excelImportExplanation =>
-      'Cet import crée des produits fournisseur en masse. Le stock par succursale n’est pas importé ici, car le stock appartient à l’inventaire des succursales.';
+      'Cet import crÃ©e des produits fournisseur en masse. Le stock par succursale nâ€™est pas importÃ© ici, car le stock appartient Ã  lâ€™inventaire des succursales.';
 
   @override
   String get excelCreateCategoriesFirst =>
-      'Créez d’abord les catégories et sous-catégories, puis téléversez le fichier Excel afin que les lignes soient associées correctement.';
+      'CrÃ©ez dâ€™abord les catÃ©gories et sous-catÃ©gories, puis tÃ©lÃ©versez le fichier Excel afin que les lignes soient associÃ©es correctement.';
 
   @override
-  String get noRowsToPreview => 'Aucune ligne à prévisualiser pour le moment';
+  String get noRowsToPreview => 'Aucune ligne Ã  prÃ©visualiser pour le moment';
 
   @override
   String get selectExcelToPreview =>
-      'Sélectionnez un fichier Excel pour prévisualiser et valider les produits.';
+      'SÃ©lectionnez un fichier Excel pour prÃ©visualiser et valider les produits.';
 
   @override
-  String get previewRowsTitle => 'Aperçu des lignes';
+  String get previewRowsTitle => 'AperÃ§u des lignes';
 
   @override
   String get previewRowsHelp =>
-      'Vérifiez les lignes invalides, modifiez-les directement ici, ou mettez à jour le fichier Excel et téléversez-le à nouveau.';
+      'VÃ©rifiez les lignes invalides, modifiez-les directement ici, ou mettez Ã  jour le fichier Excel et tÃ©lÃ©versez-le Ã  nouveau.';
 
   @override
   String get unnamedProduct => 'Produit sans nom';
@@ -1337,7 +1338,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierComingSoonMessage =>
-      'Ce module fournisseur sera implémenté étape par étape.';
+      'Ce module fournisseur sera implÃ©mentÃ© Ã©tape par Ã©tape.';
 
   @override
   String get addButton => 'Ajouter';
@@ -1349,94 +1350,95 @@ class AppLocalizationsFr extends AppLocalizations {
   String get menuTooltip => 'Menu';
 
   @override
-  String get categoriesTab => 'Catégories';
+  String get categoriesTab => 'CatÃ©gories';
 
   @override
-  String get subCategoriesTab => 'Sous-catégories';
+  String get subCategoriesTab => 'Sous-catÃ©gories';
 
   @override
-  String get categoryNameFieldLabel => 'Nom de la catégorie';
+  String get categoryNameFieldLabel => 'Nom de la catÃ©gorie';
 
   @override
-  String get categoryNameHint => 'Exemple : Vêtements';
+  String get categoryNameHint => 'Exemple : VÃªtements';
 
   @override
-  String get subCategoryNameFieldLabel => 'Nom de la sous-catégorie';
+  String get subCategoryNameFieldLabel => 'Nom de la sous-catÃ©gorie';
 
   @override
-  String get subCategoryNameHint => 'Exemple : Vêtements femmes';
+  String get subCategoryNameHint => 'Exemple : VÃªtements femmes';
 
   @override
-  String get createActiveCategoryFirst => 'Créez d’abord une catégorie active';
+  String get createActiveCategoryFirst =>
+      'CrÃ©ez dâ€™abord une catÃ©gorie active';
 
   @override
-  String get deactivateCategoryTitle => 'Désactiver la catégorie';
+  String get deactivateCategoryTitle => 'DÃ©sactiver la catÃ©gorie';
 
   @override
-  String get activateCategoryTitle => 'Activer la catégorie';
+  String get activateCategoryTitle => 'Activer la catÃ©gorie';
 
   @override
   String get deactivateCategoryMessage =>
-      'Cette catégorie n’apparaîtra plus lors de l’ajout de nouveaux produits. Les produits existants ne seront pas affectés.';
+      'Cette catÃ©gorie nâ€™apparaÃ®tra plus lors de lâ€™ajout de nouveaux produits. Les produits existants ne seront pas affectÃ©s.';
 
   @override
   String get activateCategoryMessage =>
-      'Cette catégorie apparaîtra à nouveau lors de l’ajout de nouveaux produits.';
+      'Cette catÃ©gorie apparaÃ®tra Ã  nouveau lors de lâ€™ajout de nouveaux produits.';
 
   @override
-  String get deactivateSubCategoryTitle => 'Désactiver la sous-catégorie';
+  String get deactivateSubCategoryTitle => 'DÃ©sactiver la sous-catÃ©gorie';
 
   @override
-  String get activateSubCategoryTitle => 'Activer la sous-catégorie';
+  String get activateSubCategoryTitle => 'Activer la sous-catÃ©gorie';
 
   @override
   String get deactivateSubCategoryMessage =>
-      'Cette sous-catégorie n’apparaîtra plus lors de l’ajout de nouveaux produits. Les produits existants ne seront pas affectés.';
+      'Cette sous-catÃ©gorie nâ€™apparaÃ®tra plus lors de lâ€™ajout de nouveaux produits. Les produits existants ne seront pas affectÃ©s.';
 
   @override
   String get activateSubCategoryMessage =>
-      'Cette sous-catégorie apparaîtra à nouveau lors de l’ajout de nouveaux produits.';
+      'Cette sous-catÃ©gorie apparaÃ®tra Ã  nouveau lors de lâ€™ajout de nouveaux produits.';
 
   @override
-  String get deleteCategoryTitle => 'Supprimer la catégorie';
+  String get deleteCategoryTitle => 'Supprimer la catÃ©gorie';
 
   @override
-  String get deleteSubCategoryTitle => 'Supprimer la sous-catégorie';
+  String get deleteSubCategoryTitle => 'Supprimer la sous-catÃ©gorie';
 
   @override
   String deleteCategoryPermanentConfirmation(Object categoryName) {
-    return 'Supprimer définitivement « $categoryName » ? Cela est autorisé uniquement si elle n’est pas liée à des produits ou à des sous-catégories.';
+    return 'Supprimer dÃ©finitivement Â« $categoryName Â» ? Cela est autorisÃ© uniquement si elle nâ€™est pas liÃ©e Ã  des produits ou Ã  des sous-catÃ©gories.';
   }
 
   @override
   String deleteSubCategoryPermanentConfirmation(Object subCategoryName) {
-    return 'Supprimer définitivement « $subCategoryName » ? Cela est autorisé uniquement si elle n’est pas liée à des produits.';
+    return 'Supprimer dÃ©finitivement Â« $subCategoryName Â» ? Cela est autorisÃ© uniquement si elle nâ€™est pas liÃ©e Ã  des produits.';
   }
 
   @override
-  String get noCategoriesFound => 'Aucune catégorie trouvée';
+  String get noCategoriesFound => 'Aucune catÃ©gorie trouvÃ©e';
 
   @override
-  String get noSubCategoriesFound => 'Aucune sous-catégorie trouvée';
+  String get noSubCategoriesFound => 'Aucune sous-catÃ©gorie trouvÃ©e';
 
   @override
-  String get searchCategoriesHint => 'Rechercher des catégories...';
+  String get searchCategoriesHint => 'Rechercher des catÃ©gories...';
 
   @override
-  String get searchSubCategoriesHint => 'Rechercher des sous-catégories...';
+  String get searchSubCategoriesHint => 'Rechercher des sous-catÃ©gories...';
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount produits • $subCategoryCount sous-catégories';
+    return '$productCount produits â€¢ $subCategoryCount sous-catÃ©gories';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName • $productCount produits';
+    return '$categoryName â€¢ $productCount produits';
   }
 
   @override
-  String get linkedLabel => 'Lié';
+  String get linkedLabel => 'LiÃ©';
 
   @override
   String get productInformationTitle => 'Informations du produit';
@@ -1447,30 +1449,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get productDescriptionMinError =>
-      'La description doit contenir au moins 10 caractères';
+      'La description doit contenir au moins 10 caractÃ¨res';
 
   @override
   String get productDescriptionTooLongError => 'La description est trop longue';
 
   @override
-  String get pricePerUnitLabel => 'Prix par unité *';
+  String get pricePerUnitLabel => 'Prix par unitÃ© *';
 
   @override
-  String get priceGreaterThanZeroError => 'Le prix doit être supérieur à 0';
+  String get priceGreaterThanZeroError => 'Le prix doit Ãªtre supÃ©rieur Ã  0';
 
   @override
-  String get priceTooHighError => 'Le prix est trop élevé';
+  String get priceTooHighError => 'Le prix est trop Ã©levÃ©';
 
   @override
-  String get quantityInvalidError => 'Saisissez une quantité valide';
+  String get quantityInvalidError => 'Saisissez une quantitÃ© valide';
 
   @override
   String get moqWholesaleMinError =>
-      'La quantité minimale de commande doit être au moins 5 pour le wholesale';
+      'La quantitÃ© minimale de commande doit Ãªtre au moins 5 pour le wholesale';
 
   @override
   String get moqTooHighError =>
-      'La quantité minimale de commande est trop élevée';
+      'La quantitÃ© minimale de commande est trop Ã©levÃ©e';
 
   @override
   String get productBranchStockSectionTitle =>
@@ -1478,15 +1480,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get manageProductStockSavedNote =>
-      'Gérez directement le stock de ce produit dans toutes les succursales. Les mises à jour du stock sont enregistrées immédiatement dans l’inventaire des succursales.';
+      'GÃ©rez directement le stock de ce produit dans toutes les succursales. Les mises Ã  jour du stock sont enregistrÃ©es immÃ©diatement dans lâ€™inventaire des succursales.';
 
   @override
   String get manageProductStockAfterSaveNote =>
-      'Enregistrez d’abord ce produit, puis affectez son stock par succursale depuis Stock du produit par succursale.';
+      'Enregistrez dâ€™abord ce produit, puis affectez son stock par succursale depuis Stock du produit par succursale.';
 
   @override
   String get branchStockAfterSaveNote =>
-      'Le stock par succursale sera disponible après l’enregistrement du produit.';
+      'Le stock par succursale sera disponible aprÃ¨s lâ€™enregistrement du produit.';
 
   @override
   String get addingLabel => 'Ajout...';
@@ -1495,105 +1497,106 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deletingLabel => 'Suppression...';
 
   @override
-  String get deleteSelectedCategory => 'Supprimer la catégorie sélectionnée';
+  String get deleteSelectedCategory => 'Supprimer la catÃ©gorie sÃ©lectionnÃ©e';
 
   @override
   String get deleteSelectedSubCategory =>
-      'Supprimer la sous-catégorie sélectionnée';
+      'Supprimer la sous-catÃ©gorie sÃ©lectionnÃ©e';
 
   @override
-  String get loadingSubCategories => 'Chargement des sous-catégories...';
+  String get loadingSubCategories => 'Chargement des sous-catÃ©gories...';
 
   @override
   String get selectSubCategoryIfNeeded =>
-      'Sélectionner une sous-catégorie si nécessaire';
+      'SÃ©lectionner une sous-catÃ©gorie si nÃ©cessaire';
 
   @override
-  String get selectProductStatus => 'Sélectionner le statut du produit';
+  String get selectProductStatus => 'SÃ©lectionner le statut du produit';
 
   @override
-  String get uploadImagesTitle => 'Téléverser des images';
+  String get uploadImagesTitle => 'TÃ©lÃ©verser des images';
 
   @override
   String get tapToUploadProductImage =>
-      'Touchez pour téléverser l’image du produit';
+      'Touchez pour tÃ©lÃ©verser lâ€™image du produit';
 
   @override
-  String get imageFormatHint => 'PNG, JPG jusqu’à 10 Mo';
+  String get imageFormatHint => 'PNG, JPG jusquâ€™Ã  10 Mo';
 
   @override
-  String get selectCategoryFirstMessage => 'Sélectionnez d’abord une catégorie';
+  String get selectCategoryFirstMessage =>
+      'SÃ©lectionnez dâ€™abord une catÃ©gorie';
 
   @override
   String get selectedCategoryNotFound =>
-      'La catégorie sélectionnée est introuvable';
+      'La catÃ©gorie sÃ©lectionnÃ©e est introuvable';
 
   @override
   String get selectedSubCategoryNotFound =>
-      'La sous-catégorie sélectionnée est introuvable';
+      'La sous-catÃ©gorie sÃ©lectionnÃ©e est introuvable';
 
   @override
   String get selectSubCategoryFirstMessage =>
-      'Sélectionnez d’abord une sous-catégorie';
+      'SÃ©lectionnez dâ€™abord une sous-catÃ©gorie';
 
   @override
   String categoryAddedMessage(Object categoryName) {
-    return '$categoryName ajoutée';
+    return '$categoryName ajoutÃ©e';
   }
 
   @override
   String subCategoryAddedMessage(Object subCategoryName) {
-    return '$subCategoryName ajoutée';
+    return '$subCategoryName ajoutÃ©e';
   }
 
   @override
   String categoryDeletedMessage(Object categoryName) {
-    return '$categoryName supprimée';
+    return '$categoryName supprimÃ©e';
   }
 
   @override
   String subCategoryDeletedMessage(Object subCategoryName) {
-    return '$subCategoryName supprimée';
+    return '$subCategoryName supprimÃ©e';
   }
 
   @override
   String get deleteCategoryHelp =>
-      'Si cette catégorie est déjà utilisée par des produits ou des sous-catégories, le backend peut empêcher sa suppression.';
+      'Si cette catÃ©gorie est dÃ©jÃ  utilisÃ©e par des produits ou des sous-catÃ©gories, le backend peut empÃªcher sa suppression.';
 
   @override
   String get deleteSubCategoryHelp =>
-      'Si cette sous-catégorie est déjà utilisée par des produits, le backend peut empêcher sa suppression.';
+      'Si cette sous-catÃ©gorie est dÃ©jÃ  utilisÃ©e par des produits, le backend peut empÃªcher sa suppression.';
 
   @override
   String get updateBranchStockTitle =>
-      'Mettre à jour le stock de la succursale';
+      'Mettre Ã  jour le stock de la succursale';
 
   @override
-  String get assignStockToBranchTitle => 'Affecter le stock à une succursale';
+  String get assignStockToBranchTitle => 'Affecter le stock Ã  une succursale';
 
   @override
   String get branchLabel => 'Succursale';
 
   @override
   String get stockSavedToBranchInventoryNote =>
-      'Le stock est enregistré directement dans l’inventaire des succursales. Vous n’avez pas besoin de mettre à jour à nouveau les détails du produit.';
+      'Le stock est enregistrÃ© directement dans lâ€™inventaire des succursales. Vous nâ€™avez pas besoin de mettre Ã  jour Ã  nouveau les dÃ©tails du produit.';
 
   @override
   String get stockByBranchTitle => 'Stock par succursale';
 
   @override
   String get productBranchStockExplanation =>
-      'Mettez à jour directement le stock de ce produit par succursale. Cela s’enregistre dans l’inventaire des succursales, pas dans les détails du produit.';
+      'Mettez Ã  jour directement le stock de ce produit par succursale. Cela sâ€™enregistre dans lâ€™inventaire des succursales, pas dans les dÃ©tails du produit.';
 
   @override
   String get branchesLabel => 'Succursales';
 
   @override
-  String get notAssignedYet => 'Pas encore affecté';
+  String get notAssignedYet => 'Pas encore affectÃ©';
 
   @override
   String get createBranchFirst =>
-      'Créez d’abord une succursale, puis affectez le stock du produit.';
+      'CrÃ©ez dâ€™abord une succursale, puis affectez le stock du produit.';
 
   @override
   String totalBranchStockLabel(Object quantity) {
@@ -1601,10 +1604,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get noBranchStockAssigned => 'Aucun stock par succursale affecté';
+  String get noBranchStockAssigned => 'Aucun stock par succursale affectÃ©';
 
   @override
-  String get viewDetailsButton => 'Voir les détails';
+  String get viewDetailsButton => 'Voir les dÃ©tails';
 
   @override
   String itemsCountLabel(Object count) {
@@ -1616,33 +1619,33 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get incomingOrdersEmptyMessage =>
-      'Les commandes entrantes des détaillants apparaîtront ici.';
+      'Les commandes entrantes des dÃ©taillants apparaÃ®tront ici.';
 
   @override
   String get orderNotFound => 'Commande introuvable';
 
   @override
-  String get paymentMethodLabel => 'Méthode de paiement';
+  String get paymentMethodLabel => 'MÃ©thode de paiement';
 
   @override
   String get totalAmountLabel => 'Montant total';
 
   @override
-  String get orderCancelledMessage => 'Cette commande a été annulée.';
+  String get orderCancelledMessage => 'Cette commande a Ã©tÃ© annulÃ©e.';
 
   @override
-  String get productsOrderedTitle => 'Produits commandés';
+  String get productsOrderedTitle => 'Produits commandÃ©s';
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity unités × $price';
+    return '$quantity unitÃ©s Ã— $price';
   }
 
   @override
   String get deliveryInformationTitle => 'Informations de livraison';
 
   @override
-  String get retailerPhoneLabel => 'Téléphone du détaillant';
+  String get retailerPhoneLabel => 'TÃ©lÃ©phone du dÃ©taillant';
 
   @override
   String get branchLabelPlain => 'Succursale';
@@ -1658,32 +1661,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rejectOrderButton => 'Rejeter la commande';
 
   @override
-  String get manageCategoriesTooltip => 'Gérer les catégories';
+  String get manageCategoriesTooltip => 'GÃ©rer les catÃ©gories';
 
   @override
   String get someRowsNeedAttention =>
-      'Certaines lignes nécessitent votre attention';
+      'Certaines lignes nÃ©cessitent votre attention';
 
   @override
-  String get allRowsReady => 'Toutes les lignes sont prêtes à être importées';
+  String get allRowsReady =>
+      'Toutes les lignes sont prÃªtes Ã  Ãªtre importÃ©es';
 
   @override
   String get excelAttentionHelp =>
-      'Vous pouvez modifier les lignes invalides dans cet écran, corriger le fichier Excel et le téléverser à nouveau, ou gérer d’abord les catégories manquantes.';
+      'Vous pouvez modifier les lignes invalides dans cet Ã©cran, corriger le fichier Excel et le tÃ©lÃ©verser Ã  nouveau, ou gÃ©rer dâ€™abord les catÃ©gories manquantes.';
 
   @override
-  String get manageCategoriesButton => 'Gérer les catégories';
+  String get manageCategoriesButton => 'GÃ©rer les catÃ©gories';
 
   @override
-  String get importResultTitle => 'Résultat de l’import';
+  String get importResultTitle => 'RÃ©sultat de lâ€™import';
 
   @override
   String importedRowsSummary(Object importedCount, Object totalRows) {
-    return 'Importées : $importedCount / $totalRows';
+    return 'ImportÃ©es : $importedCount / $totalRows';
   }
 
   @override
-  String get resetButton => 'Réinitialiser';
+  String get resetButton => 'RÃ©initialiser';
 
   @override
   String get importingLabel => 'Importation...';
@@ -1700,21 +1704,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get editRowHelp =>
-      'Corrigez les informations du produit avant l’import. Cela met à jour uniquement l’aperçu ; le fichier Excel sur votre téléphone n’est pas modifié.';
+      'Corrigez les informations du produit avant lâ€™import. Cela met Ã  jour uniquement lâ€™aperÃ§u ; le fichier Excel sur votre tÃ©lÃ©phone nâ€™est pas modifiÃ©.';
 
   @override
   String get saveChangesButton => 'Enregistrer les modifications';
 
   @override
-  String get noSubcategory => 'Aucune sous-catégorie';
+  String get noSubcategory => 'Aucune sous-catÃ©gorie';
 
   @override
   String get noSubcategoriesForCategory =>
-      'Aucune sous-catégorie pour cette catégorie';
+      'Aucune sous-catÃ©gorie pour cette catÃ©gorie';
 
   @override
   String selectCategoryWithCurrent(Object categoryName) {
-    return 'Sélectionner une catégorie ($categoryName)';
+    return 'SÃ©lectionner une catÃ©gorie ($categoryName)';
   }
 
   @override
@@ -1730,21 +1734,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get countryRequiredLabel => 'Pays *';
 
   @override
-  String get selectCountryFirstError => 'Veuillez sélectionner d’abord un pays';
+  String get selectCountryFirstError =>
+      'Veuillez sÃ©lectionner dâ€™abord un pays';
 
   @override
-  String get regionStateLabel => 'Région / État';
+  String get regionStateLabel => 'RÃ©gion / Ã‰tat';
 
   @override
   String get noPredefinedRegionsContinueWithCity =>
-      'Aucune région prédéfinie, continuez avec la ville / zone';
+      'Aucune rÃ©gion prÃ©dÃ©finie, continuez avec la ville / zone';
 
   @override
   String get noRegionsFoundForSearch =>
-      'Aucune région trouvée pour votre recherche';
+      'Aucune rÃ©gion trouvÃ©e pour votre recherche';
 
   @override
-  String get cityAreaHintGeneric => 'ex. ville, quartier ou zone d’activité';
+  String get cityAreaHintGeneric => 'ex. ville, quartier ou zone dâ€™activitÃ©';
 
   @override
   String get cityAreaHintLebanonBeirut => 'ex. Hamra, Achrafieh, Verdun';
@@ -1759,28 +1764,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cityAreaHintLebanonSouth => 'ex. Saida, Tyr, Nabatieh';
 
   @override
-  String get cityAreaHintLebanonBekaa => 'ex. Zahlé, Baalbek, Chtaura';
+  String get cityAreaHintLebanonBekaa => 'ex. ZahlÃ©, Baalbek, Chtaura';
 
   @override
   String get cityAreaHintLebanonGeneric => 'ex. Beyrouth, Tripoli, Saida';
 
   @override
   String get phoneNumberRequiredError =>
-      'Le numéro de téléphone est obligatoire';
+      'Le numÃ©ro de tÃ©lÃ©phone est obligatoire';
 
   @override
   String get phoneCountryMustMatchSelectedCountry =>
-      'Le pays du téléphone doit correspondre au pays sélectionné';
+      'Le pays du tÃ©lÃ©phone doit correspondre au pays sÃ©lectionnÃ©';
 
   @override
   String get completeRequiredFieldsCorrectly =>
-      'Veuillez compléter correctement tous les champs obligatoires.';
+      'Veuillez complÃ©ter correctement tous les champs obligatoires.';
 
   @override
-  String get businessTypeRequiredError => 'Le type d’activité est obligatoire';
+  String get businessTypeRequiredError =>
+      'Le type dâ€™activitÃ© est obligatoire';
 
   @override
-  String get retryButton => 'Réessayer';
+  String get retryButton => 'RÃ©essayer';
 
   @override
   String get noLabel => 'Non';
@@ -1798,7 +1804,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noneLabel => 'Aucun';
 
   @override
-  String get supplierUsed => 'Utilisé';
+  String get supplierUsed => 'UtilisÃ©';
 
   @override
   String get supplierFixed => 'Fixe';
@@ -1813,13 +1819,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cancelButton => 'Annuler';
 
   @override
-  String get supplierCustom => 'Personnalisé';
+  String get supplierCustom => 'PersonnalisÃ©';
 
   @override
   String get deleteButton => 'Supprimer';
 
   @override
-  String get regionLabel => 'Région';
+  String get regionLabel => 'RÃ©gion';
 
   @override
   String get searchLabel => 'Rechercher';
@@ -1828,7 +1834,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierTarget => 'Cible';
 
   @override
-  String get supplierBanners => 'Bannières';
+  String get supplierBanners => 'BanniÃ¨res';
 
   @override
   String get countryLabel => 'Pays';
@@ -1858,28 +1864,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierMaxUses => 'Utilisations max.';
 
   @override
-  String get regionRequiredLabel => 'Région *';
+  String get regionRequiredLabel => 'RÃ©gion *';
 
   @override
   String get supplierSubtitle => 'Sous-titre';
 
   @override
-  String get supplierValidTo => 'Valide jusqu’au';
+  String get supplierValidTo => 'Valide jusquâ€™au';
 
   @override
-  String get supplierValidity => 'Validité';
+  String get supplierValidity => 'ValiditÃ©';
 
   @override
   String get supplierMinOrder => 'Commande min.';
 
   @override
-  String get noRegionLabel => 'Aucune région';
+  String get noRegionLabel => 'Aucune rÃ©gion';
 
   @override
   String get supplierRemaining => 'Restant';
 
   @override
-  String get supplierUnlimited => 'Illimité';
+  String get supplierUnlimited => 'IllimitÃ©';
 
   @override
   String get supplierValidNow => 'Valide maintenant';
@@ -1888,25 +1894,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierPromotions => 'Promotions';
 
   @override
-  String get supplierStartDate => 'Date de début';
+  String get supplierStartDate => 'Date de dÃ©but';
 
   @override
   String get supplierValidFrom => 'Valide du';
 
   @override
-  String get supplierBannerList => 'Liste des bannières';
+  String get supplierBannerList => 'Liste des banniÃ¨res';
 
   @override
   String get supplierCouponList => 'Liste des coupons';
 
   @override
-  String get supplierCreateRule => 'Créer la règle';
+  String get supplierCreateRule => 'CrÃ©er la rÃ¨gle';
 
   @override
   String get descriptionLabel => 'Description';
 
   @override
-  String get supplierEditBanner => 'Modifier la bannière';
+  String get supplierEditBanner => 'Modifier la banniÃ¨re';
 
   @override
   String get supplierEditCoupon => 'Modifier le coupon';
@@ -1918,16 +1924,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierPickupOnly => 'Retrait uniquement';
 
   @override
-  String get supplierRuleName => 'Nom de la règle *';
+  String get supplierRuleName => 'Nom de la rÃ¨gle *';
 
   @override
-  String get supplierRulePreset => 'Modèle de règle';
+  String get supplierRulePreset => 'ModÃ¨le de rÃ¨gle';
 
   @override
-  String get subcategoryLabel => 'Sous-catégorie';
+  String get subcategoryLabel => 'Sous-catÃ©gorie';
 
   @override
-  String get supplierUpdateRule => 'Mettre à jour';
+  String get supplierUpdateRule => 'Mettre Ã  jour';
 
   @override
   String get supplierValidNow2 => 'Valide maintenant : ';
@@ -1939,13 +1945,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierAllProducts => 'Tous les produits';
 
   @override
-  String get supplierAppliesTo => 'S’applique à *';
+  String get supplierAppliesTo => 'Sâ€™applique Ã  *';
 
   @override
-  String get supplierBannerImage => 'Image de bannière';
+  String get supplierBannerImage => 'Image de banniÃ¨re';
 
   @override
-  String get supplierCouponRules => 'Règles du coupon';
+  String get supplierCouponRules => 'RÃ¨gles du coupon';
 
   @override
   String get supplierEnabledOnly => 'Actifs seulement';
@@ -1957,7 +1963,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierMaxDiscount => 'Remise max.';
 
   @override
-  String get supplierSortOrder => 'Ordre d’affichage *';
+  String get supplierSortOrder => 'Ordre dâ€™affichage *';
 
   @override
   String get supplierTargetUrl => 'URL cible *';
@@ -1966,10 +1972,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierTaxRate => 'Taux de taxe % *';
 
   @override
-  String get supplierUploadImage => 'Téléverser une image';
+  String get supplierUploadImage => 'TÃ©lÃ©verser une image';
 
   @override
-  String get supplierUploading => 'Téléversement...';
+  String get supplierUploading => 'TÃ©lÃ©versement...';
 
   @override
   String get supplierAlwaysActive => 'Toujours actif';
@@ -1978,16 +1984,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierCouponCode => 'Code du coupon *';
 
   @override
-  String get supplierCreateBanner => 'Créer une bannière';
+  String get supplierCreateBanner => 'CrÃ©er une banniÃ¨re';
 
   @override
-  String get supplierCreateCoupon => 'Créer un coupon';
+  String get supplierCreateCoupon => 'CrÃ©er un coupon';
 
   @override
-  String get supplierCreateMethod => 'Créer la méthode';
+  String get supplierCreateMethod => 'CrÃ©er la mÃ©thode';
 
   @override
-  String get supplierDeleteBanner => 'Supprimer la bannière';
+  String get supplierDeleteBanner => 'Supprimer la banniÃ¨re';
 
   @override
   String get supplierDeleteCoupon => 'Supprimer le coupon';
@@ -1996,25 +2002,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierDisabledOnly => 'Inactifs seulement';
 
   @override
-  String get supplierDisplayRules => 'Règles d’affichage';
+  String get supplierDisplayRules => 'RÃ¨gles dâ€™affichage';
 
   @override
-  String get supplierEditTaxRule => 'Modifier la règle fiscale';
+  String get supplierEditTaxRule => 'Modifier la rÃ¨gle fiscale';
 
   @override
   String get supplierFreeShipping => 'Livraison gratuite';
 
   @override
-  String get supplierMethodName => 'Nom de la méthode *';
+  String get supplierMethodName => 'Nom de la mÃ©thode *';
 
   @override
-  String get supplierMethodType => 'Type de méthode *';
+  String get supplierMethodType => 'Type de mÃ©thode *';
 
   @override
-  String get searchRegionHint => 'Rechercher une région';
+  String get searchRegionHint => 'Rechercher une rÃ©gion';
 
   @override
-  String get selectRegionHint => 'Sélectionner une région';
+  String get selectRegionHint => 'SÃ©lectionner une rÃ©gion';
 
   @override
   String get supplierShippingCost => 'Frais de livraison';
@@ -2023,31 +2029,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierTargetType => 'Type de cible *';
 
   @override
-  String get supplierTaxRuleList => 'Liste des règles fiscales';
+  String get supplierTaxRuleList => 'Liste des rÃ¨gles fiscales';
 
   @override
-  String get supplierUpdateBanner => 'Mettre à jour la bannière';
+  String get supplierUpdateBanner => 'Mettre Ã  jour la banniÃ¨re';
 
   @override
-  String get supplierUpdateCoupon => 'Mettre à jour le coupon';
+  String get supplierUpdateCoupon => 'Mettre Ã  jour le coupon';
 
   @override
-  String get supplierUpdateMethod => 'Mettre à jour';
+  String get supplierUpdateMethod => 'Mettre Ã  jour';
 
   @override
-  String get supplierBannerImage2 => 'Image de bannière *';
+  String get supplierBannerImage2 => 'Image de banniÃ¨re *';
 
   @override
   String get supplierEditPromotion => 'Modifier la promotion';
 
   @override
-  String get supplierManageBanners => 'Gérer les bannières';
+  String get supplierManageBanners => 'GÃ©rer les banniÃ¨res';
 
   @override
-  String get supplierManageCoupons => 'Gérer les coupons';
+  String get supplierManageCoupons => 'GÃ©rer les coupons';
 
   @override
-  String get supplierNoBannersYet => 'Aucune bannière pour le moment';
+  String get supplierNoBannersYet => 'Aucune banniÃ¨re pour le moment';
 
   @override
   String get supplierNoCouponsYet => 'Aucun coupon pour le moment';
@@ -2062,16 +2068,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchCountryHint => 'Rechercher un pays';
 
   @override
-  String get selectCountryHint => 'Sélectionner un pays';
+  String get selectCountryHint => 'SÃ©lectionner un pays';
 
   @override
   String get supplierStatusNotes => 'Statut et notes';
 
   @override
-  String get supplierCreateTaxRule => 'Créer une règle fiscale';
+  String get supplierCreateTaxRule => 'CrÃ©er une rÃ¨gle fiscale';
 
   @override
-  String get supplierDeleteTaxRule => 'Supprimer la règle fiscale';
+  String get supplierDeleteTaxRule => 'Supprimer la rÃ¨gle fiscale';
 
   @override
   String get supplierDiscountType => 'Type de remise *';
@@ -2080,10 +2086,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierOrderLevelTax => 'Taxe au niveau de la commande';
 
   @override
-  String get supplierPromotionRules => 'Règles de promotion';
+  String get supplierPromotionRules => 'RÃ¨gles de promotion';
 
   @override
-  String get supplierSelectBranches => 'Sélectionner les succursales';
+  String get supplierSelectBranches => 'SÃ©lectionner les succursales';
 
   @override
   String get supplierWholesaleDeals => 'Offres de gros';
@@ -2098,22 +2104,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierExpressDelivery => 'Livraison express';
 
   @override
-  String get supplierManageTaxRules => 'Gérer les règles fiscales';
+  String get supplierManageTaxRules => 'GÃ©rer les rÃ¨gles fiscales';
 
   @override
   String get supplierMinOrderAmount => 'Montant minimum de commande';
 
   @override
-  String get supplierNoResultsFound => 'Aucun résultat trouvé';
+  String get supplierNoResultsFound => 'Aucun rÃ©sultat trouvÃ©';
 
   @override
-  String get supplierNoTaxRulesYet => 'Aucune règle fiscale pour le moment';
+  String get supplierNoTaxRulesYet => 'Aucune rÃ¨gle fiscale pour le moment';
 
   @override
-  String get supplierPleaseSelectA => 'Veuillez sélectionner ';
+  String get supplierPleaseSelectA => 'Veuillez sÃ©lectionner ';
 
   @override
-  String get supplierPricingTiming => 'Prix et délais';
+  String get supplierPricingTiming => 'Prix et dÃ©lais';
 
   @override
   String get supplierPromotionName => 'Nom de la promotion *';
@@ -2122,16 +2128,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierPromotionTarget => 'Cible de la promotion';
 
   @override
-  String get supplierSearchTaxRules => 'Rechercher des règles fiscales';
+  String get supplierSearchTaxRules => 'Rechercher des rÃ¨gles fiscales';
 
   @override
-  String get supplierSelectProduct => 'Sélectionner un produit *';
+  String get supplierSelectProduct => 'SÃ©lectionner un produit *';
 
   @override
-  String get supplierUpdatePromotion => 'Mettre à jour la promotion';
+  String get supplierUpdatePromotion => 'Mettre Ã  jour la promotion';
 
   @override
-  String get supplierManagePromotions => 'Gérer les promotions';
+  String get supplierManagePromotions => 'GÃ©rer les promotions';
 
   @override
   String get supplierNoPromotionsYet => 'Aucune promotion pour le moment';
@@ -2143,31 +2149,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierSearchPromotions => 'Rechercher des promotions';
 
   @override
-  String get supplierSelectCategory => 'Sélectionner une catégorie *';
+  String get supplierSelectCategory => 'SÃ©lectionner une catÃ©gorie *';
 
   @override
-  String get supplierSelectedBranches => 'Succursales sélectionnées';
+  String get supplierSelectedBranches => 'Succursales sÃ©lectionnÃ©es';
 
   @override
   String get supplierStandardDelivery => 'Livraison standard';
 
   @override
-  String get supplierTaxApplicability => 'Applicabilité de la taxe';
+  String get supplierTaxApplicability => 'ApplicabilitÃ© de la taxe';
 
   @override
   String get supplierTaxConfiguration => 'Configuration des taxes';
 
   @override
-  String get supplierAutoGenerateName => 'Générer le nom automatiquement';
+  String get supplierAutoGenerateName => 'GÃ©nÃ©rer le nom automatiquement';
 
   @override
-  String get supplierBannerInformation => 'Informations sur la bannière';
+  String get supplierBannerInformation => 'Informations sur la banniÃ¨re';
 
   @override
   String get supplierCouponInformation => 'Informations sur le coupon';
 
   @override
-  String get supplierMethodInformation => 'Informations sur la méthode';
+  String get supplierMethodInformation => 'Informations sur la mÃ©thode';
 
   @override
   String get supplierPickupFromBranch => 'Retrait en succursale';
@@ -2182,32 +2188,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierMaxDiscountAmount => 'Montant maximum de remise';
 
   @override
-  String get supplierNoMatchingBanners => 'Aucune bannière correspondante';
+  String get supplierNoMatchingBanners => 'Aucune banniÃ¨re correspondante';
 
   @override
-  String get supplierBranchApplicability => 'Applicabilité aux succursales';
+  String get supplierBranchApplicability => 'ApplicabilitÃ© aux succursales';
 
   @override
   String get supplierDiscountValue2 => 'Valeur de remise (%) *';
 
   @override
-  String get supplierEditShippingMethod => 'Modifier la méthode de livraison';
+  String get supplierEditShippingMethod => 'Modifier la mÃ©thode de livraison';
 
   @override
   String get supplierMinimumOrderAmount => 'Montant minimum de commande';
 
   @override
-  String get supplierSelectSubcategory => 'Sélectionner une sous-catégorie *';
+  String get supplierSelectSubcategory => 'SÃ©lectionner une sous-catÃ©gorie *';
 
   @override
-  String get supplierShippingMethodList => 'Liste des méthodes de livraison';
+  String get supplierShippingMethodList => 'Liste des mÃ©thodes de livraison';
 
   @override
-  String get supplierTaxRuleInformation => 'Informations sur la règle fiscale';
+  String get supplierTaxRuleInformation => 'Informations sur la rÃ¨gle fiscale';
 
   @override
   String get supplierNoMatchingTaxRules =>
-      'Aucune règle fiscale correspondante';
+      'Aucune rÃ¨gle fiscale correspondante';
 
   @override
   String get supplierPromotionInformation => 'Informations sur la promotion';
@@ -2217,50 +2223,52 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierCouldNotLoadBanners =>
-      'Impossible de charger les bannières';
+      'Impossible de charger les banniÃ¨res';
 
   @override
   String get supplierCouldNotLoadCoupons => 'Impossible de charger les coupons';
 
   @override
-  String get supplierCreateShippingMethod => 'Créer une méthode de livraison';
+  String get supplierCreateShippingMethod => 'CrÃ©er une mÃ©thode de livraison';
 
   @override
   String get supplierDeleteShippingMethod =>
-      'Supprimer la méthode de livraison';
+      'Supprimer la mÃ©thode de livraison';
 
   @override
   String get supplierNoMatchingPromotions => 'Aucune promotion correspondante';
 
   @override
-  String get supplierPromotionTitleCopied => 'Titre de la promotion copié';
+  String get supplierPromotionTitleCopied => 'Titre de la promotion copiÃ©';
 
   @override
-  String get supplierSortOrderIsRequired => 'L’ordre d’affichage est requis';
+  String get supplierSortOrderIsRequired =>
+      'Lâ€™ordre dâ€™affichage est requis';
 
   @override
-  String get supplierEstimatedDeliveryTime => 'Délai de livraison estimé';
+  String get supplierEstimatedDeliveryTime => 'DÃ©lai de livraison estimÃ©';
 
   @override
   String get supplierFreeShippingThreshold => 'Seuil de livraison gratuite';
 
   @override
-  String get supplierManageShippingMethods => 'Gérer les méthodes de livraison';
+  String get supplierManageShippingMethods =>
+      'GÃ©rer les mÃ©thodes de livraison';
 
   @override
   String get supplierNoShippingMethodsYet =>
-      'Aucune méthode de livraison pour le moment';
+      'Aucune mÃ©thode de livraison pour le moment';
 
   @override
-  String get supplierPleaseSelectACountry => 'Veuillez sélectionner un pays';
+  String get supplierPleaseSelectACountry => 'Veuillez sÃ©lectionner un pays';
 
   @override
   String get supplierSearchShippingMethods =>
-      'Rechercher des méthodes de livraison';
+      'Rechercher des mÃ©thodes de livraison';
 
   @override
   String get supplierCouldNotLoadTaxRules =>
-      'Impossible de charger les règles fiscales';
+      'Impossible de charger les rÃ¨gles fiscales';
 
   @override
   String get supplierCouldNotLoadPromotions =>
@@ -2271,15 +2279,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Appliquer la taxe aux frais de livraison';
 
   @override
-  String get supplierBannerCopiedSuccessfully => 'Bannière copiée avec succès';
+  String get supplierBannerCopiedSuccessfully =>
+      'BanniÃ¨re copiÃ©e avec succÃ¨s';
 
   @override
   String get supplierNoMatchingShippingMethods =>
-      'Aucune méthode de livraison correspondante';
+      'Aucune mÃ©thode de livraison correspondante';
 
   @override
   String get supplierSpecialOffersForRetailers =>
-      'Offres spéciales pour les détaillants';
+      'Offres spÃ©ciales pour les dÃ©taillants';
 
   @override
   String get supplierCouldNotLoadTargetOptions =>
@@ -2287,19 +2296,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierPleaseSelectACategoryFirst =>
-      'Veuillez d’abord sélectionner une catégorie';
+      'Veuillez dâ€™abord sÃ©lectionner une catÃ©gorie';
 
   @override
   String get supplierRegionIsRequiredForLebanon =>
-      'La région est requise pour le Liban';
+      'La rÃ©gion est requise pour le Liban';
 
   @override
   String get supplierCouldNotLoadShippingMethods =>
-      'Impossible de charger les méthodes de livraison';
+      'Impossible de charger les mÃ©thodes de livraison';
 
   @override
   String get supplierTaxRateMustBeGreaterThan0 =>
-      'Le taux de taxe doit être supérieur à 0';
+      'Le taux de taxe doit Ãªtre supÃ©rieur Ã  0';
 
   @override
   String get supplierFieldnameMustBeAValidNumber =>
@@ -2311,51 +2320,51 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierPleaseSelectAtLeastOneBranch =>
-      'Veuillez sélectionner au moins une succursale';
+      'Veuillez sÃ©lectionner au moins une succursale';
 
   @override
   String get supplierBannerImageUploadedSuccessfully =>
-      'Image de bannière téléversée avec succès';
+      'Image de banniÃ¨re tÃ©lÃ©versÃ©e avec succÃ¨s';
 
   @override
   String get supplierOptionalNotesAboutThisTaxRule =>
-      'Notes facultatives sur cette règle fiscale';
+      'Notes facultatives sur cette rÃ¨gle fiscale';
 
   @override
   String get supplierPleaseSelectARegionForLebanon =>
-      'Veuillez sélectionner une région pour le Liban';
+      'Veuillez sÃ©lectionner une rÃ©gion pour le Liban';
 
   @override
   String get supplierValidFromMustBeBeforeValidTo =>
-      'La date de début doit être antérieure à la date de fin';
+      'La date de dÃ©but doit Ãªtre antÃ©rieure Ã  la date de fin';
 
   @override
   String get supplierTaxRateCannotBeGreaterThan100 =>
-      'Le taux de taxe ne peut pas dépasser 100';
+      'Le taux de taxe ne peut pas dÃ©passer 100';
 
   @override
   String get supplierUploadedImageUrlWillAppearHere =>
-      'L’URL de l’image téléversée apparaîtra ici';
+      'Lâ€™URL de lâ€™image tÃ©lÃ©versÃ©e apparaÃ®tra ici';
 
   @override
   String get supplierNoRegionsAvailableForThisCountry =>
-      'Aucune région disponible pour ce pays.';
+      'Aucune rÃ©gion disponible pour ce pays.';
 
   @override
   String get supplierUrlMustStartWithHttpOrHttps =>
-      'L’URL doit commencer par http:// ou https://';
+      'Lâ€™URL doit commencer par http:// ou https://';
 
   @override
   String get supplierOptionalNotesAboutThisShippingMethod =>
-      'Notes facultatives sur cette méthode de livraison';
+      'Notes facultatives sur cette mÃ©thode de livraison';
 
   @override
   String get supplierSortOrderMustBeAValidPositiveNumber =>
-      'L’ordre d’affichage doit être un nombre positif valide';
+      'Lâ€™ordre dâ€™affichage doit Ãªtre un nombre positif valide';
 
   @override
   String get supplierPercentDiscountCannotBeGreaterThan100 =>
-      'Le pourcentage de remise ne peut pas dépasser 100';
+      'Le pourcentage de remise ne peut pas dÃ©passer 100';
 
   @override
   String get supplierFieldnameMustBeGreaterThanOrEqualTo0 =>
@@ -2364,77 +2373,77 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String
   get supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule =>
-      'Choisissez un modèle ou gardez Personnalisé pour saisir votre propre règle fiscale au niveau de la commande.';
+      'Choisissez un modÃ¨le ou gardez PersonnalisÃ© pour saisir votre propre rÃ¨gle fiscale au niveau de la commande.';
 
   @override
   String
   get supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule =>
-      'Les succursales sélectionnées sont chargées depuis le module de gestion des succursales.';
+      'Les succursales sÃ©lectionnÃ©es sont chargÃ©es depuis le module de gestion des succursales.';
 
   @override
   String
   get supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst =>
-      'Aucune succursale active disponible. Ajoutez d’abord des succursales depuis la gestion des succursales.';
+      'Aucune succursale active disponible. Ajoutez dâ€™abord des succursales depuis la gestion des succursales.';
 
   @override
   String
   get supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry =>
-      'Le pays est requis car la taxe est calculée à partir du pays de livraison du détaillant.';
+      'Le pays est requis car la taxe est calculÃ©e Ã  partir du pays de livraison du dÃ©taillant.';
 
   @override
   String
   get supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue =>
-      'Le nom de l’élément sélectionné s’affiche ici, mais le backend enregistre son identifiant dans targetValue.';
+      'Le nom de lâ€™Ã©lÃ©ment sÃ©lectionnÃ© sâ€™affiche ici, mais le backend enregistre son identifiant dans targetValue.';
 
   @override
   String
   get supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
-      'Créez des règles fiscales depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.';
+      'CrÃ©ez des rÃ¨gles fiscales depuis le raccourci du tableau de bord fournisseur ou appuyez sur lâ€™icÃ´ne plus ci-dessus.';
 
   @override
   String
   get supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion =>
-      'Exemple : saisissez 11 pour 11 %. La taxe s’applique à toute la commande selon le pays et la région.';
+      'Exemple : saisissez 11 pour 11 %. La taxe sâ€™applique Ã  toute la commande selon le pays et la rÃ©gion.';
 
   @override
   String
   get supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions =>
-      'Le pays et la région seront utilisés au paiement détaillant pour afficher les bonnes options de livraison.';
+      'Le pays et la rÃ©gion seront utilisÃ©s au paiement dÃ©taillant pour afficher les bonnes options de livraison.';
 
   @override
   String
   get supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
-      'Créez des méthodes de livraison depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.';
+      'CrÃ©ez des mÃ©thodes de livraison depuis le raccourci du tableau de bord fournisseur ou appuyez sur lâ€™icÃ´ne plus ci-dessus.';
 
   @override
   String
   get supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule =>
-      'Choisissez Aucune région pour une règle au niveau du pays, ou une région précise pour une règle plus spécifique.';
+      'Choisissez Aucune rÃ©gion pour une rÃ¨gle au niveau du pays, ou une rÃ©gion prÃ©cise pour une rÃ¨gle plus spÃ©cifique.';
 
   @override
   String
   get supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability =>
-      'Créez et gérez les options de livraison ou de retrait par pays, région, succursales, coût et disponibilité.';
+      'CrÃ©ez et gÃ©rez les options de livraison ou de retrait par pays, rÃ©gion, succursales, coÃ»t et disponibilitÃ©.';
 
   @override
   String
   get supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField =>
-      'Téléversez une image depuis votre appareil. Le backend renvoie une URL et la stocke dans le champ imageUrl de la bannière.';
+      'TÃ©lÃ©versez une image depuis votre appareil. Le backend renvoie une URL et la stocke dans le champ imageUrl de la banniÃ¨re.';
 
   @override
   String
   get supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax =>
-      'Configurez la taxe au niveau de la commande par pays et région. Le paiement détaillant utilisera ces règles pour calculer la taxe.';
+      'Configurez la taxe au niveau de la commande par pays et rÃ©gion. Le paiement dÃ©taillant utilisera ces rÃ¨gles pour calculer la taxe.';
 
   @override
   String
   get supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount =>
-      'Si activé, la taxe au paiement inclut les frais de livraison. Sinon, elle s’applique uniquement aux articles après remise promotionnelle.';
+      'Si activÃ©, la taxe au paiement inclut les frais de livraison. Sinon, elle sâ€™applique uniquement aux articles aprÃ¨s remise promotionnelle.';
 
   @override
   String
   get supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch =>
-      'Les succursales définissent où cette méthode est valide. Le paiement détaillant fera correspondre la livraison avec la succursale de préparation.';
+      'Les succursales dÃ©finissent oÃ¹ cette mÃ©thode est valide. Le paiement dÃ©taillant fera correspondre la livraison avec la succursale de prÃ©paration.';
 
   @override
   String supplierFieldRequired(Object fieldName) {
@@ -2443,17 +2452,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String supplierFieldGreaterThanZero(Object fieldName) {
-    return '$fieldName doit être supérieur à 0';
+    return '$fieldName doit Ãªtre supÃ©rieur Ã  0';
   }
 
   @override
   String supplierFieldGreaterThanOrEqualZero(Object fieldName) {
-    return '$fieldName doit être supérieur ou égal à 0';
+    return '$fieldName doit Ãªtre supÃ©rieur ou Ã©gal Ã  0';
   }
 
   @override
   String supplierFieldValidNumber(Object fieldName) {
-    return '$fieldName doit être un nombre valide';
+    return '$fieldName doit Ãªtre un nombre valide';
   }
 
   @override
@@ -2488,71 +2497,71 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pickButton => 'Choisir';
 
   @override
-  String get uploadingLabel => 'Téléversement...';
+  String get uploadingLabel => 'TÃ©lÃ©versement...';
 
   @override
-  String get supplierBannerImagePlain => 'Image de bannière';
+  String get supplierBannerImagePlain => 'Image de banniÃ¨re';
 
   @override
   String get supplierBannersDescription =>
-      'Consultez, créez, modifiez et supprimez les bannières fournisseur enregistrées dans la base de données. Elles apparaîtront ensuite aux détaillants sur l’accueil.';
+      'Consultez, crÃ©ez, modifiez et supprimez les banniÃ¨res fournisseur enregistrÃ©es dans la base de donnÃ©es. Elles apparaÃ®tront ensuite aux dÃ©taillants sur lâ€™accueil.';
 
   @override
-  String get supplierBusinessDaysHint => '2 à 3 jours ouvrables';
+  String get supplierBusinessDaysHint => '2 Ã  3 jours ouvrables';
 
   @override
-  String get supplierChooseCategory => 'Choisir une catégorie';
+  String get supplierChooseCategory => 'Choisir une catÃ©gorie';
 
   @override
   String get supplierCouponCodePlain => 'Code du coupon';
 
   @override
   String supplierCouponCopied(Object couponCode) {
-    return '$couponCode copié';
+    return '$couponCode copiÃ©';
   }
 
   @override
-  String get supplierCouponDescriptionHint => 'Décrivez ce coupon';
+  String get supplierCouponDescriptionHint => 'DÃ©crivez ce coupon';
 
   @override
   String get supplierCouponsDescription =>
-      'Consultez, créez, modifiez et supprimez les coupons fournisseur enregistrés en base. Ils pourront ensuite être utilisés dans le panier et le paiement détaillant.';
+      'Consultez, crÃ©ez, modifiez et supprimez les coupons fournisseur enregistrÃ©s en base. Ils pourront ensuite Ãªtre utilisÃ©s dans le panier et le paiement dÃ©taillant.';
 
   @override
   String get supplierCreateBannersFromDashboard =>
-      'Créez des bannières depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.';
+      'CrÃ©ez des banniÃ¨res depuis le raccourci du tableau de bord fournisseur ou appuyez sur lâ€™icÃ´ne plus ci-dessus.';
 
   @override
   String get supplierCreateCouponsFromDashboard =>
-      'Créez des coupons depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.';
+      'CrÃ©ez des coupons depuis le raccourci du tableau de bord fournisseur ou appuyez sur lâ€™icÃ´ne plus ci-dessus.';
 
   @override
   String get supplierCreatePromotionsFromDashboard =>
-      'Créez des promotions depuis le raccourci du tableau de bord fournisseur ou appuyez sur l’icône plus ci-dessus.';
+      'CrÃ©ez des promotions depuis le raccourci du tableau de bord fournisseur ou appuyez sur lâ€™icÃ´ne plus ci-dessus.';
 
   @override
   String supplierDeleteBannerConfirmation(Object bannerTitle) {
-    return 'Voulez-vous vraiment supprimer « $bannerTitle » ?';
+    return 'Voulez-vous vraiment supprimer Â« $bannerTitle Â» ?';
   }
 
   @override
   String supplierDeleteCouponConfirmation(Object couponCode) {
-    return 'Voulez-vous vraiment supprimer le coupon « $couponCode » ?';
+    return 'Voulez-vous vraiment supprimer le coupon Â« $couponCode Â» ?';
   }
 
   @override
   String supplierDeletePromotionConfirmation(Object promotionTitle) {
-    return 'Voulez-vous vraiment supprimer « $promotionTitle » ?';
+    return 'Voulez-vous vraiment supprimer Â« $promotionTitle Â» ?';
   }
 
   @override
   String supplierDeleteShippingMethodConfirmation(Object methodName) {
-    return 'Voulez-vous vraiment supprimer « $methodName » ?';
+    return 'Voulez-vous vraiment supprimer Â« $methodName Â» ?';
   }
 
   @override
   String supplierDeleteTaxRuleConfirmation(Object ruleName) {
-    return 'Voulez-vous vraiment supprimer « $ruleName » ?';
+    return 'Voulez-vous vraiment supprimer Â« $ruleName Â» ?';
   }
 
   @override
@@ -2563,25 +2572,26 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierEndDateAfterStartDate =>
-      'La date de fin doit être après la date de début';
+      'La date de fin doit Ãªtre aprÃ¨s la date de dÃ©but';
 
   @override
-  String get supplierEstimatedDeliveryTimePlain => 'Délai de livraison estimé';
+  String get supplierEstimatedDeliveryTimePlain =>
+      'DÃ©lai de livraison estimÃ©';
 
   @override
   String get supplierFixedDiscountHelp =>
-      'Une remise fixe signifie un montant fixe déduit, par exemple 20 \$.';
+      'Une remise fixe signifie un montant fixe dÃ©duit, par exemple 20 \$.';
 
   @override
   String get supplierFreeShippingThresholdPlain =>
       'Seuil de livraison gratuite';
 
   @override
-  String get supplierManageHomeBanners => 'Gérer les bannières d’accueil';
+  String get supplierManageHomeBanners => 'GÃ©rer les banniÃ¨res dâ€™accueil';
 
   @override
   String get supplierMaxDiscountFixedHelp =>
-      'Le montant maximum de remise n’est pas nécessaire pour les promotions à remise fixe.';
+      'Le montant maximum de remise nâ€™est pas nÃ©cessaire pour les promotions Ã  remise fixe.';
 
   @override
   String get supplierMaxDiscountPercentHelp =>
@@ -2594,11 +2604,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get supplierMaximumDiscountAmountPlain => 'Montant maximum de remise';
 
   @override
-  String get supplierMethodNamePlain => 'Nom de la méthode';
+  String get supplierMethodNamePlain => 'Nom de la mÃ©thode';
 
   @override
   String supplierMethodsShown(Object count) {
-    return '$count méthodes affichées';
+    return '$count mÃ©thodes affichÃ©es';
   }
 
   @override
@@ -2606,11 +2616,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierNoActiveBranchesAvailableAddBranchesFirst =>
-      'Aucune succursale active disponible. Ajoutez d’abord des succursales depuis la gestion des succursales.';
+      'Aucune succursale active disponible. Ajoutez dâ€™abord des succursales depuis la gestion des succursales.';
 
   @override
   String get supplierNoActiveCategoriesAvailable =>
-      'Aucune catégorie active disponible.';
+      'Aucune catÃ©gorie active disponible.';
 
   @override
   String get supplierNoActiveProductsAvailable =>
@@ -2618,11 +2628,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierNoActiveSubcategoriesForCategory =>
-      'Aucune sous-catégorie active pour cette catégorie.';
+      'Aucune sous-catÃ©gorie active pour cette catÃ©gorie.';
 
   @override
   String get supplierNoRegionsAvailableForCountry =>
-      'Aucune région disponible pour ce pays.';
+      'Aucune rÃ©gion disponible pour ce pays.';
 
   @override
   String get supplierOnlyForPercentCoupons =>
@@ -2634,89 +2644,89 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierPercentDiscountHelp =>
-      'Une remise en pourcentage signifie une réduction, par exemple 10 %. Le montant maximum peut limiter la perte du fournisseur.';
+      'Une remise en pourcentage signifie une rÃ©duction, par exemple 10 %. Le montant maximum peut limiter la perte du fournisseur.';
 
   @override
   String supplierPleaseSelectTarget(Object targetLabel) {
-    return 'Veuillez sélectionner $targetLabel';
+    return 'Veuillez sÃ©lectionner $targetLabel';
   }
 
   @override
   String get supplierPromotionBranchesHelp =>
-      'Les succursales définissent où la promotion est valide. La sélection produit/catégorie ci-dessus n’est pas filtrée par succursale.';
+      'Les succursales dÃ©finissent oÃ¹ la promotion est valide. La sÃ©lection produit/catÃ©gorie ci-dessus nâ€™est pas filtrÃ©e par succursale.';
 
   @override
   String get supplierPromotionDescriptionHint =>
-      'Courte description affichée plus tard côté détaillant';
+      'Courte description affichÃ©e plus tard cÃ´tÃ© dÃ©taillant';
 
   @override
   String get supplierPromotionTargetHelp =>
-      'La cible définit les produits inclus dans la promotion. La disponibilité par succursale est choisie séparément ci-dessous.';
+      'La cible dÃ©finit les produits inclus dans la promotion. La disponibilitÃ© par succursale est choisie sÃ©parÃ©ment ci-dessous.';
 
   @override
   String get supplierPromotionTitle => 'Titre de la promotion *';
 
   @override
   String get supplierPromotionTitleHint =>
-      'Offre de gros pour la catégorie alimentaire';
+      'Offre de gros pour la catÃ©gorie alimentaire';
 
   @override
   String get supplierPromotionTitlePlain => 'Titre de la promotion';
 
   @override
   String get supplierPromotionsDescription =>
-      'Consultez, recherchez, créez, modifiez et supprimez les promotions de gros du fournisseur pour les produits, catégories, sous-catégories ou tous les produits.';
+      'Consultez, recherchez, crÃ©ez, modifiez et supprimez les promotions de gros du fournisseur pour les produits, catÃ©gories, sous-catÃ©gories ou tous les produits.';
 
   @override
   String supplierPromotionsShown(Object count) {
-    return '$count promotions affichées';
+    return '$count promotions affichÃ©es';
   }
 
   @override
-  String get supplierRuleNamePlain => 'Nom de la règle';
+  String get supplierRuleNamePlain => 'Nom de la rÃ¨gle';
 
   @override
   String supplierRulesShown(Object count) {
-    return '$count règles affichées';
+    return '$count rÃ¨gles affichÃ©es';
   }
 
   @override
   String get supplierSelectCategoryFirst =>
-      'Sélectionnez d’abord une catégorie.';
+      'SÃ©lectionnez dâ€™abord une catÃ©gorie.';
 
   @override
   String supplierSelectTargetHint(Object targetLabel) {
-    return 'Sélectionner $targetLabel';
+    return 'SÃ©lectionner $targetLabel';
   }
 
   @override
   String supplierSelectTargetLabel(Object targetLabel) {
-    return 'Sélectionner $targetLabel *';
+    return 'SÃ©lectionner $targetLabel *';
   }
 
   @override
   String get supplierSelectedBranchesLoadedFromBackendBranchManagement =>
-      'Les succursales sélectionnées sont chargées depuis le module de gestion des succursales.';
+      'Les succursales sÃ©lectionnÃ©es sont chargÃ©es depuis le module de gestion des succursales.';
 
   @override
   String get supplierSelectedItemNameShownHere =>
-      'Le nom de l’élément sélectionné s’affiche ici, mais le backend enregistre son ID dans targetValue.';
+      'Le nom de lâ€™Ã©lÃ©ment sÃ©lectionnÃ© sâ€™affiche ici, mais le backend enregistre son ID dans targetValue.';
 
   @override
   String get supplierShippingCostPlain => 'Frais de livraison';
 
   @override
-  String get supplierShippingNameHint => 'Livraison standard à Beyrouth';
+  String get supplierShippingNameHint => 'Livraison standard Ã  Beyrouth';
 
   @override
   String get supplierSortOrderPositiveNumber =>
-      'L’ordre d’affichage doit être un nombre positif valide';
+      'Lâ€™ordre dâ€™affichage doit Ãªtre un nombre positif valide';
 
   @override
-  String get supplierSortOrderRequired => 'L’ordre d’affichage est requis';
+  String get supplierSortOrderRequired => 'Lâ€™ordre dâ€™affichage est requis';
 
   @override
-  String get supplierTargetUrlRequired => 'L’URL cible est requise';
+  String get supplierTargetUrlRequired => 'Lâ€™URL cible est requise';
 
   @override
   String get supplierTaxRatePlain => 'Taux de taxe';
@@ -2726,16 +2736,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierValidFromBeforeValidTo =>
-      'La date de début doit être avant la date de fin';
+      'La date de dÃ©but doit Ãªtre avant la date de fin';
 
   @override
-  String get supplierScheduled => 'Planifié';
+  String get supplierScheduled => 'PlanifiÃ©';
 
   @override
-  String get supplierExpired => 'Expiré';
+  String get supplierExpired => 'ExpirÃ©';
 
   @override
-  String get supplierUsageLimitReached => 'Limite d’utilisation atteinte';
+  String get supplierUsageLimitReached => 'Limite dâ€™utilisation atteinte';
 
   @override
   String get supplierFreePickup => 'Retrait gratuit';
@@ -2757,10 +2767,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get supplierNoLocationSelected => 'Aucun emplacement sélectionné';
+  String get supplierNoLocationSelected => 'Aucun emplacement sÃ©lectionnÃ©';
 
   @override
-  String get supplierNoBranchesSelected => 'Aucune succursale sélectionnée';
+  String get supplierNoBranchesSelected => 'Aucune succursale sÃ©lectionnÃ©e';
 
   @override
   String get supplierNoTarget => 'Aucune cible';
@@ -2772,7 +2782,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shipping => 'Livraison';
 
   @override
-  String get calculatedAtCheckout => 'Calculée au paiement';
+  String get calculatedAtCheckout => 'CalculÃ©e au paiement';
 
   @override
   String get totalBeforeShipping => 'Total avant livraison';
@@ -2781,68 +2791,68 @@ class AppLocalizationsFr extends AppLocalizations {
   String get productAiAssistant => 'Assistant IA du produit';
 
   @override
-  String get askAi => 'Demander à l’IA';
+  String get askAi => 'Demander Ã  lâ€™IA';
 
   @override
   String get askAboutThisProduct => 'Posez une question sur ce produit...';
 
   @override
-  String get aiThinking => 'Réflexion...';
+  String get aiThinking => 'RÃ©flexion...';
 
   @override
   String get aiWelcomeMessage =>
-      'Posez-moi une question sur ce produit. Je peux vous aider avec le MOQ, le stock, le prix et son adéquation à votre magasin.';
+      'Posez-moi une question sur ce produit. Je peux vous aider avec le MOQ, le stock, le prix et son adÃ©quation Ã  votre magasin.';
 
   @override
-  String get aiSuggestionFitStore => 'Ce produit convient-il à mon magasin ?';
+  String get aiSuggestionFitStore => 'Ce produit convient-il Ã  mon magasin ?';
 
   @override
   String get aiSuggestionOrderQuantity =>
-      'Combien d’unités devrais-je commander ?';
+      'Combien dâ€™unitÃ©s devrais-je commander ?';
 
   @override
   String get aiSuggestionMoqStock => 'Expliquez le MOQ et le stock.';
 
   @override
   String get aiUnavailable =>
-      'L’assistant IA est temporairement indisponible. Veuillez réessayer plus tard.';
+      'Lâ€™assistant IA est temporairement indisponible. Veuillez rÃ©essayer plus tard.';
 
   @override
   String get aiTimeout =>
-      'L’assistant IA a pris trop de temps. Veuillez réessayer.';
+      'Lâ€™assistant IA a pris trop de temps. Veuillez rÃ©essayer.';
 
   @override
   String get aiEmptyAnswer =>
-      'Je n’ai pas pu générer de réponse. Veuillez réessayer.';
+      'Je nâ€™ai pas pu gÃ©nÃ©rer de rÃ©ponse. Veuillez rÃ©essayer.';
 
   @override
   String get rfqMyRfqs => 'Mes RFQ';
 
   @override
-  String get rfqCreate => 'Créer une RFQ';
+  String get rfqCreate => 'CrÃ©er une RFQ';
 
   @override
   String get rfqEdit => 'Modifier la RFQ';
 
   @override
-  String get rfqDetails => 'Détails de la RFQ';
+  String get rfqDetails => 'DÃ©tails de la RFQ';
 
   @override
-  String get rfqRequestsYouPosted => 'Demandes publiées';
+  String get rfqRequestsYouPosted => 'Demandes publiÃ©es';
 
   @override
   String get rfqHowWorksTitle => 'Fonctionnement de la RFQ';
 
   @override
   String get rfqHowWorksMessage =>
-      'Publiez une demande de produit lorsque vous ne trouvez pas ce dont vous avez besoin. Les fournisseurs l’examineront et enverront des devis avec le prix, la quantité et les détails de livraison.';
+      'Publiez une demande de produit lorsque vous ne trouvez pas ce dont vous avez besoin. Les fournisseurs lâ€™examineront et enverront des devis avec le prix, la quantitÃ© et les dÃ©tails de livraison.';
 
   @override
   String get rfqNoRfqsYet => 'Aucune RFQ pour le moment';
 
   @override
   String get rfqNoRfqsYetMessage =>
-      'Créez votre première demande et laissez les fournisseurs vous envoyer des devis.';
+      'CrÃ©ez votre premiÃ¨re demande et laissez les fournisseurs vous envoyer des devis.';
 
   @override
   String get rfqProductRequest => 'Demande de produit';
@@ -2858,59 +2868,60 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rfqProductNameTooShort =>
-      'Le nom du produit doit contenir au moins 2 caractères';
+      'Le nom du produit doit contenir au moins 2 caractÃ¨res';
 
   @override
-  String get rfqUploadProductImage => 'Téléverser une image du produit';
+  String get rfqUploadProductImage => 'TÃ©lÃ©verser une image du produit';
 
   @override
   String get rfqUploadProductImageHint =>
-      'Optionnel. Cette photo apparaîtra aussi aux fournisseurs lorsqu’ils consulteront votre RFQ.';
+      'Optionnel. Cette photo apparaÃ®tra aussi aux fournisseurs lorsquâ€™ils consulteront votre RFQ.';
 
   @override
-  String get rfqCategory => 'Catégorie';
+  String get rfqCategory => 'CatÃ©gorie';
 
   @override
-  String get rfqCategoryHint => 'Alimentation, Électronique...';
+  String get rfqCategoryHint => 'Alimentation, Ã‰lectronique...';
 
   @override
-  String get rfqSubcategory => 'Sous-catégorie';
+  String get rfqSubcategory => 'Sous-catÃ©gorie';
 
   @override
-  String get rfqSubcategoryHint => 'Produits laitiers, Téléphones...';
+  String get rfqSubcategoryHint => 'Produits laitiers, TÃ©lÃ©phones...';
 
   @override
-  String get rfqDetailedRequirements => 'Exigences détaillées';
+  String get rfqDetailedRequirements => 'Exigences dÃ©taillÃ©es';
 
   @override
   String get rfqRequirements => 'Exigences *';
 
   @override
   String get rfqRequirementsHint =>
-      'Décrivez les spécifications, la qualité, l’emballage, les marques préférées, la taille, la couleur, les normes...';
+      'DÃ©crivez les spÃ©cifications, la qualitÃ©, lâ€™emballage, les marques prÃ©fÃ©rÃ©es, la taille, la couleur, les normes...';
 
   @override
   String get rfqRequirementsRequired => 'Les exigences sont obligatoires';
 
   @override
   String get rfqRequirementsTooShort =>
-      'Les exigences doivent contenir au moins 10 caractères';
+      'Les exigences doivent contenir au moins 10 caractÃ¨res';
 
   @override
-  String get rfqWriteWithAi => 'Rédiger les exigences avec l’IA';
+  String get rfqWriteWithAi => 'RÃ©diger les exigences avec lâ€™IA';
 
   @override
-  String get rfqWritingWithAi => 'Rédaction...';
+  String get rfqWritingWithAi => 'RÃ©daction...';
 
   @override
-  String get rfqAiProductNameRequired => 'Saisissez d’abord le nom du produit.';
+  String get rfqAiProductNameRequired =>
+      'Saisissez dâ€™abord le nom du produit.';
 
   @override
   String get rfqAiReplaceTitle => 'Remplacer les exigences ?';
 
   @override
   String get rfqAiReplaceMessage =>
-      'Le champ des exigences contient déjà du texte. Voulez-vous le remplacer par des exigences générées par l’IA ?';
+      'Le champ des exigences contient dÃ©jÃ  du texte. Voulez-vous le remplacer par des exigences gÃ©nÃ©rÃ©es par lâ€™IA ?';
 
   @override
   String get rfqAiReplaceAction => 'Remplacer';
@@ -2919,22 +2930,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqAiKeepAction => 'Garder le texte actuel';
 
   @override
-  String get rfqQuantityAndDelivery => 'Quantité et livraison';
+  String get rfqQuantityAndDelivery => 'QuantitÃ© et livraison';
 
   @override
-  String get rfqMinimumQuantity => 'Quantité minimale *';
+  String get rfqMinimumQuantity => 'QuantitÃ© minimale *';
 
   @override
   String get rfqMinimumQuantityHint => '500';
 
   @override
-  String get rfqEnterValidQuantity => 'Saisissez une quantité valide';
+  String get rfqEnterValidQuantity => 'Saisissez une quantitÃ© valide';
 
   @override
-  String get rfqUnit => 'Unité';
+  String get rfqUnit => 'UnitÃ©';
 
   @override
-  String get rfqUnitHint => 'unités';
+  String get rfqUnitHint => 'unitÃ©s';
 
   @override
   String get rfqTargetUnitPrice => 'Prix unitaire cible';
@@ -2943,10 +2954,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqOptional => 'Optionnel';
 
   @override
-  String get rfqPreferredDeliveryTime => 'Délai de livraison préféré';
+  String get rfqPreferredDeliveryTime => 'DÃ©lai de livraison prÃ©fÃ©rÃ©';
 
   @override
-  String get rfqChooseDeliveryTime => 'Choisir le délai de livraison';
+  String get rfqChooseDeliveryTime => 'Choisir le dÃ©lai de livraison';
 
   @override
   String get rfqDeliveryWithin24Hours => 'Sous 24 heures';
@@ -2964,7 +2975,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqDeliveryFlexible => 'Flexible';
 
   @override
-  String get rfqSelectDeadlineDate => 'Sélectionner la date limite';
+  String get rfqSelectDeadlineDate => 'SÃ©lectionner la date limite';
 
   @override
   String get rfqDeliveryLocation => 'Lieu de livraison';
@@ -2979,7 +2990,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqDeliveryAddress => 'Adresse de livraison';
 
   @override
-  String get rfqDeliveryAddressHint => 'Rue, bâtiment, zone, notes...';
+  String get rfqDeliveryAddressHint => 'Rue, bÃ¢timent, zone, notes...';
 
   @override
   String get rfqPost => 'Publier la RFQ';
@@ -2997,25 +3008,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqNotFound => 'RFQ introuvable';
 
   @override
-  String get rfqCannotEditTitle => 'Cette RFQ ne peut pas être modifiée';
+  String get rfqCannotEditTitle => 'Cette RFQ ne peut pas Ãªtre modifiÃ©e';
 
   @override
   String get rfqCannotEditSupplierMessage =>
-      'Un fournisseur a déjà interagi avec cette demande. Pour garder les devis justes et valides, annulez la RFQ et créez-en une nouvelle si vous avez besoin de changements.';
+      'Un fournisseur a dÃ©jÃ  interagi avec cette demande. Pour garder les devis justes et valides, annulez la RFQ et crÃ©ez-en une nouvelle si vous avez besoin de changements.';
 
   @override
   String get rfqCannotEditStatusMessage =>
       'Le statut de cette RFQ ne permet pas la modification.';
 
   @override
-  String get rfqBackToDetails => 'Retour aux détails';
+  String get rfqBackToDetails => 'Retour aux dÃ©tails';
 
   @override
   String get rfqSupplierQuotations => 'Devis des fournisseurs';
 
   @override
   String get rfqNoQuotesYet =>
-      'Aucun devis fournisseur pour le moment. Les offres apparaîtront ici lorsque les fournisseurs répondront.';
+      'Aucun devis fournisseur pour le moment. Les offres apparaÃ®tront ici lorsque les fournisseurs rÃ©pondront.';
 
   @override
   String get rfqCancel => 'Annuler la RFQ';
@@ -3029,7 +3040,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rfqCancelWithQuotesMessage =>
-      'Cette RFQ contient déjà des devis fournisseurs. L’annulation conserve l’historique mais empêche de nouvelles actions des fournisseurs.';
+      'Cette RFQ contient dÃ©jÃ  des devis fournisseurs. Lâ€™annulation conserve lâ€™historique mais empÃªche de nouvelles actions des fournisseurs.';
 
   @override
   String get rfqKeep => 'Garder la RFQ';
@@ -3039,7 +3050,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rfqDeleteMessage =>
-      'Cette RFQ n’a pas encore de devis fournisseur, elle peut donc être supprimée en toute sécurité. Cette action est irréversible.';
+      'Cette RFQ nâ€™a pas encore de devis fournisseur, elle peut donc Ãªtre supprimÃ©e en toute sÃ©curitÃ©. Cette action est irrÃ©versible.';
 
   @override
   String get rfqDelete => 'Supprimer';
@@ -3054,25 +3065,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqDeleteRequest => 'Supprimer la demande';
 
   @override
-  String get rfqViewDetails => 'Voir les détails';
+  String get rfqViewDetails => 'Voir les dÃ©tails';
 
   @override
   String get rfqOpen => 'Ouverte';
 
   @override
-  String get rfqQuoted => 'Devis reçus';
+  String get rfqQuoted => 'Devis reÃ§us';
 
   @override
-  String get rfqAccepted => 'Acceptée';
+  String get rfqAccepted => 'AcceptÃ©e';
 
   @override
-  String get rfqClosed => 'Fermée';
+  String get rfqClosed => 'FermÃ©e';
 
   @override
-  String get rfqCancelled => 'Annulée';
+  String get rfqCancelled => 'AnnulÃ©e';
 
   @override
-  String get rfqExpired => 'Expirée';
+  String get rfqExpired => 'ExpirÃ©e';
 
   @override
   String rfqQuotesCount(int count) {
@@ -3092,7 +3103,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get rfqNoDeliveryLocation => 'Aucun lieu de livraison ajouté';
+  String get rfqNoDeliveryLocation => 'Aucun lieu de livraison ajoutÃ©';
 
   @override
   String get rfqLocation => 'Lieu';
@@ -3101,7 +3112,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqDelivery => 'Livraison';
 
   @override
-  String get rfqQuantity => 'Quantité';
+  String get rfqQuantity => 'QuantitÃ©';
 
   @override
   String get rfqTargetPrice => 'Prix cible';
@@ -3113,7 +3124,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqTotal => 'Total';
 
   @override
-  String get rfqShippingNotSpecified => 'Livraison non spécifiée';
+  String get rfqShippingNotSpecified => 'Livraison non spÃ©cifiÃ©e';
 
   @override
   String rfqShippingCost(String amount) {
@@ -3128,7 +3139,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rfqAcceptQuotationMessage =>
-      'Cela marquera le devis fournisseur sélectionné comme accepté et fermera la RFQ.';
+      'Cela marquera le devis fournisseur sÃ©lectionnÃ© comme acceptÃ© et fermera la RFQ.';
 
   @override
   String get rfqReviewMore => 'Voir plus';
@@ -3137,26 +3148,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqAccept => 'Accepter';
 
   @override
-  String get rfqPostedSuccessfully => 'Devis publiée avec succès';
+  String get rfqPostedSuccessfully => 'Devis publiÃ©e avec succÃ¨s';
 
   @override
-  String get rfqUpdatedSuccessfully => 'RFQ mise à jour avec succès';
+  String get rfqUpdatedSuccessfully => 'RFQ mise Ã  jour avec succÃ¨s';
 
   @override
-  String get rfqCancelledSuccessfully => 'RFQ annulée avec succès';
+  String get rfqCancelledSuccessfully => 'RFQ annulÃ©e avec succÃ¨s';
 
   @override
-  String get rfqDeletedSuccessfully => 'RFQ supprimée avec succès';
+  String get rfqDeletedSuccessfully => 'RFQ supprimÃ©e avec succÃ¨s';
 
   @override
-  String get rfqQuotationAcceptedSuccessfully => 'Devis accepté avec succès';
+  String get rfqQuotationAcceptedSuccessfully => 'Devis acceptÃ© avec succÃ¨s';
 
   @override
-<<<<<<< HEAD
-  String get rfqAiGeneratedSuccessfully => ' Devis générée par IA avec succès';
+  String get rfqAiGeneratedSuccessfully =>
+      ' Devis gÃ©nÃ©rÃ©e par IA avec succÃ¨s';
 
   @override
-  String get completeRetailerProfileTitle => 'Compléter le profil détaillant';
+  String get completeRetailerProfileTitle => 'ComplÃ©ter le profil dÃ©taillant';
 
   @override
   String get completeRetailerProfileSubtitle =>
@@ -3169,17 +3180,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enterStoreName => 'Entrez le nom du magasin';
 
   @override
-  String get enterStoreAddress => 'Entrez l’adresse du magasin';
+  String get enterStoreAddress => 'Entrez lâ€™adresse du magasin';
 
   @override
   String get retailerProfileSavedSuccessfully =>
-      'Le profil détaillant a été enregistré avec succès';
+      'Le profil dÃ©taillant a Ã©tÃ© enregistrÃ© avec succÃ¨s';
 
   @override
   String get loadingCities => 'Chargement des villes...';
 
   @override
-  String get noCitiesFoundForCountry => 'Aucune ville trouvée pour ce pays';
+  String get noCitiesFoundForCountry => 'Aucune ville trouvÃ©e pour ce pays';
 
   @override
   String get searchCity => 'Rechercher une ville...';
@@ -3189,68 +3200,68 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get couldNotLoadCountries =>
-      'Impossible de charger les pays. Veuillez réessayer.';
+      'Impossible de charger les pays. Veuillez rÃ©essayer.';
 
   @override
   String get couldNotLoadCities =>
-      'Impossible de charger les villes. Veuillez réessayer.';
+      'Impossible de charger les villes. Veuillez rÃ©essayer.';
 
   @override
-  String get verifyNewEmail => 'Vérifier le nouvel e-mail';
+  String get verifyNewEmail => 'VÃ©rifier le nouvel e-mail';
 
   @override
-  String get sixDigitCode => 'Code à 6 chiffres';
+  String get sixDigitCode => 'Code Ã  6 chiffres';
 
   @override
-  String get verificationCodeSent => 'Code de vérification envoyé';
+  String get verificationCodeSent => 'Code de vÃ©rification envoyÃ©';
 
   @override
   String get couldNotResendCode => 'Impossible de renvoyer le code.';
 
   @override
-  String get invalidVerificationCode => 'Code de vérification invalide.';
+  String get invalidVerificationCode => 'Code de vÃ©rification invalide.';
 
   @override
-  String get verify => 'Vérifier';
+  String get verify => 'VÃ©rifier';
 
   @override
   String get resend => 'Renvoyer';
 
   @override
-  String get verifyPasswordChange => 'Vérifier le changement de mot de passe';
+  String get verifyPasswordChange => 'VÃ©rifier le changement de mot de passe';
 
   @override
   String enterCodeSentToEmail(String email) {
-    return 'Entrez le code à 6 chiffres envoyé à $email';
+    return 'Entrez le code Ã  6 chiffres envoyÃ© Ã  $email';
   }
 
   @override
   String get couldNotUpdatePassword =>
-      'Impossible de mettre à jour le mot de passe.';
+      'Impossible de mettre Ã  jour le mot de passe.';
 
   @override
   String get newPasswordRequired => 'Le nouveau mot de passe est obligatoire';
 
   @override
   String get passwordNotUpdatedCodeNotConfirmed =>
-      'Le mot de passe n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
+      'Le mot de passe nâ€™a pas Ã©tÃ© mis Ã  jour car le code de vÃ©rification nâ€™a pas Ã©tÃ© confirmÃ©.';
 
   @override
   String get emailVerificationRequiredBeforeUpdating =>
-      'La vérification de l’e-mail est requise avant sa mise à jour.';
+      'La vÃ©rification de lâ€™e-mail est requise avant sa mise Ã  jour.';
 
   @override
   String get emailNotUpdatedCodeNotConfirmed =>
-      'L’e-mail n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
+      'Lâ€™e-mail nâ€™a pas Ã©tÃ© mis Ã  jour car le code de vÃ©rification nâ€™a pas Ã©tÃ© confirmÃ©.';
 
   @override
-  String get rfqCategoryRequired => 'La catégorie est obligatoire';
+  String get rfqCategoryRequired => 'La catÃ©gorie est obligatoire';
 
   @override
-  String get rfqSubcategoryRequired => 'La sous-catégorie est obligatoire';
+  String get rfqSubcategoryRequired => 'La sous-catÃ©gorie est obligatoire';
 
   @override
-  String get rfqUnitRequired => 'L’unité est obligatoire';
+  String get rfqUnitRequired => 'Lâ€™unitÃ© est obligatoire';
 
   @override
   String get rfqTargetUnitPriceHint => 'Entrez le prix unitaire cible';
@@ -3265,7 +3276,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rfqPreferredDeliveryTimeRequired =>
-      'Le délai de livraison préféré est obligatoire';
+      'Le dÃ©lai de livraison prÃ©fÃ©rÃ© est obligatoire';
 
   @override
   String get rfqDeadlineRequired => 'La date limite est obligatoire';
@@ -3275,106 +3286,104 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get rfqDeliveryAddressRequired =>
-      'L’adresse de livraison est obligatoire';
+      'Lâ€™adresse de livraison est obligatoire';
 
   @override
-  String get wholesaleOpportunities => 'Opportunités de gros';
+  String get wholesaleOpportunities => 'OpportunitÃ©s de gros';
 
   @override
   String get bulkOrders => 'Commandes en gros';
 
   @override
   String get bulkOrdersDescription =>
-      'Économisez davantage en commandant de plus grandes quantités auprès des fournisseurs.';
+      'Ã‰conomisez davantage en commandant de plus grandes quantitÃ©s auprÃ¨s des fournisseurs.';
 
   @override
   String get viewAvailableOffers => 'Voir les offres disponibles';
 
   @override
-  String get groupDeliveryAvailable => 'Livraison groupée disponible';
+  String get groupDeliveryAvailable => 'Livraison groupÃ©e disponible';
 
   @override
   String get groupDeliveryDescription =>
-      'Rejoignez d’autres détaillants de votre région et économisez sur les frais de livraison.';
+      'Rejoignez dâ€™autres dÃ©taillants de votre rÃ©gion et Ã©conomisez sur les frais de livraison.';
 
   @override
   String groupDeliveryDynamicDescription(
     int retailersJoined,
     num savingsPercent,
   ) {
-    return '$retailersJoined détaillants ont rejoint près de chez vous. Économisez jusqu’à $savingsPercent% sur les frais de livraison.';
+    return '$retailersJoined dÃ©taillants ont rejoint prÃ¨s de chez vous. Ã‰conomisez jusquâ€™Ã  $savingsPercent% sur les frais de livraison.';
   }
 
   @override
   String get learnMore => 'En savoir plus';
-=======
-  String get rfqAiGeneratedSuccessfully =>
-      'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
 
   @override
-  String get productDeletedSuccessfully => 'Produit supprimé avec succès';
+  String get productDeletedSuccessfully => 'Produit supprimÃ© avec succÃ¨s';
 
   @override
-  String get stockAssignedSuccessfully => 'Stock attribué avec succès';
+  String get stockAssignedSuccessfully => 'Stock attribuÃ© avec succÃ¨s';
 
   @override
-  String get stockUpdatedSuccessfully => 'Stock mis à jour avec succès';
+  String get stockUpdatedSuccessfully => 'Stock mis Ã  jour avec succÃ¨s';
 
   @override
   String get inventoryItemRemovedSuccessfully =>
-      'Élément de stock supprimé avec succès';
+      'Ã‰lÃ©ment de stock supprimÃ© avec succÃ¨s';
 
   @override
-  String get categoryAddedSuccessfully => 'Catégorie ajoutée avec succès';
+  String get categoryAddedSuccessfully => 'CatÃ©gorie ajoutÃ©e avec succÃ¨s';
 
   @override
-  String get categoryUpdatedSuccessfully => 'Catégorie mise à jour avec succès';
+  String get categoryUpdatedSuccessfully =>
+      'CatÃ©gorie mise Ã  jour avec succÃ¨s';
 
   @override
   String get categoryStatusUpdatedSuccessfully =>
-      'Statut de la catégorie mis à jour avec succès';
+      'Statut de la catÃ©gorie mis Ã  jour avec succÃ¨s';
 
   @override
-  String get categoryDeletedSuccessfully => 'Catégorie supprimée avec succès';
+  String get categoryDeletedSuccessfully =>
+      'CatÃ©gorie supprimÃ©e avec succÃ¨s';
 
   @override
   String get subCategoryAddedSuccessfully =>
-      'Sous-catégorie ajoutée avec succès';
+      'Sous-catÃ©gorie ajoutÃ©e avec succÃ¨s';
 
   @override
   String get subCategoryUpdatedSuccessfully =>
-      'Sous-catégorie mise à jour avec succès';
+      'Sous-catÃ©gorie mise Ã  jour avec succÃ¨s';
 
   @override
   String get subCategoryStatusUpdatedSuccessfully =>
-      'Statut de la sous-catégorie mis à jour avec succès';
+      'Statut de la sous-catÃ©gorie mis Ã  jour avec succÃ¨s';
 
   @override
   String get subCategoryDeletedSuccessfully =>
-      'Sous-catégorie supprimée avec succès';
+      'Sous-catÃ©gorie supprimÃ©e avec succÃ¨s';
 
   @override
-  String get branchDeletedSuccessfully => 'Branche supprimée avec succès';
+  String get branchDeletedSuccessfully => 'Branche supprimÃ©e avec succÃ¨s';
 
   @override
   String get productAssignedToBranchSuccessfully =>
-      'Produit attribué à la branche avec succès';
+      'Produit attribuÃ© Ã  la branche avec succÃ¨s';
 
   @override
-  String get orderUpdatedSuccessfully => 'Commande mise à jour avec succès';
+  String get orderUpdatedSuccessfully => 'Commande mise Ã  jour avec succÃ¨s';
 
   @override
   String orderMarkedAsStatus(String status) {
-    return 'Commande marquée comme $status';
+    return 'Commande marquÃ©e comme $status';
   }
 
   @override
-  String get paymentCashOnDelivery => 'Paiement à la livraison';
+  String get paymentCashOnDelivery => 'Paiement Ã  la livraison';
 
   @override
   String get paymentCard => 'Paiement par carte';
 
   @override
   String get paymentBankTransfer => 'Virement bancaire';
->>>>>>> origin/fz-supplier-work
 }

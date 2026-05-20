@@ -2758,13 +2758,13 @@ abstract class AppLocalizations {
   /// No description provided for @categoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{productCount} products • {subCategoryCount} sub categories'**
+  /// **'{productCount} products â€¢ {subCategoryCount} sub categories'**
   String categoryStats(Object productCount, Object subCategoryCount);
 
   /// No description provided for @subCategoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{categoryName} • {productCount} products'**
+  /// **'{categoryName} â€¢ {productCount} products'**
   String subCategoryStats(Object categoryName, Object productCount);
 
   /// No description provided for @linkedLabel.
@@ -3100,7 +3100,7 @@ abstract class AppLocalizations {
   /// No description provided for @unitsTimesPrice.
   ///
   /// In en, this message translates to:
-  /// **'{quantity} units × {price}'**
+  /// **'{quantity} units Ã— {price}'**
   String unitsTimesPrice(Object quantity, Object price);
 
   /// No description provided for @deliveryInformationTitle.
@@ -5775,7 +5775,6 @@ abstract class AppLocalizations {
   /// **'AI requirements generated successfully'**
   String get rfqAiGeneratedSuccessfully;
 
-<<<<<<< HEAD
   /// No description provided for @completeRetailerProfileTitle.
   ///
   /// In en, this message translates to:
@@ -6042,7 +6041,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Learn More'**
   String get learnMore;
-=======
+
   /// No description provided for @productDeletedSuccessfully.
   ///
   /// In en, this message translates to:
@@ -6156,7 +6155,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bank transfer'**
   String get paymentBankTransfer;
->>>>>>> origin/fz-supplier-work
 }
 
 class _AppLocalizationsDelegate
