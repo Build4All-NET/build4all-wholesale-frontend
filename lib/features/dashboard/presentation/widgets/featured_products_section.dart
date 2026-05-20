@@ -5,6 +5,7 @@ import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
 import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
 import 'retailer_product_image.dart';
+import 'retailer_promotion_badge.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
   final List<HomeProductModel> products;
@@ -120,7 +121,18 @@ class _ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ProductImage(product: product),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _ProductImage(product: product),
+              if (product.hasActivePromotion)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: RetailerPromotionBadge(product: product),
+                ),
+            ],
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
@@ -179,6 +191,8 @@ class _ProductCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  RetailerPromotionInfoPill(product: product),
+                  if (product.hasActivePromotion) const SizedBox(height: 8),
                   _MiniInfo(
                     icon: Icons.inventory_2_outlined,
                     text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',

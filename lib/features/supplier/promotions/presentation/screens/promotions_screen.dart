@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,28 +58,12 @@ class _PromotionsViewState extends State<_PromotionsView> {
 
       if (query.isEmpty) return true;
 
-      return promotion.title.toLowerCase().contains(query) ||
-          (promotion.description ?? '').toLowerCase().contains(query) ||
-          promotion.discountLabel.toLowerCase().contains(query) ||
-          promotion.discountTypeLabel.toLowerCase().contains(query) ||
-          promotion.targetLabel.toLowerCase().contains(query) ||
-          promotion.branchScopeLabel.toLowerCase().contains(query) ||
-          promotion.statusLabel.toLowerCase().contains(query);
+      return promotion.title.toLowerCase().contains(query);
     }).toList();
   }
 
   Future<void> _refresh(BuildContext context) async {
     context.read<PromotionsBloc>().add(const LoadPromotionsRequested());
-  }
-
-  Future<void> _copyTitle(BuildContext context, String title) async {
-    await Clipboard.setData(ClipboardData(text: title));
-
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.supplierPromotionTitleCopied)),
-    );
   }
 
   Future<void> _confirmDeletePromotion(
@@ -242,10 +225,6 @@ class _PromotionsViewState extends State<_PromotionsView> {
 
                             return PromotionCard(
                               promotion: promotion,
-                              onCopy: () => _copyTitle(
-                                context,
-                                promotion.title,
-                              ),
                               onEdit: () {
                                 context.go(
                                   '/supplier-promotions/edit',

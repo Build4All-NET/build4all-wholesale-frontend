@@ -109,7 +109,7 @@ class SupplierCatalogBloc
 
     try {
       await createCategoryUseCase(name: event.name);
-      await _loadCatalogWithSuccess(emit, 'Category added');
+      await _loadCatalogWithSuccess(emit, 'categoryAdded');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -126,7 +126,7 @@ class SupplierCatalogBloc
         categoryId: event.categoryId,
         name: event.name,
       );
-      await _loadCatalogWithSuccess(emit, 'Category updated');
+      await _loadCatalogWithSuccess(emit, 'categoryUpdated');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -143,7 +143,7 @@ class SupplierCatalogBloc
         categoryId: event.categoryId,
         status: event.status,
       );
-      await _loadCatalogWithSuccess(emit, 'Category status updated');
+      await _loadCatalogWithSuccess(emit, 'categoryStatusUpdated');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -157,7 +157,7 @@ class SupplierCatalogBloc
 
     try {
       await deleteCategoryUseCase(categoryId: event.categoryId);
-      await _loadCatalogWithSuccess(emit, 'Category deleted');
+      await _loadCatalogWithSuccess(emit, 'categoryDeleted');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -174,7 +174,7 @@ class SupplierCatalogBloc
         categoryId: event.categoryId,
         name: event.name,
       );
-      await _loadCatalogWithSuccess(emit, 'Sub category added');
+      await _loadCatalogWithSuccess(emit, 'subCategoryAdded');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -191,7 +191,7 @@ class SupplierCatalogBloc
         subCategoryId: event.subCategoryId,
         name: event.name,
       );
-      await _loadCatalogWithSuccess(emit, 'Sub category updated');
+      await _loadCatalogWithSuccess(emit, 'subCategoryUpdated');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -208,7 +208,7 @@ class SupplierCatalogBloc
         subCategoryId: event.subCategoryId,
         status: event.status,
       );
-      await _loadCatalogWithSuccess(emit, 'Sub category status updated');
+      await _loadCatalogWithSuccess(emit, 'subCategoryStatusUpdated');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }
@@ -222,7 +222,7 @@ class SupplierCatalogBloc
 
     try {
       await deleteSubCategoryUseCase(subCategoryId: event.subCategoryId);
-      await _loadCatalogWithSuccess(emit, 'Sub category deleted');
+      await _loadCatalogWithSuccess(emit, 'subCategoryDeleted');
     } catch (e) {
       emit(state.copyWith(isSaving: false, error: _cleanError(e)));
     }

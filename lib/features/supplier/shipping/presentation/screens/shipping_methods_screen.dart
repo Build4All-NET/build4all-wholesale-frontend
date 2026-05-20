@@ -59,13 +59,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
 
       if (query.isEmpty) return true;
 
-      return method.name.toLowerCase().contains(query) ||
-          method.methodTypeLabel.toLowerCase().contains(query) ||
-          method.locationLabel.toLowerCase().contains(query) ||
-          method.branchScopeLabel.toLowerCase().contains(query) ||
-          method.costLabel.toLowerCase().contains(query) ||
-          method.statusLabel.toLowerCase().contains(query) ||
-          (method.notes ?? '').toLowerCase().contains(query);
+      return method.name.toLowerCase().contains(query);
     }).toList();
   }
 

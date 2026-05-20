@@ -16,6 +16,7 @@ import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_promotions_screen.dart';
 
 import '../features/retailer_profile/presentation/screens/edit_retailer_profile_screen.dart';
 import '../features/retailer_profile/presentation/screens/profile_verification_code_screen.dart';
@@ -61,6 +62,9 @@ import '../features/supplier/tax/presentation/screens/tax_rules_screen.dart';
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
+
+import '../features/supplier/rfq/presentation/screens/supplier_rfq_details_screen.dart';
+import '../features/supplier/rfq/presentation/screens/supplier_rfq_list_screen.dart';
 
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
@@ -219,6 +223,25 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: '/supplier-rfqs',
+        builder: (context, state) => SupplierRfqListScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-rfqs/:rfqId',
+        builder: (context, state) {
+          final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
+
+          if (rfqId == null) {
+            return SupplierComingSoonScreen(
+              title: 'RFQ not found',
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return SupplierRfqDetailsScreen(rfqId: rfqId);
+        },
+      ),
+      GoRoute(
         path: '/supplier-promotions',
         builder: (context, state) => const PromotionsScreen(),
       ),
@@ -317,13 +340,6 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: '/supplier-settings',
-        builder: (context, state) => SupplierComingSoonScreen(
-          title: 'Settings',
-          icon: Icons.settings_outlined,
-        ),
-      ),
-      GoRoute(
         path: '/supplier-excel-import',
         builder: (context, state) => SupplierExcelImportScreen(),
       ),
@@ -414,15 +430,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/retailer-promotions',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.promotions,
-            message: l10n.promotionsComingSoon,
-            icon: Icons.local_offer_outlined,
-          );
-        },
+        builder: (context, state) => const RetailerPromotionsScreen(),
       ),
 
       GoRoute(

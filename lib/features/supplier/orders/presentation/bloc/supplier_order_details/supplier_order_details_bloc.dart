@@ -82,7 +82,7 @@ class SupplierOrderDetailsBloc
         state.copyWith(
           isUpdating: false,
           order: updatedOrder,
-          successMessage: 'Order marked as ${_statusLabel(event.status)}',
+          successMessage: 'orderStatusUpdated',
           clearError: true,
         ),
       );
@@ -94,23 +94,6 @@ class SupplierOrderDetailsBloc
           clearSuccess: true,
         ),
       );
-    }
-  }
-
-  String _statusLabel(SupplierOrderStatus status) {
-    switch (status) {
-      case SupplierOrderStatus.pending:
-        return 'Pending';
-      case SupplierOrderStatus.accepted:
-        return 'Accepted';
-      case SupplierOrderStatus.preparing:
-        return 'Preparing';
-      case SupplierOrderStatus.shipped:
-        return 'Shipped';
-      case SupplierOrderStatus.delivered:
-        return 'Delivered';
-      case SupplierOrderStatus.cancelled:
-        return 'Cancelled';
     }
   }
 }

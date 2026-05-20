@@ -14,27 +14,120 @@ class SupplierAppDrawer extends StatelessWidget {
 
     final shouldLogout = await showDialog<bool>(
       context: context,
+      barrierDismissible: true,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(
-            l10n.supplierLogoutTitle,
-            style: TextStyle(fontWeight: FontWeight.w900),
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
+            decoration: BoxDecoration(
+              color: AppThemeTokens.surface,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.14),
+                  blurRadius: 28,
+                  offset: const Offset(0, 14),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: AppThemeTokens.error.withOpacity(0.10),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.logout_rounded,
+                      color: AppThemeTokens.error,
+                      size: 34,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  l10n.supplierLogoutTitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.supplierLogoutConfirmation,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    height: 1.45,
+                  ),
+                ),
+                const SizedBox(height: 26),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(false),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(54),
+                          side: BorderSide(
+                            color: AppThemeTokens.border,
+                            width: 1.3,
+                          ),
+                          foregroundColor: AppThemeTokens.textPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: Text(
+                          l10n.cancel,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => Navigator.of(dialogContext).pop(true),
+                        icon: const Icon(Icons.logout_rounded, size: 20),
+                        label: Text(
+                          l10n.supplierLogoutTitle,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 15,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(54),
+                          elevation: 0,
+                          backgroundColor: AppThemeTokens.error,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          content: Text(l10n.supplierLogoutConfirmation),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppThemeTokens.error,
-                foregroundColor: Colors.white,
-              ),
-              child: Text(l10n.supplierLogoutTitle),
-            ),
-          ],
         );
       },
     );
@@ -60,12 +153,12 @@ class SupplierAppDrawer extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
               ),
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 children: [
                   _DrawerItem(
                     icon: Icons.trending_up,
@@ -98,6 +191,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-orders',
                   ),
                   _DrawerItem(
+                    icon: Icons.request_quote_outlined,
+                    title: l10n.supplierDrawerRfqs,
+                    route: '/supplier-rfqs',
+                  ),
+                  _DrawerItem(
                     icon: Icons.local_offer_outlined,
                     title: l10n.supplierDrawerPromotions,
                     route: '/supplier-promotions',
@@ -122,17 +220,12 @@ class SupplierAppDrawer extends StatelessWidget {
                     title: l10n.supplierDrawerTaxes,
                     route: '/supplier-tax-rules',
                   ),
-                  _DrawerItem(
-                    icon: Icons.settings_outlined,
-                    title: l10n.supplierDrawerSettings,
-                    route: '/supplier-settings',
-                  ),
                 ],
               ),
             ),
-            Divider(height: 1),
-            _SupplierDrawerLanguageTile(),
-            Divider(height: 1),
+            const Divider(height: 1),
+            const _SupplierDrawerLanguageTile(),
+            const Divider(height: 1),
             ListTile(
               leading: Icon(Icons.logout, color: AppThemeTokens.error),
               title: Text(
@@ -144,14 +237,13 @@ class SupplierAppDrawer extends StatelessWidget {
               ),
               onTap: () => _confirmLogout(context),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
           ],
         ),
       ),
     );
   }
 }
-
 
 class _SupplierDrawerLanguageTile extends StatelessWidget {
   const _SupplierDrawerLanguageTile();
@@ -172,7 +264,8 @@ class _SupplierDrawerLanguageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentLanguageCode = context.watch<LocaleCubit>().state.locale.languageCode;
+    final currentLanguageCode =
+        context.watch<LocaleCubit>().state.locale.languageCode;
     final l10n = context.l10n;
 
     return PopupMenuButton<String>(
@@ -220,7 +313,7 @@ class _DrawerItem extends StatelessWidget {
   final String title;
   final String route;
 
-  _DrawerItem({
+  const _DrawerItem({
     required this.icon,
     required this.title,
     required this.route,

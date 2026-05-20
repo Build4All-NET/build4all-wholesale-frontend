@@ -4,10 +4,12 @@ import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../../injection_container.dart';
 import '../../data/services/banner_image_upload_service.dart';
 import '../../domain/entities/banner_entity.dart';
@@ -100,8 +102,15 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     );
 
     _targetType = banner?.targetType ?? BannerTargetType.none;
-    _selectedTargetValue = banner?.targetValue;
-    _selectedTargetLabel = banner?.targetLabel;
+    if (_targetType == BannerTargetType.url) {
+      _targetType = BannerTargetType.none;
+    }
+    _selectedTargetValue = _targetType == BannerTargetType.none
+        ? null
+        : banner?.targetValue;
+    _selectedTargetLabel = _targetType == BannerTargetType.none
+        ? null
+        : banner?.targetLabel;
     _active = banner?.active ?? true;
     _startsAt = banner?.startsAt;
     _expiresAt = banner?.expiresAt;
@@ -138,8 +147,10 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = true;
       });
 
-      final imageUrl = await _imageUploadService.uploadBannerImage(
-        pickedFile.path,
+      final imageUrl = UploadedImageUrlResolver.normalizeForBackend(
+        await _imageUploadService.uploadBannerImage(
+          pickedFile.path,
+        ),
       );
 
       if (!mounted) return;
@@ -254,16 +265,16 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     return [];
   }
 
-  String _formatDateTime(DateTime? date) {
+  String _formatDateTime(BuildContext context, DateTime? date) {
     if (date == null) return '—';
 
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
+    final locale = Localizations.localeOf(context).toLanguageTag();
 
-    return '$year-$month-$day $hour:$minute';
+    try {
+      return DateFormat('MMM d, yyyy • h:mm a', locale).format(date);
+    } catch (_) {
+      return DateFormat('MMM d, yyyy • h:mm a').format(date);
+    }
   }
 
   Future<DateTime?> _pickDateTime(DateTime? initial) async {
@@ -275,6 +286,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
       initialDate: base,
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 10),
+      locale: Localizations.localeOf(context),
     );
 
     if (!mounted || pickedDate == null) return null;
@@ -282,6 +294,12 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
 
     if (!mounted || pickedTime == null) return null;
@@ -295,7 +313,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     );
   }
 
-   bool _validateDates({bool requireBothDates = false}) {
+  bool _validateDates({bool requireBothDates = false}) {
     if (requireBothDates && _startsAt == null) {
       _dateError = context.l10n.supplierFieldRequired(
         context.l10n.supplierValidFrom,
@@ -320,6 +338,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     _dateError = null;
     return true;
   }
+
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return context.l10n.supplierFieldRequired(fieldName);
@@ -333,7 +352,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
     if (_usesDropdownTarget) {
       if (_selectedTargetValue == null || _selectedTargetValue!.isEmpty) {
-        return context.l10n.supplierPleaseSelectTarget(_localizedOptionLabel(context, _targetType.label).toLowerCase());
+        return context.l10n.supplierPleaseSelectTarget(
+          _localizedOptionLabel(context, _targetType.label).toLowerCase(),
+        );
       }
 
       return null;
@@ -416,7 +437,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
       subtitle: _subtitleController.text.trim().isEmpty
           ? null
           : _subtitleController.text.trim(),
-      imageUrl: _imageUrlController.text.trim(),
+      imageUrl: UploadedImageUrlResolver.normalizeForBackend(
+        _imageUrlController.text,
+      ),
       targetType: _targetType,
       targetValue: targetValue,
       targetLabel: targetLabel,
@@ -489,7 +512,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                 onPressed: state.saving || _uploadingImage ? null : _cancel,
               ),
               title: Text(
-                _isEditMode ? context.l10n.supplierEditBanner : context.l10n.supplierCreateBanner,
+                _isEditMode
+                    ? context.l10n.supplierEditBanner
+                    : context.l10n.supplierCreateBanner,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 24,
@@ -558,7 +583,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                     color: Colors.white,
                                   ),
                                 )
-                                 : FittedBox(
+                              : FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     _isEditMode
@@ -595,7 +620,10 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                             controller: _titleController,
                             hintText: context.l10n.supplierWholesaleDeals,
                             validator: (value) {
-                              return _required(value, context.l10n.supplierTitlePlain);
+                              return _required(
+                                value,
+                                context.l10n.supplierTitlePlain,
+                              );
                             },
                           ),
                           const _DividerSpace(),
@@ -616,9 +644,13 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           const SizedBox(height: 10),
                           _InputField(
                             controller: _imageUrlController,
-                            hintText: context.l10n.supplierUploadedImageUrlWillAppearHere,
+                            hintText:
+                                context.l10n.supplierUploadedImageUrlWillAppearHere,
                             validator: (value) {
-                              return _required(value, context.l10n.supplierBannerImagePlain);
+                              return _required(
+                                value,
+                                context.l10n.supplierBannerImagePlain,
+                              );
                             },
                           ),
                           const SizedBox(height: 8),
@@ -652,7 +684,11 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                 validator: _targetValueValidator,
                               ),
                             ] else ...[
-                              _FieldLabel(context.l10n.supplierSelectTargetLabel(_localizedOptionLabel(context, _targetType.label))),
+                              _FieldLabel(
+                                context.l10n.supplierSelectTargetLabel(
+                                  _localizedOptionLabel(context, _targetType.label),
+                                ),
+                              ),
                               if (_loadingTargets)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -716,7 +752,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           const _DividerSpace(),
                           _DateTimePickerRow(
                             label: context.l10n.supplierValidFrom,
-                            value: _formatDateTime(_startsAt),
+                            value: _formatDateTime(context, _startsAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_startsAt);
 
@@ -737,7 +773,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
                             label: context.l10n.supplierValidTo,
-                            value: _formatDateTime(_expiresAt),
+                            value: _formatDateTime(context, _expiresAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_expiresAt);
 
@@ -881,7 +917,8 @@ class _ImageUploadBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = imageUrl.trim().isNotEmpty;
+    final resolvedImageUrl = UploadedImageUrlResolver.resolve(imageUrl);
+    final hasImage = resolvedImageUrl != null;
 
     return Container(
       width: double.infinity,
@@ -909,7 +946,7 @@ class _ImageUploadBox extends StatelessWidget {
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
-                          imageUrl.trim(),
+                          resolvedImageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
@@ -934,7 +971,8 @@ class _ImageUploadBox extends StatelessWidget {
               onPressed: uploading ? null : onUpload,
               icon: const Icon(Icons.upload_outlined),
               label: Text(
-                uploading ? context.l10n.uploadingLabel : context.l10n.uploadImageButton,
+                uploading ? context.l10n.uploadingLabel
+                    : context.l10n.uploadImageButton,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
@@ -1073,7 +1111,7 @@ class _InputField extends StatelessWidget {
 
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1090,9 +1128,17 @@ class _TargetTypeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final visibleTypes = BannerTargetType.values
+        .where((type) => type != BannerTargetType.url)
+        .toList();
+
+    final safeValue = visibleTypes.contains(value)
+        ? value
+        : BannerTargetType.none;
+
     return DropdownButtonFormField<BannerTargetType>(
-      initialValue: value,
-      items: BannerTargetType.values
+      initialValue: safeValue,
+      items: visibleTypes
           .map(
             (type) => DropdownMenuItem<BannerTargetType>(
               value: type,
@@ -1153,7 +1199,9 @@ class _TargetOptionDropdown extends StatelessWidget {
         color: AppThemeTokens.textPrimary,
       ),
       decoration: _dropdownDecoration(context).copyWith(
-        hintText: context.l10n.supplierSelectTargetHint(_localizedOptionLabel(context, targetType.label).toLowerCase()),
+        hintText: context.l10n.supplierSelectTargetHint(
+          _localizedOptionLabel(context, targetType.label).toLowerCase(),
+        ),
       ),
     );
   }
@@ -1253,7 +1301,7 @@ String _localizedEnumLabel(BuildContext context, String label) {
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1296,7 +1344,7 @@ class _DateTimePickerRow extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppThemeTokens.border),
         color: AppThemeTokens.surface,
       ),

@@ -490,85 +490,91 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _saveProduct() async {
-    if (_isSavingProduct) return;
-    if (!_formKey.currentState!.validate()) return;
+  if (_isSavingProduct) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    final selectedCategory = _categories
-        .where((category) => category.id == _selectedCategoryId)
-        .cast<SupplierCategoryEntity?>()
-        .firstWhere((category) => category != null, orElse: () => null);
+  final selectedCategory = _categories
+      .where((category) => category.id == _selectedCategoryId)
+      .cast<SupplierCategoryEntity?>()
+      .firstWhere((category) => category != null, orElse: () => null);
 
-    if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
-      );
-      return;
-    }
-
-    final selectedSubCategory = _selectedSubCategoryId == null
-        ? null
-        : _subCategories
-              .where((subCategory) => subCategory.id == _selectedSubCategoryId)
-              .cast<SupplierSubCategoryEntity?>()
-              .firstWhere(
-                (subCategory) => subCategory != null,
-                orElse: () => null,
-              );
-
-    setState(() {
-      _isSavingProduct = true;
-    });
-
-    try {
-      final ProductEntity product;
-
-      if (widget.isEditMode) {
-        product = await _productRepository.updateProduct(
-          productId: widget.productToEdit!.id,
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          categoryId: selectedCategory.id,
-          subCategoryId: selectedSubCategory?.id,
-          price: double.parse(_priceController.text.trim()),
-          minimumOrderQuantity: int.parse(
-            _minimumOrderQuantityController.text.trim(),
-          ),
-          status: _selectedStatus,
-          imagePath: _selectedImagePath,
-        );
-      } else {
-        product = await _productRepository.createProduct(
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          categoryId: selectedCategory.id,
-          subCategoryId: selectedSubCategory?.id,
-          price: double.parse(_priceController.text.trim()),
-          minimumOrderQuantity: int.parse(
-            _minimumOrderQuantityController.text.trim(),
-          ),
-          status: _selectedStatus,
-          imagePath: _selectedImagePath,
-        );
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _isSavingProduct = false;
-      });
-
-      context.pop(product);
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isSavingProduct = false;
-      });
-
-      _showError(e);
-    }
+  if (selectedCategory == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
+    );
+    return;
   }
 
+  final selectedSubCategory = _selectedSubCategoryId == null
+      ? null
+      : _subCategories
+            .where((subCategory) => subCategory.id == _selectedSubCategoryId)
+            .cast<SupplierSubCategoryEntity?>()
+            .firstWhere(
+              (subCategory) => subCategory != null,
+              orElse: () => null,
+            );
+
+  setState(() {
+    _isSavingProduct = true;
+  });
+
+  try {
+    final ProductEntity product;
+
+    if (widget.isEditMode) {
+      product = await _productRepository.updateProduct(
+        productId: widget.productToEdit!.id,
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        categoryId: selectedCategory.id,
+        subCategoryId: selectedSubCategory?.id,
+        price: double.parse(_priceController.text.trim()),
+        minimumOrderQuantity: int.parse(
+          _minimumOrderQuantityController.text.trim(),
+        ),
+        status: _selectedStatus,
+
+        // If supplier selected a new local image, this path will be uploaded.
+        // If not, this remains the old backend image path from productToEdit.
+        imagePath: _selectedImagePath,
+
+        // Important:
+        // Keep old product image when editing without selecting a new image.
+        existingImageUrl: widget.productToEdit?.imagePath,
+      );
+    } else {
+      product = await _productRepository.createProduct(
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        categoryId: selectedCategory.id,
+        subCategoryId: selectedSubCategory?.id,
+        price: double.parse(_priceController.text.trim()),
+        minimumOrderQuantity: int.parse(
+          _minimumOrderQuantityController.text.trim(),
+        ),
+        status: _selectedStatus,
+        imagePath: _selectedImagePath,
+      );
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingProduct = false;
+    });
+
+    context.pop(product);
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingProduct = false;
+    });
+
+    _showError(e);
+  }
+}
   void _showError(Object error) {
     final message = error is AppException
         ? error.message
@@ -1034,7 +1040,7 @@ class _SubCategorySelector extends StatelessWidget {
         ),
       ),
       addButtonText:
-          isCreatingSubCategory ? 'Adding...' : context.l10n.addSubCategoryTitle,
+          isCreatingSubCategory ? context.l10n.addingLabel : context.l10n.addSubCategoryTitle,
       onAddPressed:
           isEnabled && !isCreatingSubCategory ? onAddSubCategory : null,
       deleteButtonText: isDeletingSubCategory
@@ -1053,41 +1059,57 @@ class _StatusSelector extends StatelessWidget {
   final ProductStatus selectedStatus;
   final ValueChanged<ProductStatus?> onChanged;
 
-  _StatusSelector({
+  const _StatusSelector({
     required this.selectedStatus,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isActive = selectedStatus == ProductStatus.active;
+    final statusLabel = isActive
+        ? context.l10n.activeStatus
+        : context.l10n.inactiveStatus;
+    final statusColor = isActive
+        ? Theme.of(context).colorScheme.primary
+        : AppThemeTokens.textSecondary;
+
     return Padding(
-      padding: EdgeInsets.only(bottom: 17),
+      padding: const EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             context.l10n.productStatusLabel,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
-          DropdownButtonFormField<ProductStatus>(
-            initialValue: selectedStatus,
-            items: [
-              DropdownMenuItem(
-                value: ProductStatus.active,
-                child: Text(context.l10n.activeStatus),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  statusLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: statusColor,
+                  ),
+                ),
               ),
-              DropdownMenuItem(
-                value: ProductStatus.inactive,
-                child: Text(context.l10n.inactiveStatus),
+              Switch.adaptive(
+                value: isActive,
+                activeColor: Theme.of(context).colorScheme.primary,
+                onChanged: (value) {
+                  onChanged(value ? ProductStatus.active : ProductStatus.inactive);
+                },
               ),
             ],
-            onChanged: onChanged,
-            decoration: _dropdownDecoration(context.l10n.selectProductStatus),
           ),
         ],
       ),

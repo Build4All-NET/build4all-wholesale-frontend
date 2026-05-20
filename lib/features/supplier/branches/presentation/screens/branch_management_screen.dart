@@ -148,6 +148,17 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     return 0;
   }
 
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'branchDeleted':
+      case 'Branch deleted':
+        return context.l10n.branchDeletedSuccessfully;
+      default:
+        return message;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<BranchListBloc>.value(
@@ -167,7 +178,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },

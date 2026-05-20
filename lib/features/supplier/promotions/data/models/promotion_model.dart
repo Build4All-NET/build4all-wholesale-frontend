@@ -111,9 +111,6 @@ class PromotionModel extends PromotionEntity {
   }
 
   Map<String, dynamic> toRequestJson() {
-    final appliesToAllBranches =
-        branchScope == PromotionBranchScope.allBranches;
-
     return {
       'title': title.trim(),
       'description':
@@ -123,9 +120,7 @@ class PromotionModel extends PromotionEntity {
       'discountType': discountType.backendValue,
       'discountValue': discountValue,
       'targetType': targetType.backendValue,
-      'targetId': targetType == PromotionTargetType.allProducts
-          ? null
-          : int.tryParse(targetId ?? ''),
+      'targetId': int.tryParse(targetId ?? ''),
       'minOrderAmount': minOrderAmount,
       'maxDiscountAmount':
           discountType == PromotionDiscountType.percent
@@ -134,13 +129,8 @@ class PromotionModel extends PromotionEntity {
       'startDate': startDate?.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
       'active': active,
-      'appliesToAllBranches': appliesToAllBranches,
-      'selectedBranchIds': appliesToAllBranches
-          ? <int>[]
-          : selectedBranchIds
-              .map((id) => int.tryParse(id))
-              .whereType<int>()
-              .toList(),
+      'appliesToAllBranches': true,
+      'selectedBranchIds': <int>[],
     };
   }
 

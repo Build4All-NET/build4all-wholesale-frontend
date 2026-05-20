@@ -53,6 +53,27 @@ class ThemeCubit extends Cubit<ThemeState> {
     return null;
   }
 
+
+  Future<void> applyRemoteThemeJson(String themeJson) async {
+    try {
+      if (themeJson.trim().isEmpty) return;
+      final remote = RemoteThemeDto.fromJsonString(themeJson);
+      emit(ThemeState(config: AppThemeConfig.fromRemote(remote)));
+    } catch (e) {
+      debugPrint('Runtime theme json parse failed: $e');
+    }
+  }
+
+  Future<void> applyRemoteThemeB64(String themeJsonB64) async {
+    try {
+      if (themeJsonB64.trim().isEmpty) return;
+      final remote = RemoteThemeDto.fromBase64Json(themeJsonB64);
+      emit(ThemeState(config: AppThemeConfig.fromRemote(remote)));
+    } catch (e) {
+      debugPrint('Runtime theme b64 parse failed: $e');
+    }
+  }
+
   Future<void> updateSeedColor(Color color) async {
     final updatedConfig = state.config.copyWith(seedColor: color);
 

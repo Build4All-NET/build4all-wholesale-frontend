@@ -46,7 +46,7 @@ class _SupplierRfqDetailsView extends StatelessWidget {
 
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.successMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(SupplierRfqI18n(context).t(state.successMessage!))));
           context.read<SupplierRfqCubit>().clearMessages();
         }
       },

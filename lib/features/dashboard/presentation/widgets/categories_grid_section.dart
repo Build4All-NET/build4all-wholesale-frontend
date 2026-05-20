@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
+import 'retailer_promotion_badge.dart';
 
 class CategoriesGridSection extends StatelessWidget {
   final List<HomeCategoryModel> categories;
@@ -62,32 +63,64 @@ class _CategoryTile extends StatelessWidget {
           border: Border.all(color: AppThemeTokens.border),
           borderRadius: BorderRadius.circular(18),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            Text(category.icon, style: const TextStyle(fontSize: 30)),
-            const SizedBox(height: 8),
-            Text(
-              category.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppThemeTokens.textPrimary,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w800,
-                height: 1.15,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${category.productCount} ${l10n.productsLabel}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppThemeTokens.textSecondary,
-                fontSize: 10.5,
-                fontWeight: FontWeight.w600,
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 82,
+                    height: 42,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        Text(category.icon, style: const TextStyle(fontSize: 30)),
+                        Positioned(
+                          top: -1,
+                          right: 2,
+                          child: RetailerCategoryPromotionBadge(
+                            category: category,
+                            maxWidth: 58,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2,
+                            ),
+                            fontSize: 8,
+                            iconSize: 9,
+                            gap: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    category.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textPrimary,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w800,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${category.productCount} ${l10n.productsLabel}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

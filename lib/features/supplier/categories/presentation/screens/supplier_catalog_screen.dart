@@ -395,6 +395,38 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
     return context.canPop() ? context.l10n.backButton : context.l10n.menuTooltip;
   }
 
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'categoryAdded':
+      case 'Category added':
+        return context.l10n.categoryAddedSuccessfully;
+      case 'categoryUpdated':
+      case 'Category updated':
+        return context.l10n.categoryUpdatedSuccessfully;
+      case 'categoryStatusUpdated':
+      case 'Category status updated':
+        return context.l10n.categoryStatusUpdatedSuccessfully;
+      case 'categoryDeleted':
+      case 'Category deleted':
+        return context.l10n.categoryDeletedSuccessfully;
+      case 'subCategoryAdded':
+      case 'Sub category added':
+        return context.l10n.subCategoryAddedSuccessfully;
+      case 'subCategoryUpdated':
+      case 'Sub category updated':
+        return context.l10n.subCategoryUpdatedSuccessfully;
+      case 'subCategoryStatusUpdated':
+      case 'Sub category status updated':
+        return context.l10n.subCategoryStatusUpdatedSuccessfully;
+      case 'subCategoryDeleted':
+      case 'Sub category deleted':
+        return context.l10n.subCategoryDeletedSuccessfully;
+      default:
+        return message;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplierCatalogBloc>.value(
@@ -414,7 +446,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },

@@ -3103,6 +3103,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'AI requirements generated successfully';
 
   @override
+<<<<<<< HEAD
   String get completeRetailerProfileTitle => 'Complete Retailer Profile';
 
   @override
@@ -3249,4 +3250,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learnMore => 'Learn More';
+=======
+  String get productDeletedSuccessfully => 'Product deleted successfully';
+
+  @override
+  String get stockAssignedSuccessfully => 'Stock assigned successfully';
+
+  @override
+  String get stockUpdatedSuccessfully => 'Stock updated successfully';
+
+  @override
+  String get inventoryItemRemovedSuccessfully =>
+      'Inventory item removed successfully';
+
+  @override
+  String get categoryAddedSuccessfully => 'Category added successfully';
+
+  @override
+  String get categoryUpdatedSuccessfully => 'Category updated successfully';
+
+  @override
+  String get categoryStatusUpdatedSuccessfully =>
+      'Category status updated successfully';
+
+  @override
+  String get categoryDeletedSuccessfully => 'Category deleted successfully';
+
+  @override
+  String get subCategoryAddedSuccessfully => 'Subcategory added successfully';
+
+  @override
+  String get subCategoryUpdatedSuccessfully =>
+      'Subcategory updated successfully';
+
+  @override
+  String get subCategoryStatusUpdatedSuccessfully =>
+      'Subcategory status updated successfully';
+
+  @override
+  String get subCategoryDeletedSuccessfully =>
+      'Subcategory deleted successfully';
+
+  @override
+  String get branchDeletedSuccessfully => 'Branch deleted successfully';
+
+  @override
+  String get productAssignedToBranchSuccessfully =>
+      'Product assigned to branch successfully';
+
+  @override
+  String get orderUpdatedSuccessfully => 'Order updated successfully';
+
+  @override
+  String orderMarkedAsStatus(String status) {
+    return 'Order marked as $status';
+  }
+
+  @override
+  String get paymentCashOnDelivery => 'Cash on delivery';
+
+  @override
+  String get paymentCard => 'Card payment';
+
+  @override
+  String get paymentBankTransfer => 'Bank transfer';
+>>>>>>> origin/fz-supplier-work
 }

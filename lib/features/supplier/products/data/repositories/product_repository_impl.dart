@@ -55,6 +55,7 @@ class ProductRepositoryImpl implements ProductRepository {
     required int minimumOrderQuantity,
     required ProductStatus status,
     String? imagePath,
+    String? existingImageUrl,
   }) {
     return apiService.updateProduct(
       productId: productId,
@@ -66,6 +67,7 @@ class ProductRepositoryImpl implements ProductRepository {
       minimumOrderQuantity: minimumOrderQuantity,
       status: status,
       imagePath: imagePath,
+      existingImageUrl: existingImageUrl,
     );
   }
 

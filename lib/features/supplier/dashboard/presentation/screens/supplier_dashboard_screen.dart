@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_event.dart';
@@ -91,15 +92,6 @@ class _SupplierDashboardView extends StatelessWidget {
               },
               icon: Icon(
                 Icons.refresh_outlined,
-                color: primary,
-                size: 27,
-              ),
-            ),
-            IconButton(
-              tooltip: context.l10n.supplierDashboardSettingsTooltip,
-              onPressed: () => context.go('/supplier-settings'),
-              icon: Icon(
-                Icons.settings_outlined,
                 color: primary,
                 size: 27,
               ),
@@ -239,14 +231,14 @@ class _SupplierDashboardView extends StatelessWidget {
             children: [
               Expanded(
                 child: _FinancialItem(
-                  value: _formatMoney(state.todaysSales),
+                  value: formatSupplierCurrency(context, state.todaysSales),
                   label: context.l10n.supplierTodaySales,
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
-                  value: _formatMoney(state.monthlyRevenue),
+                  value: formatSupplierCurrency(context, state.monthlyRevenue),
                   label: context.l10n.supplierMonthlyRevenue,
                   valueColor: primary,
                 ),
@@ -356,9 +348,6 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-  String _formatMoney(double amount) {
-    return '\$${amount.toStringAsFixed(2)}';
-  }
 }
 
 class _DashboardLoadingCard extends StatelessWidget {

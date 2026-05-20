@@ -112,6 +112,10 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
     return matches.isEmpty ? null : matches.first;
   }
 
+  bool get _selectedCountryIsLebanon {
+    return _selectedCountry?.isLebanon == true;
+  }
+
   TaxRegionModel? get _selectedRegion {
     if (_selectedRegionValue == null ||
         _selectedRegionValue == _noRegionValue) {
@@ -191,15 +195,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           ..clear()
           ..addAll(countries);
 
-        if (_selectedCountryId == null || _selectedCountryId!.isEmpty) {
-          final lebanon = countries.where((country) => country.isLebanon);
-
-          if (lebanon.isNotEmpty) {
-            _selectedCountryId = lebanon.first.id;
-          } else if (countries.isNotEmpty) {
-            _selectedCountryId = countries.first.id;
-          }
-        } else {
+        if (_selectedCountryId != null && _selectedCountryId!.isNotEmpty) {
           final exists = countries.any(
             (country) => country.id == _selectedCountryId,
           );
@@ -207,7 +203,12 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           if (!exists) {
             _selectedCountryId = null;
             _selectedRegionValue = _noRegionValue;
+            _regions.clear();
           }
+        } else {
+          _selectedCountryId = null;
+          _selectedRegionValue = _noRegionValue;
+          _regions.clear();
         }
 
         _loadingCountries = false;
@@ -666,19 +667,10 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                       _SectionCard(
                         title: context.l10n.supplierLocation,
                         children: [
-                            Align(
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: TextButton(
-                              onPressed:
-                                  _loadingCountries ? null : _loadCountries,
-                              child: Text(
-                                context.l10n.refreshButton,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
+                          _CompactRefreshAction(
+                            onPressed: _loadingCountries ? null : _loadCountries,
                           ),
+                          const SizedBox(height: 4),
                           if (_loadingCountries)
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
@@ -694,27 +686,22 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             ),
                           const SizedBox(height: 8),
                           _HelpText(
-                            text:
-                                context.l10n.supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry,
+                            text: context.l10n
+                                .supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry,
                           ),
-                          const _DividerSpace(),
-                            Align(
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: TextButton(
-                              onPressed: _selectedCountryId == null ||
-                                      _loadingRegions
-                                  ? null
-                                  : () => _loadRegionsForSelectedCountry(
-                                        resetRegion: false,
-                                      ),
-                              child: Text(
-                                context.l10n.refreshButton,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
+                          const SizedBox(height: 12),
+                          const Divider(height: 1, color: AppThemeTokens.border),
+                          const SizedBox(height: 8),
+                          _CompactRefreshAction(
+                            onPressed: _selectedCountryId == null ||
+                                    _loadingRegions ||
+                                    !_selectedCountryIsLebanon
+                                ? null
+                                : () => _loadRegionsForSelectedCountry(
+                                      resetRegion: false,
+                                    ),
                           ),
+                          const SizedBox(height: 4),
                           if (_loadingRegions)
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
@@ -722,8 +709,21 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             )
                           else if (_regionErrorMessage != null)
                             _ErrorText(message: _regionErrorMessage!)
+                          else if (_selectedCountryId == null ||
+                              _selectedCountryId!.trim().isEmpty)
+                            _DisabledRegionField(
+                              label: context.l10n.regionLabel,
+                              hintText: context.l10n.selectCountryFirst,
+                            )
+                          else if (!_selectedCountryIsLebanon)
+                            _DisabledRegionField(
+                              label: context.l10n.regionLabel,
+                              hintText: context
+                                  .l10n
+                                  .supplierNoRegionsAvailableForCountry,
+                            )
                           else
-                             _RegionDropdown(
+                            _RegionDropdown(
                               regions: _regions,
                               selectedRegionValue:
                                   _selectedRegionValue ?? _noRegionValue,
@@ -740,8 +740,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             ),
                           const SizedBox(height: 8),
                           _HelpText(
-                            text:
-                                context.l10n.supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule,
+                            text: context.l10n
+                                .supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule,
                           ),
                         ],
                       ),
@@ -959,7 +959,7 @@ class _InputField extends StatelessWidget {
 
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1027,6 +1027,63 @@ class _CountryDropdown extends StatelessWidget {
         return null;
       },
       emptyText: context.l10n.noCountriesFound,
+    );
+  }
+}
+
+
+class _DisabledRegionField extends StatelessWidget {
+  final String label;
+  final String hintText;
+
+  const _DisabledRegionField({
+    required this.label,
+    required this.hintText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchableSelectionField<TaxRegionModel>(
+      label: label,
+      hintText: hintText,
+      searchHintText: context.l10n.searchRegionHint,
+      items: const [],
+      itemLabel: (region) => region.name,
+      value: null,
+      enabled: false,
+      onSelected: (_) {},
+      emptyText: context.l10n.noRegionsFound,
+    );
+  }
+}
+
+class _CompactRefreshAction extends StatelessWidget {
+  final VoidCallback? onPressed;
+
+  const _CompactRefreshAction({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional.centerEnd,
+      child: SizedBox(
+        height: 32,
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: const Size(0, 32),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: Text(
+            context.l10n.refreshButton,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -1181,7 +1238,7 @@ String _localizedTaxRulePresetLabel(BuildContext context, TaxRulePreset preset) 
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }

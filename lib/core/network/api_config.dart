@@ -45,6 +45,8 @@ class ApiConfig {
   static String retailerHomeCategoryProducts(int categoryId) =>
       '/retailer-home/categories/$categoryId/products';
 
+  static const String retailerPromotions = '/retailer-home/promotions';
+
   // =========================
   // Retailer Cart
   // =========================
@@ -178,9 +180,20 @@ class ApiConfig {
   // Supplier Promotions
   // =========================
   static const String supplierPromotions = '/supplier/promotions';
+  static const String supplierPromotionEligibleProducts =
+      '/supplier/promotions/eligible-products';
+  static const String supplierPromotionEligibleCategories =
+      '/supplier/promotions/eligible-categories';
 
   static String supplierPromotionById(String id) {
     return '/supplier/promotions/$id';
+  }
+
+  static String supplierPromotionAvailability({
+    required String targetType,
+    required String targetId,
+  }) {
+    return '/supplier/promotions/availability?targetType=$targetType&targetId=$targetId';
   }
 
   // =========================

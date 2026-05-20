@@ -177,19 +177,55 @@ class HomeCategoryModel {
   final String icon;
   final int productCount;
 
+  /// Promotion fields are optional because old backend responses may not
+  /// include them yet. When the backend later marks a category promotion as
+  /// active, the existing category UI can show a small deals indicator without
+  /// changing the category structure.
+  final bool hasActivePromotion;
+  final int? promotionId;
+  final String? promotionTitle;
+  final String? promotionDiscountType;
+  final double? promotionDiscountValue;
+  final String? promotionLabel;
+
   const HomeCategoryModel({
     required this.id,
     required this.name,
     required this.icon,
     required this.productCount,
+    required this.hasActivePromotion,
+    required this.promotionId,
+    required this.promotionTitle,
+    required this.promotionDiscountType,
+    required this.promotionDiscountValue,
+    required this.promotionLabel,
   });
 
   factory HomeCategoryModel.fromJson(Map<String, dynamic> json) {
+    final discountType = json['promotionDiscountType']?.toString();
+    final discountValue = json['promotionDiscountValue'] == null
+        ? null
+        : _toDouble(json['promotionDiscountValue']);
+    final backendLabel = json['promotionLabel']?.toString();
+
     return HomeCategoryModel(
       id: _toInt(json['id']),
       name: json['name']?.toString() ?? '',
       icon: json['icon']?.toString() ?? '📦',
       productCount: _toInt(json['productCount']),
+      hasActivePromotion:
+          json['hasActivePromotion'] == true ||
+          json['activePromotion'] == true ||
+          backendLabel != null,
+      promotionId: json['promotionId'] == null
+          ? null
+          : _toInt(json['promotionId']),
+      promotionTitle: json['promotionTitle']?.toString(),
+      promotionDiscountType: discountType,
+      promotionDiscountValue: discountValue,
+      promotionLabel:
+          _normalizeText(backendLabel) ??
+          _buildPromotionLabel(discountType, discountValue),
     );
   }
 }
@@ -220,6 +256,18 @@ class HomeProductModel {
   final String? badgeColor;
   final int? discountPercent;
 
+  /// Active supplier promotion information. These fields are optional so the
+  /// retailer UI remains backward-compatible until the backend endpoint is
+  /// added. Product and category promotions both arrive here as the same
+  /// display contract.
+  final bool hasActivePromotion;
+  final int? promotionId;
+  final String? promotionTitle;
+  final String? promotionTargetType;
+  final String? promotionDiscountType;
+  final double? promotionDiscountValue;
+  final String? promotionLabel;
+
   final int totalStock;
 
   const HomeProductModel({
@@ -241,10 +289,30 @@ class HomeProductModel {
     required this.badgeLabel,
     required this.badgeColor,
     required this.discountPercent,
+    required this.hasActivePromotion,
+    required this.promotionId,
+    required this.promotionTitle,
+    required this.promotionTargetType,
+    required this.promotionDiscountType,
+    required this.promotionDiscountValue,
+    required this.promotionLabel,
     required this.totalStock,
   });
 
   factory HomeProductModel.fromJson(Map<String, dynamic> json) {
+    final discountPercent = json['discountPercent'] == null
+        ? null
+        : _toInt(json['discountPercent']);
+    final discountType = json['promotionDiscountType']?.toString();
+    final discountValue = json['promotionDiscountValue'] == null
+        ? null
+        : _toDouble(json['promotionDiscountValue']);
+    final backendLabel = json['promotionLabel']?.toString();
+    final computedPromotionLabel =
+        _normalizeText(backendLabel) ??
+        _buildPromotionLabel(discountType, discountValue) ??
+        (discountPercent == null ? null : '$discountPercent% OFF');
+
     return HomeProductModel(
       id: _toInt(json['id']),
       supplierBuild4allUserId: json['supplierBuild4allUserId'] == null
@@ -269,9 +337,19 @@ class HomeProductModel {
       reviewCount: _toInt(json['reviewCount']),
       badgeLabel: json['badgeLabel']?.toString(),
       badgeColor: json['badgeColor']?.toString(),
-      discountPercent: json['discountPercent'] == null
+      discountPercent: discountPercent,
+      hasActivePromotion:
+          json['hasActivePromotion'] == true ||
+          json['activePromotion'] == true ||
+          computedPromotionLabel != null,
+      promotionId: json['promotionId'] == null
           ? null
-          : _toInt(json['discountPercent']),
+          : _toInt(json['promotionId']),
+      promotionTitle: json['promotionTitle']?.toString(),
+      promotionTargetType: json['promotionTargetType']?.toString(),
+      promotionDiscountType: discountType,
+      promotionDiscountValue: discountValue,
+      promotionLabel: computedPromotionLabel,
       totalStock: _toInt(json['totalStock']),
     );
   }
@@ -289,4 +367,34 @@ double _toDouble(dynamic value, {double fallback = 0}) {
   if (value is double) return value;
   if (value is int) return value.toDouble();
   return double.tryParse(value.toString()) ?? fallback;
+}
+
+String? _normalizeText(String? value) {
+  final clean = value?.trim();
+  if (clean == null || clean.isEmpty) return null;
+  return clean;
+}
+
+String? _buildPromotionLabel(String? discountType, double? discountValue) {
+  if (discountType == null || discountValue == null || discountValue <= 0) {
+    return null;
+  }
+
+  final upperType = discountType.toUpperCase();
+  final formattedValue = _formatNumber(discountValue);
+
+  if (upperType == 'PERCENT') {
+    return '$formattedValue% OFF';
+  }
+
+  if (upperType == 'FIXED') {
+    return '\$$formattedValue OFF';
+  }
+
+  return null;
+}
+
+String _formatNumber(double value) {
+  if (value == value.roundToDouble()) return value.toInt().toString();
+  return value.toStringAsFixed(2);
 }
