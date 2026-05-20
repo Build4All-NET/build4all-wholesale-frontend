@@ -697,7 +697,21 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ImportSupplierExcelProductsUseCase>(
     () => ImportSupplierExcelProductsUseCase(
+      createCategoryUseCase: sl<CreateCategoryUseCase>(),
+      createSubCategoryUseCase: sl<CreateSubCategoryUseCase>(),
+      getCategoriesUseCase: sl<GetCategoriesUseCase>(),
+      getSubCategoriesByCategoryUseCase:
+          sl<GetSubCategoriesByCategoryUseCase>(),
+      createBranchUseCase: sl<CreateBranchUseCase>(),
+      getBranchesUseCase: sl<GetBranchesUseCase>(),
       createProductUseCase: sl<CreateProductUseCase>(),
+      getProductsUseCase: sl<GetProductsUseCase>(),
+      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
+      getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
+      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
+      createShippingMethodUseCase: sl<CreateShippingMethodUseCase>(),
+      createTaxRuleUseCase: sl<CreateTaxRuleUseCase>(),
+      createCouponUseCase: sl<CreateCouponUseCase>(),
     ),
   );
 
@@ -1007,6 +1021,7 @@ Future<void> init() async {
       getSubCategoriesByCategoryUseCase:
           sl<GetSubCategoriesByCategoryUseCase>(),
       getProductsUseCase: sl<GetProductsUseCase>(),
+      getBranchesUseCase: sl<GetBranchesUseCase>(),
     ),
   );
 

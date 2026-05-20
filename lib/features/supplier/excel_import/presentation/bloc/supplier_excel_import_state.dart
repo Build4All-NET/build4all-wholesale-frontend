@@ -1,95 +1,92 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../categories/domain/entities/supplier_category_entity.dart';
-import '../../../categories/domain/entities/supplier_sub_category_entity.dart';
-import '../../../products/domain/entities/product_entity.dart';
 import '../../domain/entities/supplier_excel_import_result_entity.dart';
-import '../../domain/entities/supplier_excel_product_row_entity.dart';
+import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
+import '../../domain/entities/supplier_excel_section.dart';
 
 class SupplierExcelImportState extends Equatable {
+  final bool isDownloadingTemplate;
   final bool isPickingOrParsing;
   final bool isImporting;
-  final String? fileName;
-  final List<SupplierExcelProductRowEntity> rows;
-  final List<SupplierCategoryEntity> categories;
-  final Map<String, List<SupplierSubCategoryEntity>> subCategoriesByCategoryId;
-  final List<ProductEntity> existingProducts;
+  final SupplierExcelParsedFileEntity? parsedFile;
   final String? error;
   final String? successMessage;
+  final String? templateSavePath;
   final SupplierExcelImportResultEntity? importResult;
 
-  SupplierExcelImportState({
+  const SupplierExcelImportState({
+    required this.isDownloadingTemplate,
     required this.isPickingOrParsing,
     required this.isImporting,
-    required this.rows,
-    this.categories = const [],
-    this.subCategoriesByCategoryId = const {},
-    this.existingProducts = const [],
-    this.fileName,
+    this.parsedFile,
     this.error,
     this.successMessage,
+    this.templateSavePath,
     this.importResult,
   });
 
   factory SupplierExcelImportState.initial() {
-    return SupplierExcelImportState(
+    return const SupplierExcelImportState(
+      isDownloadingTemplate: false,
       isPickingOrParsing: false,
       isImporting: false,
-      rows: const [],
     );
   }
 
-  int get totalRows => rows.length;
-  int get validRowsCount => rows.where((row) => row.isValid).length;
-  int get errorRowsCount => rows.where((row) => !row.isValid).length;
-  int get warningRowsCount => rows.where((row) => row.hasWarnings).length;
-  bool get hasRows => rows.isNotEmpty;
-  bool get hasErrors => errorRowsCount > 0;
-  bool get hasCatalogErrors => rows.any((row) => row.hasCatalogError);
-  bool get canImport => hasRows && validRowsCount > 0 && !isImporting;
+  String? get fileName => parsedFile?.fileName;
+  bool get hasRows => parsedFile?.hasRows == true;
+  bool get canImport => parsedFile?.canImport == true && !isImporting;
+
+  int get totalRows => parsedFile?.totalRows ?? 0;
+  int get validRowsCount => parsedFile?.validRows ?? 0;
+  /// Total validation errors, not just number of invalid rows.
+  /// This keeps the summary card consistent with the grouped issue list.
+  int get errorRowsCount => parsedFile?.errorIssues ?? 0;
+
+  /// Total validation warnings, not just number of rows with warnings.
+  int get warningRowsCount => parsedFile?.warningIssues ?? 0;
+
+  int sectionCount(SupplierExcelSection section) {
+    return parsedFile?.rowsFor(section).length ?? 0;
+  }
 
   SupplierExcelImportState copyWith({
+    bool? isDownloadingTemplate,
     bool? isPickingOrParsing,
     bool? isImporting,
-    String? fileName,
-    List<SupplierExcelProductRowEntity>? rows,
-    List<SupplierCategoryEntity>? categories,
-    Map<String, List<SupplierSubCategoryEntity>>? subCategoriesByCategoryId,
-    List<ProductEntity>? existingProducts,
+    SupplierExcelParsedFileEntity? parsedFile,
     String? error,
     String? successMessage,
+    String? templateSavePath,
     SupplierExcelImportResultEntity? importResult,
     bool clearMessages = false,
+    bool clearTemplatePath = false,
+    bool clearParsedFile = false,
     bool clearImportResult = false,
-    bool clearFile = false,
   }) {
     return SupplierExcelImportState(
+      isDownloadingTemplate:
+          isDownloadingTemplate ?? this.isDownloadingTemplate,
       isPickingOrParsing: isPickingOrParsing ?? this.isPickingOrParsing,
       isImporting: isImporting ?? this.isImporting,
-      fileName: clearFile ? null : fileName ?? this.fileName,
-      rows: rows ?? this.rows,
-      categories: categories ?? this.categories,
-      subCategoriesByCategoryId:
-          subCategoriesByCategoryId ?? this.subCategoriesByCategoryId,
-      existingProducts: existingProducts ?? this.existingProducts,
+      parsedFile: clearParsedFile ? null : parsedFile ?? this.parsedFile,
       error: clearMessages ? null : error,
       successMessage: clearMessages ? null : successMessage,
-      importResult:
-          clearImportResult ? null : importResult ?? this.importResult,
+      templateSavePath:
+          clearTemplatePath ? null : templateSavePath ?? this.templateSavePath,
+      importResult: clearImportResult ? null : importResult ?? this.importResult,
     );
   }
 
   @override
   List<Object?> get props => [
+        isDownloadingTemplate,
         isPickingOrParsing,
         isImporting,
-        fileName,
-        rows,
-        categories,
-        subCategoriesByCategoryId,
-        existingProducts,
+        parsedFile,
         error,
         successMessage,
+        templateSavePath,
         importResult,
       ];
 }
