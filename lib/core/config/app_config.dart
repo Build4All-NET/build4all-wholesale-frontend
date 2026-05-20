@@ -38,6 +38,19 @@ class AppConfig {
     defaultValue: 'B2B Wholesale App',
   );
 
+  /// Optional runtime/build branding logo URL.
+  /// Prefer a URL or backend relative path such as /uploads/... .
+  static const String appLogoUrl = String.fromEnvironment(
+    'APP_LOGO_URL',
+    defaultValue: '',
+  );
+
+  /// Local bundled logo asset used as a fallback when no URL is provided.
+  static const String appLogoAsset = String.fromEnvironment(
+    'APP_LOGO_ASSET',
+    defaultValue: 'assets/branding/logo.png',
+  );
+
   static const String appType = String.fromEnvironment(
     'APP_TYPE',
     defaultValue: 'WHOLESALE',
@@ -95,6 +108,11 @@ class AppConfig {
 
   static const String menuType = String.fromEnvironment(
     'MENU_TYPE',
+    defaultValue: '',
+  );
+
+  static const String runtimeConfigUrl = String.fromEnvironment(
+    'RUNTIME_CONFIG_URL',
     defaultValue: '',
   );
 
