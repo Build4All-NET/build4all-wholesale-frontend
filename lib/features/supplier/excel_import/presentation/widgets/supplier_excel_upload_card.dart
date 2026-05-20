@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../utils/supplier_excel_import_i18n.dart';
 
 class SupplierExcelUploadCard extends StatelessWidget {
   final String? fileName;
@@ -9,7 +9,7 @@ class SupplierExcelUploadCard extends StatelessWidget {
   final VoidCallback onPickFile;
   final VoidCallback onClear;
 
-  SupplierExcelUploadCard({
+  const SupplierExcelUploadCard({
     super.key,
     required this.fileName,
     required this.isLoading,
@@ -19,11 +19,13 @@ class SupplierExcelUploadCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = SupplierExcelImportI18n(context);
     final primary = Theme.of(context).colorScheme.primary;
+    final hasFile = fileName != null && fileName!.trim().isNotEmpty;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(18),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -32,7 +34,7 @@ class SupplierExcelUploadCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 18,
-            offset: Offset(0, 8),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -40,60 +42,76 @@ class SupplierExcelUploadCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.l10n.uploadExcelFile,
+            l.selectedFile,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 17,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
-          Text(
-            fileName == null ? context.l10n.acceptedExcelFormat : fileName!,
-            style: TextStyle(
-              color: fileName == null ? AppThemeTokens.textSecondary : primary,
-              fontWeight: FontWeight.w800,
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            decoration: BoxDecoration(
+              color: AppThemeTokens.inputFill,
+              borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
+              border: Border.all(color: AppThemeTokens.border),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  hasFile ? Icons.description_outlined : Icons.insert_drive_file_outlined,
+                  color: hasFile ? primary : AppThemeTokens.textSecondary,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    hasFile ? fileName! : l.noFile,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: hasFile
+                          ? AppThemeTokens.textPrimary
+                          : AppThemeTokens.textSecondary,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: isLoading ? null : onPickFile,
                   icon: isLoading
-                      ? SizedBox(
-                          width: 18,
+                      ? const SizedBox(
                           height: 18,
+                          width: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Icon(Icons.attach_file),
-                  label: Text(isLoading ? context.l10n.readingFile : context.l10n.selectExcel),
+                      : const Icon(Icons.upload_file_rounded),
+                  label: Text(
+                    hasFile ? l.replaceFile : l.pickFile,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primary,
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 13),
                   ),
                 ),
               ),
-              if (fileName != null) ...[
-                SizedBox(width: 12),
-                OutlinedButton.icon(
+              if (hasFile) ...[
+                const SizedBox(width: 10),
+                IconButton.outlined(
+                  tooltip: l.clear,
                   onPressed: isLoading ? null : onClear,
-                  icon: Icon(Icons.refresh),
-                  label: Text(context.l10n.clearButton),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 14,
-                      horizontal: 14,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
+                  icon: const Icon(Icons.close_rounded),
                 ),
               ],
             ],

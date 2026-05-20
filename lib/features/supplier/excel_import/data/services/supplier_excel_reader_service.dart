@@ -4,20 +4,96 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '../models/supplier_excel_product_row_model.dart';
 import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
+import '../../domain/entities/supplier_excel_row_entity.dart';
+import '../../domain/entities/supplier_excel_section.dart';
 import '../../domain/entities/supplier_picked_excel_file_entity.dart';
 
 class SupplierExcelReaderService {
-  static List<String> expectedHeaders = [
-    'Product Name',
-    'Description',
-    'Category',
-    'SubCategory',
-    'Price',
-    'MOQ',
-    'Status',
-  ];
+  static const Map<SupplierExcelSection, List<String>> expectedHeaders = {
+    SupplierExcelSection.categories: [
+      'Name',
+      'Status',
+    ],
+    SupplierExcelSection.subCategories: [
+      'Category',
+      'SubCategory',
+      'Status',
+    ],
+    SupplierExcelSection.branches: [
+      'Branch Name',
+      'Country Code',
+      'Region ID',
+      'City',
+      'Address',
+      'Phone',
+      'Status',
+    ],
+    SupplierExcelSection.products: [
+      'Product Name',
+      'Description',
+      'Category',
+      'SubCategory',
+      'Price',
+      'MOQ',
+      'Status',
+      'Image Url',
+    ],
+    SupplierExcelSection.inventory: [
+      'Branch',
+      'Product Name',
+      'Stock Quantity',
+    ],
+    SupplierExcelSection.taxRules: [
+      'Rule Name',
+      'Rate',
+      'Country ID',
+      'Country Name',
+      'Region ID',
+      'Region Name',
+      'Applies To Shipping',
+      'Active',
+      'Notes',
+    ],
+    SupplierExcelSection.shippingMethods: [
+      'Name',
+      'Type',
+      'Country ID',
+      'Country Name',
+      'Region ID',
+      'Region Name',
+      'Cost',
+      'Estimated Delivery Time',
+      'Minimum Order Amount',
+      'Free Shipping Threshold',
+      'Branch Scope',
+      'Branch Names',
+      'Active',
+      'Notes',
+    ],
+    SupplierExcelSection.coupons: [
+      'Code',
+      'Description',
+      'Discount Type',
+      'Discount Value',
+      'Max Uses',
+      'Min Order Amount',
+      'Max Discount Amount',
+      'Starts At',
+      'Expires At',
+      'Branch Scope',
+      'Branch Names',
+      'Active',
+    ],
+  };
+
+  static List<String> headersFor(SupplierExcelSection section) {
+    return expectedHeaders[section] ?? const [];
+  }
+
+  static String normalizeHeaderForUi(String header) {
+    return SupplierExcelRowEntity.normalizeHeader(header);
+  }
 
   Future<SupplierPickedExcelFileEntity?> pickExcelFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -51,52 +127,145 @@ class SupplierExcelReaderService {
   }) async {
     try {
       final archive = ZipDecoder().decodeBytes(file.bytes);
-
       final sharedStrings = _readSharedStrings(archive);
-      final sheetPath = _resolveFirstWorksheetPath(archive);
-      final sheetXml = _readArchiveText(archive, sheetPath);
+      final sheets = _resolveWorksheets(archive);
 
-      if (sheetXml == null || sheetXml.trim().isEmpty) {
+      if (sheets.isEmpty) {
+        throw Exception('The selected Excel file does not contain worksheets.');
+      }
+
+      final rowsBySection = <SupplierExcelSection, List<SupplierExcelRowEntity>>{};
+
+      for (final sheet in sheets) {
+        final section = SupplierExcelSectionX.fromSheetName(sheet.name);
+        if (section == null) continue;
+
+        final sheetXml = _readArchiveText(archive, sheet.path);
+        if (sheetXml == null || sheetXml.trim().isEmpty) continue;
+
+        final allRows = _readWorksheetRows(
+          sheetXml: sheetXml,
+          sharedStrings: sharedStrings,
+        );
+
+        if (allRows.isEmpty) continue;
+
+        final headerCells = allRows.first.cells;
+        final headerMap = _buildHeaderMap(headerCells);
+        final expected = expectedHeaders[section] ?? const <String>[];
+
+        final missingRequiredHeaders = _missingRequiredHeaders(
+          section: section,
+          normalizedHeaders: headerMap.keys.toSet(),
+        );
+
+        if (missingRequiredHeaders.isNotEmpty) {
+          throw Exception(
+            '${sheet.name} sheet is missing required columns: ${missingRequiredHeaders.join(', ')}.',
+          );
+        }
+
+        final parsedRows = <SupplierExcelRowEntity>[];
+
+        for (var index = 1; index < allRows.length; index++) {
+          final row = allRows[index];
+          final isEmptyRow = row.cells.every((cell) => cell.trim().isEmpty);
+          if (isEmptyRow) continue;
+
+          final values = <String, String>{};
+
+          for (final header in expected) {
+            final key = SupplierExcelRowEntity.normalizeHeader(header);
+            final columnIndex = headerMap[key];
+            values[key] = columnIndex == null || columnIndex >= row.cells.length
+                ? ''
+                : row.cells[columnIndex].trim();
+          }
+
+          // Extra columns are kept for display/debugging but not required.
+          for (final entry in headerMap.entries) {
+            values.putIfAbsent(
+              entry.key,
+              () => entry.value >= row.cells.length
+                  ? ''
+                  : row.cells[entry.value].trim(),
+            );
+          }
+
+          parsedRows.add(
+            SupplierExcelRowEntity(
+              section: section,
+              rowNumber: row.rowNumber,
+              values: values,
+            ),
+          );
+        }
+
+        if (parsedRows.isNotEmpty) {
+          rowsBySection[section] = parsedRows;
+        }
+      }
+
+      // Backward compatibility with the old one-sheet product template.
+      if (rowsBySection.isEmpty) {
+        final firstSheet = sheets.first;
+        final sheetXml = _readArchiveText(archive, firstSheet.path);
+
+        if (sheetXml != null && sheetXml.trim().isNotEmpty) {
+          final allRows = _readWorksheetRows(
+            sheetXml: sheetXml,
+            sharedStrings: sharedStrings,
+          );
+
+          if (allRows.isNotEmpty) {
+            final headerMap = _buildHeaderMap(allRows.first.cells);
+            final requiredProductHeaders = _missingRequiredHeaders(
+              section: SupplierExcelSection.products,
+              normalizedHeaders: headerMap.keys.toSet(),
+            );
+
+            if (requiredProductHeaders.isEmpty) {
+              final parsedRows = <SupplierExcelRowEntity>[];
+
+              for (var index = 1; index < allRows.length; index++) {
+                final row = allRows[index];
+                if (row.cells.every((cell) => cell.trim().isEmpty)) continue;
+
+                final values = <String, String>{};
+                for (final header in headersFor(SupplierExcelSection.products)) {
+                  final key = SupplierExcelRowEntity.normalizeHeader(header);
+                  final columnIndex = headerMap[key];
+                  values[key] = columnIndex == null || columnIndex >= row.cells.length
+                      ? ''
+                      : row.cells[columnIndex].trim();
+                }
+
+                parsedRows.add(
+                  SupplierExcelRowEntity(
+                    section: SupplierExcelSection.products,
+                    rowNumber: row.rowNumber,
+                    values: values,
+                  ),
+                );
+              }
+
+              if (parsedRows.isNotEmpty) {
+                rowsBySection[SupplierExcelSection.products] = parsedRows;
+              }
+            }
+          }
+        }
+      }
+
+      if (rowsBySection.isEmpty) {
         throw Exception(
-          'The selected Excel file does not contain a readable worksheet.',
+          'No supported supplier sheets were found. Use the supplier template sheets: Categories, SubCategories, Branches, Products, BranchInventory, TaxRules, ShippingMethods, and Coupons.',
         );
-      }
-
-      final allRows = _readWorksheetRows(
-        sheetXml: sheetXml,
-        sharedStrings: sharedStrings,
-      );
-
-      if (allRows.isEmpty) {
-        throw Exception('The selected Excel file does not contain rows.');
-      }
-
-      final headerCells = allRows.first.cells;
-      _validateHeaders(headerCells);
-
-      final rows = <SupplierExcelProductRowModel>[];
-
-      for (var index = 1; index < allRows.length; index++) {
-        final row = allRows[index];
-
-        final isEmptyRow = row.cells.every((cell) => cell.trim().isEmpty);
-        if (isEmptyRow) continue;
-
-        rows.add(
-          SupplierExcelProductRowModel.fromCells(
-            rowNumber: row.rowNumber,
-            cells: row.cells,
-          ),
-        );
-      }
-
-      if (rows.isEmpty) {
-        throw Exception('No product rows found after the header row.');
       }
 
       return SupplierExcelParsedFileEntity(
         fileName: file.fileName,
-        rows: rows,
+        rowsBySection: rowsBySection,
       );
     } on FormatException {
       throw Exception('Invalid Excel file. Please upload a valid .xlsx file.');
@@ -213,125 +382,158 @@ class SupplierExcelReaderService {
     return strings;
   }
 
-  String _resolveFirstWorksheetPath(Archive archive) {
+  List<_WorksheetInfo> _resolveWorksheets(Archive archive) {
     final workbookXml = _readArchiveText(archive, 'xl/workbook.xml');
     final relsXml = _readArchiveText(archive, 'xl/_rels/workbook.xml.rels');
 
-    if (workbookXml != null && relsXml != null) {
-      final sheetMatch = RegExp(
-        r'<(?:[A-Za-z0-9_]+:)?sheet\b[^>]*r:id="([^"]+)"',
-        dotAll: true,
-        caseSensitive: false,
-      ).firstMatch(workbookXml);
+    if (workbookXml == null || relsXml == null) return const [];
 
-      final relationshipId = sheetMatch?.group(1);
-
-      if (relationshipId != null) {
-        final relationshipRegex = RegExp(
-          r'<Relationship\b([^>]*)/?>',
-          dotAll: true,
-          caseSensitive: false,
-        );
-
-        for (final match in relationshipRegex.allMatches(relsXml)) {
-          final attributes = match.group(1) ?? '';
-          final id = _readAttribute(attributes, 'Id');
-          final target = _readAttribute(attributes, 'Target');
-
-          if (id == relationshipId && target != null && target.trim().isNotEmpty) {
-            var path = target.trim();
-
-            if (path.startsWith('/')) {
-              path = path.substring(1);
-            } else if (!path.startsWith('xl/')) {
-              path = 'xl/$path';
-            }
-
-            return path;
-          }
-        }
-      }
-    }
-
-    return 'xl/worksheets/sheet1.xml';
-  }
-
-  String? _readArchiveText(Archive archive, String path) {
-    for (final file in archive.files) {
-      if (!file.isFile) continue;
-      if (file.name != path) continue;
-
-      final content = file.content;
-      if (content is List<int>) {
-        return utf8.decode(content);
-      }
-
-      return utf8.decode(content as List<int>);
-    }
-
-    return null;
-  }
-
-  void _validateHeaders(List<String> headers) {
-    if (headers.length < expectedHeaders.length) {
-      throw Exception(
-        'Invalid Excel format. Expected columns: ${expectedHeaders.join(', ')}.',
-      );
-    }
-
-    for (var index = 0; index < expectedHeaders.length; index++) {
-      final actual = _normalizeHeader(headers[index]);
-      final expected = _normalizeHeader(expectedHeaders[index]);
-
-      if (actual != expected) {
-        throw Exception(
-          'Invalid column ${index + 1}. Expected "${expectedHeaders[index]}" but found "${headers[index]}".',
-        );
-      }
-    }
-  }
-
-  String _normalizeHeader(String value) {
-    return value.trim().toLowerCase().replaceAll(RegExp(r'\s+'), '');
-  }
-
-  String? _readAttribute(String attributes, String name) {
-    final doubleQuoteMatch = RegExp('$name="([^"]*)"').firstMatch(attributes);
-    if (doubleQuoteMatch != null) return doubleQuoteMatch.group(1);
-
-    final singleQuoteMatch = RegExp("$name='([^']*)'").firstMatch(attributes);
-    return singleQuoteMatch?.group(1);
-  }
-
-  String? _readTagText(String xml, String tagName) {
-    final match = RegExp(
-      '<(?:[A-Za-z0-9_]+:)?$tagName\\b[^>]*>(.*?)</(?:[A-Za-z0-9_]+:)?$tagName>',
-      dotAll: true,
-      caseSensitive: false,
-    ).firstMatch(xml);
-
-    if (match == null) return null;
-    return _decodeXml(match.group(1) ?? '');
-  }
-
-  String _readAllTagTexts(String xml, String tagName) {
-    final regex = RegExp(
-      '<(?:[A-Za-z0-9_]+:)?$tagName\\b[^>]*>(.*?)</(?:[A-Za-z0-9_]+:)?$tagName>',
-      dotAll: true,
+    final relationshipTargets = <String, String>{};
+    final relationshipRegex = RegExp(
+      r'<(?:[A-Za-z0-9_]+:)?Relationship\b([^>]*)/?>',
       caseSensitive: false,
     );
 
+    for (final match in relationshipRegex.allMatches(relsXml)) {
+      final attributes = match.group(1) ?? '';
+      final id = _readAttribute(attributes, 'Id');
+      final target = _readAttribute(attributes, 'Target');
+      if (id == null || target == null) continue;
+
+      final normalizedTarget = target.startsWith('/')
+          ? target.substring(1)
+          : target.startsWith('xl/')
+              ? target
+              : 'xl/$target';
+
+      relationshipTargets[id] = normalizedTarget;
+    }
+
+    final sheets = <_WorksheetInfo>[];
+    final sheetRegex = RegExp(
+      r'<(?:[A-Za-z0-9_]+:)?sheet\b([^>]*)/?>',
+      caseSensitive: false,
+    );
+
+    for (final match in sheetRegex.allMatches(workbookXml)) {
+      final attributes = match.group(1) ?? '';
+      final name = _readAttribute(attributes, 'name');
+      final relationshipId = _readAttribute(attributes, 'r:id');
+      if (name == null || relationshipId == null) continue;
+
+      final path = relationshipTargets[relationshipId];
+      if (path == null) continue;
+
+      sheets.add(_WorksheetInfo(name: name, path: path));
+    }
+
+    return sheets;
+  }
+
+  Map<String, int> _buildHeaderMap(List<String> headerCells) {
+    final map = <String, int>{};
+    for (var i = 0; i < headerCells.length; i++) {
+      final normalized = SupplierExcelRowEntity.normalizeHeader(headerCells[i]);
+      if (normalized.isEmpty) continue;
+      map[normalized] = i;
+    }
+    return map;
+  }
+
+  List<String> _missingRequiredHeaders({
+    required SupplierExcelSection section,
+    required Set<String> normalizedHeaders,
+  }) {
+    final requiredHeaders = <String>[];
+
+    switch (section) {
+      case SupplierExcelSection.categories:
+        requiredHeaders.add('Name');
+        break;
+      case SupplierExcelSection.subCategories:
+        requiredHeaders.addAll(['Category', 'SubCategory']);
+        break;
+      case SupplierExcelSection.branches:
+        requiredHeaders.addAll(['Branch Name', 'Country Code', 'City', 'Address', 'Phone']);
+        break;
+      case SupplierExcelSection.products:
+        requiredHeaders.addAll(['Product Name', 'Description', 'Category', 'Price', 'MOQ']);
+        break;
+      case SupplierExcelSection.inventory:
+        requiredHeaders.addAll(['Branch', 'Product Name', 'Stock Quantity']);
+        break;
+      case SupplierExcelSection.taxRules:
+        requiredHeaders.addAll(['Rule Name', 'Rate', 'Country ID', 'Country Name']);
+        break;
+      case SupplierExcelSection.shippingMethods:
+        requiredHeaders.addAll(['Name', 'Type', 'Cost', 'Estimated Delivery Time']);
+        break;
+      case SupplierExcelSection.coupons:
+        requiredHeaders.addAll(['Code', 'Discount Type', 'Discount Value']);
+        break;
+    }
+
+    return requiredHeaders
+        .where((header) => !normalizedHeaders.contains(SupplierExcelRowEntity.normalizeHeader(header)))
+        .toList(growable: false);
+  }
+
+  String? _readArchiveText(Archive archive, String path) {
+    final file = archive.files
+        .where((item) => item.name == path)
+        .cast<ArchiveFile?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+
+    if (file == null || !file.isFile) return null;
+    return utf8.decode(file.content as List<int>);
+  }
+
+  String? _readAttribute(String attributes, String name) {
+    final escapedName = RegExp.escape(name);
+    final regex = RegExp('$escapedName="([^"]*)"', caseSensitive: false);
+    return _decodeXml(regex.firstMatch(attributes)?.group(1) ?? '');
+  }
+
+  String? _readTagText(String body, String tagName) {
+    final escaped = RegExp.escape(tagName);
+    final regex = RegExp(
+      '<(?:[A-Za-z0-9_]+:)?$escaped\\b[^>]*>(.*?)</(?:[A-Za-z0-9_]+:)?$escaped>',
+      dotAll: true,
+      caseSensitive: false,
+    );
+    return regex.firstMatch(body)?.group(1);
+  }
+
+  String _readAllTagTexts(String body, String tagName) {
+    final escaped = RegExp.escape(tagName);
+    final regex = RegExp(
+      '<(?:[A-Za-z0-9_]+:)?$escaped\\b[^>]*>(.*?)</(?:[A-Za-z0-9_]+:)?$escaped>',
+      dotAll: true,
+      caseSensitive: false,
+    );
     return regex
-        .allMatches(xml)
+        .allMatches(body)
         .map((match) => _decodeXml(match.group(1) ?? ''))
-        .join();
+        .join('')
+        .trim();
+  }
+
+  String _decodeXml(String value) {
+    return value
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&apos;', "'");
   }
 
   int? _columnIndexFromCellReference(String? reference) {
-    if (reference == null || reference.trim().isEmpty) return null;
+    if (reference == null || reference.isEmpty) return null;
 
-    final letters = RegExp(r'^[A-Za-z]+').stringMatch(reference);
-    if (letters == null || letters.isEmpty) return null;
+    final letters = RegExp(r'^[A-Z]+', caseSensitive: false)
+        .firstMatch(reference)
+        ?.group(0);
+    if (letters == null) return null;
 
     var index = 0;
     for (final codeUnit in letters.toUpperCase().codeUnits) {
@@ -340,41 +542,21 @@ class SupplierExcelReaderService {
 
     return index - 1;
   }
-
-  String _decodeXml(String value) {
-    var decoded = value
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
-        .replaceAll('&quot;', '"')
-        .replaceAll('&apos;', "'")
-        .replaceAll('&amp;', '&');
-
-    decoded = decoded.replaceAllMapped(
-      RegExp(r'&#x([0-9A-Fa-f]+);'),
-      (match) {
-        final codePoint = int.tryParse(match.group(1)!, radix: 16);
-        return codePoint == null ? match.group(0)! : String.fromCharCode(codePoint);
-      },
-    );
-
-    decoded = decoded.replaceAllMapped(
-      RegExp(r'&#([0-9]+);'),
-      (match) {
-        final codePoint = int.tryParse(match.group(1)!);
-        return codePoint == null ? match.group(0)! : String.fromCharCode(codePoint);
-      },
-    );
-
-    return decoded;
-  }
 }
 
 class _ParsedWorksheetRow {
   final int rowNumber;
   final List<String> cells;
 
-  _ParsedWorksheetRow({
+  const _ParsedWorksheetRow({
     required this.rowNumber,
     required this.cells,
   });
+}
+
+class _WorksheetInfo {
+  final String name;
+  final String path;
+
+  const _WorksheetInfo({required this.name, required this.path});
 }

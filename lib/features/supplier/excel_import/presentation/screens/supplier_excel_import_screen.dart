@@ -1,44 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
-import '../../domain/entities/supplier_excel_product_row_entity.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
+import '../../domain/entities/supplier_excel_section.dart';
 import '../bloc/supplier_excel_import_bloc.dart';
 import '../bloc/supplier_excel_import_event.dart';
 import '../bloc/supplier_excel_import_state.dart';
-import '../widgets/supplier_excel_edit_row_dialog.dart';
+import '../utils/supplier_excel_import_i18n.dart';
 import '../widgets/supplier_excel_expected_columns_card.dart';
+import '../widgets/supplier_excel_import_result_card.dart';
 import '../widgets/supplier_excel_instruction_card.dart';
+import '../widgets/supplier_excel_template_card.dart';
 import '../widgets/supplier_excel_preview_list.dart';
 import '../widgets/supplier_excel_upload_card.dart';
 import '../widgets/supplier_excel_validation_summary_card.dart';
 
 class SupplierExcelImportScreen extends StatelessWidget {
-  SupplierExcelImportScreen({super.key});
+  const SupplierExcelImportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<SupplierExcelImportBloc>(),
-      child: _SupplierExcelImportView(),
+      child: const _SupplierExcelImportView(),
     );
   }
 }
 
 class _SupplierExcelImportView extends StatelessWidget {
-  _SupplierExcelImportView();
+  const _SupplierExcelImportView();
 
   @override
   Widget build(BuildContext context) {
+    final l = SupplierExcelImportI18n(context);
     final primary = Theme.of(context).colorScheme.primary;
 
     return BlocConsumer<SupplierExcelImportBloc, SupplierExcelImportState>(
       listener: (context, state) {
-        if (state.error != null) {
+        if (state.error != null && state.error!.trim().isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error!),
@@ -48,9 +49,15 @@ class _SupplierExcelImportView extends StatelessWidget {
         }
 
         if (state.successMessage != null) {
+          final message = state.successMessage == 'supplierExcelTemplateDownloaded'
+              ? l.templateDownloaded
+              : state.successMessage == 'supplierExcelImportPartial'
+                  ? l.importPartial
+                  : l.importSuccess;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.successMessage!),
+              content: Text(message),
               backgroundColor: primary,
             ),
           );
@@ -59,73 +66,64 @@ class _SupplierExcelImportView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: AppThemeTokens.background,
-          drawer: SupplierAppDrawer(),
+          drawer: const SupplierAppDrawer(),
           appBar: AppBar(
-            title: Text(context.l10n.importExcelTitle),
+            title: Text(l.title),
             backgroundColor: AppThemeTokens.surface,
             foregroundColor: AppThemeTokens.textPrimary,
             elevation: 0,
-            actions: [
-              IconButton(
-                tooltip: context.l10n.manageCategoriesTooltip,
-                onPressed: () => context.push('/supplier-catalog'),
-                icon: Icon(Icons.category_outlined),
-              ),
-              SizedBox(width: 6),
-            ],
           ),
           bottomNavigationBar: _ImportBottomBar(state: state),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(
-                AppThemeTokens.screenHorizontalPadding,
-              ),
+              padding: EdgeInsets.all(AppThemeTokens.screenHorizontalPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SupplierExcelInstructionCard(),
-                  SizedBox(height: 16),
+                  const SupplierExcelInstructionCard(),
+                  const SizedBox(height: 16),
+                  SupplierExcelTemplateCard(
+                    isDownloading: state.isDownloadingTemplate,
+                    savedPath: state.templateSavePath,
+                    onDownload: () {
+                      context
+                          .read<SupplierExcelImportBloc>()
+                          .add(const SupplierExcelDownloadTemplateRequested());
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   SupplierExcelUploadCard(
                     fileName: state.fileName,
                     isLoading: state.isPickingOrParsing,
                     onPickFile: () {
-                      context.read<SupplierExcelImportBloc>().add(
-                            SupplierExcelPickFileRequested(),
-                          );
+                      context
+                          .read<SupplierExcelImportBloc>()
+                          .add(const SupplierExcelPickFileRequested());
                     },
                     onClear: () {
-                      context.read<SupplierExcelImportBloc>().add(
-                            SupplierExcelClearRequested(),
-                          );
+                      context
+                          .read<SupplierExcelImportBloc>()
+                          .add(const SupplierExcelClearRequested());
                     },
                   ),
-                  SizedBox(height: 16),
-                  SupplierExcelExpectedColumnsCard(),
-                  SizedBox(height: 16),
-                  if (state.hasRows) ...[
-                    SupplierExcelValidationSummaryCard(
-                      totalRows: state.totalRows,
-                      validRows: state.validRowsCount,
-                      errorRows: state.errorRowsCount,
-                      warningRows: state.warningRowsCount,
-                    ),
-                    SizedBox(height: 16),
-                    _ValidationHelpCard(state: state),
-                    SizedBox(height: 16),
-                  ],
-                  if (state.importResult != null) ...[
-                    _ImportResultCard(state: state),
-                    SizedBox(height: 16),
-                  ],
-                  SupplierExcelPreviewList(
-                    rows: state.rows,
-                    onEditRow: (row) => _openEditRowDialog(
-                      context: context,
-                      state: state,
-                      row: row,
-                    ),
+                  const SizedBox(height: 16),
+                  const SupplierExcelExpectedColumnsCard(),
+                  const SizedBox(height: 16),
+                  SupplierExcelValidationSummaryCard(
+                    totalRows: state.totalRows,
+                    validRows: state.validRowsCount,
+                    errorRows: state.errorRowsCount,
+                    warningRows: state.warningRowsCount,
                   ),
-                  SizedBox(height: 96),
+                  const SizedBox(height: 16),
+                  if (state.parsedFile != null)
+                    SupplierExcelPreviewList(parsedFile: state.parsedFile!)
+                  else
+                    _EmptyPreviewCard(message: l.noRows),
+                  const SizedBox(height: 16),
+                  if (state.importResult != null)
+                    SupplierExcelImportResultCard(result: state.importResult!),
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -134,276 +132,154 @@ class _SupplierExcelImportView extends StatelessWidget {
       },
     );
   }
-
-  Future<void> _openEditRowDialog({
-    required BuildContext context,
-    required SupplierExcelImportState state,
-    required SupplierExcelProductRowEntity row,
-  }) async {
-    final updatedRow = await showDialog<SupplierExcelProductRowEntity>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => SupplierExcelEditRowDialog(
-        row: row,
-        categories: state.categories,
-        subCategoriesByCategoryId: state.subCategoriesByCategoryId,
-      ),
-    );
-
-    if (updatedRow == null || !context.mounted) return;
-
-    context.read<SupplierExcelImportBloc>().add(
-          SupplierExcelRowUpdated(row: updatedRow),
-        );
-  }
-}
-
-class _ValidationHelpCard extends StatelessWidget {
-  final SupplierExcelImportState state;
-
-  _ValidationHelpCard({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
-    final title = state.hasErrors
-        ? context.l10n.someRowsNeedAttention
-        : context.l10n.allRowsReady;
-
-    final message = state.hasErrors
-        ? context.l10n.excelAttentionHelp
-        : 'Review the rows below, then import the valid products. Branch stock is still managed from Branch Inventory.';
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: state.hasErrors
-            ? Color(0xFFFFF7ED)
-            : primary.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-        border: Border.all(
-          color: state.hasErrors
-              ? Color(0xFFFED7AA)
-              : primary.withOpacity(0.22),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                state.hasErrors
-                    ? Icons.info_outline
-                    : Icons.check_circle_outline,
-                color: state.hasErrors ? Color(0xFFF97316) : primary,
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: state.hasErrors
-                        ? Color(0xFF9A3412)
-                        : AppThemeTokens.textPrimary,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Text(
-            message,
-            style: TextStyle(
-              color: AppThemeTokens.textSecondary,
-              fontWeight: FontWeight.w700,
-              height: 1.35,
-            ),
-          ),
-          if (state.hasCatalogErrors) ...[
-            SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () => context.push('/supplier-catalog'),
-              icon: Icon(Icons.category_outlined),
-              label: Text(context.l10n.manageCategoriesButton),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: primary,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _ImportResultCard extends StatelessWidget {
-  final SupplierExcelImportState state;
-
-  _ImportResultCard({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final result = state.importResult!;
-    final primary = Theme.of(context).colorScheme.primary;
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.done_all_outlined, color: primary),
-              SizedBox(width: 8),
-              Text(
-                context.l10n.importResultTitle,
-                style: TextStyle(
-                  color: AppThemeTokens.textPrimary,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Text(
-            context.l10n.importedRowsSummary(result.importedCount, result.totalRows),
-            style: TextStyle(
-              color: AppThemeTokens.textSecondary,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          if (result.failedMessages.isNotEmpty) ...[
-            SizedBox(height: 10),
-            ...result.failedMessages.map(
-              (message) => Padding(
-                padding: EdgeInsets.only(bottom: 6),
-                child: Text(
-                  message,
-                  style: TextStyle(
-                    color: AppThemeTokens.error,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
 }
 
 class _ImportBottomBar extends StatelessWidget {
   final SupplierExcelImportState state;
 
-  _ImportBottomBar({required this.state});
+  const _ImportBottomBar({
+    required this.state,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final l = SupplierExcelImportI18n(context);
     final primary = Theme.of(context).colorScheme.primary;
 
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.fromLTRB(20, 12, 20, 12),
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
         decoration: BoxDecoration(
           color: AppThemeTokens.surface,
           border: Border(top: BorderSide(color: AppThemeTokens.border)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 14,
-              offset: Offset(0, -6),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 18,
+              offset: const Offset(0, -8),
             ),
           ],
         ),
         child: Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: OutlinedButton.icon(
                 onPressed: state.isImporting
                     ? null
                     : () {
-                        context.read<SupplierExcelImportBloc>().add(
-                              SupplierExcelClearRequested(),
-                            );
+                        context
+                            .read<SupplierExcelImportBloc>()
+                            .add(const SupplierExcelClearRequested());
                       },
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                icon: const Icon(Icons.clear_rounded),
+                label: Text(
+                  l.clear,
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
-                child: Text(
-                  context.l10n.resetButton,
-                  style: TextStyle(fontWeight: FontWeight.w900),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppThemeTokens.textPrimary,
+                  side: BorderSide(color: AppThemeTokens.border),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Expanded(
-              flex: 2,
               child: ElevatedButton.icon(
                 onPressed: state.canImport
                     ? () {
-                        context.read<SupplierExcelImportBloc>().add(
-                              SupplierExcelImportRequested(),
-                            );
+                        context
+                            .read<SupplierExcelImportBloc>()
+                            .add(const SupplierExcelImportRequested());
                       }
                     : null,
                 icon: state.isImporting
-                    ? SizedBox(
-                        width: 18,
+                    ? const SizedBox(
                         height: 18,
+                        width: 18,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           color: Colors.white,
                         ),
                       )
-                    : Icon(Icons.cloud_upload_outlined),
+                    : const Icon(Icons.upload_file_rounded),
                 label: Text(
-                  state.isImporting
-                      ? context.l10n.importingLabel
-                      : context.l10n.importProductsButton(state.validRowsCount),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
+                  state.isImporting ? l.importing : l.import,
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primary,
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: AppThemeTokens.border,
-                  disabledForegroundColor: AppThemeTokens.textSecondary,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 8,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  disabledBackgroundColor: AppThemeTokens.textSecondary.withOpacity(0.25),
+                  disabledForegroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyPreviewCard extends StatelessWidget {
+  final String message;
+
+  const _EmptyPreviewCard({
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = SupplierExcelImportI18n(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.table_chart_outlined,
+            color: AppThemeTokens.textSecondary,
+            size: 42,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppThemeTokens.textPrimary,
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l.workbookStructureHint,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppThemeTokens.textSecondary,
+              fontWeight: FontWeight.w600,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: SupplierExcelSectionX.importSections
+                .map((section) => Chip(label: Text(section.sheetName)))
+                .toList(),
+          ),
+        ],
       ),
     );
   }

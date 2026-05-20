@@ -28,8 +28,6 @@ dependencies:
   file_picker: ^8.1.7
   excel: ^4.0.6
   archive: ^3.6.1
-  flutter_markdown: ^0.7.7+1
-  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +42,7 @@ flutter:
   generate: true
   assets:
     - assets/branding/
+    - assets/templates/supplier_import_template.xlsx
 
 flutter_icons:
   android: true
