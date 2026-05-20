@@ -99,7 +99,7 @@ class PromotionCard extends StatelessWidget {
               _TextChip(text: _localizedValidityLabel(context, promotion)),
               _TextChip(text: _localizedMinOrderLabel(context, promotion)),
               _TextChip(text: _localizedMaxDiscountLabel(context, promotion)),
-              _TextChip(text: context.l10n.supplierBranchesValue(_localizedBranchScopeLabel(context, promotion.branchScopeLabel))),
+              const _TextChip(text: 'Branches: automatic from stock'),
               _TextChip(
                 text: context.l10n.supplierValidNowValue(promotion.currentlyValid ? context.l10n.yesLabel : context.l10n.noLabel),
               ),
@@ -217,7 +217,7 @@ class _StatusPill extends StatelessWidget {
 class _TextChip extends StatelessWidget {
   final String text;
 
-  _TextChip({required this.text});
+  const _TextChip({required this.text});
 
   @override
   Widget build(BuildContext context) {

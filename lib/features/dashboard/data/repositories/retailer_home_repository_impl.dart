@@ -20,6 +20,11 @@ class RetailerHomeRepositoryImpl implements RetailerHomeRepository {
   }
 
   @override
+  Future<List<HomeProductModel>> getPromotedProducts() {
+    return retailerHomeService.getPromotedProducts();
+  }
+
+  @override
   Future<void> addToCart({required HomeProductModel product}) {
     return retailerHomeService.addToCart(product: product);
   }

@@ -9,6 +9,7 @@ import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_bu
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
 import '../widgets/retailer_product_image.dart';
+import '../widgets/retailer_promotion_badge.dart';
 
 class RetailerCategoryProductsScreen extends StatelessWidget {
   final HomeCategoryModel category;
@@ -394,7 +395,25 @@ class RetailerProductListCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ProductImage(imageUrl: product.imageUrl),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _ProductImage(imageUrl: product.imageUrl),
+              if (product.hasActivePromotion)
+                Positioned(
+                  top: 7,
+                  left: 7,
+                  child: RetailerPromotionBadge(
+                    product: product,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 5,
+                    ),
+                    fontSize: 10,
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -448,6 +467,8 @@ class RetailerProductListCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
+                RetailerPromotionInfoPill(product: product),
+                if (product.hasActivePromotion) const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 6,

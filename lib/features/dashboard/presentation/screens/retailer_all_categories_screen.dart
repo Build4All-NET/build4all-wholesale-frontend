@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
+import '../widgets/retailer_promotion_badge.dart';
 
 class RetailerAllCategoriesScreen extends StatelessWidget {
   final List<HomeCategoryModel> categories;
@@ -74,32 +75,67 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Stack(
+                      clipBehavior: Clip.none,
                       children: [
-                        Text(category.icon, style: const TextStyle(fontSize: 34)),
-                        const SizedBox(height: 10),
-                        Text(
-                          category.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: AppThemeTokens.textPrimary,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w900,
-                            height: 1.15,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '${category.productCount} ${l10n.productsLabel}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppThemeTokens.textSecondary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 96,
+                                height: 48,
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Text(
+                                      category.icon,
+                                      style: const TextStyle(fontSize: 34),
+                                    ),
+                                    Positioned(
+                                      top: 0,
+                                      right: 6,
+                                      child: RetailerCategoryPromotionBadge(
+                                        category: category,
+                                        maxWidth: 66,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        fontSize: 8.5,
+                                        iconSize: 9.5,
+                                        gap: 2,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                category.name,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: AppThemeTokens.textPrimary,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w900,
+                                  height: 1.15,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                '${category.productCount} ${l10n.productsLabel}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: AppThemeTokens.textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

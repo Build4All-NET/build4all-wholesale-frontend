@@ -61,6 +61,35 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
     }
   }
 
+  Future<void> loadPromotedProducts() async {
+    emit(
+      state.copyWith(
+        isPromotionsLoading: true,
+        promotedProducts: const [],
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    try {
+      final products = await retailerHomeRepository.getPromotedProducts();
+
+      emit(
+        state.copyWith(
+          isPromotionsLoading: false,
+          promotedProducts: products,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPromotionsLoading: false,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+    }
+  }
+
   Future<void> addToCart({required HomeProductModel product}) async {
     emit(
       state.copyWith(
