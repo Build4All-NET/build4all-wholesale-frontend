@@ -122,6 +122,17 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     );
   }
 
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'productDeleted':
+      case 'Product deleted':
+        return context.l10n.productDeletedSuccessfully;
+      default:
+        return message;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProductListBloc>.value(
@@ -141,7 +152,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },

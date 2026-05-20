@@ -9,18 +9,6 @@ import '../../../../core/theme/locale_cubit.dart';
 class SupplierAppDrawer extends StatelessWidget {
   const SupplierAppDrawer({super.key});
 
-  String _supplierRfqsTitle(BuildContext context) {
-    switch (Localizations.localeOf(context).languageCode) {
-      case 'ar':
-        return 'طلبات عروض الأسعار';
-      case 'fr':
-        return 'Demandes RFQ';
-      case 'en':
-      default:
-        return 'RFQ Requests';
-    }
-  }
-
   Future<void> _confirmLogout(BuildContext context) async {
     final l10n = context.l10n;
 
@@ -204,7 +192,7 @@ class SupplierAppDrawer extends StatelessWidget {
                   ),
                   _DrawerItem(
                     icon: Icons.request_quote_outlined,
-                    title: _supplierRfqsTitle(context),
+                    title: l10n.supplierDrawerRfqs,
                     route: '/supplier-rfqs',
                   ),
                   _DrawerItem(

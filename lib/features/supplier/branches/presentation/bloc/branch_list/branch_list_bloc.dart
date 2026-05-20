@@ -88,7 +88,7 @@ class BranchListBloc extends Bloc<BranchListEvent, BranchListState> {
         state.copyWith(
           isDeleting: false,
           branches: updatedBranches,
-          successMessage: 'Branch deleted',
+          successMessage: 'branchDeleted',
         ),
       );
     } catch (e) {

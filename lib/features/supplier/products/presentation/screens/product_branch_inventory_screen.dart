@@ -105,7 +105,7 @@ class _ProductBranchInventoryScreenState
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: context.l10n.stockQuantityFieldLabel,
-                  hintText: 'e.g., 250',
+                  hintText: context.l10n.stockQuantityUpdateHint,
                   filled: true,
                   fillColor: AppThemeTokens.inputFill,
                   border: OutlineInputBorder(
@@ -187,7 +187,7 @@ class _ProductBranchInventoryScreenState
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to remove ${widget.product.name} from ${branch.name} inventory?',
+            context.l10n.removeProductFromBranchConfirmation(widget.product.name, branch.name),
           ),
           actions: [
             TextButton(
@@ -217,6 +217,23 @@ class _ProductBranchInventoryScreenState
     );
   }
 
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'stockAssigned':
+      case 'Stock assigned':
+        return context.l10n.stockAssignedSuccessfully;
+      case 'stockUpdated':
+      case 'Stock updated':
+        return context.l10n.stockUpdatedSuccessfully;
+      case 'inventoryItemRemoved':
+      case 'Inventory item removed':
+        return context.l10n.inventoryItemRemovedSuccessfully;
+      default:
+        return message;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProductBranchInventoryBloc>.value(
@@ -237,7 +254,7 @@ class _ProductBranchInventoryScreenState
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../domain/entities/supplier_order_entity.dart';
 import 'order_status_badge.dart';
 
@@ -43,7 +44,7 @@ class SupplierOrderCard extends StatelessWidget {
                 ),
               ),
               Text(
-                _formatMoney(order.totalAmount),
+                formatSupplierCurrency(context, order.totalAmount),
                 style: TextStyle(
                   color: primary,
                   fontSize: 18,
@@ -70,7 +71,7 @@ class SupplierOrderCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      _formatDate(order.orderDate),
+                      formatSupplierCompactDateTime(context, order.orderDate),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -95,7 +96,7 @@ class SupplierOrderCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _SmallPaymentBadge(text: order.paymentMethod),
+                  _SmallPaymentBadge(text: _localizedPaymentMethod(context, order.paymentMethod)),
                   SizedBox(height: 8),
                   OrderStatusBadge(status: order.status),
                 ],
@@ -147,41 +148,24 @@ class SupplierOrderCard extends StatelessWidget {
     );
   }
 
-  String _formatMoney(double amount) {
-    return '\$${amount.toStringAsFixed(2)}';
-  }
+  String _localizedPaymentMethod(BuildContext context, String value) {
+    final normalized = value.trim().toUpperCase().replaceAll(' ', '_');
 
-  String _formatDate(DateTime date) {
-    final month = _monthName(date.month);
-    final hour = date.hour > 12
-        ? date.hour - 12
-        : date.hour == 0
-            ? 12
-            : date.hour;
-    final minute = date.minute.toString().padLeft(2, '0');
-    final period = date.hour >= 12 ? 'PM' : 'AM';
-
-    return '$month ${date.day}, $hour:$minute $period';
-  }
-
-  String _monthName(int month) {
-    const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
-    return months[month];
+    switch (normalized) {
+      case 'CASH':
+      case 'CASH_ON_DELIVERY':
+      case 'COD':
+        return context.l10n.paymentCashOnDelivery;
+      case 'CARD':
+      case 'CREDIT_CARD':
+      case 'DEBIT_CARD':
+        return context.l10n.paymentCard;
+      case 'BANK_TRANSFER':
+      case 'TRANSFER':
+        return context.l10n.paymentBankTransfer;
+      default:
+        return value.trim().isEmpty ? context.l10n.supplierNotProvided : value;
+    }
   }
 }
 

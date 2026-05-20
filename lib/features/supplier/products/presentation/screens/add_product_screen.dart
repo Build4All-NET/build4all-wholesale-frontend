@@ -1040,7 +1040,7 @@ class _SubCategorySelector extends StatelessWidget {
         ),
       ),
       addButtonText:
-          isCreatingSubCategory ? 'Adding...' : context.l10n.addSubCategoryTitle,
+          isCreatingSubCategory ? context.l10n.addingLabel : context.l10n.addSubCategoryTitle,
       onAddPressed:
           isEnabled && !isCreatingSubCategory ? onAddSubCategory : null,
       deleteButtonText: isDeletingSubCategory

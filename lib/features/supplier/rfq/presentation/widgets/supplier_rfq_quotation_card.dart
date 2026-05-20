@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../domain/entities/supplier_rfq_quotation_entity.dart';
 import '../utils/supplier_rfq_i18n.dart';
 import 'supplier_rfq_status_chip.dart';
@@ -70,7 +71,7 @@ class SupplierRfqQuotationCard extends StatelessWidget {
                 _InfoTile(label: l.t('availableQty'), value: quotation.availableQuantity.toString()),
               _InfoTile(label: l.t('shipping'), value: (quotation.shippingCost ?? 0).toStringAsFixed(2)),
               if (quotation.deliveryDate != null)
-                _InfoTile(label: l.t('deliveryDate'), value: _formatDate(quotation.deliveryDate!)),
+                _InfoTile(label: l.t('deliveryDate'), value: formatSupplierShortDate(context, quotation.deliveryDate!)),
             ],
           ),
           if (quotation.message != null && quotation.message!.trim().isNotEmpty) ...[
@@ -141,11 +142,6 @@ class SupplierRfqQuotationCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    return '$day/$month/${date.year}';
-  }
 }
 
 class _InfoTile extends StatelessWidget {
@@ -156,8 +152,6 @@ class _InfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = SupplierRfqI18n(context);
-
     return Container(
       width: 140,
       padding: const EdgeInsets.all(12),
@@ -202,8 +196,6 @@ class _Notice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = SupplierRfqI18n(context);
-
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

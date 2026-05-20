@@ -88,7 +88,7 @@ class BranchInventoryBloc
           isAssigning: false,
           inventoryItems: inventoryItems,
           products: products,
-          successMessage: 'Product assigned to branch',
+          successMessage: 'productAssignedToBranch',
         ),
       );
     } catch (e) {
@@ -121,7 +121,7 @@ class BranchInventoryBloc
         state.copyWith(
           isUpdating: false,
           inventoryItems: inventoryItems,
-          successMessage: 'Stock updated',
+          successMessage: 'stockUpdated',
         ),
       );
     } catch (e) {
@@ -153,7 +153,7 @@ class BranchInventoryBloc
         state.copyWith(
           isDeleting: false,
           inventoryItems: inventoryItems,
-          successMessage: 'Inventory item removed',
+          successMessage: 'inventoryItemRemoved',
         ),
       );
     } catch (e) {
