@@ -25,9 +25,7 @@ class Build4AllUserProfileModel {
     return Build4AllUserProfileModel(
       id: _toInt(json['id'] ?? json['userId']),
       ownerProjectLinkId: _toInt(
-        json['ownerProjectLinkId'] ??
-            json['ownerProjectId'] ??
-            json['aupId'],
+        json['ownerProjectLinkId'] ?? json['ownerProjectId'] ?? json['aupId'],
       ),
       username: json['username']?.toString() ?? '',
       firstName: json['firstName']?.toString() ?? '',
@@ -70,6 +68,10 @@ class RetailerBusinessProfileModel {
   final String storeName;
   final String phoneNumber;
   final String storeAddress;
+  final int? countryId;
+  final String countryName;
+  final String countryIso2Code;
+  final String countryIso3Code;
   final String city;
   final String businessType;
 
@@ -78,6 +80,10 @@ class RetailerBusinessProfileModel {
     required this.storeName,
     required this.phoneNumber,
     required this.storeAddress,
+    required this.countryId,
+    required this.countryName,
+    required this.countryIso2Code,
+    required this.countryIso3Code,
     required this.city,
     required this.businessType,
   });
@@ -88,6 +94,10 @@ class RetailerBusinessProfileModel {
       storeName: json['storeName']?.toString() ?? '',
       phoneNumber: json['phoneNumber']?.toString() ?? '',
       storeAddress: json['storeAddress']?.toString() ?? '',
+      countryId: json['countryId'] == null ? null : _toInt(json['countryId']),
+      countryName: json['countryName']?.toString() ?? '',
+      countryIso2Code: json['countryIso2Code']?.toString().toUpperCase() ?? '',
+      countryIso3Code: json['countryIso3Code']?.toString().toUpperCase() ?? '',
       city: json['city']?.toString() ?? '',
       businessType: json['businessType']?.toString() ?? '',
     );

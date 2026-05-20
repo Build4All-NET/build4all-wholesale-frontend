@@ -13,12 +13,14 @@ class FeaturedProductsSection extends StatelessWidget {
   final int? addingProductId;
 
   final void Function(HomeProductModel product) onAddToCart;
+  final VoidCallback onViewAll;
 
   const FeaturedProductsSection({
     super.key,
     required this.products,
     required this.addingProductId,
     required this.onAddToCart,
+    required this.onViewAll,
   });
 
   @override
@@ -44,7 +46,7 @@ class FeaturedProductsSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: null,
+              onPressed: onViewAll,
               child: Text(
                 l10n.viewAll,
                 maxLines: 1,
@@ -187,9 +189,6 @@ class _ProductCard extends StatelessWidget {
                     text: '${l10n.stock}: ${product.totalStock}',
                   ),
                   const Spacer(),
-
-                  /// Product-specific AI button.
-                  /// Kept full-width and separated from Add button to avoid overflow.
                   RetailerProductAiButton(
                     productId: product.id,
                     productName: product.name,
@@ -197,13 +196,10 @@ class _ProductCard extends StatelessWidget {
                     expanded: true,
                   ),
                   const SizedBox(height: 8),
-
                   SizedBox(
                     width: double.infinity,
                     height: 40,
                     child: ElevatedButton(
-                      /// Only clicked product is disabled/loading.
-                      /// Other product buttons stay normal.
                       onPressed: isAddingThisProduct || isOutOfStock
                           ? null
                           : () => onAddToCart(product),

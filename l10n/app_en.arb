@@ -1212,5 +1212,82 @@
 "rfqCancelledSuccessfully": "RFQ cancelled successfully",
 "rfqDeletedSuccessfully": "RFQ deleted successfully",
 "rfqQuotationAcceptedSuccessfully": "Quotation accepted successfully",
-"rfqAiGeneratedSuccessfully": "AI requirements generated successfully"
+"rfqAiGeneratedSuccessfully": "AI requirements generated successfully",
+"completeRetailerProfileTitle": "Complete Retailer Profile",
+"completeRetailerProfileSubtitle": "Provide your business information to continue.",
+"enterFullName": "Enter your full name",
+"enterStoreName": "Enter store name",
+"enterStoreAddress": "Enter store address",
+"retailerProfileSavedSuccessfully": "Retailer profile saved successfully",
+"loadingCities": "Loading cities...",
+"noCitiesFoundForCountry": "No cities found for this country",
+"countryLabel": "Country",
+"selectCountry": "Select country",
+"searchCountry": "Search country...",
+"countryRequiredError": "Country is required",
+"selectCountryFirst": "Select country first",
+"countryLabel": "Country",
+"selectCountry": "Select country",
+"searchCountry": "Search country...",
+"countryRequiredError": "Country is required",
+"selectCountryFirst": "Select country first",
+"loadingCountries": "Loading countries...",
+"loadingCities": "Loading cities...",
+"noCountriesFound": "No countries found",
+"noCitiesFoundForCountry": "No cities found for this country",
+"searchCity": "Search city...",
+"cityRequiredError": "City is required",
+"couldNotLoadCountries": "Could not load countries. Please try again.",
+"couldNotLoadCities": "Could not load cities. Please try again.",
+"validPhoneForSelectedCountryError": "Enter a valid phone number with country code",
+"verifyNewEmail": "Verify new email",
+"sixDigitCode": "6-digit code",
+"verificationCodeSent": "Verification code sent",
+"couldNotResendCode": "Could not resend code.",
+"invalidVerificationCode": "Invalid verification code.",
+"verify": "Verify",
+"resend": "Resend",
+"verifyPasswordChange": "Verify password change",
+"enterCodeSentToEmail": "Enter the 6-digit code sent to {email}",
+"@enterCodeSentToEmail": {
+  "placeholders": {
+    "email": {
+      "type": "String"
+    }
+  }
+},
+"passwordVerificationCodeSent": "Password verification code sent",
+"couldNotUpdatePassword": "Could not update password.",
+"newPasswordRequired": "New password is required",
+"passwordNotUpdatedCodeNotConfirmed": "Password was not updated because the verification code was not confirmed.",
+"emailVerificationRequiredBeforeUpdating": "Email verification is required before updating the email.",
+"emailNotUpdatedCodeNotConfirmed": "Email was not updated because the verification code was not confirmed.",
+"rfqCategoryRequired": "Category is required",
+"rfqSubcategoryRequired": "Subcategory is required",
+"rfqUnitRequired": "Unit is required",
+"rfqTargetUnitPriceHint": "Enter target unit price",
+"rfqTargetUnitPriceRequired": "Target unit price is required",
+"rfqEnterValidTargetUnitPrice": "Enter a valid target unit price",
+"rfqPreferredDeliveryTimeRequired": "Preferred delivery time is required",
+"rfqDeadlineRequired": "Deadline date is required",
+"rfqCityRequired": "Delivery city is required",
+"rfqDeliveryAddressRequired": "Delivery address is required",
+"wholesaleOpportunities": "Wholesale Opportunities",
+"bulkOrders": "Bulk Orders",
+"bulkOrdersDescription": "Save more when ordering larger quantities from suppliers.",
+"viewAvailableOffers": "View available offers",
+"groupDeliveryAvailable": "Group Delivery Available",
+"groupDeliveryDescription": "Join other retailers in your area and save on shipping costs.",
+"groupDeliveryDynamicDescription": "{retailersJoined} retailers joined nearby. Save up to {savingsPercent}% on shipping costs.",
+"@groupDeliveryDynamicDescription": {
+  "placeholders": {
+    "retailersJoined": {
+      "type": "int"
+    },
+    "savingsPercent": {
+      "type": "num"
+    }
+  }
+},
+"learnMore": "Learn More"
 }

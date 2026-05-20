@@ -1212,11 +1212,83 @@
 "rfqCancelledSuccessfully": "RFQ annulée avec succès",
 "rfqDeletedSuccessfully": "RFQ supprimée avec succès",
 "rfqQuotationAcceptedSuccessfully": "Devis accepté avec succès",
-"rfqPostedSuccessfully": "تم نشر طلب التسعير بنجاح",
-"rfqUpdatedSuccessfully": "تم تحديث طلب التسعير بنجاح",
-"rfqCancelledSuccessfully": "تم إلغاء طلب التسعير بنجاح",
-"rfqDeletedSuccessfully": "تم حذف طلب التسعير بنجاح",
-"rfqQuotationAcceptedSuccessfully": "تم قبول عرض السعر بنجاح",
-"rfqAiGeneratedSuccessfully": "تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح"
-
+"rfqPostedSuccessfully": "Devis publiée avec succès",
+"rfqAiGeneratedSuccessfully":" Devis générée par IA avec succès",
+"completeRetailerProfileTitle": "Compléter le profil détaillant",
+"completeRetailerProfileSubtitle": "Renseignez les informations de votre entreprise pour continuer.",
+"enterFullName": "Entrez votre nom complet",
+"enterStoreName": "Entrez le nom du magasin",
+"enterStoreAddress": "Entrez l’adresse du magasin",
+"retailerProfileSavedSuccessfully": "Le profil détaillant a été enregistré avec succès",
+"loadingCities": "Chargement des villes...",
+"noCitiesFoundForCountry": "Aucune ville trouvée pour ce pays",
+"countryLabel": "Pays",
+"selectCountry": "Sélectionner un pays",
+"searchCountry": "Rechercher un pays...",
+"countryRequiredError": "Le pays est obligatoire",
+"selectCountryFirst": "Sélectionnez d’abord un pays",
+"countryLabel": "Pays",
+"selectCountry": "Sélectionner un pays",
+"searchCountry": "Rechercher un pays...",
+"countryRequiredError": "Le pays est obligatoire",
+"selectCountryFirst": "Sélectionnez d’abord un pays",
+"loadingCountries": "Chargement des pays...",
+"loadingCities": "Chargement des villes...",
+"noCountriesFound": "Aucun pays trouvé",
+"noCitiesFoundForCountry": "Aucune ville trouvée pour ce pays",
+"searchCity": "Rechercher une ville...",
+"cityRequiredError": "La ville est obligatoire",
+"couldNotLoadCountries": "Impossible de charger les pays. Veuillez réessayer.",
+"couldNotLoadCities": "Impossible de charger les villes. Veuillez réessayer.",
+"validPhoneForSelectedCountryError": "Entrez un numéro de téléphone valide avec l’indicatif du pays",
+"verifyNewEmail": "Vérifier le nouvel e-mail",
+"sixDigitCode": "Code à 6 chiffres",
+"verificationCodeSent": "Code de vérification envoyé",
+"couldNotResendCode": "Impossible de renvoyer le code.",
+"invalidVerificationCode": "Code de vérification invalide.",
+"verify": "Vérifier",
+"resend": "Renvoyer",
+"verifyPasswordChange": "Vérifier le changement de mot de passe",
+"enterCodeSentToEmail": "Entrez le code à 6 chiffres envoyé à {email}",
+"@enterCodeSentToEmail": {
+  "placeholders": {
+    "email": {
+      "type": "String"
+    }
+  }
+},
+"passwordVerificationCodeSent": "Code de vérification du mot de passe envoyé",
+"couldNotUpdatePassword": "Impossible de mettre à jour le mot de passe.",
+"newPasswordRequired": "Le nouveau mot de passe est obligatoire",
+"passwordNotUpdatedCodeNotConfirmed": "Le mot de passe n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
+"emailVerificationRequiredBeforeUpdating": "La vérification de l’e-mail est requise avant sa mise à jour.",
+"emailNotUpdatedCodeNotConfirmed": "L’e-mail n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
+"rfqCategoryRequired": "La catégorie est obligatoire",
+"rfqSubcategoryRequired": "La sous-catégorie est obligatoire",
+"rfqUnitRequired": "L’unité est obligatoire",
+"rfqTargetUnitPriceHint": "Entrez le prix unitaire cible",
+"rfqTargetUnitPriceRequired": "Le prix unitaire cible est obligatoire",
+"rfqEnterValidTargetUnitPrice": "Entrez un prix unitaire cible valide",
+"rfqPreferredDeliveryTimeRequired": "Le délai de livraison préféré est obligatoire",
+"rfqDeadlineRequired": "La date limite est obligatoire",
+"rfqCityRequired": "La ville de livraison est obligatoire",
+"rfqDeliveryAddressRequired": "L’adresse de livraison est obligatoire",
+"wholesaleOpportunities": "Opportunités de gros",
+"bulkOrders": "Commandes en gros",
+"bulkOrdersDescription": "Économisez davantage en commandant de plus grandes quantités auprès des fournisseurs.",
+"viewAvailableOffers": "Voir les offres disponibles",
+"groupDeliveryAvailable": "Livraison groupée disponible",
+"groupDeliveryDescription": "Rejoignez d’autres détaillants de votre région et économisez sur les frais de livraison.",
+"groupDeliveryDynamicDescription": "{retailersJoined} détaillants ont rejoint près de chez vous. Économisez jusqu’à {savingsPercent}% sur les frais de livraison.",
+"@groupDeliveryDynamicDescription": {
+  "placeholders": {
+    "retailersJoined": {
+      "type": "int"
+    },
+    "savingsPercent": {
+      "type": "num"
+    }
+  }
+},
+"learnMore": "En savoir plus"
 }

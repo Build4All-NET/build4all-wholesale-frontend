@@ -1217,6 +1217,85 @@
 "rfqCancelledSuccessfully": "تم إلغاء طلب التسعير بنجاح",
 "rfqDeletedSuccessfully": "تم حذف طلب التسعير بنجاح",
 "rfqQuotationAcceptedSuccessfully": "تم قبول عرض السعر بنجاح",
-"rfqAiGeneratedSuccessfully": "تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح"
+"rfqAiGeneratedSuccessfully": "تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح",
+"completeRetailerProfileTitle": "إكمال ملف التاجر",
+"completeRetailerProfileSubtitle": "أدخل معلومات عملك للمتابعة.",
+"enterFullName": "أدخل الاسم الكامل",
+"enterStoreName": "أدخل اسم المتجر",
+"enterStoreAddress": "أدخل عنوان المتجر",
+"retailerProfileSavedSuccessfully": "تم حفظ ملف التاجر بنجاح",
+"loadingCities": "جارٍ تحميل المدن...",
+"noCitiesFoundForCountry": "لا توجد مدن لهذا البلد",
+"countryLabel": "البلد",
+"selectCountry": "اختر البلد",
+"searchCountry": "ابحث عن بلد...",
+"countryRequiredError": "البلد مطلوب",
+"selectCountryFirst": "اختر البلد أولاً",
+"countryLabel": "البلد",
+"selectCountry": "اختر البلد",
+"searchCountry": "ابحث عن بلد...",
+"countryRequiredError": "البلد مطلوب",
+"selectCountryFirst": "اختر البلد أولاً",
+"loadingCountries": "جارٍ تحميل البلدان...",
+"loadingCities": "جارٍ تحميل المدن...",
+"noCountriesFound": "لم يتم العثور على بلدان",
+"noCitiesFoundForCountry": "لا توجد مدن لهذا البلد",
+"searchCity": "ابحث عن مدينة...",
+"cityRequiredError": "المدينة مطلوبة",
+"couldNotLoadCountries": "تعذر تحميل البلدان. يرجى المحاولة مرة أخرى.",
+"couldNotLoadCities": "تعذر تحميل المدن. يرجى المحاولة مرة أخرى.",
+"validPhoneForSelectedCountryError": "أدخل رقم هاتف صحيحاً مع رمز البلد",
+"verifyNewEmail": "تأكيد البريد الإلكتروني الجديد",
+"sixDigitCode": "رمز مكوّن من 6 أرقام",
+"verificationCodeSent": "تم إرسال رمز التحقق",
+"couldNotResendCode": "تعذر إعادة إرسال الرمز.",
+"invalidVerificationCode": "رمز التحقق غير صحيح.",
+"verify": "تحقق",
+"resend": "إعادة الإرسال",
+"verifyPasswordChange": "تأكيد تغيير كلمة المرور",
+"enterCodeSentToEmail": "أدخل الرمز المكوّن من 6 أرقام المرسل إلى {email}",
+"@enterCodeSentToEmail": {
+  "placeholders": {
+    "email": {
+      "type": "String"
+    }
+  }
+},
+"passwordVerificationCodeSent": "تم إرسال رمز تأكيد كلمة المرور",
+"couldNotUpdatePassword": "تعذر تحديث كلمة المرور.",
+"newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+"passwordNotUpdatedCodeNotConfirmed": "لم يتم تحديث كلمة المرور لأن رمز التحقق لم يتم تأكيده.",
+"emailVerificationRequiredBeforeUpdating": "يجب تأكيد البريد الإلكتروني قبل تحديثه.",
+"emailNotUpdatedCodeNotConfirmed": "لم يتم تحديث البريد الإلكتروني لأن رمز التحقق لم يتم تأكيده.",
+"rfqCategoryRequired": "الفئة مطلوبة",
+"rfqSubcategoryRequired": "الفئة الفرعية مطلوبة",
+"rfqUnitRequired": "الوحدة مطلوبة",
+"rfqTargetUnitPriceHint": "أدخل السعر المستهدف للوحدة",
+"rfqTargetUnitPriceRequired": "السعر المستهدف للوحدة مطلوب",
+"rfqEnterValidTargetUnitPrice": "أدخل سعراً صحيحاً للوحدة",
+"rfqPreferredDeliveryTimeRequired": "وقت التسليم المفضل مطلوب",
+"rfqDeadlineRequired": "تاريخ الموعد النهائي مطلوب",
+"rfqCityRequired": "مدينة التسليم مطلوبة",
+"rfqDeliveryAddressRequired": "عنوان التسليم مطلوب",
+"wholesaleOpportunities": "فرص الجملة",
+"bulkOrders": "طلبات الجملة",
+"bulkOrdersDescription": "وفّر أكثر عند طلب كميات كبيرة من الموردين.",
+"viewAvailableOffers": "عرض العروض المتاحة",
+"groupDeliveryAvailable": "التوصيل الجماعي متاح",
+"groupDeliveryDescription": "انضم إلى تجار آخرين في منطقتك ووفّر في تكاليف الشحن.",
+"groupDeliveryDynamicDescription": "انضم {retailersJoined} تجار بالقرب منك. وفّر حتى {savingsPercent}% من تكاليف الشحن.",
+"@groupDeliveryDynamicDescription": {
+  "placeholders": {
+    "retailersJoined": {
+      "type": "int"
+    },
+    "savingsPercent": {
+      "type": "num"
+    }
+  }
+},
+"learnMore": "اعرف المزيد"
+
+
 
 }

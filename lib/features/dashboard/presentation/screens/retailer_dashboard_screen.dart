@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../common/widgets/language_selector.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
@@ -16,6 +15,7 @@ import '../widgets/quick_actions_section.dart';
 import '../widgets/retailer_home_header.dart';
 import '../widgets/retailer_search_bar.dart';
 import '../widgets/wholesale_opportunities_section.dart';
+import 'retailer_featured_products_screen.dart';
 
 class RetailerDashboardScreen extends StatelessWidget {
   const RetailerDashboardScreen({super.key});
@@ -66,6 +66,14 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     );
   }
 
+  void _openAllFeaturedProducts(List<HomeProductModel> products) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RetailerFeaturedProductsScreen(products: products),
+      ),
+    );
+  }
+
   void _goToBottomTab(int index) {
     if (index == _selectedBottomIndex && index == 0) return;
 
@@ -76,15 +84,12 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
         context.go('/retailer-dashboard');
         break;
       case 1:
-        context.push('/retailer-top-ranking');
-        break;
-      case 2:
         context.push('/retailer-orders');
         break;
-      case 3:
+      case 2:
         context.push('/retailer-rfqs');
         break;
-      case 4:
+      case 3:
         context.go('/retailer-profile');
         break;
     }
@@ -126,12 +131,6 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            actions: const [
-              Padding(
-                padding: EdgeInsetsDirectional.only(end: 8),
-                child: LanguageSelector(),
-              ),
-            ],
           ),
           body: _buildBody(context, state),
           bottomNavigationBar: _buildBottomNavigationBar(context),
@@ -185,33 +184,24 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             const SizedBox(height: 18),
             RetailerSearchBar(controller: _searchController, onChanged: (_) {}),
             const SizedBox(height: 18),
-
-            // Supplier-created banners only.
-            // They appear directly under the search bar.
             HomeBannerSection(
               banners: home.banners,
               onBannerTap: (banner) {
                 _openBannerTarget(banner, home.featuredProducts);
               },
             ),
-
             if (home.banners.isNotEmpty) const SizedBox(height: 18),
-
-            // Bulk Orders + Group Delivery are kept here,
-            // outside the supplier home banner section.
             WholesaleOpportunitiesSection(groupDelivery: home.groupDelivery),
             const SizedBox(height: 18),
-
             QuickActionsSection(actions: home.quickActions),
             const SizedBox(height: 24),
-
             CategoriesGridSection(categories: home.categories),
             const SizedBox(height: 24),
-
             FeaturedProductsSection(
               products: home.featuredProducts,
               addingProductId: state.addingProductId,
               onAddToCart: _addToCart,
+              onViewAll: () => _openAllFeaturedProducts(home.featuredProducts),
             ),
           ],
         ),
@@ -240,10 +230,6 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_rounded),
           label: l10n.home,
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.trending_up_rounded),
-          label: l10n.topRanking,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.receipt_long_outlined),

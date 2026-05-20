@@ -49,6 +49,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
   DateTime? _deadlineDate;
   XFile? _pickedImage;
   bool _aiGenerated = false;
+  String? _deadlineError;
 
   @override
   void dispose() {
@@ -154,29 +155,44 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
 
     if (selected == null) return;
 
-    setState(() => _deadlineDate = selected);
+    setState(() {
+      _deadlineDate = selected;
+      _deadlineError = null;
+    });
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
+
+    setState(() {
+      _deadlineError = _deadlineDate == null ? l10n.rfqDeadlineRequired : null;
+    });
+
     if (!_formKey.currentState!.validate()) return;
+
+    if (_deadlineDate == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.rfqDeadlineRequired)));
+      return;
+    }
 
     final created = await context.read<RetailerRfqCubit>().createRfq(
       CreateRfqParams(
         productName: _productNameController.text.trim(),
         requirements: _requirementsController.text.trim(),
         imagePath: _pickedImage?.path,
-        categoryName: _emptyToNull(_categoryController.text),
-        subCategoryName: _emptyToNull(_subCategoryController.text),
+        categoryName: _categoryController.text.trim(),
+        subCategoryName: _subCategoryController.text.trim(),
         quantity: int.parse(_quantityController.text.trim()),
-        unit: _unitController.text.trim().isEmpty
-            ? 'units'
-            : _unitController.text.trim(),
+        unit: _unitController.text.trim(),
         targetUnitPrice: _parseDouble(_targetPriceController.text),
         preferredDeliveryLabel: _selectedDeliveryValue,
         preferredDeliveryDays: _deliveryDays(_selectedDeliveryValue),
         deadlineDate: _deadlineDate,
-        deliveryCity: _emptyToNull(_cityController.text),
-        deliveryAddress: _emptyToNull(_addressController.text),
+        deliveryCity: _cityController.text.trim(),
+        deliveryAddress: _addressController.text.trim(),
         aiGenerated: _aiGenerated,
       ),
     );
@@ -229,6 +245,51 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
       ),
       _DeliveryOption(value: 'Flexible', label: l10n.rfqDeliveryFlexible),
     ];
+  }
+
+  String? _requiredTextValidator({
+    required String? value,
+    required String requiredMessage,
+    int minLength = 1,
+    String? minLengthMessage,
+  }) {
+    final clean = value?.trim() ?? '';
+
+    if (clean.isEmpty) {
+      return requiredMessage;
+    }
+
+    if (clean.length < minLength) {
+      return minLengthMessage ?? requiredMessage;
+    }
+
+    return null;
+  }
+
+  String? _positiveIntegerValidator(String? value, AppLocalizations l10n) {
+    final quantity = int.tryParse(value?.trim() ?? '');
+
+    if (quantity == null || quantity <= 0) {
+      return l10n.rfqEnterValidQuantity;
+    }
+
+    return null;
+  }
+
+  String? _positivePriceValidator(String? value, AppLocalizations l10n) {
+    final clean = value?.trim() ?? '';
+
+    if (clean.isEmpty) {
+      return l10n.rfqTargetUnitPriceRequired;
+    }
+
+    final price = double.tryParse(clean);
+
+    if (price == null || price <= 0) {
+      return l10n.rfqEnterValidTargetUnitPrice;
+    }
+
+    return null;
   }
 
   @override
@@ -302,12 +363,14 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                       label: l10n.rfqProductName,
                       hint: l10n.rfqProductNameHint,
                       icon: Icons.inventory_2_outlined,
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
-                        final clean = value?.trim() ?? '';
-                        if (clean.isEmpty) return l10n.rfqProductNameRequired;
-                        if (clean.length < 2)
-                          return l10n.rfqProductNameTooShort;
-                        return null;
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqProductNameRequired,
+                          minLength: 2,
+                          minLengthMessage: l10n.rfqProductNameTooShort,
+                        );
                       },
                     ),
                     const SizedBox(height: 12),
@@ -325,6 +388,14 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                             label: l10n.rfqCategory,
                             hint: l10n.rfqCategoryHint,
                             icon: Icons.category_outlined,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return _requiredTextValidator(
+                                value: value,
+                                requiredMessage: l10n.rfqCategoryRequired,
+                                minLength: 2,
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -334,6 +405,14 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                             label: l10n.rfqSubcategory,
                             hint: l10n.rfqSubcategoryHint,
                             icon: Icons.account_tree_outlined,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return _requiredTextValidator(
+                                value: value,
+                                requiredMessage: l10n.rfqSubcategoryRequired,
+                                minLength: 2,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -349,11 +428,12 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                       label: l10n.rfqRequirements,
                       hint: l10n.rfqRequirementsHint,
                       validator: (value) {
-                        final clean = value?.trim() ?? '';
-                        if (clean.isEmpty) return l10n.rfqRequirementsRequired;
-                        if (clean.length < 10)
-                          return l10n.rfqRequirementsTooShort;
-                        return null;
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqRequirementsRequired,
+                          minLength: 10,
+                          minLengthMessage: l10n.rfqRequirementsTooShort,
+                        );
                       },
                     ),
                     const SizedBox(height: 10),
@@ -397,14 +477,9 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                             hint: l10n.rfqMinimumQuantityHint,
                             icon: Icons.numbers_rounded,
                             keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
-                              final quantity = int.tryParse(
-                                value?.trim() ?? '',
-                              );
-                              if (quantity == null || quantity <= 0) {
-                                return l10n.rfqEnterValidQuantity;
-                              }
-                              return null;
+                              return _positiveIntegerValidator(value, l10n);
                             },
                           ),
                         ),
@@ -415,6 +490,13 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                             label: l10n.rfqUnit,
                             hint: l10n.rfqUnitHint,
                             icon: Icons.straighten_outlined,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return _requiredTextValidator(
+                                value: value,
+                                requiredMessage: l10n.rfqUnitRequired,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -423,11 +505,15 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                     _TextFieldBox(
                       controller: _targetPriceController,
                       label: l10n.rfqTargetUnitPrice,
-                      hint: l10n.rfqOptional,
+                      hint: l10n.rfqTargetUnitPriceHint,
                       icon: Icons.attach_money_rounded,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
                       ),
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return _positivePriceValidator(value, l10n);
+                      },
                     ),
                     const SizedBox(height: 12),
                     _DeliveryDropdown(
@@ -441,8 +527,14 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                     const SizedBox(height: 12),
                     _DeadlineBox(
                       date: _deadlineDate,
+                      errorText: _deadlineError,
                       onPick: _pickDeadline,
-                      onClear: () => setState(() => _deadlineDate = null),
+                      onClear: () {
+                        setState(() {
+                          _deadlineDate = null;
+                          _deadlineError = l10n.rfqDeadlineRequired;
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -455,6 +547,14 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                       label: l10n.rfqCity,
                       hint: l10n.rfqCityHint,
                       icon: Icons.location_city_outlined,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqCityRequired,
+                          minLength: 2,
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
                     _MultilineFieldBox(
@@ -462,6 +562,13 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                       label: l10n.rfqDeliveryAddress,
                       hint: l10n.rfqDeliveryAddressHint,
                       minLines: 2,
+                      validator: (value) {
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqDeliveryAddressRequired,
+                          minLength: 5,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -514,6 +621,7 @@ class _TextFieldBox extends StatelessWidget {
   final String hint;
   final IconData icon;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
 
   const _TextFieldBox({
@@ -522,6 +630,7 @@ class _TextFieldBox extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.keyboardType,
+    this.textInputAction,
     this.validator,
   });
 
@@ -530,6 +639,7 @@ class _TextFieldBox extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      textInputAction: textInputAction,
       validator: validator,
       decoration: _inputDecoration(
         context: context,
@@ -599,6 +709,14 @@ InputDecoration _inputDecoration({
         color: Theme.of(context).colorScheme.primary,
         width: 1.5,
       ),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: AppThemeTokens.error),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: AppThemeTokens.error, width: 1.5),
     ),
   );
 }
@@ -715,6 +833,12 @@ class _DeliveryDropdown extends StatelessWidget {
           )
           .toList(),
       onChanged: onChanged,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return l10n.rfqPreferredDeliveryTimeRequired;
+        }
+        return null;
+      },
       decoration: _inputDecoration(
         context: context,
         label: l10n.rfqPreferredDeliveryTime,
@@ -727,11 +851,13 @@ class _DeliveryDropdown extends StatelessWidget {
 
 class _DeadlineBox extends StatelessWidget {
   final DateTime? date;
+  final String? errorText;
   final VoidCallback onPick;
   final VoidCallback onClear;
 
   const _DeadlineBox({
     required this.date,
+    required this.errorText,
     required this.onPick,
     required this.onClear,
   });
@@ -746,42 +872,67 @@ class _DeadlineBox extends StatelessWidget {
               '${date!.month.toString().padLeft(2, '0')}/'
               '${date!.year}';
 
-    return InkWell(
-      onTap: onPick,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppThemeTokens.inputFill,
+    final hasError = errorText != null && errorText!.trim().isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: onPick,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppThemeTokens.border),
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.event_outlined,
-              color: AppThemeTokens.textSecondary,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppThemeTokens.inputFill,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: hasError ? AppThemeTokens.error : AppThemeTokens.border,
+              ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: date == null
-                      ? AppThemeTokens.textSecondary
-                      : AppThemeTokens.textPrimary,
-                  fontWeight: FontWeight.w700,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.event_outlined,
+                  color: hasError
+                      ? AppThemeTokens.error
+                      : AppThemeTokens.textSecondary,
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: date == null
+                          ? AppThemeTokens.textSecondary
+                          : AppThemeTokens.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (date != null)
+                  IconButton(
+                    onPressed: onClear,
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (hasError) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 12),
+            child: Text(
+              errorText!,
+              style: const TextStyle(
+                color: AppThemeTokens.error,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            if (date != null)
-              IconButton(
-                onPressed: onClear,
-                icon: const Icon(Icons.close_rounded),
-              ),
-          ],
-        ),
-      ),
+          ),
+        ],
+      ],
     );
   }
 }

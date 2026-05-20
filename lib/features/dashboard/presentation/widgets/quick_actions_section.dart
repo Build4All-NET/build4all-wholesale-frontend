@@ -16,8 +16,6 @@ class QuickActionsSection extends StatelessWidget {
   /// - Loyalty Points
   /// - Promotions
   ///
-  /// Live Chat is removed.
-  /// Top Ranking remains only in the bottom navbar.
   final List<QuickActionModel> actions;
 
   const QuickActionsSection({super.key, required this.actions});

@@ -6,13 +6,15 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 
 import '../../../../common/widgets/primary_button.dart';
-import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/extensions/l10n_extension.dart';
-import '../../../../core/extensions/select_option_l10n_extension.dart';
-import '../../../../core/models/select_option.dart';
+import '../../../../core/location/data/models/country_model.dart';
+import '../../../../core/location/data/models/region_model.dart';
+import '../../../../core/location/data/services/location_api_service.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../injection_container.dart';
 import '../cubit/retailer_profile_cubit.dart';
 import '../cubit/retailer_profile_state.dart';
@@ -54,28 +56,28 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
   late final TextEditingController _newPasswordController;
   late final TextEditingController _deletePasswordController;
 
+  late final LocationApiService _locationApiService;
+
   final FocusNode _phoneFocusNode = FocusNode();
 
-  String? _selectedCity;
+  List<CountryModel> _countries = [];
+  List<RegionModel> _cities = [];
+
+  CountryModel? _selectedCountry;
+  RegionModel? _selectedCity;
+
   String _originalEmail = '';
   String _initialCountryCode = 'LB';
   String _fullPhone = '';
+
   bool _filledOnce = false;
+  bool _isLocationSyncScheduled = false;
   bool _hideCurrentPassword = true;
   bool _hideNewPassword = true;
+  bool _isLoadingCountries = true;
+  bool _isLoadingCities = false;
 
-  final List<SelectOption> _cities = const [
-    SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
-    SelectOption(value: 'Tripoli', labelKey: 'cityTripoli'),
-    SelectOption(value: 'Sidon', labelKey: 'citySidon'),
-    SelectOption(value: 'Tyre', labelKey: 'cityTyre'),
-    SelectOption(value: 'Zahle', labelKey: 'cityZahle'),
-    SelectOption(value: 'Jounieh', labelKey: 'cityJounieh'),
-    SelectOption(value: 'Nabatieh', labelKey: 'cityNabatieh'),
-    SelectOption(value: 'Byblos', labelKey: 'cityByblos'),
-    SelectOption(value: 'Aley', labelKey: 'cityAley'),
-    SelectOption(value: 'Baalbek', labelKey: 'cityBaalbek'),
-  ];
+  String? _locationError;
 
   @override
   void initState() {
@@ -94,6 +96,12 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     _currentPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
     _deletePasswordController = TextEditingController();
+
+    _locationApiService = LocationApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    );
+
+    _loadCountries();
   }
 
   @override
@@ -117,6 +125,146 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     super.dispose();
   }
 
+  Future<void> _loadCountries() async {
+    if (mounted) {
+      setState(() {
+        _isLoadingCountries = true;
+        _locationError = null;
+      });
+    }
+
+    try {
+      final countries = await _locationApiService.getCountries();
+
+      if (!mounted) return;
+
+      setState(() {
+        _countries = countries;
+        _isLoadingCountries = false;
+      });
+
+      _scheduleLocationSyncFromProfile();
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingCountries = false;
+        _locationError = _cleanError(e, context.l10n.couldNotLoadCountries);
+      });
+    }
+  }
+
+  Future<void> _loadCitiesForCountry(
+    CountryModel country, {
+    String? cityToSelect,
+  }) async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoadingCities = true;
+      _cities = [];
+      _selectedCity = null;
+      _locationError = null;
+    });
+
+    try {
+      final cities = await _locationApiService.getRegionsByCountry(country.id);
+
+      if (!mounted) return;
+
+      RegionModel? selectedCity;
+
+      if (cityToSelect != null && cityToSelect.trim().isNotEmpty) {
+        final normalizedCity = cityToSelect.trim().toLowerCase();
+
+        for (final city in cities) {
+          if (city.name.trim().toLowerCase() == normalizedCity) {
+            selectedCity = city;
+            break;
+          }
+        }
+      }
+
+      setState(() {
+        _cities = cities;
+        _selectedCity = selectedCity;
+        _isLoadingCities = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingCities = false;
+        _locationError = _cleanError(e, context.l10n.couldNotLoadCities);
+      });
+    }
+  }
+
+  void _scheduleLocationSyncFromProfile() {
+    if (_isLocationSyncScheduled) return;
+
+    _isLocationSyncScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isLocationSyncScheduled = false;
+
+      if (!mounted) return;
+
+      _syncSelectedLocationFromProfile();
+    });
+  }
+
+  void _syncSelectedLocationFromProfile() {
+    if (!mounted || _countries.isEmpty || _selectedCountry != null) return;
+
+    final profile = context.read<RetailerProfileCubit>().state.profile;
+    if (profile == null) return;
+
+    final countryId = profile.business.countryId;
+    final countryIso2 = profile.business.countryIso2Code.trim().toUpperCase();
+    final countryName = profile.business.countryName.trim().toLowerCase();
+
+    CountryModel? country;
+
+    if (countryId != null && countryId > 0) {
+      for (final item in _countries) {
+        if (item.id == countryId) {
+          country = item;
+          break;
+        }
+      }
+    }
+
+    if (country == null && countryIso2.isNotEmpty) {
+      for (final item in _countries) {
+        if (item.iso2Code.trim().toUpperCase() == countryIso2) {
+          country = item;
+          break;
+        }
+      }
+    }
+
+    if (country == null && countryName.isNotEmpty) {
+      for (final item in _countries) {
+        if (item.name.trim().toLowerCase() == countryName) {
+          country = item;
+          break;
+        }
+      }
+    }
+
+    if (country == null) return;
+
+    setState(() {
+      _selectedCountry = country;
+      if (country!.iso2Code.trim().isNotEmpty) {
+        _initialCountryCode = country.iso2Code.trim().toUpperCase();
+      }
+    });
+
+    _loadCitiesForCountry(country, cityToSelect: profile.business.city);
+  }
+
   void _fillControllers(RetailerProfileState state) {
     if (_filledOnce || state.profile == null) return;
 
@@ -135,6 +283,12 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     final phone = profile.business.phoneNumber.trim();
     _fullPhone = phone;
 
+    if (profile.business.countryIso2Code.trim().isNotEmpty) {
+      _initialCountryCode = profile.business.countryIso2Code
+          .trim()
+          .toUpperCase();
+    }
+
     if (phone.isNotEmpty) {
       try {
         final parsed = PhoneNumber.fromCompleteNumber(completeNumber: phone);
@@ -142,16 +296,13 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         _phoneController.text = parsed.number;
         _fullPhone = parsed.completeNumber;
       } catch (_) {
-        _initialCountryCode = 'LB';
         _phoneController.text = phone.replaceAll('+', '');
       }
     }
 
-    _selectedCity = profile.business.city.trim().isEmpty
-        ? null
-        : profile.business.city.trim();
-
     _filledOnce = true;
+
+    _scheduleLocationSyncFromProfile();
   }
 
   String? _validateName(String? value, String fieldName) {
@@ -201,7 +352,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     }
 
     if (!RegExp(r'^\+[1-9]\d{7,14}$').hasMatch(phone)) {
-      return 'Enter a valid phone number with country code';
+      return context.l10n.validPhoneForSelectedCountryError;
     }
 
     return null;
@@ -227,11 +378,11 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     return text.isEmpty ? fallback : text;
   }
 
-  Future<bool> _showEmailVerificationSheet({
-    required String email,
-  }) async {
-    final repository =
-        context.read<RetailerProfileCubit>().retailerProfileRepository;
+  Future<bool> _showEmailVerificationSheet({required String email}) async {
+    final l10n = context.l10n;
+    final repository = context
+        .read<RetailerProfileCubit>()
+        .retailerProfileRepository;
 
     String codeText = '';
     String? localError;
@@ -288,9 +439,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           size: 30,
                         ),
                       ),
-                      title: const Text(
-                        'Verify new email',
-                        style: TextStyle(
+                      title: Text(
+                        l10n.verifyNewEmail,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
                         ),
@@ -307,9 +458,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       maxLength: 6,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (value) {
                         if (!sheetContext.mounted) return;
 
@@ -318,9 +467,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           localError = null;
                         });
                       },
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         counterText: '',
-                        hintText: '6-digit code',
+                        hintText: l10n.sixDigitCode,
                       ),
                     ),
                     if (localError != null &&
@@ -348,8 +497,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                 : () async {
                                     await closeSheet(sheetContext, false);
                                   },
-                            child: const Text(
-                              'Cancel',
+                            child: Text(
+                              l10n.cancel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -377,7 +526,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
                                       setSheetState(() {
                                         localLoading = false;
-                                        localError = 'Verification code sent.';
+                                        localError = l10n.verificationCodeSent;
                                       });
                                     } catch (e) {
                                       if (!sheetContext.mounted) return;
@@ -386,13 +535,13 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                         localLoading = false;
                                         localError = _cleanError(
                                           e,
-                                          'Could not resend code.',
+                                          l10n.couldNotResendCode,
                                         );
                                       });
                                     }
                                   },
-                            child: const Text(
-                              'Resend',
+                            child: Text(
+                              l10n.resend,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -432,7 +581,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                     localLoading = false;
                                     localError = _cleanError(
                                       e,
-                                      'Invalid verification code.',
+                                      l10n.invalidVerificationCode,
                                     );
                                   });
                                 }
@@ -446,8 +595,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                'Verify',
+                            : Text(
+                                l10n.verify,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -471,8 +620,10 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     required String email,
     required String newPassword,
   }) async {
-    final repository =
-        context.read<RetailerProfileCubit>().retailerProfileRepository;
+    final l10n = context.l10n;
+    final repository = context
+        .read<RetailerProfileCubit>()
+        .retailerProfileRepository;
 
     String codeText = '';
     String? localError;
@@ -529,15 +680,15 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           size: 30,
                         ),
                       ),
-                      title: const Text(
-                        'Verify password change',
-                        style: TextStyle(
+                      title: Text(
+                        l10n.verifyPasswordChange,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
                         ),
                       ),
                       subtitle: Text(
-                        'Enter the 6-digit code sent to $email',
+                        l10n.enterCodeSentToEmail(email),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -548,9 +699,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       maxLength: 6,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (value) {
                         if (!sheetContext.mounted) return;
 
@@ -559,9 +708,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           localError = null;
                         });
                       },
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         counterText: '',
-                        hintText: '6-digit code',
+                        hintText: l10n.sixDigitCode,
                       ),
                     ),
                     if (localError != null &&
@@ -589,8 +738,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                 : () async {
                                     await closeSheet(sheetContext, false);
                                   },
-                            child: const Text(
-                              'Cancel',
+                            child: Text(
+                              l10n.cancel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -621,7 +770,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                       setSheetState(() {
                                         localLoading = false;
                                         localError =
-                                            'Password verification code sent.';
+                                            l10n.passwordVerificationCodeSent;
                                       });
                                     } catch (e) {
                                       if (!sheetContext.mounted) return;
@@ -630,13 +779,13 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                         localLoading = false;
                                         localError = _cleanError(
                                           e,
-                                          'Could not resend code.',
+                                          l10n.couldNotResendCode,
                                         );
                                       });
                                     }
                                   },
-                            child: const Text(
-                              'Resend',
+                            child: Text(
+                              l10n.resend,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -685,7 +834,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                     localLoading = false;
                                     localError = _cleanError(
                                       e,
-                                      'Could not update password.',
+                                      l10n.couldNotUpdatePassword,
                                     );
                                   });
                                 }
@@ -699,8 +848,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                'Verify',
+                            : Text(
+                                l10n.verify,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -726,8 +875,13 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     if (!_formKey.currentState!.validate()) return;
 
-    if (_selectedCity == null || _selectedCity!.trim().isEmpty) {
-      _showMessage('${l10n.city} is required');
+    if (_selectedCountry == null) {
+      _showMessage(l10n.countryRequiredError);
+      return;
+    }
+
+    if (_selectedCity == null) {
+      _showMessage(l10n.cityRequiredError);
       return;
     }
 
@@ -747,7 +901,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       }
 
       if (newPassword.isEmpty) {
-        _showMessage('${l10n.newPassword} is required');
+        _showMessage(l10n.newPasswordRequired);
         return;
       }
 
@@ -767,9 +921,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         return;
       }
 
-      final sent = await cubit.sendPasswordResetCode(
-        email: _originalEmail,
-      );
+      final sent = await cubit.sendPasswordResetCode(email: _originalEmail);
 
       if (!mounted) return;
 
@@ -778,7 +930,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         return;
       }
 
-      _showMessage('Password verification code sent');
+      _showMessage(l10n.passwordVerificationCodeSent);
 
       final passwordVerified = await _showPasswordVerificationSheet(
         email: _originalEmail,
@@ -788,9 +940,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       if (!mounted) return;
 
       if (!passwordVerified) {
-        _showMessage(
-          'Password was not updated because the verification code was not confirmed.',
-        );
+        _showMessage(l10n.passwordNotUpdatedCodeNotConfirmed);
         return;
       }
 
@@ -814,17 +964,13 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     if (emailChanged) {
       if (!accountResult.emailVerificationRequired) {
-        _showMessage(
-          'Email verification is required before updating the email.',
-        );
+        _showMessage(l10n.emailVerificationRequiredBeforeUpdating);
         return;
       }
 
-      _showMessage('Verification code sent');
+      _showMessage(l10n.verificationCodeSent);
 
-      final verified = await _showEmailVerificationSheet(
-        email: currentEmail,
-      );
+      final verified = await _showEmailVerificationSheet(email: currentEmail);
 
       if (!mounted) return;
 
@@ -835,9 +981,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
         if (!mounted) return;
 
-        _showMessage(
-          'Email was not updated because the verification code was not confirmed.',
-        );
+        _showMessage(l10n.emailNotUpdatedCodeNotConfirmed);
 
         return;
       }
@@ -854,7 +998,11 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       storeName: _storeNameController.text.trim(),
       phoneNumber: _normalizePhone(_fullPhone),
       storeAddress: _addressController.text.trim(),
-      city: _selectedCity!,
+      countryId: _selectedCountry!.id,
+      countryName: _selectedCountry!.name,
+      countryIso2Code: _selectedCountry!.iso2Code,
+      countryIso3Code: _selectedCountry!.iso3Code,
+      city: _selectedCity!.name,
       businessType: _businessTypeController.text.trim(),
       successMessage: l10n.profileUpdatedSuccessfully,
     );
@@ -894,11 +1042,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       if (messenger == null) return;
 
       messenger.clearSnackBars();
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(message),
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(message)));
     });
   }
 
@@ -939,9 +1083,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     if (!mounted || confirmed != true) return;
 
-    final deleted = await cubit.deleteAccount(
-      password: password,
-    );
+    final deleted = await cubit.deleteAccount(password: password);
 
     if (!mounted) return;
 
@@ -984,182 +1126,265 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                     child: Column(
                       children: [
                         _SectionTitle(title: l10n.accountInformation),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _usernameController,
-                          hintText: l10n.username,
-                          prefixIcon: const Icon(Icons.person_outline),
-                          validator: (value) => Validators.requiredField(
-                            value,
-                            fieldName: l10n.username,
+                        const SizedBox(height: 16),
+                        _LabeledField(
+                          label: l10n.username,
+                          child: PrimaryTextField(
+                            controller: _usernameController,
+                            hintText: l10n.username,
+                            prefixIcon: const Icon(Icons.person_outline),
+                            validator: (value) => Validators.requiredField(
+                              value,
+                              fieldName: l10n.username,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 14),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: PrimaryTextField(
-                                controller: _firstNameController,
-                                hintText: l10n.firstName,
-                                prefixIcon: const Icon(Icons.person_outline),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(
-                                      r'[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]',
+                              child: _LabeledField(
+                                label: l10n.firstName,
+                                child: PrimaryTextField(
+                                  controller: _firstNameController,
+                                  hintText: l10n.firstName,
+                                  prefixIcon: const Icon(Icons.person_outline),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                        r'[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]',
+                                      ),
                                     ),
-                                  ),
-                                ],
-                                validator: (value) =>
-                                    _validateName(value, l10n.firstName),
+                                  ],
+                                  validator: (value) =>
+                                      _validateName(value, l10n.firstName),
+                                ),
                               ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: PrimaryTextField(
-                                controller: _lastNameController,
-                                hintText: l10n.lastName,
-                                prefixIcon: const Icon(Icons.person_outline),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(
-                                      r'[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]',
+                              child: _LabeledField(
+                                label: l10n.lastName,
+                                child: PrimaryTextField(
+                                  controller: _lastNameController,
+                                  hintText: l10n.lastName,
+                                  prefixIcon: const Icon(Icons.person_outline),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                        r'[A-Za-zÀ-ÖØ-öø-ÿ\u0600-\u06FF ]',
+                                      ),
                                     ),
-                                  ),
-                                ],
-                                validator: (value) =>
-                                    _validateName(value, l10n.lastName),
+                                  ],
+                                  validator: (value) =>
+                                      _validateName(value, l10n.lastName),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _emailController,
-                          hintText: l10n.email,
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: Validators.email,
+                        const SizedBox(height: 14),
+                        _LabeledField(
+                          label: l10n.email,
+                          child: PrimaryTextField(
+                            controller: _emailController,
+                            hintText: l10n.email,
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            keyboardType: TextInputType.emailAddress,
+                            validator: Validators.email,
+                          ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 28),
                         _SectionTitle(title: l10n.businessInformation),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _storeNameController,
-                          hintText: l10n.storeName,
-                          prefixIcon: const Icon(Icons.storefront_outlined),
-                          validator: (value) => Validators.requiredField(
-                            value,
-                            fieldName: l10n.storeName,
+                        const SizedBox(height: 16),
+                        _LabeledField(
+                          label: l10n.storeName,
+                          child: PrimaryTextField(
+                            controller: _storeNameController,
+                            hintText: l10n.storeName,
+                            prefixIcon: const Icon(Icons.storefront_outlined),
+                            validator: (value) => Validators.requiredField(
+                              value,
+                              fieldName: l10n.storeName,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        IntlPhoneField(
-                          controller: _phoneController,
-                          focusNode: _phoneFocusNode,
-                          initialCountryCode: _initialCountryCode,
-                          disableLengthCheck: false,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            hintText: l10n.phoneNumber,
-                            prefixIcon: const Icon(Icons.phone_outlined),
+                        const SizedBox(height: 14),
+                        _LabeledField(
+                          label: l10n.phoneNumber,
+                          child: IntlPhoneField(
+                            controller: _phoneController,
+                            focusNode: _phoneFocusNode,
+                            initialCountryCode: _initialCountryCode,
+                            disableLengthCheck: false,
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              hintText: l10n.phoneNumber,
+                              prefixIcon: const Icon(Icons.phone_outlined),
+                            ),
+                            validator: (phone) {
+                              final value = phone?.completeNumber ?? _fullPhone;
+                              return _validateInternationalPhone(value);
+                            },
+                            onChanged: (phone) {
+                              _fullPhone = phone.number.trim().isEmpty
+                                  ? ''
+                                  : phone.completeNumber;
+                            },
+                            onCountryChanged: (_) {
+                              _fullPhone = '';
+                            },
                           ),
-                          validator: (phone) {
-                            final value = phone?.completeNumber ?? _fullPhone;
-                            return _validateInternationalPhone(value);
-                          },
-                          onChanged: (phone) {
-                            _fullPhone = phone.number.trim().isEmpty
-                                ? ''
-                                : phone.completeNumber;
-                          },
-                          onCountryChanged: (_) {
-                            _fullPhone = '';
-                          },
                         ),
-                        const SizedBox(height: 12),
-                        PrimaryDropdownField<String>(
-                          value: _selectedCity,
-                          hintText: l10n.selectCity,
-                          items: _cities
-                              .map(
-                                (city) => DropdownMenuItem<String>(
-                                  value: city.value,
-                                  child: Text(
-                                    context.trOption(city.labelKey),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() => _selectedCity = value);
+                        const SizedBox(height: 14),
+                        SearchableSelectionField<CountryModel>(
+                          label: l10n.countryLabel,
+                          hintText: _isLoadingCountries
+                              ? l10n.loadingCountries
+                              : l10n.selectCountry,
+                          searchHintText: l10n.searchCountry,
+                          items: _countries,
+                          value: _selectedCountry,
+                          itemLabel: (country) => country.name,
+                          isLoading: _isLoadingCountries,
+                          emptyText: l10n.noCountriesFound,
+                          onSelected: (country) {
+                            setState(() {
+                              _selectedCountry = country;
+                              _selectedCity = null;
+                              _cities = [];
+                              _locationError = null;
+
+                              if (country.iso2Code.trim().isNotEmpty) {
+                                _initialCountryCode = country.iso2Code
+                                    .trim()
+                                    .toUpperCase();
+                              }
+                            });
+
+                            _loadCitiesForCountry(country);
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return '${l10n.city} is required';
+                            if (value == null) {
+                              return l10n.countryRequiredError;
                             }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _businessTypeController,
-                          hintText: l10n.businessType,
-                          prefixIcon: const Icon(
-                            Icons.business_center_outlined,
-                          ),
-                          validator: (value) => Validators.requiredField(
-                            value,
-                            fieldName: l10n.businessType,
-                          ),
+                        const SizedBox(height: 14),
+                        SearchableSelectionField<RegionModel>(
+                          label: l10n.city,
+                          hintText: _selectedCountry == null
+                              ? l10n.selectCountryFirst
+                              : _isLoadingCities
+                              ? l10n.loadingCities
+                              : l10n.selectCity,
+                          searchHintText: l10n.searchCity,
+                          items: _cities,
+                          value: _selectedCity,
+                          itemLabel: (city) => city.name,
+                          enabled:
+                              _selectedCountry != null && !_isLoadingCities,
+                          isLoading: _isLoadingCities,
+                          emptyText: l10n.noCitiesFoundForCountry,
+                          onSelected: (city) {
+                            setState(() => _selectedCity = city);
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return l10n.cityRequiredError;
+                            }
+                            return null;
+                          },
                         ),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _addressController,
-                          hintText: l10n.address,
-                          prefixIcon: const Icon(Icons.location_on_outlined),
-                          validator: (value) => Validators.requiredField(
-                            value,
-                            fieldName: l10n.address,
+                        if (_locationError != null &&
+                            _locationError!.trim().isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              _locationError!,
+                              style: const TextStyle(
+                                color: AppThemeTokens.error,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 24),
-                        _SectionTitle(title: l10n.changePasswordOptional),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _currentPasswordController,
-                          hintText: l10n.currentPassword,
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          obscureText: _hideCurrentPassword,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(
-                                () => _hideCurrentPassword =
-                                    !_hideCurrentPassword,
-                              );
-                            },
-                            icon: Icon(
-                              _hideCurrentPassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
+                        ],
+                        const SizedBox(height: 14),
+                        _LabeledField(
+                          label: l10n.businessType,
+                          child: PrimaryTextField(
+                            controller: _businessTypeController,
+                            hintText: l10n.businessType,
+                            prefixIcon: const Icon(
+                              Icons.business_center_outlined,
+                            ),
+                            validator: (value) => Validators.requiredField(
+                              value,
+                              fieldName: l10n.businessType,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        PrimaryTextField(
-                          controller: _newPasswordController,
-                          hintText: l10n.newPassword,
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          obscureText: _hideNewPassword,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(
-                                () => _hideNewPassword = !_hideNewPassword,
-                              );
-                            },
-                            icon: Icon(
-                              _hideNewPassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
+                        const SizedBox(height: 14),
+                        _LabeledField(
+                          label: l10n.address,
+                          child: PrimaryTextField(
+                            controller: _addressController,
+                            hintText: l10n.address,
+                            prefixIcon: const Icon(Icons.location_on_outlined),
+                            validator: (value) => Validators.requiredField(
+                              value,
+                              fieldName: l10n.address,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        _SectionTitle(title: l10n.changePasswordOptional),
+                        const SizedBox(height: 16),
+                        _LabeledField(
+                          label: l10n.currentPassword,
+                          child: PrimaryTextField(
+                            controller: _currentPasswordController,
+                            hintText: l10n.currentPassword,
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            obscureText: _hideCurrentPassword,
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(
+                                  () => _hideCurrentPassword =
+                                      !_hideCurrentPassword,
+                                );
+                              },
+                              icon: Icon(
+                                _hideCurrentPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        _LabeledField(
+                          label: l10n.newPassword,
+                          child: PrimaryTextField(
+                            controller: _newPasswordController,
+                            hintText: l10n.newPassword,
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            obscureText: _hideNewPassword,
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(
+                                  () => _hideNewPassword = !_hideNewPassword,
+                                );
+                              },
+                              icon: Icon(
+                                _hideNewPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                              ),
                             ),
                           ),
                         ),
@@ -1188,9 +1413,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 class _SectionTitle extends StatelessWidget {
   final String title;
 
-  const _SectionTitle({
-    required this.title,
-  });
+  const _SectionTitle({required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -1198,12 +1421,40 @@ class _SectionTitle extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       child: Text(
         title,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontSize: 16,
+        style: const TextStyle(
+          color: AppThemeTokens.textPrimary,
+          fontSize: 18,
           fontWeight: FontWeight.w900,
         ),
       ),
+    );
+  }
+}
+
+class _LabeledField extends StatelessWidget {
+  final String label;
+  final Widget child;
+
+  const _LabeledField({required this.label, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: AppThemeTokens.textPrimary,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        child,
+      ],
     );
   }
 }
