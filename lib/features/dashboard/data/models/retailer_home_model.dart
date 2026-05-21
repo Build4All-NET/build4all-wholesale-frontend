@@ -252,7 +252,14 @@ class HomeProductModel {
   final String description;
   final String? imageUrl;
 
+  /// Backend-calculated final selling price.
+  /// If promotion is active, this is the discounted price.
+  /// If no promotion is active, this is the original supplier price.
   final double price;
+
+  /// Original supplier product price before promotion.
+  final double? originalPrice;
+
   final String currency;
 
   final int moq;
@@ -272,6 +279,8 @@ class HomeProductModel {
   final double? promotionDiscountValue;
   final String? promotionLabel;
 
+  /// Used only for availability logic.
+  /// Do not display this number to retailer.
   final int totalStock;
 
   const HomeProductModel({
@@ -285,6 +294,7 @@ class HomeProductModel {
     required this.description,
     required this.imageUrl,
     required this.price,
+    required this.originalPrice,
     required this.currency,
     required this.moq,
     required this.moqUnit,
@@ -303,7 +313,16 @@ class HomeProductModel {
     required this.totalStock,
   });
 
+  bool get shouldShowOriginalPrice {
+    if (!hasActivePromotion) return false;
+    if (originalPrice == null) return false;
+    return originalPrice! > price;
+  }
+
   factory HomeProductModel.fromJson(Map<String, dynamic> json) {
+    final parsedPrice = _toDouble(json['price']);
+    final parsedOriginalPrice = _toNullableDouble(json['originalPrice']);
+
     return HomeProductModel(
       id: _toInt(json['id']),
       supplierBuild4allUserId: json['supplierBuild4allUserId'] == null
@@ -320,7 +339,8 @@ class HomeProductModel {
       name: json['name']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       imageUrl: json['imageUrl']?.toString(),
-      price: _toDouble(json['price']),
+      price: parsedPrice,
+      originalPrice: parsedOriginalPrice,
       currency: json['currency']?.toString() ?? r'$',
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',

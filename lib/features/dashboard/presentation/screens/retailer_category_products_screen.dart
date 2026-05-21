@@ -9,6 +9,7 @@ import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_bu
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
 import '../widgets/retailer_product_image.dart';
+import '../widgets/retailer_promotion_badge.dart';
 
 class RetailerCategoryProductsScreen extends StatelessWidget {
   final HomeCategoryModel category;
@@ -405,7 +406,24 @@ class RetailerProductListCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ProductImage(imageUrl: product.imageUrl),
+          Stack(
+            children: [
+              _ProductImage(imageUrl: product.imageUrl),
+              if (product.hasActivePromotion)
+                Positioned(
+                  top: 7,
+                  left: 7,
+                  child: RetailerPromotionBadge(
+                    product: product,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 4,
+                    ),
+                    fontSize: 9,
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -448,17 +466,10 @@ class RetailerProductListCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '${product.currency}${product.price.toStringAsFixed(2)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: primary,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+                _ProductPriceLine(product: product, primary: primary),
                 const SizedBox(height: 8),
+                RetailerPromotionInfoPill(product: product),
+                if (product.hasActivePromotion) const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 6,
@@ -466,10 +477,6 @@ class RetailerProductListCard extends StatelessWidget {
                     _MiniInfo(
                       icon: Icons.inventory_2_outlined,
                       text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
-                    ),
-                    _MiniInfo(
-                      icon: Icons.warehouse_outlined,
-                      text: '${l10n.stock}: ${product.totalStock}',
                     ),
                   ],
                 ),
@@ -512,6 +519,50 @@ class RetailerProductListCard extends StatelessWidget {
     if (subCategory.isNotEmpty) return subCategory;
 
     return '';
+  }
+}
+
+class _ProductPriceLine extends StatelessWidget {
+  final HomeProductModel product;
+  final Color primary;
+
+  const _ProductPriceLine({required this.product, required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            '${product.currency}${product.price.toStringAsFixed(2)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: primary,
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        if (product.shouldShowOriginalPrice) ...[
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.lineThrough,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }
 

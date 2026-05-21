@@ -180,15 +180,9 @@ class _ProductCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '${product.currency}${product.price.toStringAsFixed(2)}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                    ),
+                  _ProductPriceBlock(
+                    product: product,
+                    primaryColor: primaryColor,
                   ),
                   const SizedBox(height: 8),
                   RetailerPromotionInfoPill(product: product),
@@ -196,11 +190,6 @@ class _ProductCard extends StatelessWidget {
                   _MiniInfo(
                     icon: Icons.inventory_2_outlined,
                     text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
-                  ),
-                  const SizedBox(height: 6),
-                  _MiniInfo(
-                    icon: Icons.warehouse_outlined,
-                    text: '${l10n.stock}: ${product.totalStock}',
                   ),
                   const Spacer(),
                   RetailerProductAiButton(
@@ -280,6 +269,50 @@ class _ProductCard extends StatelessWidget {
     if (subCategory.isNotEmpty) return subCategory;
 
     return '';
+  }
+}
+
+class _ProductPriceBlock extends StatelessWidget {
+  final HomeProductModel product;
+  final Color primaryColor;
+
+  const _ProductPriceBlock({required this.product, required this.primaryColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            '${product.currency}${product.price.toStringAsFixed(2)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: primaryColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        if (product.shouldShowOriginalPrice) ...[
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.lineThrough,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }
 
