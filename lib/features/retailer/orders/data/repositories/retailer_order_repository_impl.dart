@@ -21,4 +21,9 @@ class RetailerOrderRepositoryImpl implements RetailerOrderRepository {
   Future<RetailerOrderEntity> cancelOrder({required int orderId}) {
     return apiService.cancelOrder(orderId: orderId);
   }
+
+  @override
+  Future<void> reorder({required int orderId}) {
+    return apiService.reorder(orderId: orderId);
+  }
 }

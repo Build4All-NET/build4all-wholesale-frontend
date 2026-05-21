@@ -74,6 +74,7 @@ import '../features/retailer/rfq/presentation/screens/retailer_rfq_details_scree
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_list_screen.dart';
 import '../features/retailer/rfq/presentation/screens/edit_retailer_rfq_screen.dart';
 import '../features/retailer/orders/presentation/screens/retailer_order_tracking_screen.dart';
+import '../features/retailer/orders/presentation/screens/retailer_reorder_review_screen.dart';
 import '../features/retailer/orders/presentation/screens/retailer_orders_screen.dart';
 
 class AppRouter {
@@ -466,6 +467,24 @@ class AppRouter {
           }
 
           return RetailerOrderTrackingScreen(orderId: orderId);
+        },
+      ),
+      GoRoute(
+        path: '/retailer-orders/:orderId/reorder',
+        builder: (context, state) {
+          final orderId = int.tryParse(state.pathParameters['orderId'] ?? '');
+
+          if (orderId == null) {
+            final l10n = AppLocalizations.of(context)!;
+
+            return RetailerPlaceholderScreen(
+              title: l10n.orders,
+              message: l10n.ordersComingSoon,
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return RetailerReorderReviewScreen(orderId: orderId);
         },
       ),
       GoRoute(

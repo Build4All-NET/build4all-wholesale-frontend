@@ -159,17 +159,66 @@ class RetailerOrderI18n {
   String get inProgress => _select(en: 'In progress', ar: 'قيد التنفيذ', fr: 'En cours');
   String get waiting => _select(en: 'Waiting', ar: 'بانتظار التحديث', fr: 'En attente');
 
-  String get viewCart => _select(
-        en: 'View cart',
-        ar: 'عرض السلة',
-        fr: 'Voir le panier',
+  String get reorderPreviewTitle => _select(
+        en: 'Re-order Cart',
+        ar: 'سلة إعادة الطلب',
+        fr: 'Panier de nouvelle commande',
       );
 
-  String get reorderComingSoon => _select(
-        en: 'Reorder will be enabled after checkout/cart integration is finalized.',
-        ar: 'سيتم تفعيل إعادة الطلب بعد تثبيت ربط السلة والدفع النهائي.',
-        fr: 'La commande à nouveau sera activée après la finalisation du panier et du paiement.',
+  String get reorderPreviewSubtitle => _select(
+        en: 'Review the same items and quantities from your previous order. This page is separate from your current cart.',
+        ar: 'راجعي نفس العناصر والكميات من طلبك السابق. هذه الصفحة منفصلة عن سلتك الحالية.',
+        fr: 'Vérifiez les mêmes articles et quantités de votre ancienne commande. Cette page est séparée de votre panier actuel.',
       );
+
+  String get originalOrder => _select(
+        en: 'Original order',
+        ar: 'الطلب الأصلي',
+        fr: 'Commande originale',
+      );
+
+  String get reorderItems => _select(
+        en: 'Items to re-order',
+        ar: 'العناصر لإعادة الطلب',
+        fr: 'Articles à commander à nouveau',
+      );
+
+  String get reorderSummary => _select(
+        en: 'Re-order summary',
+        ar: 'ملخص إعادة الطلب',
+        fr: 'Résumé de la nouvelle commande',
+      );
+
+  String get proceedToCheckout => _select(
+        en: 'Proceed to checkout',
+        ar: 'المتابعة إلى الدفع',
+        fr: 'Passer au paiement',
+      );
+
+  String get continueShopping => _select(
+        en: 'Continue shopping',
+        ar: 'متابعة التسوق',
+        fr: 'Continuer les achats',
+      );
+
+  String get reorderCheckoutPending => _select(
+        en: 'Checkout will be connected to these re-order items once the final checkout flow is ready.',
+        ar: 'سيتم ربط الدفع بهذه العناصر عند تثبيت مسار الدفع النهائي.',
+        fr: 'Le paiement sera relié à ces articles lorsque le flux de paiement final sera prêt.',
+      );
+
+  String get currentCartNotChanged => _select(
+        en: 'Your current cart was not changed.',
+        ar: 'لم يتم تغيير سلتك الحالية.',
+        fr: 'Votre panier actuel n’a pas été modifié.',
+      );
+
+  String get reorder => _select(
+        en: 'Re-order',
+        ar: 'إعادة الطلب',
+        fr: 'Commander à nouveau',
+      );
+
 
   String filterLabel(RetailerOrderFilter filter) {
     switch (filter) {

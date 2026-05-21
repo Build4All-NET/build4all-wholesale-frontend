@@ -59,6 +59,16 @@ class RetailerOrderApiService {
     }
   }
 
+  Future<void> reorder({required int orderId}) async {
+    try {
+      await apiClient.dio.post(
+        ApiConfig.retailerOrderReorder(orderId.toString()),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   String _extractMessage(DioException e) {
     final data = e.response?.data;
 

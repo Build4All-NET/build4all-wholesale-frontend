@@ -74,6 +74,7 @@ import 'features/retailer/orders/domain/repositories/retailer_order_repository.d
 import 'features/retailer/orders/domain/usecases/cancel_retailer_order_usecase.dart';
 import 'features/retailer/orders/domain/usecases/get_retailer_order_details_usecase.dart';
 import 'features/retailer/orders/domain/usecases/get_retailer_orders_usecase.dart';
+import 'features/retailer/orders/domain/usecases/reorder_retailer_order_usecase.dart';
 import 'features/retailer/orders/presentation/cubit/retailer_orders_cubit.dart';
 
 // =========================
@@ -592,6 +593,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<CancelRetailerOrderUseCase>(
     () => CancelRetailerOrderUseCase(sl<RetailerOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<ReorderRetailerOrderUseCase>(
+    () => ReorderRetailerOrderUseCase(sl<RetailerOrderRepository>()),
   );
 
   // =========================
@@ -1113,6 +1118,7 @@ Future<void> init() async {
       getRetailerOrdersUseCase: sl<GetRetailerOrdersUseCase>(),
       getRetailerOrderDetailsUseCase: sl<GetRetailerOrderDetailsUseCase>(),
       cancelRetailerOrderUseCase: sl<CancelRetailerOrderUseCase>(),
+      reorderRetailerOrderUseCase: sl<ReorderRetailerOrderUseCase>(),
     ),
   );
 

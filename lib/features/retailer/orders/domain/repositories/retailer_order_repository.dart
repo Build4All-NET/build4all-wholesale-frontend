@@ -6,4 +6,6 @@ abstract class RetailerOrderRepository {
   Future<RetailerOrderEntity> getOrderDetails({required int orderId});
 
   Future<RetailerOrderEntity> cancelOrder({required int orderId});
+
+  Future<void> reorder({required int orderId});
 }

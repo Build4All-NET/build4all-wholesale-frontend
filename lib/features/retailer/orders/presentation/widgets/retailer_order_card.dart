@@ -163,48 +163,53 @@ class RetailerOrderCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (order.canCancel && onCancel != null) ...[
+              if (order.canReorder && onReorder != null) ...[
                 const SizedBox(width: 10),
-                SizedBox(
-                  height: 44,
-                  child: OutlinedButton(
-                    onPressed: onCancel,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppThemeTokens.error,
-                      side: BorderSide(
-                        color: AppThemeTokens.error.withValues(alpha: 0.35),
+                Expanded(
+                  child: SizedBox(
+                    height: 44,
+                    child: OutlinedButton.icon(
+                      onPressed: onReorder,
+                      icon: const Icon(
+                        Icons.shopping_cart_checkout_outlined,
+                        size: 19,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                      label: Text(
+                        i18n.reorder,
+                        style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
-                    ),
-                    child: Text(
-                      i18n.cancelOrder,
-                      style: const TextStyle(fontWeight: FontWeight.w900),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppThemeTokens.textPrimary,
+                        side: const BorderSide(color: AppThemeTokens.border),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ],
           ),
-          if (order.canReorder && onReorder != null) ...[
+          if (order.canCancel && onCancel != null) ...[
             const SizedBox(height: 10),
             SizedBox(
               height: 44,
               width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onReorder,
-                icon: const Icon(Icons.shopping_cart_checkout_outlined, size: 19),
-                label: Text(
-                  i18n.viewCart,
-                  style: const TextStyle(fontWeight: FontWeight.w900),
-                ),
+              child: OutlinedButton(
+                onPressed: onCancel,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppThemeTokens.textPrimary,
-                  side: const BorderSide(color: AppThemeTokens.border),
+                  foregroundColor: AppThemeTokens.error,
+                  side: BorderSide(
+                    color: AppThemeTokens.error.withValues(alpha: 0.35),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
+                ),
+                child: Text(
+                  i18n.cancelOrder,
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
               ),
             ),

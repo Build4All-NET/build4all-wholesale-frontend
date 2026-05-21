@@ -45,6 +45,9 @@ class ApiConfig {
   static String retailerHomeCategoryProducts(int categoryId) =>
       '/retailer-home/categories/$categoryId/products';
 
+  // Important:
+  // Keep this endpoint as retailer-home promotions because it belongs to the
+  // retailer home aggregation flow, not a standalone /retailer/promotions route.
   static const String retailerPromotions = '/retailer-home/promotions';
 
   // =========================
@@ -57,7 +60,6 @@ class ApiConfig {
   static String retailerCartItemById(int cartItemId) =>
       '/retailer/cart/items/$cartItemId';
 
-
   // =========================
   // Retailer Orders
   // =========================
@@ -69,6 +71,10 @@ class ApiConfig {
 
   static String retailerOrderCancel(String orderId) {
     return '/retailer/orders/$orderId/cancel';
+  }
+
+  static String retailerOrderReorder(String orderId) {
+    return '/retailer/orders/$orderId/reorder';
   }
 
   // =========================
@@ -194,8 +200,13 @@ class ApiConfig {
   // Supplier Promotions
   // =========================
   static const String supplierPromotions = '/supplier/promotions';
+
+  // Important:
+  // These endpoints must stay promotion-specific because the promotion screen
+  // uses them to show only eligible products/categories, including stock logic.
   static const String supplierPromotionEligibleProducts =
       '/supplier/promotions/eligible-products';
+
   static const String supplierPromotionEligibleCategories =
       '/supplier/promotions/eligible-categories';
 
@@ -232,7 +243,7 @@ class ApiConfig {
   }
 
   // =========================
-  // SUPPLIER TAX RULES
+  // Supplier Tax Rules
   // =========================
   static const String supplierTaxRules = '/supplier/tax-rules';
 
@@ -311,6 +322,7 @@ class ApiConfig {
   // =========================
   static String retailerProductAiChat(int productId) =>
       '/retailer-ai/products/$productId/chat';
+
   // =========================
   // Retailer RFQ AI
   // =========================

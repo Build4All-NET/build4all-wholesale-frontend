@@ -4,17 +4,20 @@ import '../../domain/entities/retailer_order_entity.dart';
 import '../../domain/usecases/cancel_retailer_order_usecase.dart';
 import '../../domain/usecases/get_retailer_order_details_usecase.dart';
 import '../../domain/usecases/get_retailer_orders_usecase.dart';
+import '../../domain/usecases/reorder_retailer_order_usecase.dart';
 import 'retailer_orders_state.dart';
 
 class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
   final GetRetailerOrdersUseCase getRetailerOrdersUseCase;
   final GetRetailerOrderDetailsUseCase getRetailerOrderDetailsUseCase;
   final CancelRetailerOrderUseCase cancelRetailerOrderUseCase;
+  final ReorderRetailerOrderUseCase reorderRetailerOrderUseCase;
 
   RetailerOrdersCubit({
     required this.getRetailerOrdersUseCase,
     required this.getRetailerOrderDetailsUseCase,
     required this.cancelRetailerOrderUseCase,
+    required this.reorderRetailerOrderUseCase,
   }) : super(RetailerOrdersState.initial());
 
   Future<void> loadOrders() async {
@@ -71,6 +74,28 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
           orders: updatedOrders,
           selectedOrder: updatedOrder,
           successMessage: 'ORDER_CANCELLED',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isDetailsLoading: false,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> reorder({required int orderId}) async {
+    emit(state.copyWith(isDetailsLoading: true, clearErrorMessage: true));
+
+    try {
+      await reorderRetailerOrderUseCase(orderId: orderId);
+
+      emit(
+        state.copyWith(
+          isDetailsLoading: false,
+          successMessage: 'ORDER_REORDERED',
         ),
       );
     } catch (e) {

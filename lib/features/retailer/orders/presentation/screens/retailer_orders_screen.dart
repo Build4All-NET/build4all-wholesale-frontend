@@ -112,7 +112,9 @@ class _RetailerOrdersView extends StatelessWidget {
                               ? () => _confirmCancel(context, order)
                               : null,
                           onReorder: order.canReorder
-                              ? () => _showReorderNotice(context)
+                              ? () => context.push(
+                                    '/retailer-orders/${order.id}/reorder',
+                                  )
                               : null,
                         );
                       },
@@ -157,19 +159,6 @@ class _RetailerOrdersView extends StatelessWidget {
     }
   }
 
-  void _showReorderNotice(BuildContext context) {
-    final i18n = RetailerOrderI18n(context);
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(i18n.reorderComingSoon),
-        action: SnackBarAction(
-          label: i18n.viewCart,
-          onPressed: () => context.push('/retailer-cart'),
-        ),
-      ),
-    );
-  }
 }
 
 class _OrderFilterTabs extends StatelessWidget {
