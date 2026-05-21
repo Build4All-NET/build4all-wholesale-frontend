@@ -202,7 +202,21 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     );
   }
 
-  bool _validateDates() {
+  bool _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startsAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidFrom,
+      );
+      return false;
+    }
+
+    if (requireBothDates && _expiresAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidTo,
+      );
+      return false;
+    }
+
     if (_startsAt != null &&
         _expiresAt != null &&
         _startsAt!.isAfter(_expiresAt!)) {
@@ -294,7 +308,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
   void _saveCoupon(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!_validateDates()) {
+    if (!_validateDates(requireBothDates: true)) {
       setState(() {});
       return;
     }
@@ -1068,50 +1082,100 @@ class _DateTimePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: onPick,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppThemeTokens.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppThemeTokens.border),
+    final primary = Theme.of(context).colorScheme.primary;
+    final hasValue = value != '—';
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: onPick,
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 15,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: primary.withOpacity(0.10),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      child: Icon(
+                        Icons.event_available_outlined,
+                        color: primary,
+                        size: 22,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: AppThemeTokens.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: hasValue
+                                  ? AppThemeTokens.textPrimary
+                                  : AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear),
-        ),
-      ],
+          Container(
+            width: 1,
+            height: 48,
+            color: AppThemeTokens.border,
+          ),
+          TextButton.icon(
+            onPressed: hasValue ? onClear : null,
+            icon: const Icon(Icons.close_rounded, size: 18),
+            label: Text(context.l10n.clearButton),
+            style: TextButton.styleFrom(
+              foregroundColor: AppThemeTokens.textSecondary,
+              disabledForegroundColor:
+                  AppThemeTokens.textSecondary.withOpacity(0.35),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              textStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

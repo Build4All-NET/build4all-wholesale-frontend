@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
-import 'package:flutter/services.dart';
-
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/coupon_entity.dart';
 
@@ -169,36 +167,6 @@ class CouponCard extends StatelessWidget {
                 child: SizedBox(
                   height: 40,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      Clipboard.setData(
-                        ClipboardData(text: coupon.code),
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(context.l10n.supplierCouponCopied(coupon.code))),
-                      );
-                    },
-                    icon: const Icon(Icons.copy_outlined, size: 17),
-                    label: Text(context.l10n.copyButton),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppThemeTokens.textPrimary,
-                      side: const BorderSide(color: AppThemeTokens.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: OutlinedButton.icon(
                     onPressed: onEdit,
                     icon: const Icon(Icons.edit_outlined, size: 17),
                     label: Text(context.l10n.editButton),
@@ -217,7 +185,7 @@ class CouponCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: SizedBox(
                   height: 40,
