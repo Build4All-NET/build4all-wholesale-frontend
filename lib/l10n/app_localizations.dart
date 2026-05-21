@@ -6155,6 +6155,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bank transfer'**
   String get paymentBankTransfer;
+
+  /// No description provided for @verifyPhoneChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify phone number change'**
+  String get verifyPhoneChange;
+
+  /// No description provided for @enterStaticPhoneCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to {phoneNumber}'**
+  String enterStaticPhoneCode(String phoneNumber);
+
+  /// No description provided for @staticPhoneCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone verification code sent'**
+  String get staticPhoneCodeSent;
+
+  /// No description provided for @invalidPhoneVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid phone verification code.'**
+  String get invalidPhoneVerificationCode;
+
+  /// No description provided for @phoneNotUpdatedCodeNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number was not updated because the verification code was not confirmed.'**
+  String get phoneNotUpdatedCodeNotConfirmed;
 }
 
 class _AppLocalizationsDelegate

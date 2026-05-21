@@ -9,7 +9,6 @@ import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_bu
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
 import '../widgets/retailer_product_image.dart';
-import '../widgets/retailer_promotion_badge.dart';
 
 class RetailerCategoryProductsScreen extends StatelessWidget {
   final HomeCategoryModel category;
@@ -56,14 +55,23 @@ class _RetailerCategoryProductsViewState
   }
 
   List<String> _extractSubCategories(List<HomeProductModel> products) {
-    final subCategories = products
-        .map((product) => product.subCategoryName?.trim())
-        .where((name) => name != null && name.isNotEmpty)
-        .cast<String>()
-        .toSet()
-        .toList();
+    final subCategoryNames = <String>{};
 
-    subCategories.sort();
+    for (final subCategory in widget.category.subCategories) {
+      final name = subCategory.name.trim();
+      if (name.isNotEmpty) {
+        subCategoryNames.add(name);
+      }
+    }
+
+    for (final product in products) {
+      final name = product.subCategoryName?.trim();
+      if (name != null && name.isNotEmpty) {
+        subCategoryNames.add(name);
+      }
+    }
+
+    final subCategories = subCategoryNames.toList()..sort();
     return subCategories;
   }
 
@@ -71,9 +79,11 @@ class _RetailerCategoryProductsViewState
     final cleanQuery = _query.trim().toLowerCase();
 
     return products.where((product) {
+      final productSubCategory = product.subCategoryName?.trim() ?? '';
       final matchesSubCategory =
           _selectedSubCategoryName == null ||
-          product.subCategoryName == _selectedSubCategoryName;
+          productSubCategory.toLowerCase() ==
+              _selectedSubCategoryName!.trim().toLowerCase();
 
       final searchableText = [
         product.name,
@@ -395,25 +405,7 @@ class RetailerProductListCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              _ProductImage(imageUrl: product.imageUrl),
-              if (product.hasActivePromotion)
-                Positioned(
-                  top: 7,
-                  left: 7,
-                  child: RetailerPromotionBadge(
-                    product: product,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 5,
-                    ),
-                    fontSize: 10,
-                  ),
-                ),
-            ],
-          ),
+          _ProductImage(imageUrl: product.imageUrl),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -467,8 +459,6 @@ class RetailerProductListCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                RetailerPromotionInfoPill(product: product),
-                if (product.hasActivePromotion) const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 6,
@@ -484,9 +474,6 @@ class RetailerProductListCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-
-                /// AI + Add actions.
-                /// They are separated and constrained to avoid button overflow.
                 Row(
                   children: [
                     Expanded(

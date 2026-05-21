@@ -3314,4 +3314,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'Bank transfer';
+
+  @override
+  String get verifyPhoneChange => 'Verify phone number change';
+
+  @override
+  String enterStaticPhoneCode(String phoneNumber) {
+    return 'Enter the verification code sent to $phoneNumber';
+  }
+
+  @override
+  String get staticPhoneCodeSent => 'Phone verification code sent';
+
+  @override
+  String get invalidPhoneVerificationCode => 'Invalid phone verification code.';
+
+  @override
+  String get phoneNotUpdatedCodeNotConfirmed =>
+      'Phone number was not updated because the verification code was not confirmed.';
 }

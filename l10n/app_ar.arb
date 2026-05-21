@@ -1299,5 +1299,19 @@
   },
   "paymentCashOnDelivery": "الدفع عند الاستلام",
   "paymentCard": "الدفع بالبطاقة",
-  "paymentBankTransfer": "تحويل مصرفي"
+  "paymentBankTransfer": "تحويل مصرفي",
+  "verifyPhoneChange": "تأكيد تغيير رقم الهاتف",
+"enterStaticPhoneCode": "أدخل رمز التحقق لرقم الهاتف {phoneNumber}. رمز التجربة: 123456",
+"@enterStaticPhoneCode": {
+  "placeholders": {
+    "phoneNumber": {
+      "type": "String"
+    }
+  }
+},
+"staticPhoneCodeSent": "تم إرسال رمز تحقق الهاتف. رمز التجربة: 123456",
+"invalidPhoneVerificationCode": "رمز تحقق الهاتف غير صحيح.",
+"phoneNotUpdatedCodeNotConfirmed": "لم يتم تحديث رقم الهاتف لأن رمز التحقق لم يتم تأكيده.",
+"enterStaticPhoneCode": "أدخل رمز التحقق المرسل إلى {phoneNumber}",
+"staticPhoneCodeSent": "تم إرسال رمز تحقق الهاتف"
 }

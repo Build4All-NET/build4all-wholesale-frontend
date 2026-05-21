@@ -176,11 +176,8 @@ class HomeCategoryModel {
   final String name;
   final String icon;
   final int productCount;
+  final List<HomeSubCategoryModel> subCategories;
 
-  /// Promotion fields are optional because old backend responses may not
-  /// include them yet. When the backend later marks a category promotion as
-  /// active, the existing category UI can show a small deals indicator without
-  /// changing the category structure.
   final bool hasActivePromotion;
   final int? promotionId;
   final String? promotionTitle;
@@ -193,6 +190,7 @@ class HomeCategoryModel {
     required this.name,
     required this.icon,
     required this.productCount,
+    required this.subCategories,
     required this.hasActivePromotion,
     required this.promotionId,
     required this.promotionTitle,
@@ -202,30 +200,40 @@ class HomeCategoryModel {
   });
 
   factory HomeCategoryModel.fromJson(Map<String, dynamic> json) {
-    final discountType = json['promotionDiscountType']?.toString();
-    final discountValue = json['promotionDiscountValue'] == null
-        ? null
-        : _toDouble(json['promotionDiscountValue']);
-    final backendLabel = json['promotionLabel']?.toString();
-
     return HomeCategoryModel(
       id: _toInt(json['id']),
       name: json['name']?.toString() ?? '',
       icon: json['icon']?.toString() ?? '📦',
       productCount: _toInt(json['productCount']),
-      hasActivePromotion:
-          json['hasActivePromotion'] == true ||
-          json['activePromotion'] == true ||
-          backendLabel != null,
+      subCategories: (json['subCategories'] as List<dynamic>? ?? [])
+          .map(
+            (item) => HomeSubCategoryModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(),
+      hasActivePromotion: json['hasActivePromotion'] == true,
       promotionId: json['promotionId'] == null
           ? null
           : _toInt(json['promotionId']),
       promotionTitle: json['promotionTitle']?.toString(),
-      promotionDiscountType: discountType,
-      promotionDiscountValue: discountValue,
-      promotionLabel:
-          _normalizeText(backendLabel) ??
-          _buildPromotionLabel(discountType, discountValue),
+      promotionDiscountType: json['promotionDiscountType']?.toString(),
+      promotionDiscountValue: _toNullableDouble(json['promotionDiscountValue']),
+      promotionLabel: json['promotionLabel']?.toString(),
+    );
+  }
+}
+
+class HomeSubCategoryModel {
+  final int id;
+  final String name;
+
+  const HomeSubCategoryModel({required this.id, required this.name});
+
+  factory HomeSubCategoryModel.fromJson(Map<String, dynamic> json) {
+    return HomeSubCategoryModel(
+      id: _toInt(json['id']),
+      name: json['name']?.toString() ?? '',
     );
   }
 }
@@ -256,10 +264,6 @@ class HomeProductModel {
   final String? badgeColor;
   final int? discountPercent;
 
-  /// Active supplier promotion information. These fields are optional so the
-  /// retailer UI remains backward-compatible until the backend endpoint is
-  /// added. Product and category promotions both arrive here as the same
-  /// display contract.
   final bool hasActivePromotion;
   final int? promotionId;
   final String? promotionTitle;
@@ -300,19 +304,6 @@ class HomeProductModel {
   });
 
   factory HomeProductModel.fromJson(Map<String, dynamic> json) {
-    final discountPercent = json['discountPercent'] == null
-        ? null
-        : _toInt(json['discountPercent']);
-    final discountType = json['promotionDiscountType']?.toString();
-    final discountValue = json['promotionDiscountValue'] == null
-        ? null
-        : _toDouble(json['promotionDiscountValue']);
-    final backendLabel = json['promotionLabel']?.toString();
-    final computedPromotionLabel =
-        _normalizeText(backendLabel) ??
-        _buildPromotionLabel(discountType, discountValue) ??
-        (discountPercent == null ? null : '$discountPercent% OFF');
-
     return HomeProductModel(
       id: _toInt(json['id']),
       supplierBuild4allUserId: json['supplierBuild4allUserId'] == null
@@ -337,19 +328,18 @@ class HomeProductModel {
       reviewCount: _toInt(json['reviewCount']),
       badgeLabel: json['badgeLabel']?.toString(),
       badgeColor: json['badgeColor']?.toString(),
-      discountPercent: discountPercent,
-      hasActivePromotion:
-          json['hasActivePromotion'] == true ||
-          json['activePromotion'] == true ||
-          computedPromotionLabel != null,
+      discountPercent: json['discountPercent'] == null
+          ? null
+          : _toInt(json['discountPercent']),
+      hasActivePromotion: json['hasActivePromotion'] == true,
       promotionId: json['promotionId'] == null
           ? null
           : _toInt(json['promotionId']),
       promotionTitle: json['promotionTitle']?.toString(),
       promotionTargetType: json['promotionTargetType']?.toString(),
-      promotionDiscountType: discountType,
-      promotionDiscountValue: discountValue,
-      promotionLabel: computedPromotionLabel,
+      promotionDiscountType: json['promotionDiscountType']?.toString(),
+      promotionDiscountValue: _toNullableDouble(json['promotionDiscountValue']),
+      promotionLabel: json['promotionLabel']?.toString(),
       totalStock: _toInt(json['totalStock']),
     );
   }
@@ -369,32 +359,9 @@ double _toDouble(dynamic value, {double fallback = 0}) {
   return double.tryParse(value.toString()) ?? fallback;
 }
 
-String? _normalizeText(String? value) {
-  final clean = value?.trim();
-  if (clean == null || clean.isEmpty) return null;
-  return clean;
-}
-
-String? _buildPromotionLabel(String? discountType, double? discountValue) {
-  if (discountType == null || discountValue == null || discountValue <= 0) {
-    return null;
-  }
-
-  final upperType = discountType.toUpperCase();
-  final formattedValue = _formatNumber(discountValue);
-
-  if (upperType == 'PERCENT') {
-    return '$formattedValue% OFF';
-  }
-
-  if (upperType == 'FIXED') {
-    return '\$$formattedValue OFF';
-  }
-
-  return null;
-}
-
-String _formatNumber(double value) {
-  if (value == value.roundToDouble()) return value.toInt().toString();
-  return value.toStringAsFixed(2);
+double? _toNullableDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  return double.tryParse(value.toString());
 }

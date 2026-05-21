@@ -16,6 +16,7 @@ import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../injection_container.dart';
+import '../../data/models/retailer_profile_model.dart';
 import '../cubit/retailer_profile_cubit.dart';
 import '../cubit/retailer_profile_state.dart';
 
@@ -67,6 +68,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
   RegionModel? _selectedCity;
 
   String _originalEmail = '';
+  String _originalPhone = '';
   String _initialCountryCode = 'LB';
   String _fullPhone = '';
 
@@ -172,18 +174,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
       if (!mounted) return;
 
-      RegionModel? selectedCity;
-
-      if (cityToSelect != null && cityToSelect.trim().isNotEmpty) {
-        final normalizedCity = cityToSelect.trim().toLowerCase();
-
-        for (final city in cities) {
-          if (city.name.trim().toLowerCase() == normalizedCity) {
-            selectedCity = city;
-            break;
-          }
-        }
-      }
+      final selectedCity = _findCityFromList(cities, cityToSelect, country);
 
       setState(() {
         _cities = cities;
@@ -193,8 +184,15 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     } catch (e) {
       if (!mounted) return;
 
+      final fallbackCity = _createFallbackCityFromSavedValue(
+        cityToSelect,
+        country,
+      );
+
       setState(() {
         _isLoadingCities = false;
+        _selectedCity = fallbackCity;
+        _cities = fallbackCity == null ? [] : [fallbackCity];
         _locationError = _cleanError(e, context.l10n.couldNotLoadCities);
       });
     }
@@ -215,54 +213,150 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
   }
 
   void _syncSelectedLocationFromProfile() {
-    if (!mounted || _countries.isEmpty || _selectedCountry != null) return;
+    if (!mounted || _selectedCountry != null) return;
 
     final profile = context.read<RetailerProfileCubit>().state.profile;
     if (profile == null) return;
 
-    final countryId = profile.business.countryId;
-    final countryIso2 = profile.business.countryIso2Code.trim().toUpperCase();
-    final countryName = profile.business.countryName.trim().toLowerCase();
-
-    CountryModel? country;
-
-    if (countryId != null && countryId > 0) {
-      for (final item in _countries) {
-        if (item.id == countryId) {
-          country = item;
-          break;
-        }
-      }
-    }
-
-    if (country == null && countryIso2.isNotEmpty) {
-      for (final item in _countries) {
-        if (item.iso2Code.trim().toUpperCase() == countryIso2) {
-          country = item;
-          break;
-        }
-      }
-    }
-
-    if (country == null && countryName.isNotEmpty) {
-      for (final item in _countries) {
-        if (item.name.trim().toLowerCase() == countryName) {
-          country = item;
-          break;
-        }
-      }
-    }
-
+    final country = _findCountryFromProfile(profile.business);
     if (country == null) return;
 
     setState(() {
       _selectedCountry = country;
-      if (country!.iso2Code.trim().isNotEmpty) {
+
+      if (!_countries.any((item) => item.id == country.id)) {
+        _countries = [country, ..._countries];
+      }
+
+      if (country.iso2Code.trim().isNotEmpty) {
         _initialCountryCode = country.iso2Code.trim().toUpperCase();
       }
     });
 
     _loadCitiesForCountry(country, cityToSelect: profile.business.city);
+  }
+
+  String _normalizeLocationName(String value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[\u064B-\u065F\u0670]'), '')
+        .replaceAll('أ', 'ا')
+        .replaceAll('إ', 'ا')
+        .replaceAll('آ', 'ا')
+        .replaceAll('ى', 'ي')
+        .replaceAll('ة', 'ه')
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('ë', 'e')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ä', 'a')
+        .replaceAll('ù', 'u')
+        .replaceAll('û', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('î', 'i')
+        .replaceAll('ï', 'i')
+        .replaceAll('ô', 'o')
+        .replaceAll('ö', 'o')
+        .replaceAll('ç', 'c');
+  }
+
+  CountryModel? _findCountryFromProfile(RetailerBusinessProfileModel business) {
+    final countryId = business.countryId;
+    final countryIso2 = business.countryIso2Code.trim().toUpperCase();
+    final countryIso3 = business.countryIso3Code.trim().toUpperCase();
+    final countryName = _normalizeLocationName(business.countryName);
+
+    if (countryId != null && countryId > 0) {
+      for (final country in _countries) {
+        if (country.id == countryId) return country;
+      }
+    }
+
+    if (countryIso2.isNotEmpty) {
+      for (final country in _countries) {
+        if (country.iso2Code.trim().toUpperCase() == countryIso2) {
+          return country;
+        }
+      }
+    }
+
+    if (countryIso3.isNotEmpty) {
+      for (final country in _countries) {
+        if (country.iso3Code.trim().toUpperCase() == countryIso3) {
+          return country;
+        }
+      }
+    }
+
+    if (countryName.isNotEmpty) {
+      for (final country in _countries) {
+        if (_normalizeLocationName(country.name) == countryName) {
+          return country;
+        }
+      }
+    }
+
+    if ((countryId != null && countryId > 0) ||
+        business.countryName.trim().isNotEmpty) {
+      return CountryModel(
+        id: countryId ?? 0,
+        iso2Code: countryIso2,
+        iso3Code: countryIso3,
+        name: business.countryName.trim().isEmpty
+            ? countryIso2
+            : business.countryName.trim(),
+        active: true,
+      );
+    }
+
+    return null;
+  }
+
+  RegionModel? _findCityFromList(
+    List<RegionModel> cities,
+    String? cityToSelect,
+    CountryModel country,
+  ) {
+    final savedCity = cityToSelect?.trim() ?? '';
+    if (savedCity.isEmpty) return null;
+
+    final normalizedSavedCity = _normalizeLocationName(savedCity);
+
+    for (final city in cities) {
+      if (_normalizeLocationName(city.name) == normalizedSavedCity) {
+        return city;
+      }
+    }
+
+    for (final city in cities) {
+      if (_normalizeLocationName(city.code) == normalizedSavedCity) {
+        return city;
+      }
+    }
+
+    return _createFallbackCityFromSavedValue(savedCity, country);
+  }
+
+  RegionModel? _createFallbackCityFromSavedValue(
+    String? cityToSelect,
+    CountryModel country,
+  ) {
+    final savedCity = cityToSelect?.trim() ?? '';
+    if (savedCity.isEmpty) return null;
+
+    return RegionModel(
+      id: 0,
+      code: savedCity,
+      name: savedCity,
+      active: true,
+      countryId: country.id,
+      countryIso2Code: country.iso2Code,
+      countryIso3Code: country.iso3Code,
+      countryName: country.name,
+    );
   }
 
   void _fillControllers(RetailerProfileState state) {
@@ -282,6 +376,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     final phone = profile.business.phoneNumber.trim();
     _fullPhone = phone;
+    _originalPhone = _normalizePhone(phone);
 
     if (profile.business.countryIso2Code.trim().isNotEmpty) {
       _initialCountryCode = profile.business.countryIso2Code
@@ -616,6 +711,216 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     return result == true;
   }
 
+  Future<bool> _showPhoneVerificationSheet({
+    required String phoneNumber,
+  }) async {
+    final l10n = context.l10n;
+
+    String codeText = '';
+    String? localError;
+    bool localLoading = false;
+
+    Future<void> closeSheet(BuildContext sheetContext, bool value) async {
+      await _hideKeyboardSafely();
+
+      if (!sheetContext.mounted) return;
+
+      Navigator.of(sheetContext).pop(value);
+    }
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            final colorScheme = Theme.of(sheetContext).colorScheme;
+            final canVerify = codeText.trim().length == 6 && !localLoading;
+
+            return AnimatedPadding(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOut,
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 20,
+                top: 16,
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: colorScheme.primary.withValues(
+                          alpha: 0.12,
+                        ),
+                        child: Icon(
+                          Icons.phone_android_outlined,
+                          color: colorScheme.primary,
+                          size: 30,
+                        ),
+                      ),
+                      title: Text(
+                        l10n.verifyPhoneChange,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Text(
+                        l10n.enterStaticPhoneCode(phoneNumber),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      enabled: !localLoading,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      maxLength: 6,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {
+                        if (!sheetContext.mounted) return;
+
+                        setSheetState(() {
+                          codeText = value.trim();
+                          localError = null;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        counterText: '',
+                        hintText: l10n.sixDigitCode,
+                      ),
+                    ),
+                    if (localError != null &&
+                        localError!.trim().isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          localError!,
+                          style: const TextStyle(
+                            color: AppThemeTokens.error,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: localLoading
+                                ? null
+                                : () async {
+                                    await closeSheet(sheetContext, false);
+                                  },
+                            child: Text(
+                              l10n.cancel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: localLoading
+                                ? null
+                                : () {
+                                    if (!sheetContext.mounted) return;
+
+                                    setSheetState(() {
+                                      localError = l10n.staticPhoneCodeSent;
+                                    });
+                                  },
+                            child: Text(
+                              l10n.resend,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        onPressed: !canVerify
+                            ? null
+                            : () async {
+                                await _hideKeyboardSafely();
+
+                                if (!sheetContext.mounted) return;
+
+                                setSheetState(() {
+                                  localLoading = true;
+                                  localError = null;
+                                });
+
+                                await Future.delayed(
+                                  const Duration(milliseconds: 250),
+                                );
+
+                                if (!sheetContext.mounted) return;
+
+                                if (codeText.trim() == '123456') {
+                                  await closeSheet(sheetContext, true);
+                                  return;
+                                }
+
+                                setSheetState(() {
+                                  localLoading = false;
+                                  localError =
+                                      l10n.invalidPhoneVerificationCode;
+                                });
+                              },
+                        child: localLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                l10n.verify,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    await _hideKeyboardSafely();
+
+    return result == true;
+  }
+
   Future<bool> _showPasswordVerificationSheet({
     required String email,
     required String newPassword,
@@ -888,28 +1193,34 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     final currentEmail = _emailController.text.trim();
     final emailChanged = currentEmail.toLowerCase() != _originalEmail;
 
+    final normalizedPhone = _normalizePhone(_fullPhone);
+    final phoneChanged = normalizedPhone != _originalPhone;
+
     final currentPassword = _currentPasswordController.text.trim();
     final newPassword = _newPasswordController.text.trim();
 
-    final passwordRequested =
-        currentPassword.isNotEmpty || newPassword.isNotEmpty;
+    final passwordChangeRequested = newPassword.isNotEmpty;
+    final currentPasswordTypedWithoutPasswordChange =
+        currentPassword.isNotEmpty && newPassword.isEmpty && !phoneChanged;
+    final sensitiveChangeRequiresPassword =
+        phoneChanged || passwordChangeRequested;
 
-    if (passwordRequested) {
-      if (currentPassword.isEmpty) {
-        _showMessage(l10n.currentPasswordRequired);
-        return;
-      }
+    if (sensitiveChangeRequiresPassword && currentPassword.isEmpty) {
+      _showMessage(l10n.currentPasswordRequired);
+      return;
+    }
 
-      if (newPassword.isEmpty) {
-        _showMessage(l10n.newPasswordRequired);
-        return;
-      }
+    if (currentPasswordTypedWithoutPasswordChange) {
+      _showMessage(l10n.newPasswordRequired);
+      return;
+    }
 
-      if (newPassword.length < 6) {
-        _showMessage(l10n.passwordMinLength);
-        return;
-      }
+    if (passwordChangeRequested && newPassword.length < 6) {
+      _showMessage(l10n.passwordMinLength);
+      return;
+    }
 
+    if (sensitiveChangeRequiresPassword) {
       final currentPasswordOk = await cubit.validateCurrentPassword(
         currentPassword: currentPassword,
       );
@@ -920,7 +1231,24 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         _showCubitError(cubit);
         return;
       }
+    }
 
+    if (phoneChanged) {
+      _showMessage(l10n.staticPhoneCodeSent);
+
+      final phoneVerified = await _showPhoneVerificationSheet(
+        phoneNumber: normalizedPhone,
+      );
+
+      if (!mounted) return;
+
+      if (!phoneVerified) {
+        _showMessage(l10n.phoneNotUpdatedCodeNotConfirmed);
+        return;
+      }
+    }
+
+    if (passwordChangeRequested) {
       final sent = await cubit.sendPasswordResetCode(email: _originalEmail);
 
       if (!mounted) return;
@@ -944,7 +1272,6 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         return;
       }
 
-      _currentPasswordController.clear();
       _newPasswordController.clear();
     }
 
@@ -996,7 +1323,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     final businessUpdated = await cubit.updateBusinessInfo(
       fullName: fullName,
       storeName: _storeNameController.text.trim(),
-      phoneNumber: _normalizePhone(_fullPhone),
+      phoneNumber: normalizedPhone,
       storeAddress: _addressController.text.trim(),
       countryId: _selectedCountry!.id,
       countryName: _selectedCountry!.name,
@@ -1013,6 +1340,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       _showCubitError(cubit);
       return;
     }
+
+    _originalPhone = normalizedPhone;
+    _currentPasswordController.clear();
 
     _showMessage(l10n.profileUpdatedSuccessfully);
 
@@ -1239,6 +1569,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                         ),
                         const SizedBox(height: 14),
                         SearchableSelectionField<CountryModel>(
+                          key: ValueKey(
+                            'retailer-edit-country-${_selectedCountry?.id ?? 0}-${_selectedCountry?.name ?? ''}-${_isLoadingCountries}',
+                          ),
                           label: l10n.countryLabel,
                           hintText: _isLoadingCountries
                               ? l10n.loadingCountries
@@ -1274,6 +1607,9 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                         ),
                         const SizedBox(height: 14),
                         SearchableSelectionField<RegionModel>(
+                          key: ValueKey(
+                            'retailer-edit-city-${_selectedCountry?.id ?? 0}-${_selectedCity?.id ?? 0}-${_selectedCity?.name ?? ''}-${_isLoadingCities}',
+                          ),
                           label: l10n.city,
                           hintText: _selectedCountry == null
                               ? l10n.selectCountryFirst

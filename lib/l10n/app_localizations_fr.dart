@@ -3372,4 +3372,24 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'Virement bancaire';
+
+  @override
+  String get verifyPhoneChange =>
+      'Vérifier le changement du numéro de téléphone';
+
+  @override
+  String enterStaticPhoneCode(String phoneNumber) {
+    return 'Entrez le code de vérification envoyé à $phoneNumber';
+  }
+
+  @override
+  String get staticPhoneCodeSent => 'Code de vérification du téléphone envoyé';
+
+  @override
+  String get invalidPhoneVerificationCode =>
+      'Code de vérification du téléphone invalide.';
+
+  @override
+  String get phoneNotUpdatedCodeNotConfirmed =>
+      'Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
 }

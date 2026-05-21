@@ -3287,4 +3287,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'تحويل مصرفي';
+
+  @override
+  String get verifyPhoneChange => 'تأكيد تغيير رقم الهاتف';
+
+  @override
+  String enterStaticPhoneCode(String phoneNumber) {
+    return 'أدخل رمز التحقق المرسل إلى $phoneNumber';
+  }
+
+  @override
+  String get staticPhoneCodeSent => 'تم إرسال رمز تحقق الهاتف';
+
+  @override
+  String get invalidPhoneVerificationCode => 'رمز تحقق الهاتف غير صحيح.';
+
+  @override
+  String get phoneNotUpdatedCodeNotConfirmed =>
+      'لم يتم تحديث رقم الهاتف لأن رمز التحقق لم يتم تأكيده.';
 }

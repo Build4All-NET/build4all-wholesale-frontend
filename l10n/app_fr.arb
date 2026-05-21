@@ -1299,5 +1299,19 @@
   },
   "paymentCashOnDelivery": "Paiement à la livraison",
   "paymentCard": "Paiement par carte",
-  "paymentBankTransfer": "Virement bancaire"
+  "paymentBankTransfer": "Virement bancaire",
+  "verifyPhoneChange": "Vérifier le changement du numéro de téléphone",
+"enterStaticPhoneCode": "Entrez le code de vérification pour {phoneNumber}. Code de démonstration : 123456",
+"@enterStaticPhoneCode": {
+  "placeholders": {
+    "phoneNumber": {
+      "type": "String"
+    }
+  }
+},
+"staticPhoneCodeSent": "Code de vérification du téléphone envoyé. Code de démonstration : 123456",
+"invalidPhoneVerificationCode": "Code de vérification du téléphone invalide.",
+"phoneNotUpdatedCodeNotConfirmed": "Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
+"enterStaticPhoneCode": "Entrez le code de vérification envoyé à {phoneNumber}",
+"staticPhoneCodeSent": "Code de vérification du téléphone envoyé"
 }
