@@ -9,2350 +9,2231 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ø¬Ù…Ù„Ø© B2B';
+  String get appTitle => 'تطبيق الجملة B2B';
 
   @override
-  String get login => 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„';
+  String get login => 'تسجيل الدخول';
 
   @override
-  String get signUp => 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨';
+  String get signUp => 'إنشاء حساب';
 
   @override
-  String get email => 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ';
+  String get email => 'البريد الإلكتروني';
 
   @override
-  String get password => 'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±';
+  String get password => 'كلمة المرور';
 
   @override
-  String get forgotPassword => 'Ù‡Ù„ Ù†Ø³ÙŠØª ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±ØŸ';
+  String get forgotPassword => 'هل نسيت كلمة المرور؟';
 
   @override
-  String get continueLabel => 'Ù…ØªØ§Ø¨Ø¹Ø©';
+  String get continueLabel => 'متابعة';
 
   @override
-  String get supplierManager => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get supplierManager => 'إدارة المورد';
 
   @override
-  String get loginSubtitle =>
-      'Ø³Ø¬Ù‘Ù„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ù„Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ø­Ø³Ø§Ø¨Ùƒ ÙÙŠ ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ø¬Ù…Ù„Ø©';
+  String get loginSubtitle => 'سجّل الدخول للوصول إلى حسابك في تطبيق الجملة';
 
   @override
-  String get dontHaveAccount => 'Ù„ÙŠØ³ Ù„Ø¯ÙŠÙƒ Ø­Ø³Ø§Ø¨ØŸ';
+  String get dontHaveAccount => 'ليس لديك حساب؟';
 
   @override
-  String get alreadyHaveAccount => 'Ù„Ø¯ÙŠÙƒ Ø­Ø³Ø§Ø¨ Ø¨Ø§Ù„ÙØ¹Ù„ØŸ';
+  String get alreadyHaveAccount => 'لديك حساب بالفعل؟';
 
   @override
-  String get createRetailerAccount => 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ ØªØ§Ø¬Ø±';
+  String get createRetailerAccount => 'إنشاء حساب تاجر';
 
   @override
-  String get joinMarketplace =>
-      'Ø§Ù†Ø¶Ù… Ø¥Ù„Ù‰ Ø³ÙˆÙ‚ Ø§Ù„Ø¬Ù…Ù„Ø© Ø§Ù„Ø®Ø§Øµ Ø¨Ù†Ø§';
+  String get joinMarketplace => 'انضم إلى سوق الجملة الخاص بنا';
 
   @override
-  String get fullName => 'Ø§Ù„Ø§Ø³Ù… Ø§Ù„ÙƒØ§Ù…Ù„';
+  String get fullName => 'الاسم الكامل';
 
   @override
-  String get storeName => 'Ø§Ø³Ù… Ø§Ù„Ù…ØªØ¬Ø±';
+  String get storeName => 'اسم المتجر';
 
   @override
-  String get phoneNumber => 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ';
+  String get phoneNumber => 'رقم الهاتف';
 
   @override
-  String get confirmPassword => 'ØªØ£ÙƒÙŠØ¯ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±';
+  String get confirmPassword => 'تأكيد كلمة المرور';
 
   @override
-  String get storeAddress => 'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ù…ØªØ¬Ø±';
+  String get storeAddress => 'عنوان المتجر';
 
   @override
-  String get city => 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©';
+  String get city => 'المدينة';
 
   @override
-  String get businessType => 'Ù†ÙˆØ¹ Ø§Ù„Ù†Ø´Ø§Ø·';
+  String get businessType => 'نوع النشاط';
 
   @override
-  String get createAccount => 'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø­Ø³Ø§Ø¨';
+  String get createAccount => 'إنشاء الحساب';
 
   @override
-  String get completeSupplierProfile => 'Ø¥ÙƒÙ…Ø§Ù„ Ù…Ù„Ù Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get completeSupplierProfile => 'إكمال ملف المورد';
 
   @override
-  String get completeSupplierProfileTitle =>
-      'Ø£ÙƒÙ…Ù„ Ù…Ù„Ù Ø§Ù„Ù…ÙˆØ±Ø¯ Ø§Ù„Ø®Ø§Øµ Ø¨Ùƒ';
+  String get completeSupplierProfileTitle => 'أكمل ملف المورد الخاص بك';
 
   @override
-  String get completeSupplierProfileSubtitle =>
-      'Ø£Ø¯Ø®Ù„ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø´Ø±ÙƒØªÙƒ Ù„Ù„Ù…ØªØ§Ø¨Ø¹Ø©';
+  String get completeSupplierProfileSubtitle => 'أدخل معلومات شركتك للمتابعة';
 
   @override
-  String get companyName => 'Ø§Ø³Ù… Ø§Ù„Ø´Ø±ÙƒØ©';
+  String get companyName => 'اسم الشركة';
 
   @override
-  String get companyAddress => 'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø´Ø±ÙƒØ©';
+  String get companyAddress => 'عنوان الشركة';
 
   @override
-  String get description => 'Ø§Ù„ÙˆØµÙ';
+  String get description => 'الوصف';
 
   @override
-  String get logoUrl => 'Ø±Ø§Ø¨Ø· Ø§Ù„Ø´Ø¹Ø§Ø±';
+  String get logoUrl => 'رابط الشعار';
 
   @override
-  String get saveAndContinue => 'Ø­ÙØ¸ ÙˆÙ…ØªØ§Ø¨Ø¹Ø©';
+  String get saveAndContinue => 'حفظ ومتابعة';
 
   @override
-  String get supplierDashboard => 'Ù„ÙˆØ­Ø© ØªØ­ÙƒÙ… Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get supplierDashboard => 'لوحة تحكم المورد';
 
   @override
-  String get retailerDashboard => 'Ù„ÙˆØ­Ø© ØªØ­ÙƒÙ… Ø§Ù„ØªØ§Ø¬Ø±';
+  String get retailerDashboard => 'لوحة تحكم التاجر';
 
   @override
-  String get dashboardPlaceholder => 'ÙˆØ§Ø¬Ù‡Ø© Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ…';
+  String get dashboardPlaceholder => 'واجهة لوحة التحكم';
 
   @override
-  String get resetPassword => 'Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙŠÙŠÙ† ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±';
+  String get resetPassword => 'إعادة تعيين كلمة المرور';
 
   @override
-  String get newPassword => 'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©';
+  String get newPassword => 'كلمة المرور الجديدة';
 
   @override
-  String get confirmNewPassword =>
-      'ØªØ£ÙƒÙŠØ¯ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©';
+  String get confirmNewPassword => 'تأكيد كلمة المرور الجديدة';
 
   @override
-  String get resetToken => 'Ø±Ù…Ø² Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ¹ÙŠÙŠÙ†';
+  String get resetToken => 'رمز إعادة التعيين';
 
   @override
-  String get orContinueWith => 'Ø£Ùˆ Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø¹Ø¨Ø±';
+  String get orContinueWith => 'أو المتابعة عبر';
 
   @override
-  String get loginWithGoogle => 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø¹Ø¨Ø± Google';
+  String get loginWithGoogle => 'تسجيل الدخول عبر Google';
 
   @override
-  String get enterValidLebanesePhone =>
-      'Ø£Ø¯Ø®Ù„ Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ù„Ø¨Ù†Ø§Ù†ÙŠ ØµØ§Ù„Ø­';
+  String get enterValidLebanesePhone => 'أدخل رقم هاتف لبناني صالح';
 
   @override
   String get userSessionNotFound =>
-      'ØªØ¹Ø°Ø± Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø¬Ù„Ø³Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…. ÙŠØ±Ø¬Ù‰ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ù…Ø¬Ø¯Ø¯Ù‹Ø§.';
+      'تعذر العثور على جلسة المستخدم. يرجى تسجيل الدخول مجددًا.';
 
   @override
-  String get supplierProfileSavedSuccessfully =>
-      'ØªÙ… Ø­ÙØ¸ Ù…Ù„Ù Ø§Ù„Ù…ÙˆØ±Ø¯ Ø¨Ù†Ø¬Ø§Ø­';
+  String get supplierProfileSavedSuccessfully => 'تم حفظ ملف المورد بنجاح';
 
   @override
-  String get retailerProfileUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ù…Ù„Ù Ø§Ù„ØªØ§Ø¬Ø± Ø¨Ù†Ø¬Ø§Ø­';
+  String get retailerProfileUpdatedSuccessfully => 'تم تحديث ملف التاجر بنجاح';
 
   @override
-  String get provideBusinessInfoToContinue =>
-      'Ø£Ø¯Ø®Ù„ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø´Ø±ÙƒØªÙƒ Ù„Ù„Ù…ØªØ§Ø¨Ø¹Ø©';
+  String get provideBusinessInfoToContinue => 'أدخل معلومات شركتك للمتابعة';
 
   @override
-  String get enterCompanyName => 'Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø´Ø±ÙƒØªÙƒ';
+  String get enterCompanyName => 'أدخل اسم شركتك';
 
   @override
-  String get enterCompanyAddress => 'Ø£Ø¯Ø®Ù„ Ø¹Ù†ÙˆØ§Ù† Ø´Ø±ÙƒØªÙƒ';
+  String get enterCompanyAddress => 'أدخل عنوان شركتك';
 
   @override
-  String get selectCity => 'Ø§Ø®ØªØ± Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©';
+  String get selectCity => 'اختر المدينة';
 
   @override
-  String get selectBusinessType => 'Ø§Ø®ØªØ± Ù†ÙˆØ¹ Ø§Ù„Ù†Ø´Ø§Ø·';
+  String get selectBusinessType => 'اختر نوع النشاط';
 
   @override
-  String get tellAboutBusiness =>
-      'Ø£Ø®Ø¨Ø± Ø§Ù„ØªØ¬Ø§Ø± Ø¹Ù† Ø´Ø±ÙƒØªÙƒ ÙˆÙ…Ù†ØªØ¬Ø§ØªÙƒ';
+  String get tellAboutBusiness => 'أخبر التجار عن شركتك ومنتجاتك';
 
   @override
-  String get pasteResetToken => 'Ø£Ù„ØµÙ‚ Ø±Ù…Ø² Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ¹ÙŠÙŠÙ†';
+  String get pasteResetToken => 'ألصق رمز إعادة التعيين';
 
   @override
   String get enterEmailToGenerateResetToken =>
-      'Ø£Ø¯Ø®Ù„ Ø¨Ø±ÙŠØ¯Ùƒ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù„Ø¥Ù†Ø´Ø§Ø¡ Ø±Ù…Ø² Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ¹ÙŠÙŠÙ†';
+      'أدخل بريدك الإلكتروني لإنشاء رمز إعادة التعيين';
 
   @override
   String get enterResetTokenAndPassword =>
-      'Ø£Ø¯Ø®Ù„ Ø±Ù…Ø² Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ¹ÙŠÙŠÙ† ÙˆØ§Ø®ØªØ± ÙƒÙ„Ù…Ø© Ù…Ø±ÙˆØ± Ø¬Ø¯ÙŠØ¯Ø©';
+      'أدخل رمز إعادة التعيين واختر كلمة مرور جديدة';
 
   @override
-  String get saveLanguage => 'Ø­ÙØ¸ Ø§Ù„Ù„ØºØ©';
+  String get saveLanguage => 'حفظ اللغة';
 
   @override
-  String get language => 'Ø§Ù„Ù„ØºØ©';
+  String get language => 'اللغة';
 
   @override
-  String get english => 'Ø§Ù„Ø¥Ù†Ø¬Ù„ÙŠØ²ÙŠØ©';
+  String get english => 'الإنجليزية';
 
   @override
-  String get french => 'Ø§Ù„ÙØ±Ù†Ø³ÙŠØ©';
+  String get french => 'الفرنسية';
 
   @override
-  String get arabic => 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©';
+  String get arabic => 'العربية';
 
   @override
-  String get cityBeirut => 'Ø¨ÙŠØ±ÙˆØª';
+  String get cityBeirut => 'بيروت';
 
   @override
-  String get cityTripoli => 'Ø·Ø±Ø§Ø¨Ù„Ø³';
+  String get cityTripoli => 'طرابلس';
 
   @override
-  String get citySidon => 'ØµÙŠØ¯Ø§';
+  String get citySidon => 'صيدا';
 
   @override
-  String get cityTyre => 'ØµÙˆØ±';
+  String get cityTyre => 'صور';
 
   @override
-  String get cityZahle => 'Ø²Ø­Ù„Ø©';
+  String get cityZahle => 'زحلة';
 
   @override
-  String get cityJounieh => 'Ø¬ÙˆÙ†ÙŠØ©';
+  String get cityJounieh => 'جونية';
 
   @override
-  String get cityNabatieh => 'Ø§Ù„Ù†Ø¨Ø·ÙŠØ©';
+  String get cityNabatieh => 'النبطية';
 
   @override
-  String get cityByblos => 'Ø¬Ø¨ÙŠÙ„';
+  String get cityByblos => 'جبيل';
 
   @override
-  String get cityAley => 'Ø¹Ø§Ù„ÙŠÙ‡';
+  String get cityAley => 'عاليه';
 
   @override
-  String get cityBaalbek => 'Ø¨Ø¹Ù„Ø¨Ùƒ';
+  String get cityBaalbek => 'بعلبك';
 
   @override
-  String get businessMiniMarket => 'Ù…ÙŠÙ†ÙŠ Ù…Ø§Ø±ÙƒØª';
+  String get businessMiniMarket => 'ميني ماركت';
 
   @override
-  String get businessSupermarket => 'Ø³ÙˆØ¨Ø±Ù…Ø§Ø±ÙƒØª';
+  String get businessSupermarket => 'سوبرماركت';
 
   @override
-  String get businessPharmacy => 'ØµÙŠØ¯Ù„ÙŠØ©';
+  String get businessPharmacy => 'صيدلية';
 
   @override
-  String get businessRestaurant => 'Ù…Ø·Ø¹Ù…';
+  String get businessRestaurant => 'مطعم';
 
   @override
-  String get businessCafe => 'Ù…Ù‚Ù‡Ù‰';
+  String get businessCafe => 'مقهى';
 
   @override
-  String get businessRetailShop => 'Ù…ØªØ¬Ø± Ø¨ÙŠØ¹ Ø¨Ø§Ù„ØªØ¬Ø²Ø¦Ø©';
+  String get businessRetailShop => 'متجر بيع بالتجزئة';
 
   @override
-  String get businessBuildingMaterials => 'Ù…ÙˆØ§Ø¯ Ø¨Ù†Ø§Ø¡';
+  String get businessBuildingMaterials => 'مواد بناء';
 
   @override
-  String get businessElectricalSupplies => 'Ù…Ø³ØªÙ„Ø²Ù…Ø§Øª ÙƒÙ‡Ø±Ø¨Ø§Ø¦ÙŠØ©';
+  String get businessElectricalSupplies => 'مستلزمات كهربائية';
 
   @override
-  String get businessPlumbing => 'ØªÙ…Ø¯ÙŠØ¯Ø§Øª ØµØ­ÙŠØ©';
+  String get businessPlumbing => 'تمديدات صحية';
 
   @override
-  String get businessToolsHardware => 'Ø£Ø¯ÙˆØ§Øª ÙˆØ¹Ø¯Ø©';
+  String get businessToolsHardware => 'أدوات وعدة';
 
   @override
-  String get businessIndustrialEquipment => 'Ù…Ø¹Ø¯Ø§Øª ØµÙ†Ø§Ø¹ÙŠØ©';
+  String get businessIndustrialEquipment => 'معدات صناعية';
 
   @override
-  String get businessHomeImprovement => 'ØªØ­Ø³ÙŠÙ†Ø§Øª Ù…Ù†Ø²Ù„ÙŠØ©';
+  String get businessHomeImprovement => 'تحسينات منزلية';
 
   @override
-  String get businessWholesaleDistribution => 'ØªÙˆØ²ÙŠØ¹ Ø¨Ø§Ù„Ø¬Ù…Ù„Ø©';
+  String get businessWholesaleDistribution => 'توزيع بالجملة';
 
   @override
-  String get businessOther => 'Ø£Ø®Ø±Ù‰';
+  String get businessOther => 'أخرى';
 
   @override
-  String get welcomeBack => 'Ù…Ø±Ø­Ø¨Ø§Ù‹ Ø¨Ø¹ÙˆØ¯ØªÙƒ';
+  String get welcomeBack => 'مرحباً بعودتك';
 
   @override
-  String get searchProducts => 'Ø§Ø¨Ø­Ø« Ø¹Ù† Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª...';
+  String get searchProducts => 'ابحث عن المنتجات...';
 
   @override
-  String get categories => 'Ø§Ù„ÙØ¦Ø§Øª';
+  String get categories => 'الفئات';
 
   @override
-  String get seeAll => 'Ø¹Ø±Ø¶ Ø§Ù„ÙƒÙ„';
+  String get seeAll => 'عرض الكل';
 
   @override
-  String get quickActions => 'Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø³Ø±ÙŠØ¹Ø©';
+  String get quickActions => 'إجراءات سريعة';
 
   @override
-  String get featuredProducts => 'Ù…Ù†ØªØ¬Ø§Øª Ù…Ù…ÙŠØ²Ø©';
+  String get featuredProducts => 'منتجات مميزة';
 
   @override
-  String get viewAll => 'Ø¹Ø±Ø¶ Ø§Ù„ÙƒÙ„';
+  String get viewAll => 'عرض الكل';
 
   @override
-  String get add => 'Ø¥Ø¶Ø§ÙØ©';
+  String get add => 'إضافة';
 
   @override
-  String get home => 'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©';
+  String get home => 'الرئيسية';
 
   @override
-  String get topRanking => 'Ø§Ù„Ø£Ø¹Ù„Ù‰ ØªÙ‚ÙŠÙŠÙ…Ø§Ù‹';
+  String get topRanking => 'الأعلى تقييماً';
 
   @override
-  String get orders => 'Ø§Ù„Ø·Ù„Ø¨Ø§Øª';
+  String get orders => 'الطلبات';
 
   @override
   String get rfq => 'RFQ';
 
   @override
-  String get profile => 'Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ';
+  String get profile => 'الملف الشخصي';
 
   @override
-  String get couldNotLoadRetailerHome =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„ØªØ§Ø¬Ø±';
+  String get couldNotLoadRetailerHome => 'تعذر تحميل الصفحة الرئيسية للتاجر';
 
   @override
   String get checkConnectionTryAgain =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„Ø§ØªØµØ§Ù„ ÙˆØ§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+      'يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
 
   @override
-  String get retry => 'Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©';
+  String get retry => 'إعادة المحاولة';
 
   @override
-  String get cart => 'Ø§Ù„Ø³Ù„Ø©';
+  String get cart => 'السلة';
 
   @override
-  String get cartComingSoon =>
-      'ØµÙØ­Ø© Ø§Ù„Ø³Ù„Ø© Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get cartComingSoon => 'صفحة السلة ستكون متاحة قريباً';
 
   @override
-  String get notifications => 'Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª';
+  String get notifications => 'الإشعارات';
 
   @override
-  String get notificationsComingSoon =>
-      'ØµÙØ­Ø© Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get notificationsComingSoon => 'صفحة الإشعارات ستكون متاحة قريباً';
 
   @override
-  String get promotions => 'Ø§Ù„Ø¹Ø±ÙˆØ¶';
+  String get promotions => 'العروض';
 
   @override
-  String get promotionsComingSoon =>
-      'Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get promotionsComingSoon => 'العروض ستكون متاحة قريباً';
 
   @override
-  String get topRankingComingSoon =>
-      'Ø³ØªØ¸Ù‡Ø± Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ø£Ø¹Ù„Ù‰ ØªÙ‚ÙŠÙŠÙ…Ø§Ù‹ Ù‡Ù†Ø§ Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get topRankingComingSoon => 'ستظهر المنتجات الأعلى تقييماً هنا قريباً';
 
   @override
-  String get ordersComingSoon => 'Ø³ØªØ¸Ù‡Ø± Ø·Ù„Ø¨Ø§ØªÙƒ Ù‡Ù†Ø§ Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get ordersComingSoon => 'ستظهر طلباتك هنا قريباً';
 
   @override
-  String get rfqComingSoon => 'Ø³ØªØ¸Ù‡Ø± Ø·Ù„Ø¨Ø§Øª RFQ Ù‡Ù†Ø§ Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get rfqComingSoon => 'ستظهر طلبات RFQ هنا قريباً';
 
   @override
-  String get aiAssistant => 'Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ';
+  String get aiAssistant => 'المساعد الذكي';
 
   @override
-  String get aiAssistantComingSoon =>
-      'Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ Ø³ÙŠÙƒÙˆÙ† Ù…ØªØ§Ø­Ø§Ù‹ Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get aiAssistantComingSoon => 'المساعد الذكي سيكون متاحاً قريباً';
 
   @override
-  String get liveChat => 'Ø§Ù„Ø¯Ø±Ø¯Ø´Ø© Ø§Ù„Ù…Ø¨Ø§Ø´Ø±Ø©';
+  String get liveChat => 'الدردشة المباشرة';
 
   @override
-  String get liveChatComingSoon =>
-      'Ø§Ù„Ø¯Ø±Ø¯Ø´Ø© Ø§Ù„Ù…Ø¨Ø§Ø´Ø±Ø© Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get liveChatComingSoon => 'الدردشة المباشرة ستكون متاحة قريباً';
 
   @override
-  String get loyaltyPoints => 'Ù†Ù‚Ø§Ø· Ø§Ù„ÙˆÙ„Ø§Ø¡';
+  String get loyaltyPoints => 'نقاط الولاء';
 
   @override
-  String get loyaltyComingSoon =>
-      'Ù†Ù‚Ø§Ø· Ø§Ù„ÙˆÙ„Ø§Ø¡ Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get loyaltyComingSoon => 'نقاط الولاء ستكون متاحة قريباً';
 
   @override
-  String get profileTitle => 'Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ';
+  String get profileTitle => 'الملف الشخصي';
 
   @override
-  String get settings => 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª';
+  String get settings => 'الإعدادات';
 
   @override
-  String get editProfile => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ';
+  String get editProfile => 'تعديل الملف الشخصي';
 
   @override
-  String get basicInformation => 'Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©';
+  String get basicInformation => 'المعلومات الأساسية';
 
   @override
-  String get system => 'Ø§Ù„Ù†Ø¸Ø§Ù…';
+  String get system => 'النظام';
 
   @override
-  String get logout => 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬';
+  String get logout => 'تسجيل الخروج';
 
   @override
-  String get logoutQuestion => 'Ù‡Ù„ ØªØ±ÙŠØ¯ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬ØŸ';
+  String get logoutQuestion => 'هل تريد تسجيل الخروج؟';
 
   @override
-  String get cancel => 'Ø¥Ù„ØºØ§Ø¡';
+  String get cancel => 'إلغاء';
 
   @override
-  String get confirm => 'ØªØ£ÙƒÙŠØ¯';
+  String get confirm => 'تأكيد';
 
   @override
-  String get accountInformation => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø­Ø³Ø§Ø¨';
+  String get accountInformation => 'معلومات الحساب';
 
   @override
-  String get businessInformation => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø¹Ù…Ù„';
+  String get businessInformation => 'معلومات العمل';
 
   @override
-  String get changePasswordOptional =>
-      'ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± (Ø§Ø®ØªÙŠØ§Ø±ÙŠ)';
+  String get changePasswordOptional => 'تغيير كلمة المرور (اختياري)';
 
   @override
   String get passwordManagedByBuild4All =>
-      'ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± ÙŠØ­ØªØ§Ø¬ Ø¥Ù„Ù‰ ØªØ­Ù‚Ù‚ Ù…Ù† Build4All ÙˆØ³ÙŠØªÙ… Ø¥Ø¶Ø§ÙØªÙ‡ Ù„Ø§Ø­Ù‚Ø§Ù‹.';
+      'تغيير كلمة المرور يحتاج إلى تحقق من Build4All وسيتم إضافته لاحقاً.';
 
   @override
-  String get username => 'Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…';
+  String get username => 'اسم المستخدم';
 
   @override
-  String get firstName => 'Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø£ÙˆÙ„';
+  String get firstName => 'الاسم الأول';
 
   @override
-  String get lastName => 'Ø§Ø³Ù… Ø§Ù„Ø¹Ø§Ø¦Ù„Ø©';
+  String get lastName => 'اسم العائلة';
 
   @override
-  String get phoneLebanon => 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ (Ù„Ø¨Ù†Ø§Ù†)';
+  String get phoneLebanon => 'رقم الهاتف (لبنان)';
 
   @override
-  String get address => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù†';
+  String get address => 'العنوان';
 
   @override
-  String get saveChanges => 'Ø­ÙØ¸ Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª';
+  String get saveChanges => 'حفظ التغييرات';
 
   @override
-  String get profileUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ Ø¨Ù†Ø¬Ø§Ø­';
+  String get profileUpdatedSuccessfully => 'تم تحديث الملف الشخصي بنجاح';
 
   @override
-  String get walletBalance => 'Ø±ØµÙŠØ¯ Ø§Ù„Ù…Ø­ÙØ¸Ø©';
+  String get walletBalance => 'رصيد المحفظة';
 
   @override
-  String get creditBalance => 'Ø±ØµÙŠØ¯ Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†';
+  String get creditBalance => 'رصيد الائتمان';
 
   @override
-  String get comingSoon => 'Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get comingSoon => 'قريباً';
 
   @override
-  String get languageSettings => 'Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ù„ØºØ©';
+  String get languageSettings => 'إعدادات اللغة';
 
   @override
-  String get languageSettingsComingSoon =>
-      'Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ù„ØºØ© Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get languageSettingsComingSoon => 'إعدادات اللغة ستكون متاحة قريباً';
 
   @override
-  String get walletComingSoon =>
-      'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ø­ÙØ¸Ø© Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get walletComingSoon => 'تفاصيل المحفظة ستكون متاحة قريباً';
 
   @override
-  String get creditComingSoon =>
-      'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù† Ø³ØªÙƒÙˆÙ† Ù…ØªØ§Ø­Ø© Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get creditComingSoon => 'تفاصيل الائتمان ستكون متاحة قريباً';
 
   @override
-  String get chooseLanguage => 'Ø§Ø®ØªØ± Ù„ØºØ©';
+  String get chooseLanguage => 'اختر لغة';
 
   @override
   String get emailVerificationRequired =>
-      'ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ù…Ø² ØªØ­Ù‚Ù‚ Ø¥Ù„Ù‰ Ø¨Ø±ÙŠØ¯Ùƒ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø§Ù„Ø¬Ø¯ÙŠØ¯.';
+      'تم إرسال رمز تحقق إلى بريدك الإلكتروني الجديد.';
 
   @override
-  String get verifyEmail => 'ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ';
+  String get verifyEmail => 'تأكيد البريد الإلكتروني';
 
   @override
-  String get resendCode => 'Ø¥Ø¹Ø§Ø¯Ø© Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ù…Ø²';
+  String get resendCode => 'إعادة إرسال الرمز';
 
   @override
-  String get verificationCode => 'Ø±Ù…Ø² Ø§Ù„ØªØ­Ù‚Ù‚';
+  String get verificationCode => 'رمز التحقق';
 
   @override
-  String get emailUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø¨Ù†Ø¬Ø§Ø­';
+  String get emailUpdatedSuccessfully => 'تم تحديث البريد الإلكتروني بنجاح';
 
   @override
-  String get passwordVerificationCodeSent =>
-      'ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ù…Ø² ØªØ£ÙƒÙŠØ¯ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±';
+  String get passwordVerificationCodeSent => 'تم إرسال رمز تأكيد كلمة المرور';
 
   @override
-  String get passwordsDoNotMatch =>
-      'ÙƒÙ„Ù…ØªØ§ Ø§Ù„Ù…Ø±ÙˆØ± ØºÙŠØ± Ù…ØªØ·Ø§Ø¨Ù‚ØªÙŠÙ†';
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
 
   @override
-  String get passwordUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø¨Ù†Ø¬Ø§Ø­';
+  String get passwordUpdatedSuccessfully => 'تم تحديث كلمة المرور بنجاح';
 
   @override
   String get passwordMinLength =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ØªØªÙƒÙˆÙ† ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ù…Ù† 6 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+      'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
 
   @override
-  String get dangerZone => 'Ù…Ù†Ø·Ù‚Ø© Ø§Ù„Ø®Ø·Ø±';
+  String get dangerZone => 'منطقة الخطر';
 
   @override
-  String get deleteAccount => 'Ø­Ø°Ù Ø§Ù„Ø­Ø³Ø§Ø¨';
+  String get deleteAccount => 'حذف الحساب';
 
   @override
-  String get deleteAccountWarningTitle => 'Ø­Ø°Ù Ø§Ù„Ø­Ø³Ø§Ø¨';
+  String get deleteAccountWarningTitle => 'حذف الحساب';
 
   @override
   String get deleteAccountWarningMessage =>
-      'Ø­Ø°Ù Ø­Ø³Ø§Ø¨Ùƒ Ù†Ù‡Ø§Ø¦ÙŠ ÙˆÙ„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„ØªØ±Ø§Ø¬Ø¹ Ø¹Ù†Ù‡.';
+      'حذف حسابك نهائي ولا يمكن التراجع عنه.';
 
   @override
-  String get deleteAccountConfirmTitle => 'Ø­Ø°Ù Ø§Ù„Ø­Ø³Ø§Ø¨';
+  String get deleteAccountConfirmTitle => 'حذف الحساب';
 
   @override
   String get deleteAccountConfirmMessage =>
-      'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ Ø­Ø°Ù Ø­Ø³Ø§Ø¨ÙƒØŸ Ø³ÙŠØªÙ… Ø­Ø°Ù Ø­Ø³Ø§Ø¨ Build4All ÙˆÙ…Ù„Ù Ø§Ù„ØªØ§Ø¬Ø± Ø§Ù„Ø®Ø§Øµ Ø¨Ùƒ.';
+      'هل أنت متأكد أنك تريد حذف حسابك؟ سيتم حذف حساب Build4All وملف التاجر الخاص بك.';
 
   @override
-  String get delete => 'Ø­Ø°Ù';
+  String get delete => 'حذف';
 
   @override
-  String get currentPassword => 'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø§Ù„Ø­Ø§Ù„ÙŠØ©';
+  String get currentPassword => 'كلمة المرور الحالية';
 
   @override
-  String get accountDeletedSuccessfully =>
-      'ØªÙ… Ø­Ø°Ù Ø§Ù„Ø­Ø³Ø§Ø¨ Ø¨Ù†Ø¬Ø§Ø­';
+  String get accountDeletedSuccessfully => 'تم حذف الحساب بنجاح';
 
   @override
-  String get currentPasswordRequired =>
-      'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get currentPasswordRequired => 'كلمة المرور الحالية مطلوبة';
 
   @override
-  String get shoppingCart => 'Ø³Ù„Ø© Ø§Ù„ØªØ³ÙˆÙ‚';
+  String get shoppingCart => 'سلة التسوق';
 
   @override
-  String get item => 'Ø¹Ù†ØµØ±';
+  String get item => 'عنصر';
 
   @override
-  String get items => 'Ø¹Ù†Ø§ØµØ±';
+  String get items => 'عناصر';
 
   @override
-  String get yourCartIsEmpty => 'Ø³Ù„ØªÙƒ ÙØ§Ø±ØºØ©';
+  String get yourCartIsEmpty => 'سلتك فارغة';
 
   @override
-  String get emptyCartMessage =>
-      'Ø£Ø¶Ù Ù…Ù†ØªØ¬Ø§Øª Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ø¨Ø¯Ø¡ Ø·Ù„Ø¨Ùƒ.';
+  String get emptyCartMessage => 'أضف منتجات من الصفحة الرئيسية لبدء طلبك.';
 
   @override
-  String get perUnit => 'Ù„ÙƒÙ„ ÙˆØ­Ø¯Ø©';
+  String get perUnit => 'لكل وحدة';
 
   @override
-  String get orderSummary => 'Ù…Ù„Ø®Øµ Ø§Ù„Ø·Ù„Ø¨';
+  String get orderSummary => 'ملخص الطلب';
 
   @override
-  String get subtotal => 'Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„ÙØ±Ø¹ÙŠ';
+  String get subtotal => 'المجموع الفرعي';
 
   @override
-  String get shippingEstimated => 'Ø§Ù„Ø´Ø­Ù† (ØªÙ‚Ø¯ÙŠØ±ÙŠ)';
+  String get shippingEstimated => 'الشحن (تقديري)';
 
   @override
-  String get total => 'Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ';
+  String get total => 'الإجمالي';
 
   @override
-  String get continueShopping => 'Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„ØªØ³ÙˆÙ‚';
+  String get continueShopping => 'متابعة التسوق';
 
   @override
-  String get proceedToCheckout => 'Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ù„Ù„Ø¯ÙØ¹';
+  String get proceedToCheckout => 'المتابعة للدفع';
 
   @override
-  String get checkoutComingSoon =>
-      'Ø§Ù„Ø¯ÙØ¹ Ø³ÙŠÙƒÙˆÙ† Ù…ØªØ§Ø­Ø§Ù‹ Ù‚Ø±ÙŠØ¨Ø§Ù‹';
+  String get checkoutComingSoon => 'الدفع سيكون متاحاً قريباً';
 
   @override
-  String get createRfq => 'Ø¥Ù†Ø´Ø§Ø¡ RFQ';
+  String get createRfq => 'إنشاء RFQ';
 
   @override
-  String get smartRecommendations => 'ØªÙˆØµÙŠØ§Øª Ø°ÙƒÙŠØ©';
+  String get smartRecommendations => 'توصيات ذكية';
 
   @override
-  String get requestQuotesQuickly => 'Ø§Ø·Ù„Ø¨ Ø¹Ø±ÙˆØ¶ Ø£Ø³Ø¹Ø§Ø± Ø¨Ø³Ø±Ø¹Ø©';
+  String get requestQuotesQuickly => 'اطلب عروض أسعار بسرعة';
 
   @override
-  String get trackYourRewards => 'ØªØ§Ø¨Ø¹ Ù…ÙƒØ§ÙØ¢ØªÙƒ';
+  String get trackYourRewards => 'تابع مكافآتك';
 
   @override
-  String get viewAvailableDeals => 'Ø¹Ø±Ø¶ Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„Ù…ØªØ§Ø­Ø©';
+  String get viewAvailableDeals => 'عرض العروض المتاحة';
 
   @override
-  String get productsLabel => 'Ù…Ù†ØªØ¬Ø§Øª';
+  String get productsLabel => 'منتجات';
 
   @override
-  String get all => 'Ø§Ù„ÙƒÙ„';
+  String get all => 'الكل';
 
   @override
-  String get moq => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰';
+  String get moq => 'الحد الأدنى';
 
   @override
-  String get stock => 'Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get stock => 'المخزون';
 
   @override
-  String get outOfStock => 'ØºÙŠØ± Ù…ØªÙˆÙØ±';
+  String get outOfStock => 'غير متوفر';
 
   @override
-  String get noProductsInCategory =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†ØªØ¬Ø§Øª ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø©';
+  String get noProductsInCategory => 'لا توجد منتجات في هذه الفئة';
 
   @override
-  String get productAddedToCart =>
-      'ØªÙ…Øª Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ù…Ù†ØªØ¬ Ø¥Ù„Ù‰ Ø§Ù„Ø³Ù„Ø©';
+  String get productAddedToCart => 'تمت إضافة المنتج إلى السلة';
 
   @override
-  String get supplierDashboardTitle => 'Ù„ÙˆØ­Ø© ØªØ­ÙƒÙ… Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get supplierDashboardTitle => 'لوحة تحكم المورد';
 
   @override
-  String get supplierDashboardMenuTooltip => 'Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©';
+  String get supplierDashboardMenuTooltip => 'القائمة';
 
   @override
-  String get supplierDashboardRefreshTooltip => 'ØªØ­Ø¯ÙŠØ«';
+  String get supplierDashboardRefreshTooltip => 'تحديث';
 
   @override
-  String get supplierDashboardSettingsTooltip => 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª';
+  String get supplierDashboardSettingsTooltip => 'الإعدادات';
 
   @override
-  String get supplierDashboardLowStockAlerts =>
-      'ØªÙ†Ø¨ÙŠÙ‡Ø§Øª Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ù…Ù†Ø®ÙØ¶';
+  String get supplierDashboardLowStockAlerts => 'تنبيهات المخزون المنخفض';
 
   @override
-  String get supplierDashboardQuickActions => 'Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø³Ø±ÙŠØ¹Ø©';
+  String get supplierDashboardQuickActions => 'إجراءات سريعة';
 
   @override
-  String get supplierPendingOrders => 'Ø·Ù„Ø¨Ø§Øª Ù‚ÙŠØ¯ Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø±';
+  String get supplierPendingOrders => 'طلبات قيد الانتظار';
 
   @override
-  String get supplierActiveOrders => 'Ø·Ù„Ø¨Ø§Øª Ù†Ø´Ø·Ø©';
+  String get supplierActiveOrders => 'طلبات نشطة';
 
   @override
-  String get supplierShippedOrders => 'Ø·Ù„Ø¨Ø§Øª ØªÙ… Ø´Ø­Ù†Ù‡Ø§';
+  String get supplierShippedOrders => 'طلبات تم شحنها';
 
   @override
-  String get supplierCompletedOrders => 'Ø·Ù„Ø¨Ø§Øª Ù…ÙƒØªÙ…Ù„Ø©';
+  String get supplierCompletedOrders => 'طلبات مكتملة';
 
   @override
-  String get supplierFinancialSummary => 'Ø§Ù„Ù…Ù„Ø®Øµ Ø§Ù„Ù…Ø§Ù„ÙŠ';
+  String get supplierFinancialSummary => 'الملخص المالي';
 
   @override
-  String get supplierTodaySales => 'Ù…Ø¨ÙŠØ¹Ø§Øª Ø§Ù„ÙŠÙˆÙ…';
+  String get supplierTodaySales => 'مبيعات اليوم';
 
   @override
-  String get supplierMonthlyRevenue => 'Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ø§Ù„Ø´Ù‡Ø±';
+  String get supplierMonthlyRevenue => 'إيرادات الشهر';
 
   @override
-  String get supplierOrdersToday => 'Ø·Ù„Ø¨Ø§Øª Ø§Ù„ÙŠÙˆÙ…';
+  String get supplierOrdersToday => 'طلبات اليوم';
 
   @override
-  String get supplierNoLowStockAlerts =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙ†Ø¨ÙŠÙ‡Ø§Øª Ù…Ø®Ø²ÙˆÙ† Ù…Ù†Ø®ÙØ¶';
+  String get supplierNoLowStockAlerts => 'لا توجد تنبيهات مخزون منخفض';
 
   @override
-  String get supplierAddProduct => 'Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬';
+  String get supplierAddProduct => 'إضافة منتج';
 
   @override
-  String get supplierCreatePromotion => 'Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ø±Ø¶ ØªØ±ÙˆÙŠØ¬ÙŠ';
+  String get supplierCreatePromotion => 'إنشاء عرض ترويجي';
 
   @override
-  String get supplierManageBranches => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ±ÙˆØ¹';
+  String get supplierManageBranches => 'إدارة الفروع';
 
   @override
-  String get supplierShippingMethods => 'Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù†';
+  String get supplierShippingMethods => 'طرق الشحن';
 
   @override
-  String get supplierConfigureTaxes => 'Ø¥Ø¹Ø¯Ø§Ø¯ Ø§Ù„Ø¶Ø±Ø§Ø¦Ø¨';
+  String get supplierConfigureTaxes => 'إعداد الضرائب';
 
   @override
-  String get supplierImportExcel => 'Ø§Ø³ØªÙŠØ±Ø§Ø¯ Excel';
+  String get supplierImportExcel => 'استيراد Excel';
 
   @override
-  String get supplierHomeBanners => 'Ø¨Ù†Ø±Ø§Øª Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©';
+  String get supplierHomeBanners => 'بنرات الصفحة الرئيسية';
 
   @override
-  String get supplierCoupons => 'Ø§Ù„Ù‚Ø³Ø§Ø¦Ù…';
+  String get supplierCoupons => 'القسائم';
 
   @override
-  String get supplierLoadingDashboardData =>
-      'Ø¬Ø§Ø±Ù ØªØ­Ù…ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ…...';
+  String get supplierLoadingDashboardData => 'جارٍ تحميل بيانات لوحة التحكم...';
 
   @override
-  String get supplierLowStockItem => 'Ø¹Ù†ØµØ± Ù…Ø®Ø²ÙˆÙ†Ù‡ Ù…Ù†Ø®ÙØ¶';
+  String get supplierLowStockItem => 'عنصر مخزونه منخفض';
 
   @override
-  String get supplierLowStockProduct => 'Ù…Ù†ØªØ¬ Ù…Ø®Ø²ÙˆÙ†Ù‡ Ù…Ù†Ø®ÙØ¶';
+  String get supplierLowStockProduct => 'منتج مخزونه منخفض';
 
   @override
   String supplierCurrentMinimumStock(Object currentStock, Object minimumStock) {
-    return 'Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ø­Ø§Ù„ÙŠ: $currentStock | Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰: $minimumStock';
+    return 'المخزون الحالي: $currentStock | الحد الأدنى: $minimumStock';
   }
 
   @override
-  String get supplierLogoutTitle => 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬';
+  String get supplierLogoutTitle => 'تسجيل الخروج';
 
   @override
   String get supplierLogoutConfirmation =>
-      'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬ØŸ';
+      'هل أنت متأكد أنك تريد تسجيل الخروج؟';
 
   @override
-  String get supplierDrawerDashboard => 'Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ…';
+  String get supplierDrawerDashboard => 'لوحة التحكم';
 
   @override
-  String get supplierDrawerProfile => 'Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ';
+  String get supplierDrawerProfile => 'الملف الشخصي';
 
   @override
-  String get supplierDrawerProducts => 'Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª';
+  String get supplierDrawerProducts => 'المنتجات';
 
   @override
-  String get supplierDrawerCatalog => 'Ø§Ù„ÙƒØªØ§Ù„ÙˆØ¬';
+  String get supplierDrawerCatalog => 'الكتالوج';
 
   @override
-  String get supplierDrawerBranches => 'Ø§Ù„ÙØ±ÙˆØ¹';
+  String get supplierDrawerBranches => 'الفروع';
 
   @override
-  String get supplierDrawerOrders => 'Ø§Ù„Ø·Ù„Ø¨Ø§Øª';
+  String get supplierDrawerOrders => 'الطلبات';
 
   @override
-  String get supplierDrawerPromotions => 'Ø§Ù„Ø¹Ø±ÙˆØ¶';
+  String get supplierDrawerPromotions => 'العروض';
 
   @override
-  String get supplierDrawerCoupons => 'Ø§Ù„ÙƒÙˆØ¨ÙˆÙ†Ø§Øª';
+  String get supplierDrawerCoupons => 'الكوبونات';
 
   @override
-  String get supplierDrawerHomeBanners =>
-      'Ø¨Ù†Ø±Ø§Øª Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©';
+  String get supplierDrawerHomeBanners => 'بنرات الصفحة الرئيسية';
 
   @override
-  String get supplierDrawerShippingMethods => 'Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù†';
+  String get supplierDrawerShippingMethods => 'طرق الشحن';
 
   @override
-  String get supplierDrawerTaxes => 'Ø§Ù„Ø¶Ø±Ø§Ø¦Ø¨';
+  String get supplierDrawerTaxes => 'الضرائب';
 
   @override
-  String get supplierDrawerSettings => 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª';
+  String get supplierDrawerSettings => 'الإعدادات';
 
   @override
-  String get supplierProfileTitle => 'Ù…Ù„Ù Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get supplierProfileTitle => 'ملف المورد';
 
   @override
-  String get supplierProfileRefreshTooltip => 'ØªØ­Ø¯ÙŠØ«';
+  String get supplierProfileRefreshTooltip => 'تحديث';
 
   @override
-  String get supplierProfileNoData =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù„Ù…Ù„Ù Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get supplierProfileNoData => 'لا توجد بيانات لملف المورد';
 
   @override
-  String get supplierProfileInformation =>
-      'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ';
+  String get supplierProfileInformation => 'معلومات الملف الشخصي';
 
   @override
-  String get supplierFullNameLabel => 'Ø§Ù„Ø§Ø³Ù… Ø§Ù„ÙƒØ§Ù…Ù„';
+  String get supplierFullNameLabel => 'الاسم الكامل';
 
   @override
-  String get supplierUsernameLabel => 'Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…';
+  String get supplierUsernameLabel => 'اسم المستخدم';
 
   @override
-  String get supplierEmailLabel => 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ';
+  String get supplierEmailLabel => 'البريد الإلكتروني';
 
   @override
-  String get supplierPhoneNumberLabel => 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ';
+  String get supplierPhoneNumberLabel => 'رقم الهاتف';
 
   @override
-  String get supplierAccountTypeLabel => 'Ù†ÙˆØ¹ Ø§Ù„Ø­Ø³Ø§Ø¨';
+  String get supplierAccountTypeLabel => 'نوع الحساب';
 
   @override
-  String get supplierOwnerLabel => 'Ù…Ø§Ù„Ùƒ';
+  String get supplierOwnerLabel => 'مالك';
 
   @override
-  String get supplierUnableToLoadProfile =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ù…Ù„Ù Ø§Ù„Ù…ÙˆØ±Ø¯';
+  String get supplierUnableToLoadProfile => 'تعذر تحميل ملف المورد';
 
   @override
-  String get supplierTryAgain => 'Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰';
+  String get supplierTryAgain => 'حاول مرة أخرى';
 
   @override
-  String get supplierNotProvided => 'ØºÙŠØ± Ù…ØªÙˆÙØ±';
+  String get supplierNotProvided => 'غير متوفر';
 
   @override
-  String get branchManagementTitle => 'Ø¥Ø¯Ø§Ø±Ø©\nØ§Ù„ÙØ±ÙˆØ¹';
+  String get branchManagementTitle => 'إدارة\nالفروع';
 
   @override
-  String get addBranchTitle => 'Ø¥Ø¶Ø§ÙØ© ÙØ±Ø¹';
+  String get addBranchTitle => 'إضافة فرع';
 
   @override
-  String get editBranchTitle => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ÙØ±Ø¹';
+  String get editBranchTitle => 'تعديل الفرع';
 
   @override
-  String get updateBranchButton => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„ÙØ±Ø¹';
+  String get updateBranchButton => 'تحديث الفرع';
 
   @override
-  String get saveBranchButton => 'Ø­ÙØ¸ Ø§Ù„ÙØ±Ø¹';
+  String get saveBranchButton => 'حفظ الفرع';
 
   @override
-  String get branchInformationTitle => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„ÙØ±Ø¹';
+  String get branchInformationTitle => 'معلومات الفرع';
 
   @override
   String get branchInformationSubtitle =>
-      'Ø£Ù†Ø´Ø¦ ÙØ±Ø¹Ù‹Ø§ Ø£Ùˆ Ù…Ø³ØªÙˆØ¯Ø¹Ù‹Ø§ Ù„Ù„Ù…ÙˆØ±Ø¯ Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù…Ù‡ Ù„Ø§Ø­Ù‚Ù‹Ø§ ÙÙŠ Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†.';
+      'أنشئ فرعًا أو مستودعًا للمورد لاستخدامه لاحقًا في إدارة المخزون.';
 
   @override
-  String get branchNameLabel => 'Ø§Ø³Ù… Ø§Ù„ÙØ±Ø¹ *';
+  String get branchNameLabel => 'اسم الفرع *';
 
   @override
-  String get branchNameHint => 'Ù…Ø«Ø§Ù„: Ø§Ù„Ù…Ø³ØªÙˆØ¯Ø¹ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ';
+  String get branchNameHint => 'مثال: المستودع الرئيسي';
 
   @override
-  String get branchNameRequiredError => 'Ø§Ø³Ù… Ø§Ù„ÙØ±Ø¹ Ù…Ø·Ù„ÙˆØ¨';
+  String get branchNameRequiredError => 'اسم الفرع مطلوب';
 
   @override
-  String get branchNameMinError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ø³Ù… Ø§Ù„ÙØ±Ø¹ 3 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+  String get branchNameMinError => 'يجب أن يكون اسم الفرع 3 أحرف على الأقل';
 
   @override
-  String get branchNameTooLongError => 'Ø§Ø³Ù… Ø§Ù„ÙØ±Ø¹ Ø·ÙˆÙŠÙ„ Ø¬Ø¯Ù‹Ø§';
+  String get branchNameTooLongError => 'اسم الفرع طويل جدًا';
 
   @override
-  String get cityAreaLabel => 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© / Ø§Ù„Ù…Ù†Ø·Ù‚Ø©';
+  String get cityAreaLabel => 'المدينة / المنطقة';
 
   @override
-  String get cityAreaRequiredError =>
-      'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© / Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get cityAreaRequiredError => 'المدينة / المنطقة مطلوبة';
 
   @override
   String get cityAreaMinError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© / Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ø­Ø±ÙÙŠÙ† Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+      'يجب أن تكون المدينة / المنطقة حرفين على الأقل';
 
   @override
-  String get cityAreaTooLongError =>
-      'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© / Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ø·ÙˆÙŠÙ„Ø© Ø¬Ø¯Ù‹Ø§';
+  String get cityAreaTooLongError => 'المدينة / المنطقة طويلة جدًا';
 
   @override
-  String get fullAddressLabel => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„ÙƒØ§Ù…Ù„ *';
+  String get fullAddressLabel => 'العنوان الكامل *';
 
   @override
-  String get fullAddressHint =>
-      'Ù…Ø«Ø§Ù„: Ø§Ù„Ù…Ø¨Ù†Ù‰ØŒ Ø§Ù„Ø´Ø§Ø±Ø¹ØŒ Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ø§Ù„ØµÙ†Ø§Ø¹ÙŠØ©';
+  String get fullAddressHint => 'مثال: المبنى، الشارع، المنطقة الصناعية';
 
   @override
-  String get addressRequiredError => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ù…Ø·Ù„ÙˆØ¨';
+  String get addressRequiredError => 'العنوان مطلوب';
 
   @override
-  String get addressSpecificError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø£ÙƒØ«Ø± ØªÙØµÙŠÙ„Ø§Ù‹';
+  String get addressSpecificError => 'يجب أن يكون العنوان أكثر تفصيلاً';
 
   @override
-  String get addressTooLongError => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø·ÙˆÙŠÙ„ Ø¬Ø¯Ù‹Ø§';
+  String get addressTooLongError => 'العنوان طويل جدًا';
 
   @override
-  String get branchCountryLabel => 'Ø§Ù„Ø¯ÙˆÙ„Ø© *';
+  String get branchCountryLabel => 'الدولة *';
 
   @override
-  String get loadingCountries => 'Ø¬Ø§Ø±Ù ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø¨Ù„Ø¯Ø§Ù†...';
+  String get loadingCountries => 'جارٍ تحميل البلدان...';
 
   @override
-  String get selectCountry => 'Ø§Ø®ØªØ± Ø§Ù„Ø¨Ù„Ø¯';
+  String get selectCountry => 'اختر البلد';
 
   @override
-  String get searchCountry => 'Ø§Ø¨Ø­Ø« Ø¹Ù† Ø¨Ù„Ø¯...';
+  String get searchCountry => 'ابحث عن بلد...';
 
   @override
-  String get noCountriesFound => 'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø¨Ù„Ø¯Ø§Ù†';
+  String get noCountriesFound => 'لم يتم العثور على بلدان';
 
   @override
-  String get countryRequiredError => 'Ø§Ù„Ø¨Ù„Ø¯ Ù…Ø·Ù„ÙˆØ¨';
+  String get countryRequiredError => 'البلد مطلوب';
 
   @override
-  String get branchRegionLabel => 'Ø§Ù„Ù…Ù†Ø·Ù‚Ø© / Ø§Ù„ÙˆÙ„Ø§ÙŠØ©';
+  String get branchRegionLabel => 'المنطقة / الولاية';
 
   @override
-  String get selectCountryFirst => 'Ø§Ø®ØªØ± Ø§Ù„Ø¨Ù„Ø¯ Ø£ÙˆÙ„Ø§Ù‹';
+  String get selectCountryFirst => 'اختر البلد أولاً';
 
   @override
-  String get loadingRegions => 'Ø¬Ø§Ø±ÙŠ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ù†Ø§Ø·Ù‚...';
+  String get loadingRegions => 'جاري تحميل المناطق...';
 
   @override
   String get noPredefinedRegions =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†Ø§Ø·Ù‚ Ù…Ø­Ø¯Ø¯Ø©ØŒ ÙŠÙ…ÙƒÙ†Ùƒ Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø¨Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©/Ø§Ù„Ù…Ù†Ø·Ù‚Ø©';
+      'لا توجد مناطق محددة، يمكنك المتابعة بالمدينة/المنطقة';
 
   @override
-  String get selectRegionState => 'Ø§Ø®ØªØ± Ø§Ù„Ù…Ù†Ø·Ù‚Ø© / Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø©';
+  String get selectRegionState => 'اختر المنطقة / المحافظة';
 
   @override
-  String get searchRegionState =>
-      'Ø§Ø¨Ø­Ø« Ø¹Ù† Ø§Ù„Ù…Ù†Ø·Ù‚Ø© / Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø©...';
+  String get searchRegionState => 'ابحث عن المنطقة / المحافظة...';
 
   @override
-  String get noRegionsFound => 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†Ø§Ø·Ù‚';
+  String get noRegionsFound => 'لا توجد مناطق';
 
   @override
-  String get branchPhoneLabel => 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ *';
+  String get branchPhoneLabel => 'رقم الهاتف *';
 
   @override
-  String get enterPhoneNumber => 'Ø£Ø¯Ø®Ù„ Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ';
+  String get enterPhoneNumber => 'أدخل رقم الهاتف';
 
   @override
-  String get branchStatusLabel => 'Ø­Ø§Ù„Ø© Ø§Ù„ÙØ±Ø¹ *';
+  String get branchStatusLabel => 'حالة الفرع *';
 
   @override
-  String get activeStatus => 'Ù†Ø´Ø·';
+  String get activeStatus => 'نشط';
 
   @override
-  String get inactiveStatus => 'ØºÙŠØ± Ù†Ø´Ø·';
+  String get inactiveStatus => 'غير نشط';
 
   @override
-  String get selectStatus => 'Ø§Ø®ØªØ± Ø§Ù„Ø­Ø§Ù„Ø©';
+  String get selectStatus => 'اختر الحالة';
 
   @override
-  String get pleaseSelectCountry => 'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¯ÙˆÙ„Ø©.';
+  String get pleaseSelectCountry => 'يرجى اختيار الدولة.';
 
   @override
-  String get phoneRequiredError => 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ Ù…Ø·Ù„ÙˆØ¨';
+  String get phoneRequiredError => 'رقم الهاتف مطلوب';
 
   @override
-  String get phoneSelectCountryFirstError =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¯ÙˆÙ„Ø© Ø£ÙˆÙ„Ø§Ù‹';
+  String get phoneSelectCountryFirstError => 'يرجى اختيار الدولة أولاً';
 
   @override
   String get phoneCountryMismatchError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ØªØªØ·Ø§Ø¨Ù‚ Ø¯ÙˆÙ„Ø© Ø§Ù„Ù‡Ø§ØªÙ Ù…Ø¹ Ø§Ù„Ø¯ÙˆÙ„Ø© Ø§Ù„Ù…Ø®ØªØ§Ø±Ø©';
+      'يجب أن تتطابق دولة الهاتف مع الدولة المختارة';
 
   @override
   String get lebanesePhoneDigitsError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ­ØªÙˆÙŠ Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ Ø§Ù„Ù„Ø¨Ù†Ø§Ù†ÙŠ Ø¹Ù„Ù‰ 8 Ø£Ø±Ù‚Ø§Ù… Ø¨Ø¹Ø¯ â€Ž+961';
+      'يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961';
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'Ø£Ø¯Ø®Ù„ Ø±Ù‚Ù… Ù‡Ø§ØªÙ ØµØ­ÙŠØ­Ø§Ù‹ Ù…Ø¹ Ø±Ù…Ø² Ø§Ù„Ø¨Ù„Ø¯';
+      'أدخل رقم هاتف صحيحاً مع رمز البلد';
 
   @override
-  String get deleteBranchTitle => 'Ø­Ø°Ù Ø§Ù„ÙØ±Ø¹';
+  String get deleteBranchTitle => 'حذف الفرع';
 
   @override
   String deleteBranchConfirmation(Object branchName) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ Ø­Ø°Ù $branchNameØŸ';
+    return 'هل أنت متأكد أنك تريد حذف $branchName؟';
   }
 
   @override
-  String get searchBranchesHint => 'Ø§Ø¨Ø­Ø« ÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹...';
+  String get searchBranchesHint => 'ابحث في الفروع...';
 
   @override
-  String get noBranchesFound => 'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ ÙØ±ÙˆØ¹';
+  String get noBranchesFound => 'لم يتم العثور على فروع';
 
   @override
-  String get addBranchesEmptyMessage =>
-      'Ø£Ø¶Ù ÙØ±ÙˆØ¹Ù‹Ø§ Ù„Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø­Ø³Ø¨ Ø§Ù„Ù…ÙˆÙ‚Ø¹.';
+  String get addBranchesEmptyMessage => 'أضف فروعًا لإدارة المخزون حسب الموقع.';
 
   @override
-  String get editButton => 'ØªØ¹Ø¯ÙŠÙ„';
+  String get editButton => 'تعديل';
 
   @override
-  String get totalProductsLabel => 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª';
+  String get totalProductsLabel => 'إجمالي المنتجات';
 
   @override
-  String get totalStockLabel => 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get totalStockLabel => 'إجمالي المخزون';
 
   @override
-  String get viewInventoryButton => 'Ø¹Ø±Ø¶ Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get viewInventoryButton => 'عرض المخزون';
 
   @override
   String branchInventoryTitle(Object branchName) {
-    return 'Ù…Ø®Ø²ÙˆÙ† $branchName';
+    return 'مخزون $branchName';
   }
 
   @override
   String get allProductsAssigned =>
-      'ÙƒÙ„ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…ØªØ§Ø­Ø© Ù…Ø¶Ø§ÙØ© Ø¨Ø§Ù„ÙØ¹Ù„ Ù„Ù‡Ø°Ø§ Ø§Ù„ÙØ±Ø¹';
+      'كل المنتجات المتاحة مضافة بالفعل لهذا الفرع';
 
   @override
-  String get assignProductToBranchTitle =>
-      'Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬ Ø¥Ù„Ù‰ Ø§Ù„ÙØ±Ø¹';
+  String get assignProductToBranchTitle => 'إضافة منتج إلى الفرع';
 
   @override
-  String get productLabel => 'Ù…Ù†ØªØ¬';
+  String get productLabel => 'منتج';
 
   @override
-  String get stockQuantityLabel => 'ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get stockQuantityLabel => 'كمية المخزون';
 
   @override
-  String get stockQuantityHint => 'Ù…Ø«Ø§Ù„: 100';
+  String get stockQuantityHint => 'مثال: 100';
 
   @override
   String get inventoryRecordNote =>
-      'Ø³ÙŠØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø³Ø¬Ù„ Ù…Ø®Ø²ÙˆÙ† Ù„Ù‡Ø°Ø§ Ø§Ù„ÙØ±Ø¹ ÙˆÙ‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬.';
+      'سيتم إنشاء سجل مخزون لهذا الفرع وهذا المنتج.';
 
   @override
-  String get assignButton => 'Ø¥Ø¶Ø§ÙØ©';
+  String get assignButton => 'إضافة';
 
   @override
-  String get updateStockTitle => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get updateStockTitle => 'تحديث المخزون';
 
   @override
-  String get stockQuantityFieldLabel => 'ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get stockQuantityFieldLabel => 'كمية المخزون';
 
   @override
-  String get stockQuantityUpdateHint => 'Ù…Ø«Ø§Ù„: 500';
+  String get stockQuantityUpdateHint => 'مثال: 500';
 
   @override
-  String get updateButton => 'ØªØ­Ø¯ÙŠØ«';
+  String get updateButton => 'تحديث';
 
   @override
-  String get removeProductFromBranchTitle =>
-      'Ø¥Ø²Ø§Ù„Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ù† Ø§Ù„ÙØ±Ø¹';
+  String get removeProductFromBranchTitle => 'إزالة المنتج من الفرع';
 
   @override
   String removeProductFromBranchConfirmation(
     Object productName,
     Object branchName,
   ) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ Ø¥Ø²Ø§Ù„Ø© $productName Ù…Ù† Ù…Ø®Ø²ÙˆÙ† $branchNameØŸ';
+    return 'هل أنت متأكد أنك تريد إزالة $productName من مخزون $branchName؟';
   }
 
   @override
-  String get removeButton => 'Ø¥Ø²Ø§Ù„Ø©';
+  String get removeButton => 'إزالة';
 
   @override
-  String get noInventoryFound => 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø®Ø²ÙˆÙ†';
+  String get noInventoryFound => 'لا يوجد مخزون';
 
   @override
   String get assignProductsToBranchEmpty =>
-      'Ø£Ø¶Ù Ù…Ù†ØªØ¬Ø§Øª Ù„Ù‡Ø°Ø§ Ø§Ù„ÙØ±Ø¹ Ù„Ø¨Ø¯Ø¡ ØªØªØ¨Ø¹ Ø§Ù„Ù…Ø®Ø²ÙˆÙ†.';
+      'أضف منتجات لهذا الفرع لبدء تتبع المخزون.';
 
   @override
-  String get assignProductButton => 'Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬';
+  String get assignProductButton => 'إضافة منتج';
 
   @override
   String stockWithQuantity(Object quantity) {
-    return 'Ø§Ù„Ù…Ø®Ø²ÙˆÙ†: $quantity';
+    return 'المخزون: $quantity';
   }
 
   @override
-  String get catalogTitle => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙƒØªØ§Ù„ÙˆØ¬';
+  String get catalogTitle => 'إدارة الكتالوج';
 
   @override
-  String get searchCatalogHint =>
-      'Ø§Ø¨Ø­Ø« ÙÙŠ Ø§Ù„ÙØ¦Ø§Øª Ø£Ùˆ Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„ÙØ±Ø¹ÙŠØ©...';
+  String get searchCatalogHint => 'ابحث في الفئات أو الفئات الفرعية...';
 
   @override
-  String get noCatalogItems =>
-      'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø¹Ù†Ø§ØµØ± ÙÙŠ Ø§Ù„ÙƒØªØ§Ù„ÙˆØ¬';
+  String get noCatalogItems => 'لم يتم العثور على عناصر في الكتالوج';
 
   @override
-  String get addCatalogFirst =>
-      'Ø£Ø¶Ù ÙØ¦Ø§Øª ÙˆÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ© Ù„ØªÙ†Ø¸ÙŠÙ… Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…ÙˆØ±Ø¯.';
+  String get addCatalogFirst => 'أضف فئات وفئات فرعية لتنظيم منتجات المورد.';
 
   @override
-  String get categoryLabel => 'ÙØ¦Ø©';
+  String get categoryLabel => 'فئة';
 
   @override
-  String get subCategoryLabel => 'ÙØ¦Ø© ÙØ±Ø¹ÙŠØ©';
+  String get subCategoryLabel => 'فئة فرعية';
 
   @override
-  String get addCategoryTitle => 'Ø¥Ø¶Ø§ÙØ© ÙØ¦Ø©';
+  String get addCategoryTitle => 'إضافة فئة';
 
   @override
-  String get editCategoryTitle => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ÙØ¦Ø©';
+  String get editCategoryTitle => 'تعديل الفئة';
 
   @override
-  String get addSubCategoryTitle => 'Ø¥Ø¶Ø§ÙØ© ÙØ¦Ø© ÙØ±Ø¹ÙŠØ©';
+  String get addSubCategoryTitle => 'إضافة فئة فرعية';
 
   @override
-  String get editSubCategoryTitle => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get editSubCategoryTitle => 'تعديل الفئة الفرعية';
 
   @override
-  String get categoryNameLabel => 'Ø§Ø³Ù… Ø§Ù„ÙØ¦Ø©';
+  String get categoryNameLabel => 'اسم الفئة';
 
   @override
-  String get subCategoryNameLabel => 'Ø§Ø³Ù… Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get subCategoryNameLabel => 'اسم الفئة الفرعية';
 
   @override
-  String get parentCategoryLabel => 'Ø§Ù„ÙØ¦Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©';
+  String get parentCategoryLabel => 'الفئة الرئيسية';
 
   @override
-  String get categoryRequiredError => 'Ø§Ù„ÙØ¦Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get categoryRequiredError => 'الفئة مطلوبة';
 
   @override
-  String get subCategoryRequiredError =>
-      'Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get subCategoryRequiredError => 'الفئة الفرعية مطلوبة';
 
   @override
-  String get activateButton => 'ØªÙØ¹ÙŠÙ„';
+  String get activateButton => 'تفعيل';
 
   @override
-  String get deactivateButton => 'ØªØ¹Ø·ÙŠÙ„';
+  String get deactivateButton => 'تعطيل';
 
   @override
-  String get productManagementTitle => 'Ø¥Ø¯Ø§Ø±Ø©\nØ§Ù„Ù…Ù†ØªØ¬Ø§Øª';
+  String get productManagementTitle => 'إدارة\nالمنتجات';
 
   @override
-  String get searchProductsHint => 'Ø§Ø¨Ø­Ø« ÙÙŠ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª...';
+  String get searchProductsHint => 'ابحث في المنتجات...';
 
   @override
-  String get noProductsFound => 'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ù…Ù†ØªØ¬Ø§Øª';
+  String get noProductsFound => 'لم يتم العثور على منتجات';
 
   @override
-  String get addProductsEmptyMessage =>
-      'Ø£Ø¶Ù Ù…Ù†ØªØ¬Ø§Øª Ù„Ø¨Ø¯Ø¡ Ø¥Ù†Ø´Ø§Ø¡ ÙƒØªØ§Ù„ÙˆØ¬ Ø§Ù„Ù…ÙˆØ±Ø¯.';
+  String get addProductsEmptyMessage => 'أضف منتجات لبدء إنشاء كتالوج المورد.';
 
   @override
-  String get productNameLabel => 'Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬';
+  String get productNameLabel => 'اسم المنتج';
 
   @override
-  String get productNameRequiredError => 'Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ø·Ù„ÙˆØ¨';
+  String get productNameRequiredError => 'اسم المنتج مطلوب';
 
   @override
-  String get productNameMinError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ 3 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+  String get productNameMinError => 'يجب أن يكون اسم المنتج 3 أحرف على الأقل';
 
   @override
-  String get productNameTooLongError => 'Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ø·ÙˆÙŠÙ„ Ø¬Ø¯Ù‹Ø§';
+  String get productNameTooLongError => 'اسم المنتج طويل جدًا';
 
   @override
-  String get productDescriptionLabel => 'Ø§Ù„ÙˆØµÙ';
+  String get productDescriptionLabel => 'الوصف';
 
   @override
-  String get productDescriptionHint =>
-      'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ù†ØªØ¬ØŒ Ø§Ù„ØªØºÙ„ÙŠÙØŒ Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø§Øª...';
+  String get productDescriptionHint => 'تفاصيل المنتج، التغليف، الملاحظات...';
 
   @override
-  String get productPriceLabel => 'Ø§Ù„Ø³Ø¹Ø±';
+  String get productPriceLabel => 'السعر';
 
   @override
-  String get productPriceRequiredError => 'Ø§Ù„Ø³Ø¹Ø± Ù…Ø·Ù„ÙˆØ¨';
+  String get productPriceRequiredError => 'السعر مطلوب';
 
   @override
-  String get productPriceInvalidError => 'Ø£Ø¯Ø®Ù„ Ø³Ø¹Ø±Ù‹Ø§ ØµØ§Ù„Ø­Ù‹Ø§';
+  String get productPriceInvalidError => 'أدخل سعرًا صالحًا';
 
   @override
-  String get minimumOrderQuantityLabel =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø·Ù„Ø¨';
+  String get minimumOrderQuantityLabel => 'الحد الأدنى لكمية الطلب';
 
   @override
   String get minimumOrderQuantityRequiredError =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø·Ù„Ø¨ Ù…Ø·Ù„ÙˆØ¨';
+      'الحد الأدنى لكمية الطلب مطلوب';
 
   @override
   String get minimumOrderQuantityInvalidError =>
-      'Ø£Ø¯Ø®Ù„ Ø­Ø¯Ù‹Ø§ Ø£Ø¯Ù†Ù‰ ØµØ§Ù„Ø­Ù‹Ø§ Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø·Ù„Ø¨';
+      'أدخل حدًا أدنى صالحًا لكمية الطلب';
 
   @override
-  String get productStatusLabel => 'Ø­Ø§Ù„Ø© Ø§Ù„Ù…Ù†ØªØ¬';
+  String get productStatusLabel => 'حالة المنتج';
 
   @override
-  String get productImageLabel => 'ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬';
+  String get productImageLabel => 'صورة المنتج';
 
   @override
-  String get uploadImageButton => 'Ø±ÙØ¹ ØµÙˆØ±Ø©';
+  String get uploadImageButton => 'رفع صورة';
 
   @override
-  String get changeImageButton => 'ØªØºÙŠÙŠØ± Ø§Ù„ØµÙˆØ±Ø©';
+  String get changeImageButton => 'تغيير الصورة';
 
   @override
-  String get categoryDropdownLabel => 'Ø§Ù„ÙØ¦Ø©';
+  String get categoryDropdownLabel => 'الفئة';
 
   @override
-  String get subCategoryDropdownLabel => 'Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get subCategoryDropdownLabel => 'الفئة الفرعية';
 
   @override
-  String get selectCategoryHint => 'Ø§Ø®ØªØ± Ø§Ù„ÙØ¦Ø©';
+  String get selectCategoryHint => 'اختر الفئة';
 
   @override
-  String get selectSubCategoryHint => 'Ø§Ø®ØªØ± Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get selectSubCategoryHint => 'اختر الفئة الفرعية';
 
   @override
-  String get addProductTitle => 'Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬';
+  String get addProductTitle => 'إضافة منتج';
 
   @override
-  String get editProductTitle => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ù†ØªØ¬';
+  String get editProductTitle => 'تعديل المنتج';
 
   @override
-  String get saveProductButton => 'Ø­ÙØ¸ Ø§Ù„Ù…Ù†ØªØ¬';
+  String get saveProductButton => 'حفظ المنتج';
 
   @override
-  String get updateProductButton => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ù†ØªØ¬';
+  String get updateProductButton => 'تحديث المنتج';
 
   @override
-  String get deleteProductTitle => 'Ø­Ø°Ù Ø§Ù„Ù…Ù†ØªØ¬';
+  String get deleteProductTitle => 'حذف المنتج';
 
   @override
   String deleteProductConfirmation(Object productName) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ Ø­Ø°Ù $productNameØŸ';
+    return 'هل أنت متأكد أنك تريد حذف $productName؟';
   }
 
   @override
-  String get manageStockButton => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get manageStockButton => 'إدارة المخزون';
 
   @override
-  String get priceLabel => 'Ø§Ù„Ø³Ø¹Ø±';
+  String get priceLabel => 'السعر';
 
   @override
-  String get moqLabel => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰';
+  String get moqLabel => 'الحد الأدنى';
 
   @override
-  String get statusLabel => 'Ø§Ù„Ø­Ø§Ù„Ø©';
+  String get statusLabel => 'الحالة';
 
   @override
-  String get productBranchStockTitle =>
-      'Ø¥Ø¯Ø§Ø±Ø© Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ù…Ù†ØªØ¬ ÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹';
+  String get productBranchStockTitle => 'إدارة مخزون المنتج في الفروع';
 
   @override
-  String get branchStockCardsTitle => 'Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹';
+  String get branchStockCardsTitle => 'مخزون الفروع';
 
   @override
   String totalStockForProduct(Object quantity) {
-    return 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø®Ø²ÙˆÙ†: $quantity';
+    return 'إجمالي المخزون: $quantity';
   }
 
   @override
-  String get noBranchStockFound =>
-      'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø®Ø²ÙˆÙ† Ù„Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬ ÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹';
+  String get noBranchStockFound => 'لا يوجد مخزون لهذا المنتج في الفروع';
 
   @override
-  String get assignStockToBranch =>
-      'Ø£Ø¶Ù Ù…Ø®Ø²ÙˆÙ†Ù‹Ø§ Ø¥Ù„Ù‰ ÙØ±Ø¹ Ù„Ø¨Ø¯Ø¡ Ø¨ÙŠØ¹ Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬.';
+  String get assignStockToBranch => 'أضف مخزونًا إلى فرع لبدء بيع هذا المنتج.';
 
   @override
-  String get removeStockTitle => 'Ø¥Ø²Ø§Ù„Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†';
+  String get removeStockTitle => 'إزالة المخزون';
 
   @override
   String removeStockConfirmation(Object branchName) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ø£Ù†Ùƒ ØªØ±ÙŠØ¯ Ø¥Ø²Ø§Ù„Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ù…Ù† $branchNameØŸ';
+    return 'هل أنت متأكد أنك تريد إزالة المخزون من $branchName؟';
   }
 
   @override
-  String get supplierOrdersTitle => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø·Ù„Ø¨Ø§Øª';
+  String get supplierOrdersTitle => 'إدارة الطلبات';
 
   @override
-  String get orderDetailsTitle => 'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨';
+  String get orderDetailsTitle => 'تفاصيل الطلب';
 
   @override
-  String get searchOrdersHint => 'Ø§Ø¨Ø­Ø« ÙÙŠ Ø§Ù„Ø·Ù„Ø¨Ø§Øª...';
+  String get searchOrdersHint => 'ابحث في الطلبات...';
 
   @override
-  String get noOrdersFound => 'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø·Ù„Ø¨Ø§Øª';
+  String get noOrdersFound => 'لم يتم العثور على طلبات';
 
   @override
   String orderNumberLabel(Object orderId) {
-    return 'Ø·Ù„Ø¨ Ø±Ù‚Ù… $orderId';
+    return 'طلب رقم $orderId';
   }
 
   @override
-  String get customerLabel => 'Ø§Ù„Ø¹Ù…ÙŠÙ„';
+  String get customerLabel => 'العميل';
 
   @override
-  String get retailerLabel => 'Ø§Ù„ØªØ§Ø¬Ø±';
+  String get retailerLabel => 'التاجر';
 
   @override
-  String get orderItemsLabel => 'Ø¹Ù†Ø§ØµØ± Ø§Ù„Ø·Ù„Ø¨';
+  String get orderItemsLabel => 'عناصر الطلب';
 
   @override
-  String get orderTimelineLabel => 'ØªØ³Ù„Ø³Ù„ Ø­Ø§Ù„Ø© Ø§Ù„Ø·Ù„Ø¨';
+  String get orderTimelineLabel => 'تسلسل حالة الطلب';
 
   @override
-  String get orderStatusPending => 'Ù‚ÙŠØ¯ Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø±';
+  String get orderStatusPending => 'قيد الانتظار';
 
   @override
-  String get orderStatusAccepted => 'Ù…Ù‚Ø¨ÙˆÙ„';
+  String get orderStatusAccepted => 'مقبول';
 
   @override
-  String get orderStatusPreparing => 'Ù‚ÙŠØ¯ Ø§Ù„ØªØ­Ø¶ÙŠØ±';
+  String get orderStatusPreparing => 'قيد التحضير';
 
   @override
-  String get orderStatusShipped => 'ØªÙ… Ø§Ù„Ø´Ø­Ù†';
+  String get orderStatusShipped => 'تم الشحن';
 
   @override
-  String get orderStatusDelivered => 'ØªÙ… Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get orderStatusDelivered => 'تم التسليم';
 
   @override
-  String get orderStatusCancelled => 'Ù…Ù„ØºÙ‰';
+  String get orderStatusCancelled => 'ملغى';
 
   @override
-  String get acceptOrderButton => 'Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø·Ù„Ø¨';
+  String get acceptOrderButton => 'قبول الطلب';
 
   @override
-  String get markPreparingButton => 'ØªØ­Ø¯ÙŠØ¯ ÙƒÙ‚ÙŠØ¯ Ø§Ù„ØªØ­Ø¶ÙŠØ±';
+  String get markPreparingButton => 'تحديد كقيد التحضير';
 
   @override
-  String get shipOrderButton => 'Ø´Ø­Ù† Ø§Ù„Ø·Ù„Ø¨';
+  String get shipOrderButton => 'شحن الطلب';
 
   @override
-  String get markDeliveredButton => 'ØªØ­Ø¯ÙŠØ¯ ÙƒØªÙ… Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get markDeliveredButton => 'تحديد كتم التسليم';
 
   @override
-  String get cancelOrderButton => 'Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø·Ù„Ø¨';
+  String get cancelOrderButton => 'إلغاء الطلب';
 
   @override
-  String get orderTotalLabel => 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø·Ù„Ø¨';
+  String get orderTotalLabel => 'إجمالي الطلب';
 
   @override
-  String get orderDateLabel => 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø·Ù„Ø¨';
+  String get orderDateLabel => 'تاريخ الطلب';
 
   @override
-  String get deliveryAddressLabel => 'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get deliveryAddressLabel => 'عنوان التسليم';
 
   @override
-  String get paymentStatusLabel => 'Ø­Ø§Ù„Ø© Ø§Ù„Ø¯ÙØ¹';
+  String get paymentStatusLabel => 'حالة الدفع';
 
   @override
-  String get quantityLabel => 'Ø§Ù„ÙƒÙ…ÙŠØ©';
+  String get quantityLabel => 'الكمية';
 
   @override
-  String get importExcelTitle => 'Ø§Ø³ØªÙŠØ±Ø§Ø¯ Excel';
+  String get importExcelTitle => 'استيراد Excel';
 
   @override
-  String get uploadExcelFile => 'Ø±ÙØ¹ Ù…Ù„Ù Excel';
+  String get uploadExcelFile => 'رفع ملف Excel';
 
   @override
-  String get acceptedExcelFormat => 'Ø§Ù„ØµÙŠØºØ© Ø§Ù„Ù…Ù‚Ø¨ÙˆÙ„Ø©: .xlsx';
+  String get acceptedExcelFormat => 'الصيغة المقبولة: .xlsx';
 
   @override
-  String get readingFile => 'Ø¬Ø§Ø±Ù Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„Ù…Ù„Ù...';
+  String get readingFile => 'جارٍ قراءة الملف...';
 
   @override
-  String get selectExcel => 'Ø§Ø®ØªÙŠØ§Ø± Excel';
+  String get selectExcel => 'اختيار Excel';
 
   @override
-  String get clearButton => 'Ù…Ø³Ø­';
+  String get clearButton => 'مسح';
 
   @override
-  String get expectedColumnsTitle => 'Ø§Ù„Ø£Ø¹Ù…Ø¯Ø© Ø§Ù„Ù…ØªÙˆÙ‚Ø¹Ø©';
+  String get expectedColumnsTitle => 'الأعمدة المتوقعة';
 
   @override
-  String get importProductInfoOnly =>
-      'Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª ÙÙ‚Ø·';
+  String get importProductInfoOnly => 'استيراد معلومات المنتجات فقط';
 
   @override
   String get excelImportExplanation =>
-      'Ù‡Ø°Ø§ Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯ ÙŠÙ†Ø´Ø¦ Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…ÙˆØ±Ø¯ Ø¯ÙØ¹Ø© ÙˆØ§Ø­Ø¯Ø©. Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹ Ù„Ø§ ÙŠØªÙ… Ø§Ø³ØªÙŠØ±Ø§Ø¯Ù‡ Ù‡Ù†Ø§ Ù„Ø£Ù† Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ù…Ø±ØªØ¨Ø· Ø¨Ø¥Ø¯Ø§Ø±Ø© Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹.';
+      'هذا الاستيراد ينشئ منتجات المورد دفعة واحدة. مخزون الفروع لا يتم استيراده هنا لأن المخزون مرتبط بإدارة مخزون الفروع.';
 
   @override
   String get excelCreateCategoriesFirst =>
-      'Ø£Ù†Ø´Ø¦ Ø§Ù„ÙØ¦Ø§Øª ÙˆØ§Ù„ÙØ¦Ø§Øª Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø£ÙˆÙ„Ø§Ù‹ØŒ Ø«Ù… Ø§Ø±ÙØ¹ Ù…Ù„Ù Excel Ø­ØªÙ‰ ÙŠØªÙ… Ù…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„ØµÙÙˆÙ Ø¨Ø´ÙƒÙ„ Ø¢Ù…Ù†.';
+      'أنشئ الفئات والفئات الفرعية أولاً، ثم ارفع ملف Excel حتى يتم مطابقة الصفوف بشكل آمن.';
 
   @override
-  String get noRowsToPreview =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ØµÙÙˆÙ Ù„Ù„Ù…Ø¹Ø§ÙŠÙ†Ø© Ø¨Ø¹Ø¯';
+  String get noRowsToPreview => 'لا توجد صفوف للمعاينة بعد';
 
   @override
   String get selectExcelToPreview =>
-      'Ø§Ø®ØªØ± Ù…Ù„Ù Excel Ù„Ù…Ø¹Ø§ÙŠÙ†Ø© Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª ÙˆØ§Ù„ØªØ­Ù‚Ù‚ Ù…Ù†Ù‡Ø§.';
+      'اختر ملف Excel لمعاينة المنتجات والتحقق منها.';
 
   @override
-  String get previewRowsTitle => 'Ù…Ø¹Ø§ÙŠÙ†Ø© Ø§Ù„ØµÙÙˆÙ';
+  String get previewRowsTitle => 'معاينة الصفوف';
 
   @override
   String get previewRowsHelp =>
-      'Ø±Ø§Ø¬Ø¹ Ø§Ù„ØµÙÙˆÙ ØºÙŠØ± Ø§Ù„ØµØ§Ù„Ø­Ø©ØŒ Ø¹Ø¯Ù‘Ù„Ù‡Ø§ Ù‡Ù†Ø§ Ù…Ø¨Ø§Ø´Ø±Ø©ØŒ Ø£Ùˆ Ø­Ø¯Ù‘Ø« Ù…Ù„Ù Excel ÙˆØ§Ø±ÙØ¹Ù‡ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+      'راجع الصفوف غير الصالحة، عدّلها هنا مباشرة، أو حدّث ملف Excel وارفعه مرة أخرى.';
 
   @override
-  String get unnamedProduct => 'Ù…Ù†ØªØ¬ Ø¨Ø¯ÙˆÙ† Ø§Ø³Ù…';
+  String get unnamedProduct => 'منتج بدون اسم';
 
   @override
-  String get editRowButton => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ØµÙ';
+  String get editRowButton => 'تعديل الصف';
 
   @override
-  String get rowsLabel => 'Ø§Ù„ØµÙÙˆÙ';
+  String get rowsLabel => 'الصفوف';
 
   @override
-  String get validLabel => 'ØµØ§Ù„Ø­Ø©';
+  String get validLabel => 'صالحة';
 
   @override
-  String get errorsLabel => 'Ø£Ø®Ø·Ø§Ø¡';
+  String get errorsLabel => 'أخطاء';
 
   @override
-  String get warningsLabel => 'ØªØ­Ø°ÙŠØ±Ø§Øª';
+  String get warningsLabel => 'تحذيرات';
 
   @override
-  String get duplicateProductWarning => 'ØªØ­Ø°ÙŠØ± Ù…Ù†ØªØ¬ Ù…ÙƒØ±Ø±';
+  String get duplicateProductWarning => 'تحذير منتج مكرر';
 
   @override
   String get supplierComingSoonMessage =>
-      'Ø³ÙŠØªÙ… ØªÙ†ÙÙŠØ° Ù‡Ø°Ø§ Ø§Ù„Ø¬Ø²Ø¡ Ù…Ù† Ø§Ù„Ù…ÙˆØ±Ø¯ Ø®Ø·ÙˆØ© Ø¨Ø®Ø·ÙˆØ©.';
+      'سيتم تنفيذ هذا الجزء من المورد خطوة بخطوة.';
 
   @override
-  String get addButton => 'Ø¥Ø¶Ø§ÙØ©';
+  String get addButton => 'إضافة';
 
   @override
-  String get backButton => 'Ø±Ø¬ÙˆØ¹';
+  String get backButton => 'رجوع';
 
   @override
-  String get menuTooltip => 'Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©';
+  String get menuTooltip => 'القائمة';
 
   @override
-  String get categoriesTab => 'Ø§Ù„ÙØ¦Ø§Øª';
+  String get categoriesTab => 'الفئات';
 
   @override
-  String get subCategoriesTab => 'Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get subCategoriesTab => 'الفئات الفرعية';
 
   @override
-  String get categoryNameFieldLabel => 'Ø§Ø³Ù… Ø§Ù„ÙØ¦Ø©';
+  String get categoryNameFieldLabel => 'اسم الفئة';
 
   @override
-  String get categoryNameHint => 'Ù…Ø«Ø§Ù„: Ù…Ù„Ø§Ø¨Ø³';
+  String get categoryNameHint => 'مثال: ملابس';
 
   @override
-  String get subCategoryNameFieldLabel => 'Ø§Ø³Ù… Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get subCategoryNameFieldLabel => 'اسم الفئة الفرعية';
 
   @override
-  String get subCategoryNameHint => 'Ù…Ø«Ø§Ù„: Ù…Ù„Ø§Ø¨Ø³ Ù†Ø³Ø§Ø¦ÙŠØ©';
+  String get subCategoryNameHint => 'مثال: ملابس نسائية';
 
   @override
-  String get createActiveCategoryFirst => 'Ø£Ù†Ø´Ø¦ ÙØ¦Ø© Ù†Ø´Ø·Ø© Ø£ÙˆÙ„Ø§Ù‹';
+  String get createActiveCategoryFirst => 'أنشئ فئة نشطة أولاً';
 
   @override
-  String get deactivateCategoryTitle => 'ØªØ¹Ø·ÙŠÙ„ Ø§Ù„ÙØ¦Ø©';
+  String get deactivateCategoryTitle => 'تعطيل الفئة';
 
   @override
-  String get activateCategoryTitle => 'ØªÙØ¹ÙŠÙ„ Ø§Ù„ÙØ¦Ø©';
+  String get activateCategoryTitle => 'تفعيل الفئة';
 
   @override
   String get deactivateCategoryMessage =>
-      'Ù„Ù† ØªØ¸Ù‡Ø± Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ø¹Ù†Ø¯ Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬Ø§Øª Ø¬Ø¯ÙŠØ¯Ø©. Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ù„Ù† ØªØªØ£Ø«Ø±.';
+      'لن تظهر هذه الفئة عند إضافة منتجات جديدة. المنتجات الحالية لن تتأثر.';
 
   @override
   String get activateCategoryMessage =>
-      'Ø³ØªØ¸Ù‡Ø± Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰ Ø¹Ù†Ø¯ Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬Ø§Øª Ø¬Ø¯ÙŠØ¯Ø©.';
+      'ستظهر هذه الفئة مرة أخرى عند إضافة منتجات جديدة.';
 
   @override
-  String get deactivateSubCategoryTitle =>
-      'ØªØ¹Ø·ÙŠÙ„ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get deactivateSubCategoryTitle => 'تعطيل الفئة الفرعية';
 
   @override
-  String get activateSubCategoryTitle => 'ØªÙØ¹ÙŠÙ„ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get activateSubCategoryTitle => 'تفعيل الفئة الفرعية';
 
   @override
   String get deactivateSubCategoryMessage =>
-      'Ù„Ù† ØªØ¸Ù‡Ø± Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø¹Ù†Ø¯ Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬Ø§Øª Ø¬Ø¯ÙŠØ¯Ø©. Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ù„Ù† ØªØªØ£Ø«Ø±.';
+      'لن تظهر هذه الفئة الفرعية عند إضافة منتجات جديدة. المنتجات الحالية لن تتأثر.';
 
   @override
   String get activateSubCategoryMessage =>
-      'Ø³ØªØ¸Ù‡Ø± Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰ Ø¹Ù†Ø¯ Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬Ø§Øª Ø¬Ø¯ÙŠØ¯Ø©.';
+      'ستظهر هذه الفئة الفرعية مرة أخرى عند إضافة منتجات جديدة.';
 
   @override
-  String get deleteCategoryTitle => 'Ø­Ø°Ù Ø§Ù„ÙØ¦Ø©';
+  String get deleteCategoryTitle => 'حذف الفئة';
 
   @override
-  String get deleteSubCategoryTitle => 'Ø­Ø°Ù Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get deleteSubCategoryTitle => 'حذف الفئة الفرعية';
 
   @override
   String deleteCategoryPermanentConfirmation(Object categoryName) {
-    return 'Ø­Ø°Ù \"$categoryName\" Ù†Ù‡Ø§Ø¦ÙŠÙ‹Ø§ØŸ Ù‡Ø°Ø§ Ù…Ø³Ù…ÙˆØ­ ÙÙ‚Ø· Ø¥Ø°Ø§ Ù„Ù… ØªÙƒÙ† Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ù…Ù†ØªØ¬Ø§Øª Ø£Ùˆ ÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ©.';
+    return 'حذف \"$categoryName\" نهائيًا؟ هذا مسموح فقط إذا لم تكن مرتبطة بمنتجات أو فئات فرعية.';
   }
 
   @override
   String deleteSubCategoryPermanentConfirmation(Object subCategoryName) {
-    return 'Ø­Ø°Ù \"$subCategoryName\" Ù†Ù‡Ø§Ø¦ÙŠÙ‹Ø§ØŸ Ù‡Ø°Ø§ Ù…Ø³Ù…ÙˆØ­ ÙÙ‚Ø· Ø¥Ø°Ø§ Ù„Ù… ØªÙƒÙ† Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ù…Ù†ØªØ¬Ø§Øª.';
+    return 'حذف \"$subCategoryName\" نهائيًا؟ هذا مسموح فقط إذا لم تكن مرتبطة بمنتجات.';
   }
 
   @override
-  String get noCategoriesFound => 'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ ÙØ¦Ø§Øª';
+  String get noCategoriesFound => 'لم يتم العثور على فئات';
 
   @override
-  String get noSubCategoriesFound =>
-      'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ ÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ©';
+  String get noSubCategoriesFound => 'لم يتم العثور على فئات فرعية';
 
   @override
-  String get searchCategoriesHint => 'Ø§Ø¨Ø­Ø« ÙÙŠ Ø§Ù„ÙØ¦Ø§Øª...';
+  String get searchCategoriesHint => 'ابحث في الفئات...';
 
   @override
-  String get searchSubCategoriesHint =>
-      'Ø§Ø¨Ø­Ø« ÙÙŠ Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„ÙØ±Ø¹ÙŠØ©...';
+  String get searchSubCategoriesHint => 'ابحث في الفئات الفرعية...';
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount Ù…Ù†ØªØ¬Ø§Øª â€¢ $subCategoryCount ÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ©';
+    return '$productCount منتجات • $subCategoryCount فئات فرعية';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName â€¢ $productCount Ù…Ù†ØªØ¬Ø§Øª';
+    return '$categoryName • $productCount منتجات';
   }
 
   @override
-  String get linkedLabel => 'Ù…Ø±ØªØ¨Ø·';
+  String get linkedLabel => 'مرتبط';
 
   @override
-  String get productInformationTitle => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ù†ØªØ¬';
+  String get productInformationTitle => 'معلومات المنتج';
 
   @override
-  String get productDescriptionRequiredError => 'Ø§Ù„ÙˆØµÙ Ù…Ø·Ù„ÙˆØ¨';
+  String get productDescriptionRequiredError => 'الوصف مطلوب';
 
   @override
   String get productDescriptionMinError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„ÙˆØµÙ 10 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+      'يجب أن يكون الوصف 10 أحرف على الأقل';
 
   @override
-  String get productDescriptionTooLongError => 'Ø§Ù„ÙˆØµÙ Ø·ÙˆÙŠÙ„ Ø¬Ø¯Ù‹Ø§';
+  String get productDescriptionTooLongError => 'الوصف طويل جدًا';
 
   @override
-  String get pricePerUnitLabel => 'Ø§Ù„Ø³Ø¹Ø± Ù„Ù„ÙˆØ­Ø¯Ø© *';
+  String get pricePerUnitLabel => 'السعر للوحدة *';
 
   @override
-  String get priceGreaterThanZeroError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ø³Ø¹Ø± Ø£ÙƒØ¨Ø± Ù…Ù† 0';
+  String get priceGreaterThanZeroError => 'يجب أن يكون السعر أكبر من 0';
 
   @override
-  String get priceTooHighError => 'Ø§Ù„Ø³Ø¹Ø± Ù…Ø±ØªÙØ¹ Ø¬Ø¯Ù‹Ø§';
+  String get priceTooHighError => 'السعر مرتفع جدًا';
 
   @override
-  String get quantityInvalidError => 'Ø£Ø¯Ø®Ù„ ÙƒÙ…ÙŠØ© ØµØ§Ù„Ø­Ø©';
+  String get quantityInvalidError => 'أدخل كمية صالحة';
 
   @override
   String get moqWholesaleMinError =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø·Ù„Ø¨ 5 Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„ Ù„Ù„Ø¨ÙŠØ¹ Ø¨Ø§Ù„Ø¬Ù…Ù„Ø©';
+      'يجب أن يكون الحد الأدنى لكمية الطلب 5 على الأقل للبيع بالجملة';
 
   @override
-  String get moqTooHighError =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ø·Ù„Ø¨ ÙƒØ¨ÙŠØ± Ø¬Ø¯Ù‹Ø§';
+  String get moqTooHighError => 'الحد الأدنى لكمية الطلب كبير جدًا';
 
   @override
-  String get productBranchStockSectionTitle =>
-      'Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ù…Ù†ØªØ¬ ÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹';
+  String get productBranchStockSectionTitle => 'مخزون المنتج في الفروع';
 
   @override
   String get manageProductStockSavedNote =>
-      'ÙŠÙ…ÙƒÙ†Ùƒ Ø¥Ø¯Ø§Ø±Ø© Ù…Ø®Ø²ÙˆÙ† Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬ ÙÙŠ ÙƒÙ„ Ø§Ù„ÙØ±ÙˆØ¹ Ù…Ø¨Ø§Ø´Ø±Ø©. ÙŠØªÙ… Ø­ÙØ¸ Ø§Ù„ØªØ­Ø¯ÙŠØ«Ø§Øª ÙÙˆØ±Ù‹Ø§ ÙÙŠ Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹.';
+      'يمكنك إدارة مخزون هذا المنتج في كل الفروع مباشرة. يتم حفظ التحديثات فورًا في مخزون الفروع.';
 
   @override
   String get manageProductStockAfterSaveNote =>
-      'Ø§Ø­ÙØ¸ Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ø§Ù‹ØŒ Ø«Ù… Ø£Ø¶Ù Ù…Ø®Ø²ÙˆÙ†Ù‡ Ø­Ø³Ø¨ Ø§Ù„ÙØ±Ø¹ Ù…Ù† ØµÙØ­Ø© Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ù…Ù†ØªØ¬ ÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹.';
+      'احفظ المنتج أولاً، ثم أضف مخزونه حسب الفرع من صفحة مخزون المنتج في الفروع.';
 
   @override
   String get branchStockAfterSaveNote =>
-      'ÙŠØµØ¨Ø­ Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹ Ù…ØªØ§Ø­Ù‹Ø§ Ø¨Ø¹Ø¯ Ø­ÙØ¸ Ø§Ù„Ù…Ù†ØªØ¬.';
+      'يصبح مخزون الفروع متاحًا بعد حفظ المنتج.';
 
   @override
-  String get addingLabel => 'Ø¬Ø§Ø±Ù Ø§Ù„Ø¥Ø¶Ø§ÙØ©...';
+  String get addingLabel => 'جارٍ الإضافة...';
 
   @override
-  String get deletingLabel => 'Ø¬Ø§Ø±Ù Ø§Ù„Ø­Ø°Ù...';
+  String get deletingLabel => 'جارٍ الحذف...';
 
   @override
-  String get deleteSelectedCategory => 'Ø­Ø°Ù Ø§Ù„ÙØ¦Ø© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©';
+  String get deleteSelectedCategory => 'حذف الفئة المحددة';
 
   @override
-  String get deleteSelectedSubCategory =>
-      'Ø­Ø°Ù Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©';
+  String get deleteSelectedSubCategory => 'حذف الفئة الفرعية المحددة';
 
   @override
-  String get loadingSubCategories =>
-      'Ø¬Ø§Ø±Ù ØªØ­Ù…ÙŠÙ„ Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„ÙØ±Ø¹ÙŠØ©...';
+  String get loadingSubCategories => 'جارٍ تحميل الفئات الفرعية...';
 
   @override
-  String get selectSubCategoryIfNeeded =>
-      'Ø§Ø®ØªØ± ÙØ¦Ø© ÙØ±Ø¹ÙŠØ© Ø¥Ø°Ø§ Ù„Ø²Ù… Ø§Ù„Ø£Ù…Ø±';
+  String get selectSubCategoryIfNeeded => 'اختر فئة فرعية إذا لزم الأمر';
 
   @override
-  String get selectProductStatus => 'Ø§Ø®ØªØ± Ø­Ø§Ù„Ø© Ø§Ù„Ù…Ù†ØªØ¬';
+  String get selectProductStatus => 'اختر حالة المنتج';
 
   @override
-  String get uploadImagesTitle => 'Ø±ÙØ¹ Ø§Ù„ØµÙˆØ±';
+  String get uploadImagesTitle => 'رفع الصور';
 
   @override
-  String get tapToUploadProductImage =>
-      'Ø§Ø¶ØºØ· Ù„Ø±ÙØ¹ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬';
+  String get tapToUploadProductImage => 'اضغط لرفع صورة المنتج';
 
   @override
-  String get imageFormatHint => 'PNG Ø£Ùˆ JPG Ø­ØªÙ‰ 10MB';
+  String get imageFormatHint => 'PNG أو JPG حتى 10MB';
 
   @override
-  String get selectCategoryFirstMessage => 'Ø§Ø®ØªØ± ÙØ¦Ø© Ø£ÙˆÙ„Ø§Ù‹';
+  String get selectCategoryFirstMessage => 'اختر فئة أولاً';
 
   @override
-  String get selectedCategoryNotFound =>
-      'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø§Ù„ÙØ¦Ø© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©';
+  String get selectedCategoryNotFound => 'لم يتم العثور على الفئة المحددة';
 
   @override
   String get selectedSubCategoryNotFound =>
-      'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©';
+      'لم يتم العثور على الفئة الفرعية المحددة';
 
   @override
-  String get selectSubCategoryFirstMessage =>
-      'Ø§Ø®ØªØ± ÙØ¦Ø© ÙØ±Ø¹ÙŠØ© Ø£ÙˆÙ„Ø§Ù‹';
+  String get selectSubCategoryFirstMessage => 'اختر فئة فرعية أولاً';
 
   @override
   String categoryAddedMessage(Object categoryName) {
-    return 'ØªÙ…Øª Ø¥Ø¶Ø§ÙØ© $categoryName';
+    return 'تمت إضافة $categoryName';
   }
 
   @override
   String subCategoryAddedMessage(Object subCategoryName) {
-    return 'ØªÙ…Øª Ø¥Ø¶Ø§ÙØ© $subCategoryName';
+    return 'تمت إضافة $subCategoryName';
   }
 
   @override
   String categoryDeletedMessage(Object categoryName) {
-    return 'ØªÙ… Ø­Ø°Ù $categoryName';
+    return 'تم حذف $categoryName';
   }
 
   @override
   String subCategoryDeletedMessage(Object subCategoryName) {
-    return 'ØªÙ… Ø­Ø°Ù $subCategoryName';
+    return 'تم حذف $subCategoryName';
   }
 
   @override
   String get deleteCategoryHelp =>
-      'Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ù…Ø³ØªØ®Ø¯Ù…Ø© ÙÙŠ Ù…Ù†ØªØ¬Ø§Øª Ø£Ùˆ ÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ©ØŒ Ù‚Ø¯ ÙŠÙ…Ù†Ø¹ Ø§Ù„Ø®Ø§Ø¯Ù… Ø­Ø°ÙÙ‡Ø§.';
+      'إذا كانت هذه الفئة مستخدمة في منتجات أو فئات فرعية، قد يمنع الخادم حذفها.';
 
   @override
   String get deleteSubCategoryHelp =>
-      'Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ù…Ø³ØªØ®Ø¯Ù…Ø© ÙÙŠ Ù…Ù†ØªØ¬Ø§ØªØŒ Ù‚Ø¯ ÙŠÙ…Ù†Ø¹ Ø§Ù„Ø®Ø§Ø¯Ù… Ø­Ø°ÙÙ‡Ø§.';
+      'إذا كانت هذه الفئة الفرعية مستخدمة في منتجات، قد يمنع الخادم حذفها.';
 
   @override
-  String get updateBranchStockTitle => 'ØªØ­Ø¯ÙŠØ« Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±Ø¹';
+  String get updateBranchStockTitle => 'تحديث مخزون الفرع';
 
   @override
-  String get assignStockToBranchTitle => 'Ø¥Ø¶Ø§ÙØ© Ù…Ø®Ø²ÙˆÙ† Ø¥Ù„Ù‰ ÙØ±Ø¹';
+  String get assignStockToBranchTitle => 'إضافة مخزون إلى فرع';
 
   @override
-  String get branchLabel => 'Ø§Ù„ÙØ±Ø¹';
+  String get branchLabel => 'الفرع';
 
   @override
   String get stockSavedToBranchInventoryNote =>
-      'ÙŠØªÙ… Ø­ÙØ¸ Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ù…Ø¨Ø§Ø´Ø±Ø© ÙÙŠ Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹. Ù„Ø§ ØªØ­ØªØ§Ø¬ Ø¥Ù„Ù‰ ØªØ­Ø¯ÙŠØ« ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+      'يتم حفظ المخزون مباشرة في مخزون الفروع. لا تحتاج إلى تحديث تفاصيل المنتج مرة أخرى.';
 
   @override
-  String get stockByBranchTitle => 'Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø­Ø³Ø¨ Ø§Ù„ÙØ±Ø¹';
+  String get stockByBranchTitle => 'المخزون حسب الفرع';
 
   @override
   String get productBranchStockExplanation =>
-      'Ø­Ø¯Ù‘Ø« Ù…Ø®Ø²ÙˆÙ† Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ø¨Ø§Ø´Ø±Ø© Ø­Ø³Ø¨ Ø§Ù„ÙØ±Ø¹. ÙŠØªÙ… Ø§Ù„Ø­ÙØ¸ ÙÙŠ Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹ ÙˆÙ„ÙŠØ³ ÙÙŠ ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ù†ØªØ¬.';
+      'حدّث مخزون هذا المنتج مباشرة حسب الفرع. يتم الحفظ في مخزون الفروع وليس في تفاصيل المنتج.';
 
   @override
-  String get branchesLabel => 'Ø§Ù„ÙØ±ÙˆØ¹';
+  String get branchesLabel => 'الفروع';
 
   @override
-  String get notAssignedYet => 'ØºÙŠØ± Ù…Ø¶Ø§Ù Ø¨Ø¹Ø¯';
+  String get notAssignedYet => 'غير مضاف بعد';
 
   @override
-  String get createBranchFirst =>
-      'Ø£Ù†Ø´Ø¦ ÙØ±Ø¹Ù‹Ø§ Ø£ÙˆÙ„Ø§Ù‹ØŒ Ø«Ù… Ø£Ø¶Ù Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ù…Ù†ØªØ¬.';
+  String get createBranchFirst => 'أنشئ فرعًا أولاً، ثم أضف مخزون المنتج.';
 
   @override
   String totalBranchStockLabel(Object quantity) {
-    return 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ±ÙˆØ¹: $quantity';
+    return 'إجمالي مخزون الفروع: $quantity';
   }
 
   @override
-  String get noBranchStockAssigned =>
-      'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø®Ø²ÙˆÙ† ÙØ±ÙˆØ¹ Ù…Ø¶Ø§Ù';
+  String get noBranchStockAssigned => 'لا يوجد مخزون فروع مضاف';
 
   @override
-  String get viewDetailsButton => 'Ø¹Ø±Ø¶ Ø§Ù„ØªÙØ§ØµÙŠÙ„';
+  String get viewDetailsButton => 'عرض التفاصيل';
 
   @override
   String itemsCountLabel(Object count) {
-    return '$count Ø¹Ù†Ø§ØµØ±';
+    return '$count عناصر';
   }
 
   @override
-  String get allLabel => 'Ø§Ù„ÙƒÙ„';
+  String get allLabel => 'الكل';
 
   @override
-  String get incomingOrdersEmptyMessage =>
-      'Ø³ØªØ¸Ù‡Ø± Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªØ¬Ø§Ø± Ø§Ù„ÙˆØ§Ø±Ø¯Ø© Ù‡Ù†Ø§.';
+  String get incomingOrdersEmptyMessage => 'ستظهر طلبات التجار الواردة هنا.';
 
   @override
-  String get orderNotFound => 'Ø§Ù„Ø·Ù„Ø¨ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯';
+  String get orderNotFound => 'الطلب غير موجود';
 
   @override
-  String get paymentMethodLabel => 'Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø¯ÙØ¹';
+  String get paymentMethodLabel => 'طريقة الدفع';
 
   @override
-  String get totalAmountLabel => 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ';
+  String get totalAmountLabel => 'المبلغ الإجمالي';
 
   @override
-  String get orderCancelledMessage => 'ØªÙ… Ø¥Ù„ØºØ§Ø¡ Ù‡Ø°Ø§ Ø§Ù„Ø·Ù„Ø¨.';
+  String get orderCancelledMessage => 'تم إلغاء هذا الطلب.';
 
   @override
-  String get productsOrderedTitle => 'Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get productsOrderedTitle => 'المنتجات المطلوبة';
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity ÙˆØ­Ø¯Ø§Øª Ã— $price';
+    return '$quantity وحدات × $price';
   }
 
   @override
-  String get deliveryInformationTitle => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get deliveryInformationTitle => 'معلومات التسليم';
 
   @override
-  String get retailerPhoneLabel => 'Ù‡Ø§ØªÙ Ø§Ù„ØªØ§Ø¬Ø±';
+  String get retailerPhoneLabel => 'هاتف التاجر';
 
   @override
-  String get branchLabelPlain => 'Ø§Ù„ÙØ±Ø¹';
+  String get branchLabelPlain => 'الفرع';
 
   @override
-  String get orderNotesTitle => 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„Ø·Ù„Ø¨';
+  String get orderNotesTitle => 'ملاحظات الطلب';
 
   @override
-  String get noMoreStatusActions =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø­Ø§Ù„Ø© Ø£Ø®Ø±Ù‰ Ù„Ù‡Ø°Ø§ Ø§Ù„Ø·Ù„Ø¨.';
+  String get noMoreStatusActions => 'لا توجد إجراءات حالة أخرى لهذا الطلب.';
 
   @override
-  String get rejectOrderButton => 'Ø±ÙØ¶ Ø§Ù„Ø·Ù„Ø¨';
+  String get rejectOrderButton => 'رفض الطلب';
 
   @override
-  String get manageCategoriesTooltip => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ¦Ø§Øª';
+  String get manageCategoriesTooltip => 'إدارة الفئات';
 
   @override
-  String get someRowsNeedAttention =>
-      'Ø¨Ø¹Ø¶ Ø§Ù„ØµÙÙˆÙ ØªØ­ØªØ§Ø¬ Ø¥Ù„Ù‰ Ù…Ø±Ø§Ø¬Ø¹Ø©';
+  String get someRowsNeedAttention => 'بعض الصفوف تحتاج إلى مراجعة';
 
   @override
-  String get allRowsReady => 'ÙƒÙ„ Ø§Ù„ØµÙÙˆÙ Ø¬Ø§Ù‡Ø²Ø© Ù„Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯';
+  String get allRowsReady => 'كل الصفوف جاهزة للاستيراد';
 
   @override
   String get excelAttentionHelp =>
-      'ÙŠÙ…ÙƒÙ†Ùƒ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ØµÙÙˆÙ ØºÙŠØ± Ø§Ù„ØµØ§Ù„Ø­Ø© Ø¯Ø§Ø®Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ø´Ø§Ø´Ø©ØŒ Ø£Ùˆ ØªØµØ­ÙŠØ­ Ù…Ù„Ù Excel ÙˆØ±ÙØ¹Ù‡ Ù…Ø¬Ø¯Ø¯Ù‹Ø§ØŒ Ø£Ùˆ Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„Ù†Ø§Ù‚ØµØ© Ø£ÙˆÙ„Ø§Ù‹.';
+      'يمكنك تعديل الصفوف غير الصالحة داخل هذه الشاشة، أو تصحيح ملف Excel ورفعه مجددًا، أو إدارة الفئات الناقصة أولاً.';
 
   @override
-  String get manageCategoriesButton => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ¦Ø§Øª';
+  String get manageCategoriesButton => 'إدارة الفئات';
 
   @override
-  String get importResultTitle => 'Ù†ØªÙŠØ¬Ø© Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯';
+  String get importResultTitle => 'نتيجة الاستيراد';
 
   @override
   String importedRowsSummary(Object importedCount, Object totalRows) {
-    return 'ØªÙ… Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯: $importedCount / $totalRows';
+    return 'تم الاستيراد: $importedCount / $totalRows';
   }
 
   @override
-  String get resetButton => 'Ø¥Ø¹Ø§Ø¯Ø© Ø¶Ø¨Ø·';
+  String get resetButton => 'إعادة ضبط';
 
   @override
-  String get importingLabel => 'Ø¬Ø§Ø±Ù Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯...';
+  String get importingLabel => 'جارٍ الاستيراد...';
 
   @override
   String importProductsButton(Object count) {
-    return 'Ø§Ø³ØªÙŠØ±Ø§Ø¯ $count Ù…Ù†ØªØ¬Ø§Øª';
+    return 'استيراد $count منتجات';
   }
 
   @override
   String editRowTitle(Object rowNumber) {
-    return 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ØµÙ $rowNumber';
+    return 'تعديل الصف $rowNumber';
   }
 
   @override
   String get editRowHelp =>
-      'ØµØ­Ù‘Ø­ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ù†ØªØ¬ Ù‚Ø¨Ù„ Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯. Ù‡Ø°Ø§ ÙŠØ­Ø¯Ù‘Ø« Ø§Ù„Ù…Ø¹Ø§ÙŠÙ†Ø© ÙÙ‚Ø· ÙˆÙ„Ø§ ÙŠØºÙŠÙ‘Ø± Ù…Ù„Ù Excel Ø¹Ù„Ù‰ Ø§Ù„Ù‡Ø§ØªÙ.';
+      'صحّح معلومات المنتج قبل الاستيراد. هذا يحدّث المعاينة فقط ولا يغيّر ملف Excel على الهاتف.';
 
   @override
-  String get saveChangesButton => 'Ø­ÙØ¸ Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª';
+  String get saveChangesButton => 'حفظ التغييرات';
 
   @override
-  String get noSubcategory => 'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙØ¦Ø© ÙØ±Ø¹ÙŠØ©';
+  String get noSubcategory => 'لا توجد فئة فرعية';
 
   @override
-  String get noSubcategoriesForCategory =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ© Ù„Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø©';
+  String get noSubcategoriesForCategory => 'لا توجد فئات فرعية لهذه الفئة';
 
   @override
   String selectCategoryWithCurrent(Object categoryName) {
-    return 'Ø§Ø®ØªØ± Ø§Ù„ÙØ¦Ø© ($categoryName)';
+    return 'اختر الفئة ($categoryName)';
   }
 
   @override
   String rowNumberLabel(Object rowNumber) {
-    return 'Ø§Ù„ØµÙ $rowNumber';
+    return 'الصف $rowNumber';
   }
 
   @override
   String get productNameHint =>
-      'Ù…Ø«Ø§Ù„: ØµÙ†Ø¯ÙˆÙ‚ ÙƒÙˆÙƒØ§ÙƒÙˆÙ„Ø§ 24 Ù‚Ø·Ø¹Ø©ØŒ ØµÙ†Ø¯ÙˆÙ‚ Ù‚Ù…ØµØ§Ù† Ù‚Ø·Ù†ÙŠØ©';
+      'مثال: صندوق كوكاكولا 24 قطعة، صندوق قمصان قطنية';
 
   @override
-  String get countryRequiredLabel => 'Ø§Ù„Ø¯ÙˆÙ„Ø© *';
+  String get countryRequiredLabel => 'الدولة *';
 
   @override
-  String get selectCountryFirstError =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¯ÙˆÙ„Ø© Ø£ÙˆÙ„Ø§Ù‹';
+  String get selectCountryFirstError => 'يرجى اختيار الدولة أولاً';
 
   @override
-  String get regionStateLabel => 'Ø§Ù„Ù…Ù†Ø·Ù‚Ø© / Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø©';
+  String get regionStateLabel => 'المنطقة / المحافظة';
 
   @override
   String get noPredefinedRegionsContinueWithCity =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†Ø§Ø·Ù‚ Ù…Ø­Ø¯Ø¯Ø©ØŒ ÙŠÙ…ÙƒÙ†Ùƒ Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø¨Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© / Ø§Ù„Ù…Ù†Ø·Ù‚Ø©';
+      'لا توجد مناطق محددة، يمكنك المتابعة بالمدينة / المنطقة';
 
   @override
-  String get noRegionsFoundForSearch =>
-      'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ù…Ù†Ø§Ø·Ù‚ Ù…Ø·Ø§Ø¨Ù‚Ø© Ù„Ù„Ø¨Ø­Ø«';
+  String get noRegionsFoundForSearch => 'لم يتم العثور على مناطق مطابقة للبحث';
 
   @override
-  String get cityAreaHintGeneric =>
-      'Ù…Ø«Ø§Ù„: Ù…Ø¯ÙŠÙ†Ø©ØŒ Ø­ÙŠØŒ Ø£Ùˆ Ù…Ù†Ø·Ù‚Ø© Ø¹Ù…Ù„';
+  String get cityAreaHintGeneric => 'مثال: مدينة، حي، أو منطقة عمل';
 
   @override
-  String get cityAreaHintLebanonBeirut =>
-      'Ù…Ø«Ø§Ù„: Ø§Ù„Ø­Ù…Ø±Ø§ØŒ Ø§Ù„Ø£Ø´Ø±ÙÙŠØ©ØŒ ÙØ±Ø¯Ø§Ù†';
+  String get cityAreaHintLebanonBeirut => 'مثال: الحمرا، الأشرفية، فردان';
 
   @override
-  String get cityAreaHintLebanonMount =>
-      'Ù…Ø«Ø§Ù„: Ø¨Ø¹Ø¨Ø¯Ø§ØŒ Ø¬ÙˆÙ†ÙŠØ©ØŒ Ø¹Ø§Ù„ÙŠÙ‡';
+  String get cityAreaHintLebanonMount => 'مثال: بعبدا، جونية، عاليه';
 
   @override
-  String get cityAreaHintLebanonNorth =>
-      'Ù…Ø«Ø§Ù„: Ø·Ø±Ø§Ø¨Ù„Ø³ØŒ Ø§Ù„Ø¨ØªØ±ÙˆÙ†ØŒ Ø­Ù„Ø¨Ø§';
+  String get cityAreaHintLebanonNorth => 'مثال: طرابلس، البترون، حلبا';
 
   @override
-  String get cityAreaHintLebanonSouth =>
-      'Ù…Ø«Ø§Ù„: ØµÙŠØ¯Ø§ØŒ ØµÙˆØ±ØŒ Ø§Ù„Ù†Ø¨Ø·ÙŠØ©';
+  String get cityAreaHintLebanonSouth => 'مثال: صيدا، صور، النبطية';
 
   @override
-  String get cityAreaHintLebanonBekaa =>
-      'Ù…Ø«Ø§Ù„: Ø²Ø­Ù„Ø©ØŒ Ø¨Ø¹Ù„Ø¨ÙƒØŒ Ø´ØªÙˆØ±Ø§';
+  String get cityAreaHintLebanonBekaa => 'مثال: زحلة، بعلبك، شتورا';
 
   @override
-  String get cityAreaHintLebanonGeneric =>
-      'Ù…Ø«Ø§Ù„: Ø¨ÙŠØ±ÙˆØªØŒ Ø·Ø±Ø§Ø¨Ù„Ø³ØŒ ØµÙŠØ¯Ø§';
+  String get cityAreaHintLebanonGeneric => 'مثال: بيروت، طرابلس، صيدا';
 
   @override
-  String get phoneNumberRequiredError => 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ Ù…Ø·Ù„ÙˆØ¨';
+  String get phoneNumberRequiredError => 'رقم الهاتف مطلوب';
 
   @override
   String get phoneCountryMustMatchSelectedCountry =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ØªØªØ·Ø§Ø¨Ù‚ Ø¯ÙˆÙ„Ø© Ø§Ù„Ù‡Ø§ØªÙ Ù…Ø¹ Ø§Ù„Ø¯ÙˆÙ„Ø© Ø§Ù„Ù…Ø®ØªØ§Ø±Ø©';
+      'يجب أن تتطابق دولة الهاتف مع الدولة المختارة';
 
   @override
   String get completeRequiredFieldsCorrectly =>
-      'ÙŠØ±Ø¬Ù‰ Ø¥ÙƒÙ…Ø§Ù„ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ø¨Ø´ÙƒÙ„ ØµØ­ÙŠØ­.';
+      'يرجى إكمال جميع الحقول المطلوبة بشكل صحيح.';
 
   @override
-  String get businessTypeRequiredError => 'Ù†ÙˆØ¹ Ø§Ù„Ù†Ø´Ø§Ø· Ù…Ø·Ù„ÙˆØ¨';
+  String get businessTypeRequiredError => 'نوع النشاط مطلوب';
 
   @override
-  String get retryButton => 'Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©';
+  String get retryButton => 'إعادة المحاولة';
 
   @override
-  String get noLabel => 'Ù„Ø§';
+  String get noLabel => 'لا';
 
   @override
-  String get urlLabel => 'Ø±Ø§Ø¨Ø·';
+  String get urlLabel => 'رابط';
 
   @override
-  String get yesLabel => 'Ù†Ø¹Ù…';
+  String get yesLabel => 'نعم';
 
   @override
-  String get copyButton => 'Ù†Ø³Ø®';
+  String get copyButton => 'نسخ';
 
   @override
-  String get noneLabel => 'Ù„Ø§ Ø´ÙŠØ¡';
+  String get noneLabel => 'لا شيء';
 
   @override
-  String get supplierUsed => 'Ù…Ø³ØªØ®Ø¯Ù…';
+  String get supplierUsed => 'مستخدم';
 
   @override
-  String get supplierFixed => 'Ø«Ø§Ø¨Øª';
+  String get supplierFixed => 'ثابت';
 
   @override
-  String get notesLabel => 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª';
+  String get notesLabel => 'ملاحظات';
 
   @override
-  String get activeLabel => 'Ù†Ø´Ø·';
+  String get activeLabel => 'نشط';
 
   @override
-  String get cancelButton => 'Ø¥Ù„ØºØ§Ø¡';
+  String get cancelButton => 'إلغاء';
 
   @override
-  String get supplierCustom => 'Ù…Ø®ØµØµ';
+  String get supplierCustom => 'مخصص';
 
   @override
-  String get deleteButton => 'Ø­Ø°Ù';
+  String get deleteButton => 'حذف';
 
   @override
-  String get regionLabel => 'Ø§Ù„Ù…Ù†Ø·Ù‚Ø©';
+  String get regionLabel => 'المنطقة';
 
   @override
-  String get searchLabel => 'Ø¨Ø­Ø«';
+  String get searchLabel => 'بحث';
 
   @override
-  String get supplierTarget => 'Ø§Ù„Ù‡Ø¯Ù';
+  String get supplierTarget => 'الهدف';
 
   @override
-  String get supplierBanners => 'Ø§Ù„Ø¨Ù†Ø±Ø§Øª';
+  String get supplierBanners => 'البنرات';
 
   @override
-  String get countryLabel => 'Ø§Ù„Ø¨Ù„Ø¯';
+  String get countryLabel => 'البلد';
 
   @override
-  String get supplierPercent => 'Ù†Ø³Ø¨Ø© Ù…Ø¦ÙˆÙŠØ©';
+  String get supplierPercent => 'نسبة مئوية';
 
   @override
-  String get refreshButton => 'ØªØ­Ø¯ÙŠØ«';
+  String get refreshButton => 'تحديث';
 
   @override
-  String get supplierTitle => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù† *';
+  String get supplierTitle => 'العنوان *';
 
   @override
-  String get supplierDiscount => 'Ø§Ù„Ø®ØµÙ…';
+  String get supplierDiscount => 'الخصم';
 
   @override
-  String get supplierEndDate => 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ù†ØªÙ‡Ø§Ø¡';
+  String get supplierEndDate => 'تاريخ الانتهاء';
 
   @override
-  String get inactiveLabel => 'ØºÙŠØ± Ù†Ø´Ø·';
+  String get inactiveLabel => 'غير نشط';
 
   @override
-  String get supplierLocation => 'Ø§Ù„Ù…ÙˆÙ‚Ø¹';
+  String get supplierLocation => 'الموقع';
 
   @override
-  String get supplierMaxUses => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù…';
+  String get supplierMaxUses => 'الحد الأقصى للاستخدام';
 
   @override
-  String get regionRequiredLabel => 'Ø§Ù„Ù…Ù†Ø·Ù‚Ø© *';
+  String get regionRequiredLabel => 'المنطقة *';
 
   @override
-  String get supplierSubtitle => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„ÙØ±Ø¹ÙŠ';
+  String get supplierSubtitle => 'العنوان الفرعي';
 
   @override
-  String get supplierValidTo => 'ØµØ§Ù„Ø­Ø© Ø­ØªÙ‰';
+  String get supplierValidTo => 'صالحة حتى';
 
   @override
-  String get supplierValidity => 'Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ©';
+  String get supplierValidity => 'الصلاحية';
 
   @override
-  String get supplierMinOrder => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù„Ø·Ù„Ø¨';
+  String get supplierMinOrder => 'الحد الأدنى للطلب';
 
   @override
-  String get noRegionLabel => 'Ø¨Ø¯ÙˆÙ† Ù…Ù†Ø·Ù‚Ø©';
+  String get noRegionLabel => 'بدون منطقة';
 
   @override
-  String get supplierRemaining => 'Ù…ØªØ¨Ù‚ÙŠ';
+  String get supplierRemaining => 'متبقي';
 
   @override
-  String get supplierUnlimited => 'ØºÙŠØ± Ù…Ø­Ø¯ÙˆØ¯';
+  String get supplierUnlimited => 'غير محدود';
 
   @override
-  String get supplierValidNow => 'ØµØ§Ù„Ø­ Ø§Ù„Ø¢Ù†';
+  String get supplierValidNow => 'صالح الآن';
 
   @override
-  String get supplierPromotions => 'Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„ØªØ±ÙˆÙŠØ¬ÙŠØ©';
+  String get supplierPromotions => 'العروض الترويجية';
 
   @override
-  String get supplierStartDate => 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø¡';
+  String get supplierStartDate => 'تاريخ البدء';
 
   @override
-  String get supplierValidFrom => 'ØµØ§Ù„Ø­Ø© Ù…Ù†';
+  String get supplierValidFrom => 'صالحة من';
 
   @override
-  String get supplierBannerList => 'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø¨Ù†Ø±Ø§Øª';
+  String get supplierBannerList => 'قائمة البنرات';
 
   @override
-  String get supplierCouponList => 'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù‚Ø³Ø§Ø¦Ù…';
+  String get supplierCouponList => 'قائمة القسائم';
 
   @override
-  String get supplierCreateRule => 'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø©';
+  String get supplierCreateRule => 'إنشاء القاعدة';
 
   @override
-  String get descriptionLabel => 'Ø§Ù„ÙˆØµÙ';
+  String get descriptionLabel => 'الوصف';
 
   @override
-  String get supplierEditBanner => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¨Ù†Ø±';
+  String get supplierEditBanner => 'تعديل البنر';
 
   @override
-  String get supplierEditCoupon => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierEditCoupon => 'تعديل القسيمة';
 
   @override
-  String get supplierLebanonVat =>
-      'Ø¶Ø±ÙŠØ¨Ø© Ø§Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ù…Ø¶Ø§ÙØ© ÙÙŠ Ù„Ø¨Ù†Ø§Ù†';
+  String get supplierLebanonVat => 'ضريبة القيمة المضافة في لبنان';
 
   @override
-  String get supplierPickupOnly => 'Ø§Ø³ØªÙ„Ø§Ù… ÙÙ‚Ø·';
+  String get supplierPickupOnly => 'استلام فقط';
 
   @override
-  String get supplierRuleName => 'Ø§Ø³Ù… Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø© *';
+  String get supplierRuleName => 'اسم القاعدة *';
 
   @override
-  String get supplierRulePreset => 'Ù‚Ø§Ù„Ø¨ Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø©';
+  String get supplierRulePreset => 'قالب القاعدة';
 
   @override
-  String get subcategoryLabel => 'ÙØ¦Ø© ÙØ±Ø¹ÙŠØ©';
+  String get subcategoryLabel => 'فئة فرعية';
 
   @override
-  String get supplierUpdateRule => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø©';
+  String get supplierUpdateRule => 'تحديث القاعدة';
 
   @override
-  String get supplierValidNow2 => 'ØµØ§Ù„Ø­ Ø§Ù„Ø¢Ù†: ';
+  String get supplierValidNow2 => 'صالح الآن: ';
 
   @override
-  String get supplierAllBranches => 'ÙƒÙ„ Ø§Ù„ÙØ±ÙˆØ¹';
+  String get supplierAllBranches => 'كل الفروع';
 
   @override
-  String get supplierAllProducts => 'ÙƒÙ„ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª';
+  String get supplierAllProducts => 'كل المنتجات';
 
   @override
-  String get supplierAppliesTo => 'ØªÙ†Ø·Ø¨Ù‚ Ø¹Ù„Ù‰ *';
+  String get supplierAppliesTo => 'تنطبق على *';
 
   @override
-  String get supplierBannerImage => 'ØµÙˆØ±Ø© Ø§Ù„Ø¨Ù†Ø±';
+  String get supplierBannerImage => 'صورة البنر';
 
   @override
-  String get supplierCouponRules => 'Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierCouponRules => 'قواعد القسيمة';
 
   @override
-  String get supplierEnabledOnly => 'Ø§Ù„Ù…ÙØ¹Ù‘Ù„Ø© ÙÙ‚Ø·';
+  String get supplierEnabledOnly => 'المفعّلة فقط';
 
   @override
-  String get supplierFixedAmount => 'Ù…Ø¨Ù„Øº Ø«Ø§Ø¨Øª';
+  String get supplierFixedAmount => 'مبلغ ثابت';
 
   @override
-  String get supplierMaxDiscount => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø®ØµÙ…';
+  String get supplierMaxDiscount => 'الحد الأقصى للخصم';
 
   @override
-  String get supplierSortOrder => 'ØªØ±ØªÙŠØ¨ Ø§Ù„Ø¹Ø±Ø¶ *';
+  String get supplierSortOrder => 'ترتيب العرض *';
 
   @override
-  String get supplierTargetUrl => 'Ø±Ø§Ø¨Ø· Ø§Ù„Ù‡Ø¯Ù *';
+  String get supplierTargetUrl => 'رابط الهدف *';
 
   @override
-  String get supplierTaxRate => 'Ù†Ø³Ø¨Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© % *';
+  String get supplierTaxRate => 'نسبة الضريبة % *';
 
   @override
-  String get supplierUploadImage => 'Ø±ÙØ¹ ØµÙˆØ±Ø©';
+  String get supplierUploadImage => 'رفع صورة';
 
   @override
-  String get supplierUploading => 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø±ÙØ¹...';
+  String get supplierUploading => 'جاري الرفع...';
 
   @override
-  String get supplierAlwaysActive => 'Ù†Ø´Ø· Ø¯Ø§Ø¦Ù…Ø§Ù‹';
+  String get supplierAlwaysActive => 'نشط دائماً';
 
   @override
-  String get supplierCouponCode => 'Ø±Ù…Ø² Ø§Ù„Ù‚Ø³ÙŠÙ…Ø© *';
+  String get supplierCouponCode => 'رمز القسيمة *';
 
   @override
-  String get supplierCreateBanner => 'Ø¥Ù†Ø´Ø§Ø¡ Ø¨Ù†Ø±';
+  String get supplierCreateBanner => 'إنشاء بنر';
 
   @override
-  String get supplierCreateCoupon => 'Ø¥Ù†Ø´Ø§Ø¡ Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierCreateCoupon => 'إنشاء قسيمة';
 
   @override
-  String get supplierCreateMethod => 'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©';
+  String get supplierCreateMethod => 'إنشاء الطريقة';
 
   @override
-  String get supplierDeleteBanner => 'Ø­Ø°Ù Ø§Ù„Ø¨Ù†Ø±';
+  String get supplierDeleteBanner => 'حذف البنر';
 
   @override
-  String get supplierDeleteCoupon => 'Ø­Ø°Ù Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierDeleteCoupon => 'حذف القسيمة';
 
   @override
-  String get supplierDisabledOnly => 'ØºÙŠØ± Ø§Ù„Ù…ÙØ¹Ù‘Ù„Ø© ÙÙ‚Ø·';
+  String get supplierDisabledOnly => 'غير المفعّلة فقط';
 
   @override
-  String get supplierDisplayRules => 'Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¹Ø±Ø¶';
+  String get supplierDisplayRules => 'قواعد العرض';
 
   @override
-  String get supplierEditTaxRule => 'ØªØ¹Ø¯ÙŠÙ„ Ù‚Ø§Ø¹Ø¯Ø© Ø¶Ø±ÙŠØ¨ÙŠØ©';
+  String get supplierEditTaxRule => 'تعديل قاعدة ضريبية';
 
   @override
-  String get supplierFreeShipping => 'Ø´Ø­Ù† Ù…Ø¬Ø§Ù†ÙŠ';
+  String get supplierFreeShipping => 'شحن مجاني';
 
   @override
-  String get supplierMethodName => 'Ø§Ø³Ù… Ø§Ù„Ø·Ø±ÙŠÙ‚Ø© *';
+  String get supplierMethodName => 'اسم الطريقة *';
 
   @override
-  String get supplierMethodType => 'Ù†ÙˆØ¹ Ø§Ù„Ø·Ø±ÙŠÙ‚Ø© *';
+  String get supplierMethodType => 'نوع الطريقة *';
 
   @override
-  String get searchRegionHint => 'Ø§Ù„Ø¨Ø­Ø« Ø¹Ù† Ù…Ù†Ø·Ù‚Ø©';
+  String get searchRegionHint => 'البحث عن منطقة';
 
   @override
-  String get selectRegionHint => 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ù…Ù†Ø·Ù‚Ø©';
+  String get selectRegionHint => 'اختيار المنطقة';
 
   @override
-  String get supplierShippingCost => 'ØªÙƒÙ„ÙØ© Ø§Ù„Ø´Ø­Ù†';
+  String get supplierShippingCost => 'تكلفة الشحن';
 
   @override
-  String get supplierTargetType => 'Ù†ÙˆØ¹ Ø§Ù„Ù‡Ø¯Ù *';
+  String get supplierTargetType => 'نوع الهدف *';
 
   @override
-  String get supplierTaxRuleList => 'Ù‚Ø§Ø¦Ù…Ø© Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierTaxRuleList => 'قائمة قواعد الضريبة';
 
   @override
-  String get supplierUpdateBanner => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¨Ù†Ø±';
+  String get supplierUpdateBanner => 'تحديث البنر';
 
   @override
-  String get supplierUpdateCoupon => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierUpdateCoupon => 'تحديث القسيمة';
 
   @override
-  String get supplierUpdateMethod => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©';
+  String get supplierUpdateMethod => 'تحديث الطريقة';
 
   @override
-  String get supplierBannerImage2 => 'ØµÙˆØ±Ø© Ø§Ù„Ø¨Ù†Ø± *';
+  String get supplierBannerImage2 => 'صورة البنر *';
 
   @override
-  String get supplierEditPromotion => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¹Ø±Ø¶ Ø§Ù„ØªØ±ÙˆÙŠØ¬ÙŠ';
+  String get supplierEditPromotion => 'تعديل العرض الترويجي';
 
   @override
-  String get supplierManageBanners => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¨Ù†Ø±Ø§Øª';
+  String get supplierManageBanners => 'إدارة البنرات';
 
   @override
-  String get supplierManageCoupons => 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù‚Ø³Ø§Ø¦Ù…';
+  String get supplierManageCoupons => 'إدارة القسائم';
 
   @override
-  String get supplierNoBannersYet => 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨Ù†Ø±Ø§Øª Ø¨Ø¹Ø¯';
+  String get supplierNoBannersYet => 'لا توجد بنرات بعد';
 
   @override
-  String get supplierNoCouponsYet => 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù‚Ø³Ø§Ø¦Ù… Ø¨Ø¹Ø¯';
+  String get supplierNoCouponsYet => 'لا توجد قسائم بعد';
 
   @override
-  String get supplierPickupIsFree => 'Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù… Ù…Ø¬Ø§Ù†ÙŠ';
+  String get supplierPickupIsFree => 'الاستلام مجاني';
 
   @override
-  String get supplierPromotionList => 'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø¹Ø±ÙˆØ¶';
+  String get supplierPromotionList => 'قائمة العروض';
 
   @override
-  String get searchCountryHint => 'Ø§Ù„Ø¨Ø­Ø« Ø¹Ù† Ø¯ÙˆÙ„Ø©';
+  String get searchCountryHint => 'البحث عن دولة';
 
   @override
-  String get selectCountryHint => 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¯ÙˆÙ„Ø©';
+  String get selectCountryHint => 'اختيار الدولة';
 
   @override
-  String get supplierStatusNotes => 'Ø§Ù„Ø­Ø§Ù„Ø© ÙˆØ§Ù„Ù…Ù„Ø§Ø­Ø¸Ø§Øª';
+  String get supplierStatusNotes => 'الحالة والملاحظات';
 
   @override
-  String get supplierCreateTaxRule => 'Ø¥Ù†Ø´Ø§Ø¡ Ù‚Ø§Ø¹Ø¯Ø© Ø¶Ø±ÙŠØ¨ÙŠØ©';
+  String get supplierCreateTaxRule => 'إنشاء قاعدة ضريبية';
 
   @override
-  String get supplierDeleteTaxRule => 'Ø­Ø°Ù Ù‚Ø§Ø¹Ø¯Ø© Ø¶Ø±ÙŠØ¨ÙŠØ©';
+  String get supplierDeleteTaxRule => 'حذف قاعدة ضريبية';
 
   @override
-  String get supplierDiscountType => 'Ù†ÙˆØ¹ Ø§Ù„Ø®ØµÙ… *';
+  String get supplierDiscountType => 'نوع الخصم *';
 
   @override
-  String get supplierOrderLevelTax => 'Ø¶Ø±ÙŠØ¨Ø© Ø¹Ù„Ù‰ Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø·Ù„Ø¨';
+  String get supplierOrderLevelTax => 'ضريبة على مستوى الطلب';
 
   @override
-  String get supplierPromotionRules => 'Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¹Ø±Ø¶';
+  String get supplierPromotionRules => 'قواعد العرض';
 
   @override
-  String get supplierSelectBranches => 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ÙØ±ÙˆØ¹';
+  String get supplierSelectBranches => 'اختيار الفروع';
 
   @override
-  String get supplierWholesaleDeals => 'Ø¹Ø±ÙˆØ¶ Ø§Ù„Ø¬Ù…Ù„Ø©';
+  String get supplierWholesaleDeals => 'عروض الجملة';
 
   @override
-  String get supplierDeletePromotion => 'Ø­Ø°Ù Ø§Ù„Ø¹Ø±Ø¶ Ø§Ù„ØªØ±ÙˆÙŠØ¬ÙŠ';
+  String get supplierDeletePromotion => 'حذف العرض الترويجي';
 
   @override
-  String get supplierDiscountValue => 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ… *';
+  String get supplierDiscountValue => 'قيمة الخصم *';
 
   @override
-  String get supplierExpressDelivery => 'ØªÙˆØµÙŠÙ„ Ø³Ø±ÙŠØ¹';
+  String get supplierExpressDelivery => 'توصيل سريع';
 
   @override
-  String get supplierManageTaxRules => 'Ø¥Ø¯Ø§Ø±Ø© Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierManageTaxRules => 'إدارة قواعد الضريبة';
 
   @override
-  String get supplierMinOrderAmount =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ø·Ù„Ø¨';
+  String get supplierMinOrderAmount => 'الحد الأدنى لقيمة الطلب';
 
   @override
-  String get supplierNoResultsFound => 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù†ØªØ§Ø¦Ø¬';
+  String get supplierNoResultsFound => 'لا توجد نتائج';
 
   @override
-  String get supplierNoTaxRulesYet =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù‚ÙˆØ§Ø¹Ø¯ Ø¶Ø±ÙŠØ¨ÙŠØ© Ø¨Ø¹Ø¯';
+  String get supplierNoTaxRulesYet => 'لا توجد قواعد ضريبية بعد';
 
   @override
-  String get supplierPleaseSelectA => 'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± ';
+  String get supplierPleaseSelectA => 'يرجى اختيار ';
 
   @override
-  String get supplierPricingTiming => 'Ø§Ù„ØªØ³Ø¹ÙŠØ± ÙˆØ§Ù„ÙˆÙ‚Øª';
+  String get supplierPricingTiming => 'التسعير والوقت';
 
   @override
-  String get supplierPromotionName => 'Ø§Ø³Ù… Ø§Ù„Ø¹Ø±Ø¶ *';
+  String get supplierPromotionName => 'اسم العرض *';
 
   @override
-  String get supplierPromotionTarget => 'Ù‡Ø¯Ù Ø§Ù„Ø¹Ø±Ø¶';
+  String get supplierPromotionTarget => 'هدف العرض';
 
   @override
-  String get supplierSearchTaxRules =>
-      'Ø§Ù„Ø¨Ø­Ø« ÙÙŠ Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierSearchTaxRules => 'البحث في قواعد الضريبة';
 
   @override
-  String get supplierSelectProduct => 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ù…Ù†ØªØ¬ *';
+  String get supplierSelectProduct => 'اختيار المنتج *';
 
   @override
-  String get supplierUpdatePromotion => 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¹Ø±Ø¶';
+  String get supplierUpdatePromotion => 'تحديث العرض';
 
   @override
-  String get supplierManagePromotions =>
-      'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„ØªØ±ÙˆÙŠØ¬ÙŠØ©';
+  String get supplierManagePromotions => 'إدارة العروض الترويجية';
 
   @override
-  String get supplierNoPromotionsYet => 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹Ø±ÙˆØ¶ Ø¨Ø¹Ø¯';
+  String get supplierNoPromotionsYet => 'لا توجد عروض بعد';
 
   @override
-  String get supplierScheduleStatus => 'Ø§Ù„Ø¬Ø¯ÙˆÙ„Ø© ÙˆØ§Ù„Ø­Ø§Ù„Ø©';
+  String get supplierScheduleStatus => 'الجدولة والحالة';
 
   @override
-  String get supplierSearchPromotions => 'Ø§Ù„Ø¨Ø­Ø« ÙÙŠ Ø§Ù„Ø¹Ø±ÙˆØ¶';
+  String get supplierSearchPromotions => 'البحث في العروض';
 
   @override
-  String get supplierSelectCategory => 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ÙØ¦Ø© *';
+  String get supplierSelectCategory => 'اختيار الفئة *';
 
   @override
-  String get supplierSelectedBranches => 'ÙØ±ÙˆØ¹ Ù…Ø­Ø¯Ø¯Ø©';
+  String get supplierSelectedBranches => 'فروع محددة';
 
   @override
-  String get supplierStandardDelivery => 'ØªÙˆØµÙŠÙ„ Ø¹Ø§Ø¯ÙŠ';
+  String get supplierStandardDelivery => 'توصيل عادي';
 
   @override
-  String get supplierTaxApplicability => 'ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierTaxApplicability => 'تطبيق الضريبة';
 
   @override
-  String get supplierTaxConfiguration => 'Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierTaxConfiguration => 'إعدادات الضريبة';
 
   @override
-  String get supplierAutoGenerateName =>
-      'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø§Ø³Ù… ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹';
+  String get supplierAutoGenerateName => 'إنشاء الاسم تلقائياً';
 
   @override
-  String get supplierBannerInformation => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø¨Ù†Ø±';
+  String get supplierBannerInformation => 'معلومات البنر';
 
   @override
-  String get supplierCouponInformation => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierCouponInformation => 'معلومات القسيمة';
 
   @override
-  String get supplierMethodInformation => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©';
+  String get supplierMethodInformation => 'معلومات الطريقة';
 
   @override
-  String get supplierPickupFromBranch => 'Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù… Ù…Ù† Ø§Ù„ÙØ±Ø¹';
+  String get supplierPickupFromBranch => 'الاستلام من الفرع';
 
   @override
-  String get supplierPickupFromBranch2 => 'Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù… Ù…Ù† Ø§Ù„ÙØ±Ø¹';
+  String get supplierPickupFromBranch2 => 'الاستلام من الفرع';
 
   @override
-  String get supplierCountryIsRequired => 'Ø§Ù„Ø¯ÙˆÙ„Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get supplierCountryIsRequired => 'الدولة مطلوبة';
 
   @override
-  String get supplierMaxDiscountAmount => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø®ØµÙ…';
+  String get supplierMaxDiscountAmount => 'الحد الأقصى للخصم';
 
   @override
-  String get supplierNoMatchingBanners =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨Ù†Ø±Ø§Øª Ù…Ø·Ø§Ø¨Ù‚Ø©';
+  String get supplierNoMatchingBanners => 'لا توجد بنرات مطابقة';
 
   @override
-  String get supplierBranchApplicability => 'ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„ÙØ±ÙˆØ¹';
+  String get supplierBranchApplicability => 'تطبيق الفروع';
 
   @override
-  String get supplierDiscountValue2 => 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ… (%) *';
+  String get supplierDiscountValue2 => 'قيمة الخصم (%) *';
 
   @override
-  String get supplierEditShippingMethod => 'ØªØ¹Ø¯ÙŠÙ„ Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø´Ø­Ù†';
+  String get supplierEditShippingMethod => 'تعديل طريقة الشحن';
 
   @override
-  String get supplierMinimumOrderAmount =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ø·Ù„Ø¨';
+  String get supplierMinimumOrderAmount => 'الحد الأدنى لقيمة الطلب';
 
   @override
-  String get supplierSelectSubcategory =>
-      'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© *';
+  String get supplierSelectSubcategory => 'اختيار الفئة الفرعية *';
 
   @override
-  String get supplierShippingMethodList => 'Ù‚Ø§Ø¦Ù…Ø© Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù†';
+  String get supplierShippingMethodList => 'قائمة طرق الشحن';
 
   @override
-  String get supplierTaxRuleInformation =>
-      'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨ÙŠØ©';
+  String get supplierTaxRuleInformation => 'معلومات القاعدة الضريبية';
 
   @override
-  String get supplierNoMatchingTaxRules =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù‚ÙˆØ§Ø¹Ø¯ Ø¶Ø±ÙŠØ¨ÙŠØ© Ù…Ø·Ø§Ø¨Ù‚Ø©';
+  String get supplierNoMatchingTaxRules => 'لا توجد قواعد ضريبية مطابقة';
 
   @override
-  String get supplierPromotionInformation => 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø¹Ø±Ø¶';
+  String get supplierPromotionInformation => 'معلومات العرض';
 
   @override
   String get supplierFieldnameIsRequired => '\$fieldName is required';
 
   @override
-  String get supplierCouldNotLoadBanners =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø¨Ù†Ø±Ø§Øª';
+  String get supplierCouldNotLoadBanners => 'تعذر تحميل البنرات';
 
   @override
-  String get supplierCouldNotLoadCoupons =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù‚Ø³Ø§Ø¦Ù…';
+  String get supplierCouldNotLoadCoupons => 'تعذر تحميل القسائم';
 
   @override
-  String get supplierCreateShippingMethod => 'Ø¥Ù†Ø´Ø§Ø¡ Ø·Ø±ÙŠÙ‚Ø© Ø´Ø­Ù†';
+  String get supplierCreateShippingMethod => 'إنشاء طريقة شحن';
 
   @override
-  String get supplierDeleteShippingMethod => 'Ø­Ø°Ù Ø·Ø±ÙŠÙ‚Ø© Ø´Ø­Ù†';
+  String get supplierDeleteShippingMethod => 'حذف طريقة شحن';
 
   @override
-  String get supplierNoMatchingPromotions =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹Ø±ÙˆØ¶ Ù…Ø·Ø§Ø¨Ù‚Ø©';
+  String get supplierNoMatchingPromotions => 'لا توجد عروض مطابقة';
 
   @override
-  String get supplierPromotionTitleCopied =>
-      'ØªÙ… Ù†Ø³Ø® Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹Ø±Ø¶ Ø¨Ù†Ø¬Ø§Ø­';
+  String get supplierPromotionTitleCopied => 'تم نسخ عنوان العرض بنجاح';
 
   @override
-  String get supplierSortOrderIsRequired => 'ØªØ±ØªÙŠØ¨ Ø§Ù„Ø¹Ø±Ø¶ Ù…Ø·Ù„ÙˆØ¨';
+  String get supplierSortOrderIsRequired => 'ترتيب العرض مطلوب';
 
   @override
-  String get supplierEstimatedDeliveryTime =>
-      'Ù…Ø¯Ø© Ø§Ù„ØªÙˆØµÙŠÙ„ Ø§Ù„Ù…ØªÙˆÙ‚Ø¹Ø©';
+  String get supplierEstimatedDeliveryTime => 'مدة التوصيل المتوقعة';
 
   @override
-  String get supplierFreeShippingThreshold => 'Ø­Ø¯ Ø§Ù„Ø´Ø­Ù† Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ';
+  String get supplierFreeShippingThreshold => 'حد الشحن المجاني';
 
   @override
-  String get supplierManageShippingMethods => 'Ø¥Ø¯Ø§Ø±Ø© Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù†';
+  String get supplierManageShippingMethods => 'إدارة طرق الشحن';
 
   @override
-  String get supplierNoShippingMethodsYet =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ø±Ù‚ Ø´Ø­Ù† Ø¨Ø¹Ø¯';
+  String get supplierNoShippingMethodsYet => 'لا توجد طرق شحن بعد';
 
   @override
-  String get supplierPleaseSelectACountry =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø¯ÙˆÙ„Ø©';
+  String get supplierPleaseSelectACountry => 'يرجى اختيار الدولة';
 
   @override
-  String get supplierSearchShippingMethods =>
-      'Ø§Ù„Ø¨Ø­Ø« ÙÙŠ Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù†';
+  String get supplierSearchShippingMethods => 'البحث في طرق الشحن';
 
   @override
-  String get supplierCouldNotLoadTaxRules =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierCouldNotLoadTaxRules => 'تعذر تحميل قواعد الضريبة';
 
   @override
-  String get supplierCouldNotLoadPromotions =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø¹Ø±ÙˆØ¶';
+  String get supplierCouldNotLoadPromotions => 'تعذر تحميل العروض';
 
   @override
-  String get supplierApplyTaxToShippingCost =>
-      'ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© Ø¹Ù„Ù‰ ØªÙƒÙ„ÙØ© Ø§Ù„Ø´Ø­Ù†';
+  String get supplierApplyTaxToShippingCost => 'تطبيق الضريبة على تكلفة الشحن';
 
   @override
-  String get supplierBannerCopiedSuccessfully =>
-      'ØªÙ… Ù†Ø³Ø® Ø§Ù„Ø¨Ù†Ø± Ø¨Ù†Ø¬Ø§Ø­';
+  String get supplierBannerCopiedSuccessfully => 'تم نسخ البنر بنجاح';
 
   @override
-  String get supplierNoMatchingShippingMethods =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ø±Ù‚ Ø´Ø­Ù† Ù…Ø·Ø§Ø¨Ù‚Ø©';
+  String get supplierNoMatchingShippingMethods => 'لا توجد طرق شحن مطابقة';
 
   @override
-  String get supplierSpecialOffersForRetailers =>
-      'Ø¹Ø±ÙˆØ¶ Ø®Ø§ØµØ© Ù„Ù„ØªØ¬Ø§Ø±';
+  String get supplierSpecialOffersForRetailers => 'عروض خاصة للتجار';
 
   @override
-  String get supplierCouldNotLoadTargetOptions =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø®ÙŠØ§Ø±Ø§Øª Ø§Ù„Ù‡Ø¯Ù';
+  String get supplierCouldNotLoadTargetOptions => 'تعذر تحميل خيارات الهدف';
 
   @override
-  String get supplierPleaseSelectACategoryFirst =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± ÙØ¦Ø© Ø£ÙˆÙ„Ø§Ù‹';
+  String get supplierPleaseSelectACategoryFirst => 'يرجى اختيار فئة أولاً';
 
   @override
-  String get supplierRegionIsRequiredForLebanon =>
-      'Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ù…Ø·Ù„ÙˆØ¨Ø© Ù„Ù„Ø¨Ù†Ø§Ù†';
+  String get supplierRegionIsRequiredForLebanon => 'المنطقة مطلوبة للبنان';
 
   @override
-  String get supplierCouldNotLoadShippingMethods =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù†';
+  String get supplierCouldNotLoadShippingMethods => 'تعذر تحميل طرق الشحن';
 
   @override
   String get supplierTaxRateMustBeGreaterThan0 =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ù†Ø³Ø¨Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© Ø£ÙƒØ¨Ø± Ù…Ù† 0';
+      'يجب أن تكون نسبة الضريبة أكبر من 0';
 
   @override
   String get supplierFieldnameMustBeAValidNumber =>
@@ -2364,51 +2245,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supplierPleaseSelectAtLeastOneBranch =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± ÙØ±Ø¹ ÙˆØ§Ø­Ø¯ Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+      'يرجى اختيار فرع واحد على الأقل';
 
   @override
   String get supplierBannerImageUploadedSuccessfully =>
-      'ØªÙ… Ø±ÙØ¹ ØµÙˆØ±Ø© Ø§Ù„Ø¨Ù†Ø± Ø¨Ù†Ø¬Ø§Ø­';
+      'تم رفع صورة البنر بنجاح';
 
   @override
   String get supplierOptionalNotesAboutThisTaxRule =>
-      'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ø®ØªÙŠØ§Ø±ÙŠØ© Ø­ÙˆÙ„ Ù‡Ø°Ù‡ Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨ÙŠØ©';
+      'ملاحظات اختيارية حول هذه القاعدة الضريبية';
 
   @override
   String get supplierPleaseSelectARegionForLebanon =>
-      'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± Ù…Ù†Ø·Ù‚Ø© Ù„Ù„Ø¨Ù†Ø§Ù†';
+      'يرجى اختيار منطقة للبنان';
 
   @override
   String get supplierValidFromMustBeBeforeValidTo =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø§ÙŠØ© Ù‚Ø¨Ù„ ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ù†ØªÙ‡Ø§Ø¡';
+      'يجب أن يكون تاريخ البداية قبل تاريخ الانتهاء';
 
   @override
   String get supplierTaxRateCannotBeGreaterThan100 =>
-      'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø£Ù† ØªÙƒÙˆÙ† Ù†Ø³Ø¨Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© Ø£ÙƒØ¨Ø± Ù…Ù† 100';
+      'لا يمكن أن تكون نسبة الضريبة أكبر من 100';
 
   @override
   String get supplierUploadedImageUrlWillAppearHere =>
-      'Ø³ÙŠØ¸Ù‡Ø± Ø±Ø§Ø¨Ø· Ø§Ù„ØµÙˆØ±Ø© Ø§Ù„Ù…Ø±ÙÙˆØ¹Ø© Ù‡Ù†Ø§';
+      'سيظهر رابط الصورة المرفوعة هنا';
 
   @override
   String get supplierNoRegionsAvailableForThisCountry =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†Ø§Ø·Ù‚ Ù…ØªØ§Ø­Ø© Ù„Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙˆÙ„Ø©.';
+      'لا توجد مناطق متاحة لهذه الدولة.';
 
   @override
   String get supplierUrlMustStartWithHttpOrHttps =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ¨Ø¯Ø£ Ø§Ù„Ø±Ø§Ø¨Ø· Ø¨Ù€ http:// Ø£Ùˆ https://';
+      'يجب أن يبدأ الرابط بـ http:// أو https://';
 
   @override
   String get supplierOptionalNotesAboutThisShippingMethod =>
-      'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ø®ØªÙŠØ§Ø±ÙŠØ© Ø­ÙˆÙ„ Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø´Ø­Ù† Ù‡Ø°Ù‡';
+      'ملاحظات اختيارية حول طريقة الشحن هذه';
 
   @override
   String get supplierSortOrderMustBeAValidPositiveNumber =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ØªØ±ØªÙŠØ¨ Ø§Ù„Ø¹Ø±Ø¶ Ø±Ù‚Ù…Ø§Ù‹ Ù…ÙˆØ¬Ø¨Ø§Ù‹ ØµØ§Ù„Ø­Ø§Ù‹';
+      'يجب أن يكون ترتيب العرض رقماً موجباً صالحاً';
 
   @override
   String get supplierPercentDiscountCannotBeGreaterThan100 =>
-      'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø£Ù† ØªÙƒÙˆÙ† Ù†Ø³Ø¨Ø© Ø§Ù„Ø®ØµÙ… Ø£ÙƒØ¨Ø± Ù…Ù† 100';
+      'لا يمكن أن تكون نسبة الخصم أكبر من 100';
 
   @override
   String get supplierFieldnameMustBeGreaterThanOrEqualTo0 =>
@@ -2417,739 +2298,717 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String
   get supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule =>
-      'Ø§Ø®ØªØ§Ø±ÙŠ Ù‚Ø§Ù„Ø¨Ø§Ù‹ Ø¬Ø§Ù‡Ø²Ø§Ù‹ Ø£Ùˆ Ø£Ø¨Ù‚ÙŠÙ‡ Ù…Ø®ØµØµØ§Ù‹ ÙˆØ£Ø¯Ø®Ù„ÙŠ Ù‚Ø§Ø¹Ø¯Ø© Ø¶Ø±ÙŠØ¨Ø© Ø¹Ù„Ù‰ Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø·Ù„Ø¨.';
+      'اختاري قالباً جاهزاً أو أبقيه مخصصاً وأدخلي قاعدة ضريبة على مستوى الطلب.';
 
   @override
   String
   get supplierSelectedBranchesAreLoadedFromTheBackendBranchManagementModule =>
-      'ÙŠØªÙ… ØªØ­Ù…ÙŠÙ„ Ø§Ù„ÙØ±ÙˆØ¹ Ø§Ù„Ù…Ø­Ø¯Ø¯Ø© Ù…Ù† ÙˆØ­Ø¯Ø© Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ±ÙˆØ¹ ÙÙŠ Ø§Ù„Ø®Ù„ÙÙŠØ©.';
+      'يتم تحميل الفروع المحددة من وحدة إدارة الفروع في الخلفية.';
 
   @override
   String
   get supplierNoActiveBranchesAvailableAddBranchesFromBranchManagementFirst =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙØ±ÙˆØ¹ Ù†Ø´Ø·Ø©. Ø£Ø¶ÙŠÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹ Ø£ÙˆÙ„Ø§Ù‹ Ù…Ù† Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ±ÙˆØ¹.';
+      'لا توجد فروع نشطة. أضيفي الفروع أولاً من إدارة الفروع.';
 
   @override
   String
   get supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry =>
-      'Ø§Ù„Ø¯ÙˆÙ„Ø© Ù…Ø·Ù„ÙˆØ¨Ø© Ù„Ø£Ù† Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ØªÙØ­Ø³Ø¨ Ø­Ø³Ø¨ Ø¯ÙˆÙ„Ø© ØªÙˆØµÙŠÙ„ Ø§Ù„ØªØ§Ø¬Ø±.';
+      'الدولة مطلوبة لأن الضريبة تُحسب حسب دولة توصيل التاجر.';
 
   @override
   String
   get supplierTheSelectedItemNameIsShownHereButTheBackendSavesItsIdInTargetvalue =>
-      'ÙŠØ¸Ù‡Ø± Ø§Ø³Ù… Ø§Ù„Ø¹Ù†ØµØ± Ø§Ù„Ù…Ø­Ø¯Ø¯ Ù‡Ù†Ø§ØŒ Ù„ÙƒÙ† Ø§Ù„Ø®Ø§Ø¯Ù… ÙŠØ­ÙØ¸ Ù…Ø¹Ø±Ù‘ÙÙ‡ ÙÙŠ targetValue.';
+      'يظهر اسم العنصر المحدد هنا، لكن الخادم يحفظ معرّفه في targetValue.';
 
   @override
   String
   get supplierCreateTaxRulesFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
-      'Ø£Ù†Ø´Ø¦ÙŠ Ù‚ÙˆØ§Ø¹Ø¯ Ø¶Ø±ÙŠØ¨ÙŠØ© Ù…Ù† Ø§Ø®ØªØµØ§Ø± Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙˆØ±Ø¯ Ø£Ùˆ Ø§Ø¶ØºØ·ÙŠ Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ø£Ø¹Ù„Ø§Ù‡.';
+      'أنشئي قواعد ضريبية من اختصار لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
 
   @override
   String
   get supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion =>
-      'Ù…Ø«Ø§Ù„: Ø£Ø¯Ø®Ù„ÙŠ 11 Ù„Ù†Ø³Ø¨Ø© 11%. ÙŠØªÙ… ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨ Ø­Ø³Ø¨ Ø§Ù„Ø¯ÙˆÙ„Ø© ÙˆØ§Ù„Ù…Ù†Ø·Ù‚Ø©.';
+      'مثال: أدخلي 11 لنسبة 11%. يتم تطبيق الضريبة على الطلب حسب الدولة والمنطقة.';
 
   @override
   String
   get supplierCountryAndRegionAreUsedLaterByRetailerCheckoutToShowTheCorrectShippingOptions =>
-      'ØªÙØ³ØªØ®Ø¯Ù… Ø§Ù„Ø¯ÙˆÙ„Ø© ÙˆØ§Ù„Ù…Ù†Ø·Ù‚Ø© Ù„Ø§Ø­Ù‚Ø§Ù‹ ÙÙŠ Ø¯ÙØ¹ Ø§Ù„ØªØ§Ø¬Ø± Ù„Ø¹Ø±Ø¶ Ø®ÙŠØ§Ø±Ø§Øª Ø§Ù„Ø´Ø­Ù† Ø§Ù„ØµØ­ÙŠØ­Ø©.';
+      'تُستخدم الدولة والمنطقة لاحقاً في دفع التاجر لعرض خيارات الشحن الصحيحة.';
 
   @override
   String
   get supplierCreateShippingMethodsFromTheSupplierDashboardQuickActionOrTapThePlusIconAbove =>
-      'Ø£Ù†Ø´Ø¦ÙŠ Ø·Ø±Ù‚ Ø§Ù„Ø´Ø­Ù† Ù…Ù† Ø§Ø®ØªØµØ§Ø± Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙˆØ±Ø¯ Ø£Ùˆ Ø§Ø¶ØºØ·ÙŠ Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ø£Ø¹Ù„Ø§Ù‡.';
+      'أنشئي طرق الشحن من اختصار لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
 
   @override
   String
   get supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule =>
-      'Ø§Ø®ØªØ§Ø±ÙŠ Ø¨Ø¯ÙˆÙ† Ù…Ù†Ø·Ù‚Ø© Ù„Ù‚Ø§Ø¹Ø¯Ø© Ø¹Ù„Ù‰ Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø¯ÙˆÙ„Ø©ØŒ Ø£Ùˆ Ø§Ø®ØªØ§Ø±ÙŠ Ù…Ù†Ø·Ù‚Ø© Ù…Ø­Ø¯Ø¯Ø© Ù„Ù‚Ø§Ø¹Ø¯Ø© Ø£Ø¯Ù‚.';
+      'اختاري بدون منطقة لقاعدة على مستوى الدولة، أو اختاري منطقة محددة لقاعدة أدق.';
 
   @override
   String
   get supplierCreateAndManageDeliveryOrPickupOptionsByCountryRegionBranchScopeCostAndAvailability =>
-      'Ø£Ù†Ø´Ø¦ÙŠ ÙˆØ£Ø¯ÙŠØ±ÙŠ Ø®ÙŠØ§Ø±Ø§Øª Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù… Ø­Ø³Ø¨ Ø§Ù„Ø¯ÙˆÙ„Ø© ÙˆØ§Ù„Ù…Ù†Ø·Ù‚Ø© ÙˆØ§Ù„ÙØ±ÙˆØ¹ ÙˆØ§Ù„ØªÙƒÙ„ÙØ© ÙˆØ§Ù„ØªÙˆÙØ±.';
+      'أنشئي وأديري خيارات التوصيل أو الاستلام حسب الدولة والمنطقة والفروع والتكلفة والتوفر.';
 
   @override
   String
   get supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField =>
-      'Ø§Ø±ÙØ¹ÙŠ ØµÙˆØ±Ø© Ù…Ù† Ø¬Ù‡Ø§Ø²Ùƒ. ÙŠØ±Ø¬Ø¹ Ø§Ù„Ø®Ø§Ø¯Ù… Ø±Ø§Ø¨Ø·Ø§Ù‹ ÙˆÙŠØ­ÙØ¸Ù‡ ÙÙŠ Ø­Ù‚Ù„ imageUrl Ù„Ù„Ø¨Ù†Ø±.';
+      'ارفعي صورة من جهازك. يرجع الخادم رابطاً ويحفظه في حقل imageUrl للبنر.';
 
   @override
   String
   get supplierConfigureOrderLevelTaxByCountryAndRegionRetailerCheckoutWillUseTheseRulesToCalculateTax =>
-      'Ø§Ø¶Ø¨Ø·ÙŠ Ø¶Ø±ÙŠØ¨Ø© Ø§Ù„Ø·Ù„Ø¨ Ø­Ø³Ø¨ Ø§Ù„Ø¯ÙˆÙ„Ø© ÙˆØ§Ù„Ù…Ù†Ø·Ù‚Ø©. Ø³ÙŠØ³ØªØ®Ø¯Ù… Ø¯ÙØ¹ Ø§Ù„ØªØ§Ø¬Ø± Ù‡Ø°Ù‡ Ø§Ù„Ù‚ÙˆØ§Ø¹Ø¯ Ù„Ø­Ø³Ø§Ø¨ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©.';
+      'اضبطي ضريبة الطلب حسب الدولة والمنطقة. سيستخدم دفع التاجر هذه القواعد لحساب الضريبة.';
 
   @override
   String
   get supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount =>
-      'Ø¹Ù†Ø¯ Ø§Ù„ØªÙØ¹ÙŠÙ„ØŒ ØªØ´Ù…Ù„ Ø¶Ø±ÙŠØ¨Ø© Ø§Ù„Ø¯ÙØ¹ ØªÙƒÙ„ÙØ© Ø§Ù„Ø´Ø­Ù†. Ø¹Ù†Ø¯ Ø§Ù„ØªØ¹Ø·ÙŠÙ„ØŒ ØªØ·Ø¨Ù‚ Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© ÙÙ‚Ø· Ø¹Ù„Ù‰ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø¨Ø¹Ø¯ Ø®ØµÙ… Ø§Ù„Ø¹Ø±Ø¶.';
+      'عند التفعيل، تشمل ضريبة الدفع تكلفة الشحن. عند التعطيل، تطبق الضريبة فقط على المنتجات بعد خصم العرض.';
 
   @override
   String
   get supplierBranchesDefineWhereThisShippingMethodIsValidRetailerCheckoutWillLaterMatchShippingWithFulfillmentBranch =>
-      'ØªØ­Ø¯Ø¯ Ø§Ù„ÙØ±ÙˆØ¹ Ø£ÙŠÙ† ØªÙƒÙˆÙ† Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø´Ø­Ù† ØµØ§Ù„Ø­Ø©. Ø³ÙŠØ·Ø§Ø¨Ù‚ Ø¯ÙØ¹ Ø§Ù„ØªØ§Ø¬Ø± Ù„Ø§Ø­Ù‚Ø§Ù‹ Ø§Ù„Ø´Ø­Ù† Ù…Ø¹ ÙØ±Ø¹ Ø§Ù„ØªÙ†ÙÙŠØ°.';
+      'تحدد الفروع أين تكون طريقة الشحن صالحة. سيطابق دفع التاجر لاحقاً الشحن مع فرع التنفيذ.';
 
   @override
   String supplierFieldRequired(Object fieldName) {
-    return '$fieldName Ù…Ø·Ù„ÙˆØ¨';
+    return '$fieldName مطلوب';
   }
 
   @override
   String supplierFieldGreaterThanZero(Object fieldName) {
-    return 'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† $fieldName Ø£ÙƒØ¨Ø± Ù…Ù† 0';
+    return 'يجب أن يكون $fieldName أكبر من 0';
   }
 
   @override
   String supplierFieldGreaterThanOrEqualZero(Object fieldName) {
-    return 'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† $fieldName Ø£ÙƒØ¨Ø± Ù…Ù† Ø£Ùˆ ÙŠØ³Ø§ÙˆÙŠ 0';
+    return 'يجب أن يكون $fieldName أكبر من أو يساوي 0';
   }
 
   @override
   String supplierFieldValidNumber(Object fieldName) {
-    return 'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† $fieldName Ø±Ù‚Ù…Ø§Ù‹ ØµØ§Ù„Ø­Ø§Ù‹';
+    return 'يجب أن يكون $fieldName رقماً صالحاً';
   }
 
   @override
   String supplierBranchesValue(Object value) {
-    return 'Ø§Ù„ÙØ±ÙˆØ¹: $value';
+    return 'الفروع: $value';
   }
 
   @override
   String supplierTargetValue(Object value) {
-    return 'Ø§Ù„Ù‡Ø¯Ù: $value';
+    return 'الهدف: $value';
   }
 
   @override
   String supplierOrderValue(Object value) {
-    return 'Ø§Ù„ØªØ±ØªÙŠØ¨: $value';
+    return 'الترتيب: $value';
   }
 
   @override
   String supplierVisibleNowValue(Object value) {
-    return 'Ø¸Ø§Ù‡Ø± Ø§Ù„Ø¢Ù†: $value';
+    return 'ظاهر الآن: $value';
   }
 
   @override
   String supplierValidNowValue(Object value) {
-    return 'ØµØ§Ù„Ø­ Ø§Ù„Ø¢Ù†: $value';
+    return 'صالح الآن: $value';
   }
 
   @override
-  String get notRequiredLabel => 'ØºÙŠØ± Ù…Ø·Ù„ÙˆØ¨';
+  String get notRequiredLabel => 'غير مطلوب';
 
   @override
-  String get pickButton => 'Ø§Ø®ØªÙŠØ§Ø±';
+  String get pickButton => 'اختيار';
 
   @override
-  String get uploadingLabel => 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø±ÙØ¹...';
+  String get uploadingLabel => 'جاري الرفع...';
 
   @override
-  String get supplierBannerImagePlain => 'ØµÙˆØ±Ø© Ø§Ù„Ø¨Ù†Ø±';
+  String get supplierBannerImagePlain => 'صورة البنر';
 
   @override
   String get supplierBannersDescription =>
-      'Ø§Ø¹Ø±Ø¶ÙŠ ÙˆØ£Ù†Ø´Ø¦ÙŠ ÙˆØ¹Ø¯Ù‘Ù„ÙŠ ÙˆØ§Ø­Ø°ÙÙŠ Ø¨Ù†Ø±Ø§Øª Ø§Ù„Ù…ÙˆØ±Ø¯ Ø§Ù„Ù…Ø­ÙÙˆØ¸Ø© ÙÙŠ Ù‚Ø§Ø¹Ø¯Ø© Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø®Ù„ÙÙŠØ©. Ø³ØªØ¸Ù‡Ø± Ù‡Ø°Ù‡ Ø§Ù„Ø¨Ù†Ø±Ø§Øª Ù„Ø§Ø­Ù‚Ø§Ù‹ Ù„Ù„ØªØ¬Ø§Ø± ÙÙŠ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©.';
+      'اعرضي وأنشئي وعدّلي واحذفي بنرات المورد المحفوظة في قاعدة بيانات الخلفية. ستظهر هذه البنرات لاحقاً للتجار في الصفحة الرئيسية.';
 
   @override
-  String get supplierBusinessDaysHint => 'Ù¢-Ù£ Ø£ÙŠØ§Ù… Ø¹Ù…Ù„';
+  String get supplierBusinessDaysHint => '٢-٣ أيام عمل';
 
   @override
-  String get supplierChooseCategory => 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ÙØ¦Ø©';
+  String get supplierChooseCategory => 'اختيار الفئة';
 
   @override
-  String get supplierCouponCodePlain => 'Ø±Ù…Ø² Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierCouponCodePlain => 'رمز القسيمة';
 
   @override
   String supplierCouponCopied(Object couponCode) {
-    return 'ØªÙ… Ù†Ø³Ø® $couponCode';
+    return 'تم نسخ $couponCode';
   }
 
   @override
-  String get supplierCouponDescriptionHint =>
-      'Ø§ÙƒØªØ¨ ÙˆØµÙØ§Ù‹ Ù„Ù‡Ø°Ù‡ Ø§Ù„Ù‚Ø³ÙŠÙ…Ø©';
+  String get supplierCouponDescriptionHint => 'اكتب وصفاً لهذه القسيمة';
 
   @override
   String get supplierCouponsDescription =>
-      'Ø§Ø¹Ø±Ø¶ÙŠ ÙˆØ£Ù†Ø´Ø¦ÙŠ ÙˆØ¹Ø¯Ù‘Ù„ÙŠ ÙˆØ§Ø­Ø°ÙÙŠ Ù‚Ø³Ø§Ø¦Ù… Ø§Ù„Ù…ÙˆØ±Ø¯ Ø§Ù„Ù…Ø­ÙÙˆØ¸Ø© ÙÙŠ Ù‚Ø§Ø¹Ø¯Ø© Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø®Ù„ÙÙŠØ©. ÙŠÙ…ÙƒÙ† Ø§Ø³ØªØ®Ø¯Ø§Ù…Ù‡Ø§ Ù„Ø§Ø­Ù‚Ø§Ù‹ ÙÙŠ Ø³Ù„Ø© Ø§Ù„ØªØ§Ø¬Ø± ÙˆØ¹Ù…Ù„ÙŠØ© Ø§Ù„Ø¯ÙØ¹.';
+      'اعرضي وأنشئي وعدّلي واحذفي قسائم المورد المحفوظة في قاعدة بيانات الخلفية. يمكن استخدامها لاحقاً في سلة التاجر وعملية الدفع.';
 
   @override
   String get supplierCreateBannersFromDashboard =>
-      'Ø£Ù†Ø´Ø¦ÙŠ Ø§Ù„Ø¨Ù†Ø±Ø§Øª Ù…Ù† Ø§Ù„Ø§Ø®ØªØµØ§Ø± ÙÙŠ Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙˆØ±Ø¯ Ø£Ùˆ Ø§Ø¶ØºØ·ÙŠ Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ø£Ø¹Ù„Ø§Ù‡.';
+      'أنشئي البنرات من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
 
   @override
   String get supplierCreateCouponsFromDashboard =>
-      'Ø£Ù†Ø´Ø¦ÙŠ Ø§Ù„Ù‚Ø³Ø§Ø¦Ù… Ù…Ù† Ø§Ù„Ø§Ø®ØªØµØ§Ø± ÙÙŠ Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙˆØ±Ø¯ Ø£Ùˆ Ø§Ø¶ØºØ·ÙŠ Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ø£Ø¹Ù„Ø§Ù‡.';
+      'أنشئي القسائم من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
 
   @override
   String get supplierCreatePromotionsFromDashboard =>
-      'Ø£Ù†Ø´Ø¦ÙŠ Ø§Ù„Ø¹Ø±ÙˆØ¶ Ù…Ù† Ø§Ù„Ø§Ø®ØªØµØ§Ø± ÙÙŠ Ù„ÙˆØ­Ø© Ø§Ù„Ù…ÙˆØ±Ø¯ Ø£Ùˆ Ø§Ø¶ØºØ·ÙŠ Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ø£Ø¹Ù„Ø§Ù‡.';
+      'أنشئي العروض من الاختصار في لوحة المورد أو اضغطي على زر الإضافة أعلاه.';
 
   @override
   String supplierDeleteBannerConfirmation(Object bannerTitle) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯Ø© Ù…Ù† Ø­Ø°Ù \"$bannerTitle\"ØŸ';
+    return 'هل أنت متأكدة من حذف \"$bannerTitle\"؟';
   }
 
   @override
   String supplierDeleteCouponConfirmation(Object couponCode) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯Ø© Ù…Ù† Ø­Ø°Ù Ø§Ù„Ù‚Ø³ÙŠÙ…Ø© \"$couponCode\"ØŸ';
+    return 'هل أنت متأكدة من حذف القسيمة \"$couponCode\"؟';
   }
 
   @override
   String supplierDeletePromotionConfirmation(Object promotionTitle) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯Ø© Ù…Ù† Ø­Ø°Ù \"$promotionTitle\"ØŸ';
+    return 'هل أنت متأكدة من حذف \"$promotionTitle\"؟';
   }
 
   @override
   String supplierDeleteShippingMethodConfirmation(Object methodName) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯Ø© Ù…Ù† Ø­Ø°Ù \"$methodName\"ØŸ';
+    return 'هل أنت متأكدة من حذف \"$methodName\"؟';
   }
 
   @override
   String supplierDeleteTaxRuleConfirmation(Object ruleName) {
-    return 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯Ø© Ù…Ù† Ø­Ø°Ù \"$ruleName\"ØŸ';
+    return 'هل أنت متأكدة من حذف \"$ruleName\"؟';
   }
 
   @override
-  String get supplierDiscountValuePercent => 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ… (%) *';
+  String get supplierDiscountValuePercent => 'قيمة الخصم (%) *';
 
   @override
-  String get supplierDiscountValuePlain => 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ…';
+  String get supplierDiscountValuePlain => 'قيمة الخصم';
 
   @override
   String get supplierEndDateAfterStartDate =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ù†ØªÙ‡Ø§Ø¡ Ø¨Ø¹Ø¯ ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø¡';
+      'يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء';
 
   @override
-  String get supplierEstimatedDeliveryTimePlain =>
-      'Ù…Ø¯Ø© Ø§Ù„ØªÙˆØµÙŠÙ„ Ø§Ù„Ù…ØªÙˆÙ‚Ø¹Ø©';
+  String get supplierEstimatedDeliveryTimePlain => 'مدة التوصيل المتوقعة';
 
   @override
   String get supplierFixedDiscountHelp =>
-      'Ø§Ù„Ø®ØµÙ… Ø§Ù„Ø«Ø§Ø¨Øª ÙŠØ¹Ù†ÙŠ Ù…Ø¨Ù„ØºØ§Ù‹ Ø«Ø§Ø¨ØªØ§Ù‹ ÙŠÙØ®ØµÙ…ØŒ Ù…Ø«Ù„ Ø®ØµÙ… 20 Ø¯ÙˆÙ„Ø§Ø±Ø§Ù‹.';
+      'الخصم الثابت يعني مبلغاً ثابتاً يُخصم، مثل خصم 20 دولاراً.';
 
   @override
-  String get supplierFreeShippingThresholdPlain =>
-      'Ø­Ø¯ Ø§Ù„Ø´Ø­Ù† Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ';
+  String get supplierFreeShippingThresholdPlain => 'حد الشحن المجاني';
 
   @override
-  String get supplierManageHomeBanners =>
-      'Ø¥Ø¯Ø§Ø±Ø© Ø¨Ù†Ø±Ø§Øª Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©';
+  String get supplierManageHomeBanners => 'إدارة بنرات الصفحة الرئيسية';
 
   @override
   String get supplierMaxDiscountFixedHelp =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø®ØµÙ… ØºÙŠØ± Ù…Ø·Ù„ÙˆØ¨ Ù„Ù„Ø¹Ø±ÙˆØ¶ Ø°Ø§Øª Ø§Ù„Ø®ØµÙ… Ø§Ù„Ø«Ø§Ø¨Øª.';
+      'الحد الأقصى للخصم غير مطلوب للعروض ذات الخصم الثابت.';
 
   @override
   String get supplierMaxDiscountPercentHelp =>
-      'Ø§Ø®ØªÙŠØ§Ø±ÙŠ. ÙŠØ­Ø¯Ø¯ Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø®ØµÙ… Ø¹Ù†Ø¯ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¹Ø±ÙˆØ¶ Ø§Ù„Ù†Ø³Ø¨Ø© Ø§Ù„Ù…Ø¦ÙˆÙŠØ©.';
+      'اختياري. يحدد إجمالي الخصم عند استخدام عروض النسبة المئوية.';
 
   @override
-  String get supplierMaximumDiscountAmount =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø®ØµÙ…';
+  String get supplierMaximumDiscountAmount => 'الحد الأقصى للخصم';
 
   @override
-  String get supplierMaximumDiscountAmountPlain =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø®ØµÙ…';
+  String get supplierMaximumDiscountAmountPlain => 'الحد الأقصى للخصم';
 
   @override
-  String get supplierMethodNamePlain => 'Ø§Ø³Ù… Ø§Ù„Ø·Ø±ÙŠÙ‚Ø©';
+  String get supplierMethodNamePlain => 'اسم الطريقة';
 
   @override
   String supplierMethodsShown(Object count) {
-    return 'Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ø±Ù‚ Ø§Ù„Ù…Ø¹Ø±ÙˆØ¶Ø©: $count';
+    return 'عدد الطرق المعروضة: $count';
   }
 
   @override
-  String get supplierMinimumOrderAmountPlain =>
-      'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ø·Ù„Ø¨';
+  String get supplierMinimumOrderAmountPlain => 'الحد الأدنى لقيمة الطلب';
 
   @override
   String get supplierNoActiveBranchesAvailableAddBranchesFirst =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙØ±ÙˆØ¹ Ù†Ø´Ø·Ø©. Ø£Ø¶ÙŠÙÙŠ Ø§Ù„ÙØ±ÙˆØ¹ Ø£ÙˆÙ„Ø§Ù‹ Ù…Ù† Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ±ÙˆØ¹.';
+      'لا توجد فروع نشطة. أضيفي الفروع أولاً من إدارة الفروع.';
 
   @override
-  String get supplierNoActiveCategoriesAvailable =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙØ¦Ø§Øª Ù†Ø´Ø·Ø©.';
+  String get supplierNoActiveCategoriesAvailable => 'لا توجد فئات نشطة.';
 
   @override
-  String get supplierNoActiveProductsAvailable =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†ØªØ¬Ø§Øª Ù†Ø´Ø·Ø©.';
+  String get supplierNoActiveProductsAvailable => 'لا توجد منتجات نشطة.';
 
   @override
   String get supplierNoActiveSubcategoriesForCategory =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙØ¦Ø§Øª ÙØ±Ø¹ÙŠØ© Ù†Ø´Ø·Ø© Ù„Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø©.';
+      'لا توجد فئات فرعية نشطة لهذه الفئة.';
 
   @override
   String get supplierNoRegionsAvailableForCountry =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†Ø§Ø·Ù‚ Ù…ØªØ§Ø­Ø© Ù„Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙˆÙ„Ø©.';
+      'لا توجد مناطق متاحة لهذه الدولة.';
 
   @override
-  String get supplierOnlyForPercentCoupons =>
-      'ÙÙ‚Ø· Ù„Ù‚Ø³Ø§Ø¦Ù… Ø§Ù„Ù†Ø³Ø¨Ø© Ø§Ù„Ù…Ø¦ÙˆÙŠØ©';
+  String get supplierOnlyForPercentCoupons => 'فقط لقسائم النسبة المئوية';
 
   @override
-  String get supplierOnlyForPercentDiscounts =>
-      'ÙÙ‚Ø· Ù„Ù„Ø®ØµÙˆÙ…Ø§Øª Ø¨Ø§Ù„Ù†Ø³Ø¨Ø© Ø§Ù„Ù…Ø¦ÙˆÙŠØ©';
+  String get supplierOnlyForPercentDiscounts => 'فقط للخصومات بالنسبة المئوية';
 
   @override
   String get supplierPercentDiscountHelp =>
-      'Ø®ØµÙ… Ø§Ù„Ù†Ø³Ø¨Ø© Ø§Ù„Ù…Ø¦ÙˆÙŠØ© ÙŠØ¹Ù†ÙŠ Ø®ØµÙ…Ø§Ù‹ Ø¨Ù†Ø³Ø¨Ø© Ù…Ø­Ø¯Ø¯Ø©ØŒ Ù…Ø«Ù„ 10%. ÙŠÙ…ÙƒÙ† Ù„Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ Ù„Ù„Ø®ØµÙ… Ø£Ù† ÙŠØ­Ø¯ Ù…Ù† Ø®Ø³Ø§Ø±Ø© Ø§Ù„Ù…ÙˆØ±Ø¯.';
+      'خصم النسبة المئوية يعني خصماً بنسبة محددة، مثل 10%. يمكن للحد الأقصى للخصم أن يحد من خسارة المورد.';
 
   @override
   String supplierPleaseSelectTarget(Object targetLabel) {
-    return 'ÙŠØ±Ø¬Ù‰ Ø§Ø®ØªÙŠØ§Ø± $targetLabel';
+    return 'يرجى اختيار $targetLabel';
   }
 
   @override
   String get supplierPromotionBranchesHelp =>
-      'ØªØ­Ø¯Ø¯ Ø§Ù„ÙØ±ÙˆØ¹ Ø£ÙŠÙ† ÙŠÙƒÙˆÙ† Ø§Ù„Ø¹Ø±Ø¶ ØµØ§Ù„Ø­Ø§Ù‹. Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ù…Ù†ØªØ¬ Ø£Ùˆ Ø§Ù„ÙØ¦Ø© Ø£Ø¹Ù„Ø§Ù‡ ØºÙŠØ± Ù…ÙÙ„ØªØ± Ø­Ø³Ø¨ Ø§Ù„ÙØ±Ø¹.';
+      'تحدد الفروع أين يكون العرض صالحاً. اختيار المنتج أو الفئة أعلاه غير مفلتر حسب الفرع.';
 
   @override
   String get supplierPromotionDescriptionHint =>
-      'ÙˆØµÙ Ù‚ØµÙŠØ± ÙŠØ¸Ù‡Ø± Ù„Ø§Ø­Ù‚Ø§Ù‹ Ù„Ø¬Ù‡Ø© Ø§Ù„ØªØ§Ø¬Ø±';
+      'وصف قصير يظهر لاحقاً لجهة التاجر';
 
   @override
   String get supplierPromotionTargetHelp =>
-      'ÙŠØ­Ø¯Ø¯ Ø§Ù„Ù‡Ø¯Ù Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…Ø´Ù…ÙˆÙ„Ø© ÙÙŠ Ø§Ù„Ø¹Ø±Ø¶. ÙŠØªÙ… Ø§Ø®ØªÙŠØ§Ø± ØªÙˆÙØ± Ø§Ù„ÙØ±ÙˆØ¹ Ø¨Ø´ÙƒÙ„ Ù…Ù†ÙØµÙ„ Ø£Ø¯Ù†Ø§Ù‡.';
+      'يحدد الهدف المنتجات المشمولة في العرض. يتم اختيار توفر الفروع بشكل منفصل أدناه.';
 
   @override
-  String get supplierPromotionTitle => 'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹Ø±Ø¶ *';
+  String get supplierPromotionTitle => 'عنوان العرض *';
 
   @override
-  String get supplierPromotionTitleHint =>
-      'Ø¹Ø±Ø¶ Ø¬Ù…Ù„Ø© Ù„ÙØ¦Ø© Ø§Ù„Ø·Ø¹Ø§Ù…';
+  String get supplierPromotionTitleHint => 'عرض جملة لفئة الطعام';
 
   @override
-  String get supplierPromotionTitlePlain => 'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¹Ø±Ø¶';
+  String get supplierPromotionTitlePlain => 'عنوان العرض';
 
   @override
   String get supplierPromotionsDescription =>
-      'Ø§Ø¹Ø±Ø¶ÙŠ ÙˆØ§Ø¨Ø­Ø«ÙŠ ÙˆØ£Ù†Ø´Ø¦ÙŠ ÙˆØ¹Ø¯Ù‘Ù„ÙŠ ÙˆØ§Ø­Ø°ÙÙŠ Ø¹Ø±ÙˆØ¶ Ø§Ù„Ù…ÙˆØ±Ø¯ Ø¨Ø§Ù„Ø¬Ù…Ù„Ø© Ù„Ù„Ù…Ù†ØªØ¬Ø§Øª Ø£Ùˆ Ø§Ù„ÙØ¦Ø§Øª Ø£Ùˆ Ø§Ù„ÙØ¦Ø§Øª Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø£Ùˆ ÙƒÙ„ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª.';
+      'اعرضي وابحثي وأنشئي وعدّلي واحذفي عروض المورد بالجملة للمنتجات أو الفئات أو الفئات الفرعية أو كل المنتجات.';
 
   @override
   String supplierPromotionsShown(Object count) {
-    return 'Ø¹Ø¯Ø¯ Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„Ù…Ø¹Ø±ÙˆØ¶Ø©: $count';
+    return 'عدد العروض المعروضة: $count';
   }
 
   @override
-  String get supplierRuleNamePlain => 'Ø§Ø³Ù… Ø§Ù„Ù‚Ø§Ø¹Ø¯Ø©';
+  String get supplierRuleNamePlain => 'اسم القاعدة';
 
   @override
   String supplierRulesShown(Object count) {
-    return 'Ø¹Ø¯Ø¯ Ø§Ù„Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ù…Ø¹Ø±ÙˆØ¶Ø©: $count';
+    return 'عدد القواعد المعروضة: $count';
   }
 
   @override
-  String get supplierSelectCategoryFirst => 'Ø§Ø®ØªØ§Ø±ÙŠ ÙØ¦Ø© Ø£ÙˆÙ„Ø§Ù‹.';
+  String get supplierSelectCategoryFirst => 'اختاري فئة أولاً.';
 
   @override
   String supplierSelectTargetHint(Object targetLabel) {
-    return 'Ø§Ø®ØªÙŠØ§Ø± $targetLabel';
+    return 'اختيار $targetLabel';
   }
 
   @override
   String supplierSelectTargetLabel(Object targetLabel) {
-    return 'Ø§Ø®ØªÙŠØ§Ø± $targetLabel *';
+    return 'اختيار $targetLabel *';
   }
 
   @override
   String get supplierSelectedBranchesLoadedFromBackendBranchManagement =>
-      'ÙŠØªÙ… ØªØ­Ù…ÙŠÙ„ Ø§Ù„ÙØ±ÙˆØ¹ Ø§Ù„Ù…Ø­Ø¯Ø¯Ø© Ù…Ù† ÙˆØ­Ø¯Ø© Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙØ±ÙˆØ¹ ÙÙŠ Ø§Ù„Ø®Ù„ÙÙŠØ©.';
+      'يتم تحميل الفروع المحددة من وحدة إدارة الفروع في الخلفية.';
 
   @override
   String get supplierSelectedItemNameShownHere =>
-      'ÙŠØ¸Ù‡Ø± Ø§Ø³Ù… Ø§Ù„Ø¹Ù†ØµØ± Ø§Ù„Ù…Ø­Ø¯Ø¯ Ù‡Ù†Ø§ØŒ Ù„ÙƒÙ† Ø§Ù„Ø®Ù„ÙÙŠØ© ØªØ­ÙØ¸ Ù…Ø¹Ø±Ù‘ÙÙ‡ ÙÙŠ targetValue.';
+      'يظهر اسم العنصر المحدد هنا، لكن الخلفية تحفظ معرّفه في targetValue.';
 
   @override
-  String get supplierShippingCostPlain => 'ØªÙƒÙ„ÙØ© Ø§Ù„Ø´Ø­Ù†';
+  String get supplierShippingCostPlain => 'تكلفة الشحن';
 
   @override
-  String get supplierShippingNameHint => 'ØªÙˆØµÙŠÙ„ Ø¨ÙŠØ±ÙˆØª Ø§Ù„Ø¹Ø§Ø¯ÙŠ';
+  String get supplierShippingNameHint => 'توصيل بيروت العادي';
 
   @override
   String get supplierSortOrderPositiveNumber =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ØªØ±ØªÙŠØ¨ Ø§Ù„Ø¹Ø±Ø¶ Ø±Ù‚Ù…Ø§Ù‹ Ù…ÙˆØ¬Ø¨Ø§Ù‹ ØµØ§Ù„Ø­Ø§Ù‹';
+      'يجب أن يكون ترتيب العرض رقماً موجباً صالحاً';
 
   @override
-  String get supplierSortOrderRequired => 'ØªØ±ØªÙŠØ¨ Ø§Ù„Ø¹Ø±Ø¶ Ù…Ø·Ù„ÙˆØ¨';
+  String get supplierSortOrderRequired => 'ترتيب العرض مطلوب';
 
   @override
-  String get supplierTargetUrlRequired => 'Ø±Ø§Ø¨Ø· Ø§Ù„Ù‡Ø¯Ù Ù…Ø·Ù„ÙˆØ¨';
+  String get supplierTargetUrlRequired => 'رابط الهدف مطلوب';
 
   @override
-  String get supplierTaxRatePlain => 'Ù†Ø³Ø¨Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨Ø©';
+  String get supplierTaxRatePlain => 'نسبة الضريبة';
 
   @override
-  String get supplierTitlePlain => 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù†';
+  String get supplierTitlePlain => 'العنوان';
 
   @override
   String get supplierValidFromBeforeValidTo =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø§ÙŠØ© Ù‚Ø¨Ù„ ØªØ§Ø±ÙŠØ® Ø§Ù„Ù†Ù‡Ø§ÙŠØ©';
+      'يجب أن يكون تاريخ البداية قبل تاريخ النهاية';
 
   @override
-  String get supplierScheduled => 'Ù…Ø¬Ø¯ÙˆÙ„';
+  String get supplierScheduled => 'مجدول';
 
   @override
-  String get supplierExpired => 'Ù…Ù†ØªÙ‡ÙŠ';
+  String get supplierExpired => 'منتهي';
 
   @override
-  String get supplierUsageLimitReached =>
-      'ØªÙ… Ø¨Ù„ÙˆØº Ø­Ø¯ Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù…';
+  String get supplierUsageLimitReached => 'تم بلوغ حد الاستخدام';
 
   @override
-  String get supplierFreePickup => 'Ø§Ø³ØªÙ„Ø§Ù… Ù…Ø¬Ø§Ù†ÙŠ';
+  String get supplierFreePickup => 'استلام مجاني';
 
   @override
-  String get supplierNoMinimum => 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø­Ø¯ Ø£Ø¯Ù†Ù‰';
+  String get supplierNoMinimum => 'لا يوجد حد أدنى';
 
   @override
   String supplierMinimumValue(Object value) {
-    return 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ $value';
+    return 'الحد الأدنى $value';
   }
 
   @override
-  String get supplierNoFreeShipping => 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø´Ø­Ù† Ù…Ø¬Ø§Ù†ÙŠ';
+  String get supplierNoFreeShipping => 'لا يوجد شحن مجاني';
 
   @override
   String supplierFreeAboveValue(Object value) {
-    return 'Ù…Ø¬Ø§Ù†ÙŠ ÙÙˆÙ‚ $value';
+    return 'مجاني فوق $value';
   }
 
   @override
-  String get supplierNoLocationSelected => 'Ù„Ù… ÙŠØªÙ… Ø§Ø®ØªÙŠØ§Ø± Ù…ÙˆÙ‚Ø¹';
+  String get supplierNoLocationSelected => 'لم يتم اختيار موقع';
 
   @override
-  String get supplierNoBranchesSelected => 'Ù„Ù… ÙŠØªÙ… Ø§Ø®ØªÙŠØ§Ø± ÙØ±ÙˆØ¹';
+  String get supplierNoBranchesSelected => 'لم يتم اختيار فروع';
 
   @override
-  String get supplierNoTarget => 'Ø¨Ø¯ÙˆÙ† Ù‡Ø¯Ù';
+  String get supplierNoTarget => 'بدون هدف';
 
   @override
-  String get supplierDrawerRfqs => 'Ø·Ù„Ø¨Ø§Øª Ø¹Ø±ÙˆØ¶ Ø§Ù„Ø£Ø³Ø¹Ø§Ø±';
+  String get supplierDrawerRfqs => 'طلبات عروض الأسعار';
 
   @override
-  String get shipping => 'Ø§Ù„Ø´Ø­Ù†';
+  String get shipping => 'الشحن';
 
   @override
-  String get calculatedAtCheckout => 'ÙŠÙØ­Ø³Ø¨ Ø¹Ù†Ø¯ Ø¥ØªÙ…Ø§Ù… Ø§Ù„Ø·Ù„Ø¨';
+  String get calculatedAtCheckout => 'يُحسب عند إتمام الطلب';
 
   @override
-  String get totalBeforeShipping => 'Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ù‚Ø¨Ù„ Ø§Ù„Ø´Ø­Ù†';
+  String get totalBeforeShipping => 'الإجمالي قبل الشحن';
 
   @override
-  String get productAiAssistant => 'Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ø°ÙƒÙŠ';
+  String get productAiAssistant => 'مساعد المنتج الذكي';
 
   @override
-  String get askAi => 'Ø§Ø³Ø£Ù„ Ø§Ù„Ø°ÙƒØ§Ø¡';
+  String get askAi => 'اسأل الذكاء';
 
   @override
-  String get askAboutThisProduct => 'Ø§Ø³Ø£Ù„ Ø¹Ù† Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬...';
+  String get askAboutThisProduct => 'اسأل عن هذا المنتج...';
 
   @override
-  String get aiThinking => 'Ø¬Ø§Ø±Ù Ø§Ù„ØªÙÙƒÙŠØ±...';
+  String get aiThinking => 'جارٍ التفكير...';
 
   @override
   String get aiWelcomeMessage =>
-      'Ø§Ø³Ø£Ù„Ù†ÙŠ Ø£ÙŠ Ø´ÙŠØ¡ Ø¹Ù† Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬. ÙŠÙ…ÙƒÙ†Ù†ÙŠ Ù…Ø³Ø§Ø¹Ø¯ØªÙƒ ÙÙŠ Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù„Ø·Ù„Ø¨ ÙˆØ§Ù„Ù…Ø®Ø²ÙˆÙ† ÙˆØ§Ù„Ø³Ø¹Ø± ÙˆÙ…Ø¯Ù‰ Ù…Ù†Ø§Ø³Ø¨ØªÙ‡ Ù„Ù…ØªØ¬Ø±Ùƒ.';
+      'اسألني أي شيء عن هذا المنتج. يمكنني مساعدتك في الحد الأدنى للطلب والمخزون والسعر ومدى مناسبته لمتجرك.';
 
   @override
-  String get aiSuggestionFitStore =>
-      'Ù‡Ù„ Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ù†Ø§Ø³Ø¨ Ù„Ù…ØªØ¬Ø±ÙŠØŸ';
+  String get aiSuggestionFitStore => 'هل هذا المنتج مناسب لمتجري؟';
 
   @override
-  String get aiSuggestionOrderQuantity =>
-      'ÙƒÙ… ÙˆØ­Ø¯Ø© ÙŠØ¬Ø¨ Ø£Ù† Ø£Ø·Ù„Ø¨ØŸ';
+  String get aiSuggestionOrderQuantity => 'كم وحدة يجب أن أطلب؟';
 
   @override
-  String get aiSuggestionMoqStock =>
-      'Ø§Ø´Ø±Ø­ Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù„Ø·Ù„Ø¨ ÙˆØ§Ù„Ù…Ø®Ø²ÙˆÙ†.';
+  String get aiSuggestionMoqStock => 'اشرح الحد الأدنى للطلب والمخزون.';
 
   @override
   String get aiUnavailable =>
-      'Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒØ§Ø¡ ØºÙŠØ± Ù…ØªØ§Ø­ Ù…Ø¤Ù‚ØªÙ‹Ø§. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù„Ø§Ø­Ù‚Ù‹Ø§.';
+      'مساعد الذكاء غير متاح مؤقتًا. يرجى المحاولة لاحقًا.';
 
   @override
   String get aiTimeout =>
-      'Ø§Ø³ØªØºØ±Ù‚ Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒØ§Ø¡ ÙˆÙ‚ØªÙ‹Ø§ Ø·ÙˆÙŠÙ„Ù‹Ø§. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+      'استغرق مساعد الذكاء وقتًا طويلًا. يرجى المحاولة مرة أخرى.';
 
   @override
   String get aiEmptyAnswer =>
-      'Ù„Ù… Ø£ØªÙ…ÙƒÙ† Ù…Ù† Ø¥Ù†Ø´Ø§Ø¡ Ø¥Ø¬Ø§Ø¨Ø©. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+      'لم أتمكن من إنشاء إجابة. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get rfqMyRfqs => 'Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø§Ù„Ø®Ø§ØµØ© Ø¨ÙŠ';
+  String get rfqMyRfqs => 'طلبات التسعير الخاصة بي';
 
   @override
-  String get rfqCreate => 'Ø¥Ù†Ø´Ø§Ø¡ Ø·Ù„Ø¨ ØªØ³Ø¹ÙŠØ±';
+  String get rfqCreate => 'إنشاء طلب تسعير';
 
   @override
-  String get rfqEdit => 'ØªØ¹Ø¯ÙŠÙ„ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±';
+  String get rfqEdit => 'تعديل طلب التسعير';
 
   @override
-  String get rfqDetails => 'ØªÙØ§ØµÙŠÙ„ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±';
+  String get rfqDetails => 'تفاصيل طلب التسعير';
 
   @override
-  String get rfqRequestsYouPosted => 'Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªÙŠ Ù†Ø´Ø±ØªÙ‡Ø§';
+  String get rfqRequestsYouPosted => 'الطلبات التي نشرتها';
 
   @override
-  String get rfqHowWorksTitle => 'ÙƒÙŠÙ ÙŠØ¹Ù…Ù„ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±';
+  String get rfqHowWorksTitle => 'كيف يعمل طلب التسعير';
 
   @override
   String get rfqHowWorksMessage =>
-      'Ø§Ù†Ø´Ø± Ø·Ù„Ø¨ Ù…Ù†ØªØ¬ Ø¹Ù†Ø¯Ù…Ø§ Ù„Ø§ ØªØ¬Ø¯ Ù…Ø§ ØªØ­ØªØ§Ø¬Ù‡. Ø³ÙŠÙ‚ÙˆÙ… Ø§Ù„Ù…ÙˆØ±Ø¯ÙˆÙ† Ø¨Ù…Ø±Ø§Ø¬Ø¹ØªÙ‡ ÙˆØ¥Ø±Ø³Ø§Ù„ Ø¹Ø±ÙˆØ¶ Ø£Ø³Ø¹Ø§Ø± ØªØªØ¶Ù…Ù† Ø§Ù„Ø³Ø¹Ø± ÙˆØ§Ù„ÙƒÙ…ÙŠØ© ÙˆØªÙØ§ØµÙŠÙ„ Ø§Ù„ØªØ³Ù„ÙŠÙ….';
+      'انشر طلب منتج عندما لا تجد ما تحتاجه. سيقوم الموردون بمراجعته وإرسال عروض أسعار تتضمن السعر والكمية وتفاصيل التسليم.';
 
   @override
-  String get rfqNoRfqsYet => 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ù„Ø¨Ø§Øª ØªØ³Ø¹ÙŠØ± Ø¨Ø¹Ø¯';
+  String get rfqNoRfqsYet => 'لا توجد طلبات تسعير بعد';
 
   @override
   String get rfqNoRfqsYetMessage =>
-      'Ø£Ù†Ø´Ø¦ Ø£ÙˆÙ„ Ø·Ù„Ø¨ ÙˆØ¯Ø¹ Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ† ÙŠØ±Ø³Ù„ÙˆÙ† Ù„Ùƒ Ø¹Ø±ÙˆØ¶ Ø§Ù„Ø£Ø³Ø¹Ø§Ø±.';
+      'أنشئ أول طلب ودع الموردين يرسلون لك عروض الأسعار.';
 
   @override
-  String get rfqProductRequest => 'Ø·Ù„Ø¨ Ø§Ù„Ù…Ù†ØªØ¬';
+  String get rfqProductRequest => 'طلب المنتج';
 
   @override
-  String get rfqProductName => 'Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ *';
+  String get rfqProductName => 'اسم المنتج *';
 
   @override
-  String get rfqProductNameHint => 'Ù…Ø«Ø§Ù„: ÙƒØ±Ø§ØªÙŠÙ† Ø­Ù„ÙŠØ¨ Ø¹Ø¶ÙˆÙŠ';
+  String get rfqProductNameHint => 'مثال: كراتين حليب عضوي';
 
   @override
-  String get rfqProductNameRequired => 'Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ø·Ù„ÙˆØ¨';
+  String get rfqProductNameRequired => 'اسم المنتج مطلوب';
 
   @override
   String get rfqProductNameTooShort =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ÙŠØªÙƒÙˆÙ† Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ù† Ø­Ø±ÙÙŠÙ† Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+      'يجب أن يتكون اسم المنتج من حرفين على الأقل';
 
   @override
-  String get rfqUploadProductImage => 'Ø±ÙØ¹ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬';
+  String get rfqUploadProductImage => 'رفع صورة المنتج';
 
   @override
   String get rfqUploadProductImageHint =>
-      'Ø§Ø®ØªÙŠØ§Ø±ÙŠ. Ø³ØªØ¸Ù‡Ø± Ù‡Ø°Ù‡ Ø§Ù„ØµÙˆØ±Ø© Ø£ÙŠØ¶Ø§Ù‹ Ù„Ù„Ù…ÙˆØ±Ø¯ÙŠÙ† Ø¹Ù†Ø¯ Ø¹Ø±Ø¶ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±.';
+      'اختياري. ستظهر هذه الصورة أيضاً للموردين عند عرض طلب التسعير.';
 
   @override
-  String get rfqCategory => 'Ø§Ù„ÙØ¦Ø©';
+  String get rfqCategory => 'الفئة';
 
   @override
-  String get rfqCategoryHint => 'Ø£ØºØ°ÙŠØ©ØŒ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠØ§Øª...';
+  String get rfqCategoryHint => 'أغذية، إلكترونيات...';
 
   @override
-  String get rfqSubcategory => 'Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ©';
+  String get rfqSubcategory => 'الفئة الفرعية';
 
   @override
-  String get rfqSubcategoryHint => 'Ø£Ù„Ø¨Ø§Ù†ØŒ Ù‡ÙˆØ§ØªÙ...';
+  String get rfqSubcategoryHint => 'ألبان، هواتف...';
 
   @override
-  String get rfqDetailedRequirements => 'Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª Ø§Ù„ØªÙØµÙŠÙ„ÙŠØ©';
+  String get rfqDetailedRequirements => 'المتطلبات التفصيلية';
 
   @override
-  String get rfqRequirements => 'Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª *';
+  String get rfqRequirements => 'المتطلبات *';
 
   @override
   String get rfqRequirementsHint =>
-      'Ø§ÙƒØªØ¨ Ø§Ù„Ù…ÙˆØ§ØµÙØ§ØªØŒ Ø§Ù„Ø¬ÙˆØ¯Ø©ØŒ Ø§Ù„ØªØºÙ„ÙŠÙØŒ Ø§Ù„Ø¹Ù„Ø§Ù…Ø§Øª Ø§Ù„Ù…ÙØ¶Ù„Ø©ØŒ Ø§Ù„Ø­Ø¬Ù…ØŒ Ø§Ù„Ù„ÙˆÙ†ØŒ Ø§Ù„Ù…Ø¹Ø§ÙŠÙŠØ±...';
+      'اكتب المواصفات، الجودة، التغليف، العلامات المفضلة، الحجم، اللون، المعايير...';
 
   @override
-  String get rfqRequirementsRequired => 'Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get rfqRequirementsRequired => 'المتطلبات مطلوبة';
 
   @override
   String get rfqRequirementsTooShort =>
-      'ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª 10 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„';
+      'يجب أن تكون المتطلبات 10 أحرف على الأقل';
 
   @override
-  String get rfqWriteWithAi =>
-      'Ø§ÙƒØªØ¨ Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ';
+  String get rfqWriteWithAi => 'اكتب المتطلبات بالذكاء الاصطناعي';
 
   @override
-  String get rfqWritingWithAi => 'Ø¬Ø§Ø±Ù Ø§Ù„ÙƒØªØ§Ø¨Ø©...';
+  String get rfqWritingWithAi => 'جارٍ الكتابة...';
 
   @override
-  String get rfqAiProductNameRequired =>
-      'Ø§ÙƒØªØ¨ Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ø§Ù‹.';
+  String get rfqAiProductNameRequired => 'اكتب اسم المنتج أولاً.';
 
   @override
-  String get rfqAiReplaceTitle => 'Ø§Ø³ØªØ¨Ø¯Ø§Ù„ Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§ØªØŸ';
+  String get rfqAiReplaceTitle => 'استبدال المتطلبات؟';
 
   @override
   String get rfqAiReplaceMessage =>
-      'Ø­Ù‚Ù„ Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ Ù†Øµ Ø¨Ø§Ù„ÙØ¹Ù„. Ù‡Ù„ ØªØ±ÙŠØ¯ Ø§Ø³ØªØ¨Ø¯Ø§Ù„Ù‡ Ø¨Ù…ØªØ·Ù„Ø¨Ø§Øª Ù…ÙˆÙ„Ù‘Ø¯Ø© Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠØŸ';
+      'حقل المتطلبات يحتوي على نص بالفعل. هل تريد استبداله بمتطلبات مولّدة بالذكاء الاصطناعي؟';
 
   @override
-  String get rfqAiReplaceAction => 'Ø§Ø³ØªØ¨Ø¯Ø§Ù„';
+  String get rfqAiReplaceAction => 'استبدال';
 
   @override
-  String get rfqAiKeepAction => 'Ø§Ù„Ø§Ø­ØªÙØ§Ø¸ Ø¨Ø§Ù„Ù†Øµ Ø§Ù„Ø­Ø§Ù„ÙŠ';
+  String get rfqAiKeepAction => 'الاحتفاظ بالنص الحالي';
 
   @override
-  String get rfqQuantityAndDelivery => 'Ø§Ù„ÙƒÙ…ÙŠØ© ÙˆØ§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get rfqQuantityAndDelivery => 'الكمية والتسليم';
 
   @override
-  String get rfqMinimumQuantity => 'Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰ Ù„Ù„ÙƒÙ…ÙŠØ© *';
+  String get rfqMinimumQuantity => 'الحد الأدنى للكمية *';
 
   @override
   String get rfqMinimumQuantityHint => '500';
 
   @override
-  String get rfqEnterValidQuantity => 'Ø£Ø¯Ø®Ù„ ÙƒÙ…ÙŠØ© ØµØ­ÙŠØ­Ø©';
+  String get rfqEnterValidQuantity => 'أدخل كمية صحيحة';
 
   @override
-  String get rfqUnit => 'Ø§Ù„ÙˆØ­Ø¯Ø©';
+  String get rfqUnit => 'الوحدة';
 
   @override
-  String get rfqUnitHint => 'ÙˆØ­Ø¯Ø§Øª';
+  String get rfqUnitHint => 'وحدات';
 
   @override
-  String get rfqTargetUnitPrice => 'Ø§Ù„Ø³Ø¹Ø± Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù Ù„Ù„ÙˆØ­Ø¯Ø©';
+  String get rfqTargetUnitPrice => 'السعر المستهدف للوحدة';
 
   @override
-  String get rfqOptional => 'Ø§Ø®ØªÙŠØ§Ø±ÙŠ';
+  String get rfqOptional => 'اختياري';
 
   @override
-  String get rfqPreferredDeliveryTime => 'ÙˆÙ‚Øª Ø§Ù„ØªØ³Ù„ÙŠÙ… Ø§Ù„Ù…ÙØ¶Ù„';
+  String get rfqPreferredDeliveryTime => 'وقت التسليم المفضل';
 
   @override
-  String get rfqChooseDeliveryTime => 'Ø§Ø®ØªØ± ÙˆÙ‚Øª Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get rfqChooseDeliveryTime => 'اختر وقت التسليم';
 
   @override
-  String get rfqDeliveryWithin24Hours => 'Ø®Ù„Ø§Ù„ 24 Ø³Ø§Ø¹Ø©';
+  String get rfqDeliveryWithin24Hours => 'خلال 24 ساعة';
 
   @override
-  String get rfqDelivery2To3Days => 'Ø®Ù„Ø§Ù„ 2-3 Ø£ÙŠØ§Ù…';
+  String get rfqDelivery2To3Days => 'خلال 2-3 أيام';
 
   @override
-  String get rfqDeliveryWithin1Week => 'Ø®Ù„Ø§Ù„ Ø£Ø³Ø¨ÙˆØ¹';
+  String get rfqDeliveryWithin1Week => 'خلال أسبوع';
 
   @override
-  String get rfqDeliveryWithin2Weeks => 'Ø®Ù„Ø§Ù„ Ø£Ø³Ø¨ÙˆØ¹ÙŠÙ†';
+  String get rfqDeliveryWithin2Weeks => 'خلال أسبوعين';
 
   @override
-  String get rfqDeliveryFlexible => 'Ù…Ø±Ù†';
+  String get rfqDeliveryFlexible => 'مرن';
 
   @override
-  String get rfqSelectDeadlineDate =>
-      'Ø§Ø®ØªØ± ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…ÙˆØ¹Ø¯ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ';
+  String get rfqSelectDeadlineDate => 'اختر تاريخ الموعد النهائي';
 
   @override
-  String get rfqDeliveryLocation => 'Ù…ÙˆÙ‚Ø¹ Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get rfqDeliveryLocation => 'موقع التسليم';
 
   @override
-  String get rfqCity => 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©';
+  String get rfqCity => 'المدينة';
 
   @override
-  String get rfqCityHint => 'Ù…Ø«Ø§Ù„: Ø¨ÙŠØ±ÙˆØª';
+  String get rfqCityHint => 'مثال: بيروت';
 
   @override
-  String get rfqDeliveryAddress => 'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get rfqDeliveryAddress => 'عنوان التسليم';
 
   @override
-  String get rfqDeliveryAddressHint =>
-      'Ø§Ù„Ø´Ø§Ø±Ø¹ØŒ Ø§Ù„Ù…Ø¨Ù†Ù‰ØŒ Ø§Ù„Ù…Ù†Ø·Ù‚Ø©ØŒ Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø§Øª...';
+  String get rfqDeliveryAddressHint => 'الشارع، المبنى، المنطقة، الملاحظات...';
 
   @override
-  String get rfqPost => 'Ù†Ø´Ø± Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±';
+  String get rfqPost => 'نشر طلب التسعير';
 
   @override
-  String get rfqPosting => 'Ø¬Ø§Ø±Ù Ù†Ø´Ø± Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±...';
+  String get rfqPosting => 'جارٍ نشر طلب التسعير...';
 
   @override
-  String get rfqSaveChanges => 'Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª';
+  String get rfqSaveChanges => 'حفظ التعديلات';
 
   @override
-  String get rfqSavingChanges => 'Ø¬Ø§Ø±Ù Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª...';
+  String get rfqSavingChanges => 'جارٍ حفظ التعديلات...';
 
   @override
-  String get rfqNotFound =>
-      'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±';
+  String get rfqNotFound => 'لم يتم العثور على طلب التسعير';
 
   @override
-  String get rfqCannotEditTitle =>
-      'Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªØ¹Ø¯ÙŠÙ„ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ù‡Ø°Ø§';
+  String get rfqCannotEditTitle => 'لا يمكن تعديل طلب التسعير هذا';
 
   @override
   String get rfqCannotEditSupplierMessage =>
-      'Ù„Ù‚Ø¯ ØªÙØ§Ø¹Ù„ Ù…ÙˆØ±Ø¯ Ù…Ø¹ Ù‡Ø°Ø§ Ø§Ù„Ø·Ù„Ø¨ Ø¨Ø§Ù„ÙØ¹Ù„. Ù„Ù„Ø­ÙØ§Ø¸ Ø¹Ù„Ù‰ Ø¹Ø¯Ø§Ù„Ø© ÙˆØµØ­Ø© Ø¹Ø±ÙˆØ¶ Ø§Ù„Ø£Ø³Ø¹Ø§Ø±ØŒ Ù‚Ù… Ø¨Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø·Ù„Ø¨ ÙˆØ£Ù†Ø´Ø¦ Ø·Ù„Ø¨Ø§Ù‹ Ø¬Ø¯ÙŠØ¯Ø§Ù‹ Ø¥Ø°Ø§ ÙƒÙ†Øª ØªØ­ØªØ§Ø¬ Ø¥Ù„Ù‰ ØªØºÙŠÙŠØ±Ø§Øª.';
+      'لقد تفاعل مورد مع هذا الطلب بالفعل. للحفاظ على عدالة وصحة عروض الأسعار، قم بإلغاء الطلب وأنشئ طلباً جديداً إذا كنت تحتاج إلى تغييرات.';
 
   @override
   String get rfqCannotEditStatusMessage =>
-      'Ø­Ø§Ù„Ø© Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ù‡Ø°Ù‡ Ù„Ø§ ØªØ³Ù…Ø­ Ø¨Ø§Ù„ØªØ¹Ø¯ÙŠÙ„.';
+      'حالة طلب التسعير هذه لا تسمح بالتعديل.';
 
   @override
-  String get rfqBackToDetails => 'Ø§Ù„Ø¹ÙˆØ¯Ø© Ø¥Ù„Ù‰ Ø§Ù„ØªÙØ§ØµÙŠÙ„';
+  String get rfqBackToDetails => 'العودة إلى التفاصيل';
 
   @override
-  String get rfqSupplierQuotations => 'Ø¹Ø±ÙˆØ¶ Ø£Ø³Ø¹Ø§Ø± Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ†';
+  String get rfqSupplierQuotations => 'عروض أسعار الموردين';
 
   @override
   String get rfqNoQuotesYet =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹Ø±ÙˆØ¶ Ø£Ø³Ø¹Ø§Ø± Ù…Ù† Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ† Ø¨Ø¹Ø¯. Ø³ØªØ¸Ù‡Ø± Ø§Ù„Ø¹Ø±ÙˆØ¶ Ù‡Ù†Ø§ Ø¹Ù†Ø¯Ù…Ø§ ÙŠØ±Ø¯ Ø§Ù„Ù…ÙˆØ±Ø¯ÙˆÙ†.';
+      'لا توجد عروض أسعار من الموردين بعد. ستظهر العروض هنا عندما يرد الموردون.';
 
   @override
-  String get rfqCancel => 'Ø¥Ù„ØºØ§Ø¡ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±';
+  String get rfqCancel => 'إلغاء طلب التسعير';
 
   @override
-  String get rfqCancelQuestion => 'Ø¥Ù„ØºØ§Ø¡ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±ØŸ';
+  String get rfqCancelQuestion => 'إلغاء طلب التسعير؟';
 
   @override
   String get rfqCancelMessage =>
-      'Ø³ÙŠØªÙ… Ø¥Ù„ØºØ§Ø¡ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± ÙˆÙ„Ù† ÙŠØªÙ…ÙƒÙ† Ø§Ù„Ù…ÙˆØ±Ø¯ÙˆÙ† Ù…Ù† ØªÙ‚Ø¯ÙŠÙ… Ø¹Ø±ÙˆØ¶ Ø¹Ù„ÙŠÙ‡.';
+      'سيتم إلغاء طلب التسعير ولن يتمكن الموردون من تقديم عروض عليه.';
 
   @override
   String get rfqCancelWithQuotesMessage =>
-      'ÙŠØ­ØªÙˆÙŠ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ù‡Ø°Ø§ Ø¹Ù„Ù‰ Ø¹Ø±ÙˆØ¶ Ù…Ù† Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ†. Ø§Ù„Ø¥Ù„ØºØ§Ø¡ ÙŠØ­Ø§ÙØ¸ Ø¹Ù„Ù‰ Ø§Ù„Ø³Ø¬Ù„ ÙˆÙ„ÙƒÙ†Ù‡ ÙŠÙ…Ù†Ø¹ Ø£ÙŠ Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ†.';
+      'يحتوي طلب التسعير هذا على عروض من الموردين. الإلغاء يحافظ على السجل ولكنه يمنع أي إجراءات جديدة من الموردين.';
 
   @override
-  String get rfqKeep => 'Ø§Ù„Ø§Ø­ØªÙØ§Ø¸ Ø¨Ø§Ù„Ø·Ù„Ø¨';
+  String get rfqKeep => 'الاحتفاظ بالطلب';
 
   @override
-  String get rfqDeleteQuestion => 'Ø­Ø°Ù Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±ØŸ';
+  String get rfqDeleteQuestion => 'حذف طلب التسعير؟';
 
   @override
   String get rfqDeleteMessage =>
-      'Ù„Ø§ ÙŠØ­ØªÙˆÙŠ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ù‡Ø°Ø§ Ø¹Ù„Ù‰ Ø¹Ø±ÙˆØ¶ Ù…Ù† Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ† Ø¨Ø¹Ø¯ØŒ Ù„Ø°Ù„Ùƒ ÙŠÙ…ÙƒÙ† Ø­Ø°ÙÙ‡ Ø¨Ø£Ù…Ø§Ù†. Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„ØªØ±Ø§Ø¬Ø¹ Ø¹Ù† Ù‡Ø°Ø§ Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡.';
+      'لا يحتوي طلب التسعير هذا على عروض من الموردين بعد، لذلك يمكن حذفه بأمان. لا يمكن التراجع عن هذا الإجراء.';
 
   @override
-  String get rfqDelete => 'Ø­Ø°Ù';
+  String get rfqDelete => 'حذف';
 
   @override
-  String get rfqEditRequest => 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨';
+  String get rfqEditRequest => 'تعديل الطلب';
 
   @override
-  String get rfqCancelRequest => 'Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø·Ù„Ø¨';
+  String get rfqCancelRequest => 'إلغاء الطلب';
 
   @override
-  String get rfqDeleteRequest => 'Ø­Ø°Ù Ø§Ù„Ø·Ù„Ø¨';
+  String get rfqDeleteRequest => 'حذف الطلب';
 
   @override
-  String get rfqViewDetails => 'Ø¹Ø±Ø¶ Ø§Ù„ØªÙØ§ØµÙŠÙ„';
+  String get rfqViewDetails => 'عرض التفاصيل';
 
   @override
-  String get rfqOpen => 'Ù…ÙØªÙˆØ­';
+  String get rfqOpen => 'مفتوح';
 
   @override
-  String get rfqQuoted => 'ØªÙ… ØªÙ‚Ø¯ÙŠÙ… Ø¹Ø±ÙˆØ¶';
+  String get rfqQuoted => 'تم تقديم عروض';
 
   @override
-  String get rfqAccepted => 'Ù…Ù‚Ø¨ÙˆÙ„';
+  String get rfqAccepted => 'مقبول';
 
   @override
-  String get rfqClosed => 'Ù…ØºÙ„Ù‚';
+  String get rfqClosed => 'مغلق';
 
   @override
-  String get rfqCancelled => 'Ù…Ù„ØºÙŠ';
+  String get rfqCancelled => 'ملغي';
 
   @override
-  String get rfqExpired => 'Ù…Ù†ØªÙ‡ÙŠ';
+  String get rfqExpired => 'منتهي';
 
   @override
   String rfqQuotesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Ø¹Ø±ÙˆØ¶',
-      two: 'Ø¹Ø±Ø¶Ø§Ù†',
-      one: 'Ø¹Ø±Ø¶ ÙˆØ§Ø­Ø¯',
-      zero: '0 Ø¹Ø±ÙˆØ¶',
+      other: '$count عروض',
+      two: 'عرضان',
+      one: 'عرض واحد',
+      zero: '0 عروض',
     );
     return '$_temp0';
   }
@@ -3160,303 +3019,272 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get rfqNoDeliveryLocation =>
-      'Ù„Ù… ØªØªÙ… Ø¥Ø¶Ø§ÙØ© Ù…ÙˆÙ‚Ø¹ Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get rfqNoDeliveryLocation => 'لم تتم إضافة موقع التسليم';
 
   @override
-  String get rfqLocation => 'Ø§Ù„Ù…ÙˆÙ‚Ø¹';
+  String get rfqLocation => 'الموقع';
 
   @override
-  String get rfqDelivery => 'Ø§Ù„ØªØ³Ù„ÙŠÙ…';
+  String get rfqDelivery => 'التسليم';
 
   @override
-  String get rfqQuantity => 'Ø§Ù„ÙƒÙ…ÙŠØ©';
+  String get rfqQuantity => 'الكمية';
 
   @override
-  String get rfqTargetPrice => 'Ø§Ù„Ø³Ø¹Ø± Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù';
+  String get rfqTargetPrice => 'السعر المستهدف';
 
   @override
-  String get rfqUnitPrice => 'Ø³Ø¹Ø± Ø§Ù„ÙˆØ­Ø¯Ø©';
+  String get rfqUnitPrice => 'سعر الوحدة';
 
   @override
-  String get rfqTotal => 'Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ';
+  String get rfqTotal => 'الإجمالي';
 
   @override
-  String get rfqShippingNotSpecified => 'Ù„Ù… ÙŠØªÙ… ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ø´Ø­Ù†';
+  String get rfqShippingNotSpecified => 'لم يتم تحديد الشحن';
 
   @override
   String rfqShippingCost(String amount) {
-    return 'Ø§Ù„Ø´Ø­Ù† $amount';
+    return 'الشحن $amount';
   }
 
   @override
-  String get rfqAcceptQuotation => 'Ù‚Ø¨ÙˆÙ„ Ø¹Ø±Ø¶ Ø§Ù„Ø³Ø¹Ø±';
+  String get rfqAcceptQuotation => 'قبول عرض السعر';
 
   @override
-  String get rfqAcceptQuotationQuestion => 'Ù‚Ø¨ÙˆÙ„ Ø¹Ø±Ø¶ Ø§Ù„Ø³Ø¹Ø±ØŸ';
+  String get rfqAcceptQuotationQuestion => 'قبول عرض السعر؟';
 
   @override
   String get rfqAcceptQuotationMessage =>
-      'Ø³ÙŠØªÙ… ØªØ­Ø¯ÙŠØ¯ Ø¹Ø±Ø¶ Ø§Ù„Ù…ÙˆØ±Ø¯ Ø§Ù„Ù…Ø®ØªØ§Ø± ÙƒÙ…Ù‚Ø¨ÙˆÙ„ ÙˆØ¥ØºÙ„Ø§Ù‚ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ±.';
+      'سيتم تحديد عرض المورد المختار كمقبول وإغلاق طلب التسعير.';
 
   @override
-  String get rfqReviewMore => 'Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù…Ø²ÙŠØ¯';
+  String get rfqReviewMore => 'مراجعة المزيد';
 
   @override
-  String get rfqAccept => 'Ù‚Ø¨ÙˆÙ„';
+  String get rfqAccept => 'قبول';
 
   @override
-  String get rfqPostedSuccessfully =>
-      'ØªÙ… Ù†Ø´Ø± Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø¨Ù†Ø¬Ø§Ø­';
+  String get rfqPostedSuccessfully => 'تم نشر طلب التسعير بنجاح';
 
   @override
-  String get rfqUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø¨Ù†Ø¬Ø§Ø­';
+  String get rfqUpdatedSuccessfully => 'تم تحديث طلب التسعير بنجاح';
 
   @override
-  String get rfqCancelledSuccessfully =>
-      'ØªÙ… Ø¥Ù„ØºØ§Ø¡ Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø¨Ù†Ø¬Ø§Ø­';
+  String get rfqCancelledSuccessfully => 'تم إلغاء طلب التسعير بنجاح';
 
   @override
-  String get rfqDeletedSuccessfully =>
-      'ØªÙ… Ø­Ø°Ù Ø·Ù„Ø¨ Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø¨Ù†Ø¬Ø§Ø­';
+  String get rfqDeletedSuccessfully => 'تم حذف طلب التسعير بنجاح';
 
   @override
-  String get rfqQuotationAcceptedSuccessfully =>
-      'ØªÙ… Ù‚Ø¨ÙˆÙ„ Ø¹Ø±Ø¶ Ø§Ù„Ø³Ø¹Ø± Ø¨Ù†Ø¬Ø§Ø­';
+  String get rfqQuotationAcceptedSuccessfully => 'تم قبول عرض السعر بنجاح';
 
   @override
   String get rfqAiGeneratedSuccessfully =>
-      'ØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ù…ØªØ·Ù„Ø¨Ø§Øª Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ Ø¨Ù†Ø¬Ø§Ø­';
+      'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
 
   @override
-  String get completeRetailerProfileTitle => 'Ø¥ÙƒÙ…Ø§Ù„ Ù…Ù„Ù Ø§Ù„ØªØ§Ø¬Ø±';
+  String get completeRetailerProfileTitle => 'إكمال ملف التاجر';
 
   @override
-  String get completeRetailerProfileSubtitle =>
-      'Ø£Ø¯Ø®Ù„ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø¹Ù…Ù„Ùƒ Ù„Ù„Ù…ØªØ§Ø¨Ø¹Ø©.';
+  String get completeRetailerProfileSubtitle => 'أدخل معلومات عملك للمتابعة.';
 
   @override
-  String get enterFullName => 'Ø£Ø¯Ø®Ù„ Ø§Ù„Ø§Ø³Ù… Ø§Ù„ÙƒØ§Ù…Ù„';
+  String get enterFullName => 'أدخل الاسم الكامل';
 
   @override
-  String get enterStoreName => 'Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø§Ù„Ù…ØªØ¬Ø±';
+  String get enterStoreName => 'أدخل اسم المتجر';
 
   @override
-  String get enterStoreAddress => 'Ø£Ø¯Ø®Ù„ Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ù…ØªØ¬Ø±';
+  String get enterStoreAddress => 'أدخل عنوان المتجر';
 
   @override
-  String get retailerProfileSavedSuccessfully =>
-      'ØªÙ… Ø­ÙØ¸ Ù…Ù„Ù Ø§Ù„ØªØ§Ø¬Ø± Ø¨Ù†Ø¬Ø§Ø­';
+  String get retailerProfileSavedSuccessfully => 'تم حفظ ملف التاجر بنجاح';
 
   @override
-  String get loadingCities => 'Ø¬Ø§Ø±Ù ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø¯Ù†...';
+  String get loadingCities => 'جارٍ تحميل المدن...';
 
   @override
-  String get noCitiesFoundForCountry =>
-      'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ø¯Ù† Ù„Ù‡Ø°Ø§ Ø§Ù„Ø¨Ù„Ø¯';
+  String get noCitiesFoundForCountry => 'لا توجد مدن لهذا البلد';
 
   @override
-  String get searchCity => 'Ø§Ø¨Ø­Ø« Ø¹Ù† Ù…Ø¯ÙŠÙ†Ø©...';
+  String get searchCity => 'ابحث عن مدينة...';
 
   @override
-  String get cityRequiredError => 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get cityRequiredError => 'المدينة مطلوبة';
 
   @override
   String get couldNotLoadCountries =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø¨Ù„Ø¯Ø§Ù†. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+      'تعذر تحميل البلدان. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get couldNotLoadCities =>
-      'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø¯Ù†. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.';
+  String get couldNotLoadCities => 'تعذر تحميل المدن. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get verifyNewEmail =>
-      'ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø§Ù„Ø¬Ø¯ÙŠØ¯';
+  String get verifyNewEmail => 'تأكيد البريد الإلكتروني الجديد';
 
   @override
-  String get sixDigitCode => 'Ø±Ù…Ø² Ù…ÙƒÙˆÙ‘Ù† Ù…Ù† 6 Ø£Ø±Ù‚Ø§Ù…';
+  String get sixDigitCode => 'رمز مكوّن من 6 أرقام';
 
   @override
-  String get verificationCodeSent => 'ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ù…Ø² Ø§Ù„ØªØ­Ù‚Ù‚';
+  String get verificationCodeSent => 'تم إرسال رمز التحقق';
 
   @override
-  String get couldNotResendCode => 'ØªØ¹Ø°Ø± Ø¥Ø¹Ø§Ø¯Ø© Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ù…Ø².';
+  String get couldNotResendCode => 'تعذر إعادة إرسال الرمز.';
 
   @override
-  String get invalidVerificationCode => 'Ø±Ù…Ø² Ø§Ù„ØªØ­Ù‚Ù‚ ØºÙŠØ± ØµØ­ÙŠØ­.';
+  String get invalidVerificationCode => 'رمز التحقق غير صحيح.';
 
   @override
-  String get verify => 'ØªØ­Ù‚Ù‚';
+  String get verify => 'تحقق';
 
   @override
-  String get resend => 'Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø¥Ø±Ø³Ø§Ù„';
+  String get resend => 'إعادة الإرسال';
 
   @override
-  String get verifyPasswordChange =>
-      'ØªØ£ÙƒÙŠØ¯ ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±';
+  String get verifyPasswordChange => 'تأكيد تغيير كلمة المرور';
 
   @override
   String enterCodeSentToEmail(String email) {
-    return 'Ø£Ø¯Ø®Ù„ Ø§Ù„Ø±Ù…Ø² Ø§Ù„Ù…ÙƒÙˆÙ‘Ù† Ù…Ù† 6 Ø£Ø±Ù‚Ø§Ù… Ø§Ù„Ù…Ø±Ø³Ù„ Ø¥Ù„Ù‰ $email';
+    return 'أدخل الرمز المكوّن من 6 أرقام المرسل إلى $email';
   }
 
   @override
-  String get couldNotUpdatePassword =>
-      'ØªØ¹Ø°Ø± ØªØ­Ø¯ÙŠØ« ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±.';
+  String get couldNotUpdatePassword => 'تعذر تحديث كلمة المرور.';
 
   @override
-  String get newPasswordRequired =>
-      'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get newPasswordRequired => 'كلمة المرور الجديدة مطلوبة';
 
   @override
   String get passwordNotUpdatedCodeNotConfirmed =>
-      'Ù„Ù… ÙŠØªÙ… ØªØ­Ø¯ÙŠØ« ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ù„Ø£Ù† Ø±Ù…Ø² Ø§Ù„ØªØ­Ù‚Ù‚ Ù„Ù… ÙŠØªÙ… ØªØ£ÙƒÙŠØ¯Ù‡.';
+      'لم يتم تحديث كلمة المرور لأن رمز التحقق لم يتم تأكيده.';
 
   @override
   String get emailVerificationRequiredBeforeUpdating =>
-      'ÙŠØ¬Ø¨ ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù‚Ø¨Ù„ ØªØ­Ø¯ÙŠØ«Ù‡.';
+      'يجب تأكيد البريد الإلكتروني قبل تحديثه.';
 
   @override
   String get emailNotUpdatedCodeNotConfirmed =>
-      'Ù„Ù… ÙŠØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù„Ø£Ù† Ø±Ù…Ø² Ø§Ù„ØªØ­Ù‚Ù‚ Ù„Ù… ÙŠØªÙ… ØªØ£ÙƒÙŠØ¯Ù‡.';
+      'لم يتم تحديث البريد الإلكتروني لأن رمز التحقق لم يتم تأكيده.';
 
   @override
-  String get rfqCategoryRequired => 'Ø§Ù„ÙØ¦Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get rfqCategoryRequired => 'الفئة مطلوبة';
 
   @override
-  String get rfqSubcategoryRequired => 'Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get rfqSubcategoryRequired => 'الفئة الفرعية مطلوبة';
 
   @override
-  String get rfqUnitRequired => 'Ø§Ù„ÙˆØ­Ø¯Ø© Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get rfqUnitRequired => 'الوحدة مطلوبة';
 
   @override
-  String get rfqTargetUnitPriceHint =>
-      'Ø£Ø¯Ø®Ù„ Ø§Ù„Ø³Ø¹Ø± Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù Ù„Ù„ÙˆØ­Ø¯Ø©';
+  String get rfqTargetUnitPriceHint => 'أدخل السعر المستهدف للوحدة';
 
   @override
-  String get rfqTargetUnitPriceRequired =>
-      'Ø§Ù„Ø³Ø¹Ø± Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù Ù„Ù„ÙˆØ­Ø¯Ø© Ù…Ø·Ù„ÙˆØ¨';
+  String get rfqTargetUnitPriceRequired => 'السعر المستهدف للوحدة مطلوب';
 
   @override
-  String get rfqEnterValidTargetUnitPrice =>
-      'Ø£Ø¯Ø®Ù„ Ø³Ø¹Ø±Ø§Ù‹ ØµØ­ÙŠØ­Ø§Ù‹ Ù„Ù„ÙˆØ­Ø¯Ø©';
+  String get rfqEnterValidTargetUnitPrice => 'أدخل سعراً صحيحاً للوحدة';
 
   @override
-  String get rfqPreferredDeliveryTimeRequired =>
-      'ÙˆÙ‚Øª Ø§Ù„ØªØ³Ù„ÙŠÙ… Ø§Ù„Ù…ÙØ¶Ù„ Ù…Ø·Ù„ÙˆØ¨';
+  String get rfqPreferredDeliveryTimeRequired => 'وقت التسليم المفضل مطلوب';
 
   @override
-  String get rfqDeadlineRequired =>
-      'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…ÙˆØ¹Ø¯ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ Ù…Ø·Ù„ÙˆØ¨';
+  String get rfqDeadlineRequired => 'تاريخ الموعد النهائي مطلوب';
 
   @override
-  String get rfqCityRequired => 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ØªØ³Ù„ÙŠÙ… Ù…Ø·Ù„ÙˆØ¨Ø©';
+  String get rfqCityRequired => 'مدينة التسليم مطلوبة';
 
   @override
-  String get rfqDeliveryAddressRequired =>
-      'Ø¹Ù†ÙˆØ§Ù† Ø§Ù„ØªØ³Ù„ÙŠÙ… Ù…Ø·Ù„ÙˆØ¨';
+  String get rfqDeliveryAddressRequired => 'عنوان التسليم مطلوب';
 
   @override
-  String get wholesaleOpportunities => 'ÙØ±Øµ Ø§Ù„Ø¬Ù…Ù„Ø©';
+  String get wholesaleOpportunities => 'فرص الجملة';
 
   @override
-  String get bulkOrders => 'Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¬Ù…Ù„Ø©';
+  String get bulkOrders => 'طلبات الجملة';
 
   @override
   String get bulkOrdersDescription =>
-      'ÙˆÙÙ‘Ø± Ø£ÙƒØ«Ø± Ø¹Ù†Ø¯ Ø·Ù„Ø¨ ÙƒÙ…ÙŠØ§Øª ÙƒØ¨ÙŠØ±Ø© Ù…Ù† Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ†.';
+      'وفّر أكثر عند طلب كميات كبيرة من الموردين.';
 
   @override
-  String get viewAvailableOffers => 'Ø¹Ø±Ø¶ Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„Ù…ØªØ§Ø­Ø©';
+  String get viewAvailableOffers => 'عرض العروض المتاحة';
 
   @override
-  String get groupDeliveryAvailable => 'Ø§Ù„ØªÙˆØµÙŠÙ„ Ø§Ù„Ø¬Ù…Ø§Ø¹ÙŠ Ù…ØªØ§Ø­';
+  String get groupDeliveryAvailable => 'التوصيل الجماعي متاح';
 
   @override
   String get groupDeliveryDescription =>
-      'Ø§Ù†Ø¶Ù… Ø¥Ù„Ù‰ ØªØ¬Ø§Ø± Ø¢Ø®Ø±ÙŠÙ† ÙÙŠ Ù…Ù†Ø·Ù‚ØªÙƒ ÙˆÙˆÙÙ‘Ø± ÙÙŠ ØªÙƒØ§Ù„ÙŠÙ Ø§Ù„Ø´Ø­Ù†.';
+      'انضم إلى تجار آخرين في منطقتك ووفّر في تكاليف الشحن.';
 
   @override
   String groupDeliveryDynamicDescription(
     int retailersJoined,
     num savingsPercent,
   ) {
-    return 'Ø§Ù†Ø¶Ù… $retailersJoined ØªØ¬Ø§Ø± Ø¨Ø§Ù„Ù‚Ø±Ø¨ Ù…Ù†Ùƒ. ÙˆÙÙ‘Ø± Ø­ØªÙ‰ $savingsPercent% Ù…Ù† ØªÙƒØ§Ù„ÙŠÙ Ø§Ù„Ø´Ø­Ù†.';
+    return 'انضم $retailersJoined تجار بالقرب منك. وفّر حتى $savingsPercent% من تكاليف الشحن.';
   }
 
   @override
-  String get learnMore => 'Ø§Ø¹Ø±Ù Ø§Ù„Ù…Ø²ÙŠØ¯';
+  String get learnMore => 'اعرف المزيد';
 
   @override
-  String get productDeletedSuccessfully =>
-      'ØªÙ… Ø­Ø°Ù Ø§Ù„Ù…Ù†ØªØ¬ Ø¨Ù†Ø¬Ø§Ø­';
+  String get productDeletedSuccessfully => 'تم حذف المنتج بنجاح';
 
   @override
-  String get stockAssignedSuccessfully =>
-      'ØªÙ… ØªØ¹ÙŠÙŠÙ† Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø¨Ù†Ø¬Ø§Ø­';
+  String get stockAssignedSuccessfully => 'تم تعيين المخزون بنجاح';
 
   @override
-  String get stockUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø¨Ù†Ø¬Ø§Ø­';
+  String get stockUpdatedSuccessfully => 'تم تحديث المخزون بنجاح';
 
   @override
-  String get inventoryItemRemovedSuccessfully =>
-      'ØªÙ…Øª Ø¥Ø²Ø§Ù„Ø© Ø¹Ù†ØµØ± Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø¨Ù†Ø¬Ø§Ø­';
+  String get inventoryItemRemovedSuccessfully => 'تمت إزالة عنصر المخزون بنجاح';
 
   @override
-  String get categoryAddedSuccessfully =>
-      'ØªÙ…Øª Ø¥Ø¶Ø§ÙØ© Ø§Ù„ÙØ¦Ø© Ø¨Ù†Ø¬Ø§Ø­';
+  String get categoryAddedSuccessfully => 'تمت إضافة الفئة بنجاح';
 
   @override
-  String get categoryUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„ÙØ¦Ø© Ø¨Ù†Ø¬Ø§Ø­';
+  String get categoryUpdatedSuccessfully => 'تم تحديث الفئة بنجاح';
 
   @override
-  String get categoryStatusUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø­Ø§Ù„Ø© Ø§Ù„ÙØ¦Ø© Ø¨Ù†Ø¬Ø§Ø­';
+  String get categoryStatusUpdatedSuccessfully => 'تم تحديث حالة الفئة بنجاح';
 
   @override
-  String get categoryDeletedSuccessfully => 'ØªÙ… Ø­Ø°Ù Ø§Ù„ÙØ¦Ø© Ø¨Ù†Ø¬Ø§Ø­';
+  String get categoryDeletedSuccessfully => 'تم حذف الفئة بنجاح';
 
   @override
-  String get subCategoryAddedSuccessfully =>
-      'ØªÙ…Øª Ø¥Ø¶Ø§ÙØ© Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø¨Ù†Ø¬Ø§Ø­';
+  String get subCategoryAddedSuccessfully => 'تمت إضافة الفئة الفرعية بنجاح';
 
   @override
-  String get subCategoryUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø¨Ù†Ø¬Ø§Ø­';
+  String get subCategoryUpdatedSuccessfully => 'تم تحديث الفئة الفرعية بنجاح';
 
   @override
   String get subCategoryStatusUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø­Ø§Ù„Ø© Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø¨Ù†Ø¬Ø§Ø­';
+      'تم تحديث حالة الفئة الفرعية بنجاح';
 
   @override
-  String get subCategoryDeletedSuccessfully =>
-      'ØªÙ… Ø­Ø°Ù Ø§Ù„ÙØ¦Ø© Ø§Ù„ÙØ±Ø¹ÙŠØ© Ø¨Ù†Ø¬Ø§Ø­';
+  String get subCategoryDeletedSuccessfully => 'تم حذف الفئة الفرعية بنجاح';
 
   @override
-  String get branchDeletedSuccessfully => 'ØªÙ… Ø­Ø°Ù Ø§Ù„ÙØ±Ø¹ Ø¨Ù†Ø¬Ø§Ø­';
+  String get branchDeletedSuccessfully => 'تم حذف الفرع بنجاح';
 
   @override
   String get productAssignedToBranchSuccessfully =>
-      'ØªÙ… ØªØ¹ÙŠÙŠÙ† Ø§Ù„Ù…Ù†ØªØ¬ Ù„Ù„ÙØ±Ø¹ Ø¨Ù†Ø¬Ø§Ø­';
+      'تم تعيين المنتج للفرع بنجاح';
 
   @override
-  String get orderUpdatedSuccessfully =>
-      'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø·Ù„Ø¨ Ø¨Ù†Ø¬Ø§Ø­';
+  String get orderUpdatedSuccessfully => 'تم تحديث الطلب بنجاح';
 
   @override
   String orderMarkedAsStatus(String status) {
-    return 'ØªÙ… ØªØºÙŠÙŠØ± Ø­Ø§Ù„Ø© Ø§Ù„Ø·Ù„Ø¨ Ø¥Ù„Ù‰ $status';
+    return 'تم تغيير حالة الطلب إلى $status';
   }
 
   @override
-  String get paymentCashOnDelivery => 'Ø§Ù„Ø¯ÙØ¹ Ø¹Ù†Ø¯ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…';
+  String get paymentCashOnDelivery => 'الدفع عند الاستلام';
 
   @override
-  String get paymentCard => 'Ø§Ù„Ø¯ÙØ¹ Ø¨Ø§Ù„Ø¨Ø·Ø§Ù‚Ø©';
+  String get paymentCard => 'الدفع بالبطاقة';
 
   @override
-  String get paymentBankTransfer => 'ØªØ­ÙˆÙŠÙ„ Ù…ØµØ±ÙÙŠ';
+  String get paymentBankTransfer => 'تحويل مصرفي';
 }
