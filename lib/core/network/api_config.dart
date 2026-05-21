@@ -55,6 +55,20 @@ class ApiConfig {
   static String retailerCartItemById(int cartItemId) =>
       '/retailer/cart/items/$cartItemId';
 
+
+  // =========================
+  // Retailer Orders
+  // =========================
+  static const String retailerOrders = '/retailer/orders';
+
+  static String retailerOrderById(String orderId) {
+    return '/retailer/orders/$orderId';
+  }
+
+  static String retailerOrderCancel(String orderId) {
+    return '/retailer/orders/$orderId/cancel';
+  }
+
   // =========================
   // Build4All user endpoints
   // =========================

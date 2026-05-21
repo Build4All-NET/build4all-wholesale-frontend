@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+
 import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -13,13 +15,16 @@ import '../bloc/coupons_bloc.dart';
 import '../bloc/coupons_event.dart';
 import '../bloc/coupons_state.dart';
 
+
 class CreateCouponScreen extends StatelessWidget {
   final CouponEntity? coupon;
+
 
   const CreateCouponScreen({
     super.key,
     this.coupon,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +35,27 @@ class CreateCouponScreen extends StatelessWidget {
   }
 }
 
+
 class _CreateCouponView extends StatefulWidget {
   final CouponEntity? coupon;
+
 
   const _CreateCouponView({
     this.coupon,
   });
 
+
   @override
   State<_CreateCouponView> createState() => _CreateCouponViewState();
 }
 
+
 class _CreateCouponViewState extends State<_CreateCouponView> {
   final _formKey = GlobalKey<FormState>();
 
+
   final BranchApiService _branchApiService = sl<BranchApiService>();
+
 
   late final TextEditingController _codeController;
   late final TextEditingController _descriptionController;
@@ -53,30 +64,38 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
   late final TextEditingController _minOrderAmountController;
   late final TextEditingController _maxDiscountAmountController;
 
+
   CouponDiscountType _discountType = CouponDiscountType.percent;
   CouponBranchScope _branchScope = CouponBranchScope.allBranches;
   bool _active = true;
+
 
   DateTime? _startsAt;
   DateTime? _expiresAt;
   String? _dateError;
 
+
   bool _loadingBranches = true;
   String? _branchErrorMessage;
+
 
   final List<BranchEntity> _availableBranches = [];
   final List<String> _selectedBranchIds = [];
   final List<String> _selectedBranchNames = [];
 
+
   bool get _isEditMode => widget.coupon != null;
   bool get _isPercent => _discountType == CouponDiscountType.percent;
   bool get _isFreeShipping => _discountType == CouponDiscountType.freeShipping;
+
 
   @override
   void initState() {
     super.initState();
 
+
     final coupon = widget.coupon;
+
 
     _codeController = TextEditingController(text: coupon?.code ?? '');
     _descriptionController = TextEditingController(
@@ -98,26 +117,32 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
       text: coupon?.maxDiscountAmount?.toString() ?? '',
     );
 
+
     _discountType = coupon?.discountType ?? CouponDiscountType.percent;
     _branchScope = coupon?.branchScope ?? CouponBranchScope.allBranches;
     _active = coupon?.active ?? true;
     _startsAt = coupon?.startsAt;
     _expiresAt = coupon?.expiresAt;
 
+
     _selectedBranchIds.addAll(coupon?.selectedBranchIds ?? []);
     _selectedBranchNames.addAll(coupon?.selectedBranchNames ?? []);
+
 
     if (!_isPercent) {
       _maxDiscountAmountController.clear();
     }
 
+
     if (_isFreeShipping) {
       _discountValueController.clear();
     }
 
+
     _validateDates();
     _loadBranches();
   }
+
 
   @override
   void dispose() {
@@ -130,20 +155,25 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     super.dispose();
   }
 
+
   Future<void> _loadBranches() async {
     setState(() {
       _loadingBranches = true;
       _branchErrorMessage = null;
     });
 
+
     try {
       final branches = await _branchApiService.getBranches();
 
+
       if (!mounted) return;
+
 
       final activeBranches = branches
           .where((branch) => branch.status == BranchStatus.active)
           .toList();
+
 
       setState(() {
         _availableBranches
@@ -154,6 +184,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     } catch (e) {
       if (!mounted) return;
 
+
       setState(() {
         _branchErrorMessage = e.toString();
         _loadingBranches = false;
@@ -161,8 +192,10 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     }
   }
 
+
   String _formatDateTime(DateTime? date) {
     if (date == null) return '—';
+
 
     final year = date.year.toString().padLeft(4, '0');
     final month = date.month.toString().padLeft(2, '0');
@@ -170,12 +203,15 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     final hour = date.hour.toString().padLeft(2, '0');
     final minute = date.minute.toString().padLeft(2, '0');
 
+
     return '$year-$month-$day $hour:$minute';
   }
+
 
   Future<DateTime?> _pickDateTime(DateTime? initial) async {
     final now = DateTime.now();
     final base = initial ?? now;
+
 
     final pickedDate = await showDatePicker(
       context: context,
@@ -184,14 +220,18 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
       lastDate: DateTime(now.year + 10),
     );
 
+
     if (!mounted || pickedDate == null) return null;
+
 
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
     );
 
+
     if (!mounted || pickedTime == null) return null;
+
 
     return DateTime(
       pickedDate.year,
@@ -202,7 +242,24 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     );
   }
 
-  bool _validateDates() {
+
+  bool _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startsAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidFrom,
+      );
+      return false;
+    }
+
+
+    if (requireBothDates && _expiresAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidTo,
+      );
+      return false;
+    }
+
+
     if (_startsAt != null &&
         _expiresAt != null &&
         _startsAt!.isAfter(_expiresAt!)) {
@@ -210,72 +267,92 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
       return false;
     }
 
+
     _dateError = null;
     return true;
   }
+
 
   double? _parseDouble(String value) {
     if (value.trim().isEmpty) return null;
     return double.tryParse(value.trim());
   }
 
+
   int? _parseInt(String value) {
     if (value.trim().isEmpty) return null;
     return int.tryParse(value.trim());
   }
+
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return context.l10n.supplierFieldRequired(fieldName);
     }
 
+
     return null;
   }
+
 
   String? _numberValidator(String? value, String fieldName) {
     if (_isFreeShipping && fieldName == context.l10n.supplierDiscountValuePlain) {
       return null;
     }
 
+
     final requiredError = _required(value, fieldName);
     if (requiredError != null) return requiredError;
 
+
     final parsed = double.tryParse(value!.trim());
+
 
     if (parsed == null || parsed <= 0) {
       return context.l10n.supplierFieldGreaterThanZero(fieldName);
     }
 
+
     if (_isPercent && fieldName == context.l10n.supplierDiscountValuePlain && parsed > 100) {
       return context.l10n.supplierPercentDiscountCannotBeGreaterThan100;
     }
 
+
     return null;
   }
+
 
   String? _optionalPositiveNumber(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) return null;
 
+
     final parsed = double.tryParse(value.trim());
+
 
     if (parsed == null || parsed < 0) {
       return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
+
     return null;
   }
+
 
   String? _optionalPositiveInt(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) return null;
 
+
     final parsed = int.tryParse(value.trim());
+
 
     if (parsed == null || parsed < 0) {
       return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
+
     return null;
   }
+
 
   void _toggleBranch(BranchEntity branch, bool isSelected) {
     setState(() {
@@ -291,13 +368,16 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     });
   }
 
+
   void _saveCoupon(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!_validateDates()) {
+
+    if (!_validateDates(requireBothDates: true)) {
       setState(() {});
       return;
     }
+
 
     if (_branchScope == CouponBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
@@ -306,6 +386,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
       );
       return;
     }
+
 
     final coupon = CouponEntity(
       id: widget.coupon?.id ?? '',
@@ -336,12 +417,14 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
           : List.unmodifiable(_selectedBranchNames),
     );
 
+
     if (_isEditMode) {
       context.read<CouponsBloc>().add(UpdateCouponRequested(coupon));
     } else {
       context.read<CouponsBloc>().add(CreateCouponRequested(coupon));
     }
   }
+
 
   void _cancel() {
     if (_isEditMode) {
@@ -351,9 +434,11 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+
 
     return BlocListener<CouponsBloc, CouponsState>(
       listener: (context, state) {
@@ -362,19 +447,23 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
             SnackBar(content: Text(state.errorMessage!)),
           );
 
+
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
         }
+
 
         if (state.successMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.successMessage!)),
           );
 
+
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
+
 
           if (_isEditMode) {
             context.go('/supplier-coupons');
@@ -512,12 +601,15 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             onChanged: (value) {
                               if (value == null) return;
 
+
                               setState(() {
                                 _discountType = value;
+
 
                                 if (!_isPercent) {
                                   _maxDiscountAmountController.clear();
                                 }
+
 
                                 if (_isFreeShipping) {
                                   _discountValueController.clear();
@@ -610,8 +702,10 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             onChanged: (value) {
                               if (value == null) return;
 
+
                               setState(() {
                                 _branchScope = value;
+
 
                                 if (_branchScope ==
                                     CouponBranchScope.allBranches) {
@@ -675,6 +769,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                   final selected =
                                       _selectedBranchIds.contains(branch.id);
 
+
                                   return FilterChip(
                                     selected: selected,
                                     label: Text(branch.name),
@@ -708,7 +803,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             onPick: () async {
                               final picked = await _pickDateTime(_startsAt);
 
+
                               if (picked == null) return;
+
 
                               setState(() {
                                 _startsAt = picked;
@@ -729,7 +826,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             onPick: () async {
                               final picked = await _pickDateTime(_expiresAt);
 
+
                               if (picked == null) return;
+
 
                               setState(() {
                                 _expiresAt = picked;
@@ -794,14 +893,17 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
   }
 }
 
+
 class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
+
 
   _SectionCard({
     required this.title,
     required this.children,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -840,10 +942,13 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
+
 class _FieldLabel extends StatelessWidget {
   final String text;
 
+
   _FieldLabel(this.text);
+
 
   @override
   Widget build(BuildContext context) {
@@ -861,6 +966,7 @@ class _FieldLabel extends StatelessWidget {
   }
 }
 
+
 class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -869,6 +975,7 @@ class _InputField extends StatelessWidget {
   final int maxLines;
   final TextCapitalization textCapitalization;
   final String? Function(String?)? validator;
+
 
   _InputField({
     required this.controller,
@@ -879,6 +986,7 @@ class _InputField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.validator,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -918,6 +1026,7 @@ class _InputField extends StatelessWidget {
     );
   }
 
+
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
@@ -926,14 +1035,17 @@ class _InputField extends StatelessWidget {
   }
 }
 
+
 class _DiscountTypeDropdown extends StatelessWidget {
   final CouponDiscountType value;
   final ValueChanged<CouponDiscountType?> onChanged;
+
 
   const _DiscountTypeDropdown({
     required this.value,
     required this.onChanged,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -958,14 +1070,17 @@ class _DiscountTypeDropdown extends StatelessWidget {
   }
 }
 
+
 class _BranchScopeDropdown extends StatelessWidget {
   final CouponBranchScope value;
   final ValueChanged<CouponBranchScope?> onChanged;
+
 
   const _BranchScopeDropdown({
     required this.value,
     required this.onChanged,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -989,6 +1104,8 @@ class _BranchScopeDropdown extends StatelessWidget {
     );
   }
 }
+
+
 
 
 String _localizedEnumLabel(BuildContext context, String label) {
@@ -1030,6 +1147,7 @@ String _localizedEnumLabel(BuildContext context, String label) {
   }
 }
 
+
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
@@ -1037,6 +1155,7 @@ InputDecoration _dropdownDecoration(BuildContext context) {
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
+
 
   return InputDecoration(
     filled: true,
@@ -1053,11 +1172,13 @@ InputDecoration _dropdownDecoration(BuildContext context) {
   );
 }
 
+
 class _DateTimePickerRow extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onPick;
   final VoidCallback onClear;
+
 
   const _DateTimePickerRow({
     required this.label,
@@ -1066,58 +1187,112 @@ class _DateTimePickerRow extends StatelessWidget {
     required this.onClear,
   });
 
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: onPick,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppThemeTokens.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppThemeTokens.border),
+    final primary = Theme.of(context).colorScheme.primary;
+    final hasValue = value != '—';
+
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: onPick,
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 15,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: primary.withOpacity(0.10),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      child: Icon(
+                        Icons.event_available_outlined,
+                        color: primary,
+                        size: 22,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: AppThemeTokens.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: hasValue
+                                  ? AppThemeTokens.textPrimary
+                                  : AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear),
-        ),
-      ],
+          Container(
+            width: 1,
+            height: 48,
+            color: AppThemeTokens.border,
+          ),
+          TextButton.icon(
+            onPressed: hasValue ? onClear : null,
+            icon: const Icon(Icons.close_rounded, size: 18),
+            label: Text(context.l10n.clearButton),
+            style: TextButton.styleFrom(
+              foregroundColor: AppThemeTokens.textSecondary,
+              disabledForegroundColor:
+                  AppThemeTokens.textSecondary.withOpacity(0.35),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              textStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+
 class _DividerSpace extends StatelessWidget {
   const _DividerSpace();
+
 
   @override
   Widget build(BuildContext context) {
@@ -1127,3 +1302,4 @@ class _DividerSpace extends StatelessWidget {
     );
   }
 }
+

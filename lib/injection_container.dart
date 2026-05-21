@@ -64,6 +64,18 @@ import 'features/retailer_profile/presentation/cubit/retailer_profile_cubit.dart
 import 'features/dashboard/data/services/retailer_cart_service.dart';
 import 'features/dashboard/presentation/cubit/retailer_cart_cubit.dart';
 
+
+// =========================
+// RETAILER ORDERS
+// =========================
+import 'features/retailer/orders/data/repositories/retailer_order_repository_impl.dart';
+import 'features/retailer/orders/data/services/retailer_order_api_service.dart';
+import 'features/retailer/orders/domain/repositories/retailer_order_repository.dart';
+import 'features/retailer/orders/domain/usecases/cancel_retailer_order_usecase.dart';
+import 'features/retailer/orders/domain/usecases/get_retailer_order_details_usecase.dart';
+import 'features/retailer/orders/domain/usecases/get_retailer_orders_usecase.dart';
+import 'features/retailer/orders/presentation/cubit/retailer_orders_cubit.dart';
+
 // =========================
 // RETAILER RFQ
 // =========================
@@ -312,6 +324,13 @@ Future<void> init() async {
         RetailerRfqApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
+
+  sl.registerLazySingleton<RetailerOrderApiService>(
+    () => RetailerOrderApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierRfqApiService>(
     () => SupplierRfqApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
@@ -445,6 +464,13 @@ Future<void> init() async {
     () => RetailerRfqRepositoryImpl(apiService: sl<RetailerRfqApiService>()),
   );
 
+
+  sl.registerLazySingleton<RetailerOrderRepository>(
+    () => RetailerOrderRepositoryImpl(
+      apiService: sl<RetailerOrderApiService>(),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierRfqRepository>(
     () => SupplierRfqRepositoryImpl(
       apiService: sl<SupplierRfqApiService>(),
@@ -549,6 +575,23 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AcceptRfqQuotationUseCase>(
     () => AcceptRfqQuotationUseCase(sl<RetailerRfqRepository>()),
+  );
+
+
+
+  // =========================
+  // RETAILER ORDER USE CASES
+  // =========================
+  sl.registerLazySingleton<GetRetailerOrdersUseCase>(
+    () => GetRetailerOrdersUseCase(sl<RetailerOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<GetRetailerOrderDetailsUseCase>(
+    () => GetRetailerOrderDetailsUseCase(sl<RetailerOrderRepository>()),
+  );
+
+  sl.registerLazySingleton<CancelRetailerOrderUseCase>(
+    () => CancelRetailerOrderUseCase(sl<RetailerOrderRepository>()),
   );
 
   // =========================
@@ -1060,6 +1103,16 @@ Future<void> init() async {
   sl.registerFactory<RetailerProfileCubit>(
     () => RetailerProfileCubit(
       retailerProfileRepository: sl<RetailerProfileRepository>(),
+    ),
+  );
+
+
+
+  sl.registerFactory<RetailerOrdersCubit>(
+    () => RetailerOrdersCubit(
+      getRetailerOrdersUseCase: sl<GetRetailerOrdersUseCase>(),
+      getRetailerOrderDetailsUseCase: sl<GetRetailerOrderDetailsUseCase>(),
+      cancelRetailerOrderUseCase: sl<CancelRetailerOrderUseCase>(),
     ),
   );
 

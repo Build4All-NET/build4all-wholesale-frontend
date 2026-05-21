@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/extensions/l10n_extension.dart';
-import 'package:flutter/services.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/coupon_entity.dart';
+
 
 class CouponCard extends StatelessWidget {
   final CouponEntity coupon;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+
 
   const CouponCard({
     super.key,
@@ -18,8 +19,10 @@ class CouponCard extends StatelessWidget {
     required this.onDelete,
   });
 
+
   String _formatDate(DateTime? date) {
     if (date == null) return '—';
+
 
     final year = date.year.toString().padLeft(4, '0');
     final month = date.month.toString().padLeft(2, '0');
@@ -27,33 +30,41 @@ class CouponCard extends StatelessWidget {
     final hour = date.hour.toString().padLeft(2, '0');
     final minute = date.minute.toString().padLeft(2, '0');
 
+
     return '$year-$month-$day $hour:$minute';
   }
+
 
   String _usageText() {
     if (coupon.maxUses == null) {
       return '${coupon.usedCount} / ∞';
     }
 
+
     return '${coupon.usedCount} / ${coupon.maxUses}';
   }
+
 
   String _remainingText(BuildContext context) {
     if (coupon.remainingUses == null) return context.l10n.supplierUnlimited;
     return coupon.remainingUses.toString();
   }
 
+
   String _validityText(BuildContext context) {
     if (coupon.startsAt == null && coupon.expiresAt == null) {
       return context.l10n.supplierAlwaysActive;
     }
 
+
     return '${_formatDate(coupon.startsAt)} → ${_formatDate(coupon.expiresAt)}';
   }
+
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+
 
     return Container(
       width: double.infinity,
@@ -169,36 +180,6 @@ class CouponCard extends StatelessWidget {
                 child: SizedBox(
                   height: 40,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      Clipboard.setData(
-                        ClipboardData(text: coupon.code),
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(context.l10n.supplierCouponCopied(coupon.code))),
-                      );
-                    },
-                    icon: const Icon(Icons.copy_outlined, size: 17),
-                    label: Text(context.l10n.copyButton),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppThemeTokens.textPrimary,
-                      side: const BorderSide(color: AppThemeTokens.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: OutlinedButton.icon(
                     onPressed: onEdit,
                     icon: const Icon(Icons.edit_outlined, size: 17),
                     label: Text(context.l10n.editButton),
@@ -217,7 +198,7 @@ class CouponCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: SizedBox(
                   height: 40,
@@ -248,14 +229,17 @@ class CouponCard extends StatelessWidget {
   }
 }
 
+
 class _CouponCodeBox extends StatelessWidget {
   final String code;
   final Color primary;
+
 
   const _CouponCodeBox({
     required this.code,
     required this.primary,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -280,17 +264,22 @@ class _CouponCodeBox extends StatelessWidget {
   }
 }
 
+
 class _StatusBadge extends StatelessWidget {
   final CouponEntity coupon;
 
+
   const _StatusBadge({required this.coupon});
+
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
+
     final Color backgroundColor;
     final Color textColor;
+
 
     switch (coupon.status) {
       case 'INACTIVE':
@@ -316,6 +305,7 @@ class _StatusBadge extends StatelessWidget {
         break;
     }
 
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -334,14 +324,17 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
+
 class _InfoChip extends StatelessWidget {
   final String label;
   final String value;
+
 
   _InfoChip({
     required this.label,
     required this.value,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -378,10 +371,13 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
+
 class _DashedBorderPainter extends CustomPainter {
   final Color color;
 
+
   const _DashedBorderPainter({required this.color});
+
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -390,18 +386,23 @@ class _DashedBorderPainter extends CustomPainter {
       ..strokeWidth = 1.8
       ..style = PaintingStyle.stroke;
 
+
     const dashWidth = 7.0;
     const dashGap = 5.0;
+
 
     final rect = RRect.fromRectAndRadius(
       Offset.zero & size,
       const Radius.circular(13),
     );
 
+
     final path = Path()..addRRect(rect);
+
 
     for (final metric in path.computeMetrics()) {
       double distance = 0;
+
 
       while (distance < metric.length) {
         final segment = metric.extractPath(
@@ -409,17 +410,20 @@ class _DashedBorderPainter extends CustomPainter {
           distance + dashWidth,
         );
 
+
         canvas.drawPath(segment, paint);
         distance += dashWidth + dashGap;
       }
     }
   }
 
+
   @override
   bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) {
     return oldDelegate.color != color;
   }
 }
+
 
 String _localizedOptionLabel(BuildContext context, String label) {
   switch (label) {
@@ -460,6 +464,7 @@ String _localizedOptionLabel(BuildContext context, String label) {
   }
 }
 
+
 String _localizedStatusLabel(BuildContext context, String label) {
   switch (label.toLowerCase()) {
     case 'active':
@@ -477,3 +482,6 @@ String _localizedStatusLabel(BuildContext context, String label) {
       return label;
   }
 }
+
+
+
