@@ -16,6 +16,7 @@ import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_promotions_screen.dart';
 
 import '../features/retailer_profile/presentation/screens/edit_retailer_profile_screen.dart';
 import '../features/retailer_profile/presentation/screens/profile_verification_code_screen.dart';
@@ -431,15 +432,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/retailer-promotions',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.promotions,
-            message: l10n.promotionsComingSoon,
-            icon: Icons.local_offer_outlined,
-          );
-        },
+        builder: (context, state) => const RetailerPromotionsScreen(),
       ),
       GoRoute(
         path: '/retailer-top-ranking',

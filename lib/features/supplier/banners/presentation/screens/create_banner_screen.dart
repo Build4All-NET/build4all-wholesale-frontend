@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../../injection_container.dart';
 import '../../data/services/banner_image_upload_service.dart';
 import '../../domain/entities/banner_entity.dart';
@@ -146,8 +147,10 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = true;
       });
 
-      final imageUrl = await _imageUploadService.uploadBannerImage(
-        pickedFile.path,
+      final imageUrl = UploadedImageUrlResolver.normalizeForBackend(
+        await _imageUploadService.uploadBannerImage(
+          pickedFile.path,
+        ),
       );
 
       if (!mounted) return;
@@ -434,7 +437,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
       subtitle: _subtitleController.text.trim().isEmpty
           ? null
           : _subtitleController.text.trim(),
-      imageUrl: _imageUrlController.text.trim(),
+      imageUrl: UploadedImageUrlResolver.normalizeForBackend(
+        _imageUrlController.text,
+      ),
       targetType: _targetType,
       targetValue: targetValue,
       targetLabel: targetLabel,
@@ -912,7 +917,8 @@ class _ImageUploadBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = imageUrl.trim().isNotEmpty;
+    final resolvedImageUrl = UploadedImageUrlResolver.resolve(imageUrl);
+    final hasImage = resolvedImageUrl != null;
 
     return Container(
       width: double.infinity,
@@ -940,7 +946,7 @@ class _ImageUploadBox extends StatelessWidget {
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
-                          imageUrl.trim(),
+                          resolvedImageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/config/app_config.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../data/models/retailer_home_model.dart';
 
 class HomeBannerSection extends StatelessWidget {
@@ -49,7 +49,7 @@ class _HomeBannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final imageUrl = _resolveImageUrl(banner.imageUrl);
+    final imageUrl = UploadedImageUrlResolver.resolve(banner.imageUrl);
     final startColor = _parseColor(banner.backgroundColorStart, primaryColor);
     final endColor = _parseColor(banner.backgroundColorEnd, primaryColor);
 
@@ -194,24 +194,6 @@ class _HomeBannerCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String? _resolveImageUrl(String? value) {
-    if (value == null || value.trim().isEmpty) return null;
-
-    final clean = value.trim();
-
-    if (clean.startsWith('http://') || clean.startsWith('https://')) {
-      return clean;
-    }
-
-    final base = AppConfig.overrideRootUrl.trim().replaceAll(
-      RegExp(r'/+$'),
-      '',
-    );
-    final path = clean.startsWith('/') ? clean : '/$clean';
-
-    return '$base$path';
   }
 
   Color _parseColor(String? hex, Color fallback) {
