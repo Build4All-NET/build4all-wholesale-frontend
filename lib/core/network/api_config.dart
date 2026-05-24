@@ -77,6 +77,29 @@ class ApiConfig {
     return '/retailer/orders/$orderId/reorder';
   }
 
+
+
+  // =========================
+  // Supplier Payment Methods
+  // =========================
+  static const String supplierPaymentMethods = '/supplier/payment-methods';
+
+  static String supplierPaymentMethodByCode(String methodCode) {
+    return '/supplier/payment-methods/${methodCode.toUpperCase()}';
+  }
+
+  static String supplierPaymentMethodTest(String methodCode) {
+    return '/supplier/payment-methods/${methodCode.toUpperCase()}/test';
+  }
+
+  static String supplierOrderPayment(int orderId) {
+    return '/supplier/orders/$orderId/payment';
+  }
+
+  static String supplierOrderCashPaid(int orderId) {
+    return '/supplier/orders/$orderId/payment/cash-paid';
+  }
+
   // =========================
   // Build4All user endpoints
   // =========================

@@ -13,6 +13,14 @@ import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
 
+
+String _paymentMethodsDashboardLabel(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  if (languageCode == 'ar') return 'طرق الدفع';
+  if (languageCode == 'fr') return 'Méthodes de paiement';
+  return 'Payment Methods';
+}
+
 class SupplierDashboardScreen extends StatelessWidget {
   SupplierDashboardScreen({super.key});
 
@@ -331,6 +339,11 @@ class _SupplierDashboardView extends StatelessWidget {
         title: context.l10n.supplierDrawerCoupons,
         icon: Icons.sell_outlined,
         onTap: () => context.go('/supplier-coupons/create'),
+      ),
+      SupplierQuickActionCard(
+        title: _paymentMethodsDashboardLabel(context),
+        icon: Icons.account_balance_wallet_outlined,
+        onTap: () => context.go('/supplier-payment-methods'),
       ),
     ];
 

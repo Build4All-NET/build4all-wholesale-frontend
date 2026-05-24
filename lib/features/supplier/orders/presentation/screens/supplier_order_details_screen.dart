@@ -6,10 +6,12 @@ import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../../domain/entities/supplier_order_entity.dart';
+import '../../../payment/domain/entities/order_payment_entity.dart';
 import '../bloc/supplier_order_details/supplier_order_details_bloc.dart';
 import '../bloc/supplier_order_details/supplier_order_details_event.dart';
 import '../bloc/supplier_order_details/supplier_order_details_state.dart';
 import '../widgets/order_status_badge.dart';
+import '../../../payment/presentation/widgets/order_payment_section.dart';
 
 
 String _localizedSuccessMessage(
@@ -24,6 +26,8 @@ String _localizedSuccessMessage(
       return context.l10n.orderMarkedAsStatus(
         _supplierOrderStatusLabel(context, status),
       );
+    case 'cashPaymentMarkedPaid':
+      return _localizedPaymentText(context, 'Cash payment marked as paid');
     default:
       return message;
   }
@@ -47,6 +51,22 @@ String _supplierOrderStatusLabel(
     case SupplierOrderStatus.cancelled:
       return context.l10n.orderStatusCancelled;
   }
+}
+
+String _localizedPaymentText(BuildContext context, String key) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+
+  const ar = {
+    'Cash payment marked as paid': 'تم تأكيد تحصيل الكاش بنجاح',
+  };
+
+  const fr = {
+    'Cash payment marked as paid': 'Le paiement en espèces a été marqué comme payé',
+  };
+
+  if (languageCode == 'ar') return ar[key] ?? key;
+  if (languageCode == 'fr') return fr[key] ?? key;
+  return key;
 }
 
 class SupplierOrderDetailsScreen extends StatelessWidget {
@@ -134,7 +154,10 @@ class _SupplierOrderDetailsView extends StatelessWidget {
 
         return _OrderDetailsContent(
           order: order,
+          payment: state.payment,
           isUpdating: state.isUpdating,
+          isPaymentLoading: state.isPaymentLoading,
+          isPaymentUpdating: state.isPaymentUpdating,
         );
       },
     );
@@ -143,11 +166,17 @@ class _SupplierOrderDetailsView extends StatelessWidget {
 
 class _OrderDetailsContent extends StatelessWidget {
   final SupplierOrderEntity order;
+  final OrderPaymentEntity? payment;
   final bool isUpdating;
+  final bool isPaymentLoading;
+  final bool isPaymentUpdating;
 
   _OrderDetailsContent({
     required this.order,
+    required this.payment,
     required this.isUpdating,
+    required this.isPaymentLoading,
+    required this.isPaymentUpdating,
   });
 
   @override
@@ -201,6 +230,23 @@ class _OrderDetailsContent extends StatelessWidget {
                     _buildProductsCard(context),
                     SizedBox(height: 16),
                     _buildDeliveryCard(context),
+                    SizedBox(height: 16),
+                    OrderPaymentSection(
+                      paymentMethodFromOrder: order.paymentMethod,
+                      payment: payment,
+                      isLoading: isPaymentLoading,
+                      isUpdating: isPaymentUpdating,
+                      onRefresh: () {
+                        context.read<SupplierOrderDetailsBloc>().add(
+                              SupplierOrderDetailsPaymentRefreshRequested(),
+                            );
+                      },
+                      onMarkCashAsPaid: () {
+                        context.read<SupplierOrderDetailsBloc>().add(
+                              SupplierOrderDetailsMarkCashPaidRequested(),
+                            );
+                      },
+                    ),
                     if (order.notes != null &&
                         order.notes!.trim().isNotEmpty) ...[
                       SizedBox(height: 16),

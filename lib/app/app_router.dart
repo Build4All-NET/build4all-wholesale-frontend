@@ -62,6 +62,7 @@ import '../features/supplier/tax/presentation/screens/tax_rules_screen.dart';
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
+import '../features/supplier/payment_methods/presentation/screens/supplier_payment_methods_screen.dart';
 
 import '../features/supplier/rfq/presentation/screens/supplier_rfq_details_screen.dart';
 import '../features/supplier/rfq/presentation/screens/supplier_rfq_list_screen.dart';
@@ -224,6 +225,10 @@ class AppRouter {
 
           return SupplierOrderDetailsScreen(order: order);
         },
+      ),
+      GoRoute(
+        path: '/supplier-payment-methods',
+        builder: (context, state) => const SupplierPaymentMethodsScreen(),
       ),
       GoRoute(
         path: '/supplier-rfqs',

@@ -258,6 +258,11 @@ import 'features/supplier/orders/domain/usecases/get_supplier_order_details_usec
 import 'features/supplier/orders/domain/usecases/update_supplier_order_status_usecase.dart';
 import 'features/supplier/orders/presentation/bloc/supplier_orders/supplier_orders_bloc.dart';
 import 'features/supplier/orders/presentation/bloc/supplier_order_details/supplier_order_details_bloc.dart';
+import 'features/supplier/payment/data/repositories/supplier_payment_repository_impl.dart';
+import 'features/supplier/payment/data/services/supplier_payment_api_service.dart';
+import 'features/supplier/payment/domain/repositories/supplier_payment_repository.dart';
+import 'features/supplier/payment/domain/usecases/get_supplier_order_payment_usecase.dart';
+import 'features/supplier/payment/domain/usecases/mark_supplier_cash_payment_paid_usecase.dart';
 
 // =========================
 // SUPPLIER DASHBOARD
@@ -414,6 +419,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierPaymentApiService>(
+    () => SupplierPaymentApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<SupplierDashboardApiService>(
     () => SupplierDashboardApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
@@ -535,6 +546,12 @@ Future<void> init() async {
   sl.registerLazySingleton<SupplierOrderRepository>(
     () =>
         SupplierOrderRepositoryImpl(apiService: sl<SupplierOrderApiService>()),
+  );
+
+  sl.registerLazySingleton<SupplierPaymentRepository>(
+    () => SupplierPaymentRepositoryImpl(
+      apiService: sl<SupplierPaymentApiService>(),
+    ),
   );
 
   sl.registerLazySingleton<SupplierDashboardRepository>(
@@ -927,6 +944,14 @@ Future<void> init() async {
     () => UpdateSupplierOrderStatusUseCase(sl<SupplierOrderRepository>()),
   );
 
+  sl.registerLazySingleton<GetSupplierOrderPaymentUseCase>(
+    () => GetSupplierOrderPaymentUseCase(sl<SupplierPaymentRepository>()),
+  );
+
+  sl.registerLazySingleton<MarkSupplierCashPaymentPaidUseCase>(
+    () => MarkSupplierCashPaymentPaidUseCase(sl<SupplierPaymentRepository>()),
+  );
+
   // =========================
   // SUPPLIER DASHBOARD USE CASES
   // =========================
@@ -1083,6 +1108,9 @@ Future<void> init() async {
     () => SupplierOrderDetailsBloc(
       getSupplierOrderDetailsUseCase: sl<GetSupplierOrderDetailsUseCase>(),
       updateSupplierOrderStatusUseCase: sl<UpdateSupplierOrderStatusUseCase>(),
+      getSupplierOrderPaymentUseCase: sl<GetSupplierOrderPaymentUseCase>(),
+      markSupplierCashPaymentPaidUseCase:
+          sl<MarkSupplierCashPaymentPaidUseCase>(),
     ),
   );
 
