@@ -455,8 +455,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailUpdatedSuccessfully => 'Email updated successfully';
 
   @override
-  String get passwordVerificationCodeSent =>
-      'A password verification code was sent to your email.';
+  String get passwordVerificationCodeSent => 'Password verification code sent';
 
   @override
   String get passwordsDoNotMatch => 'Passwords do not match';
@@ -880,7 +879,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'Enter a valid phone number for the selected country';
+      'Enter a valid phone number with country code';
 
   @override
   String get deleteBranchTitle => 'Delete Branch';
@@ -1403,12 +1402,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount products • $subCategoryCount sub categories';
+    return '$productCount products â€¢ $subCategoryCount sub categories';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName • $productCount products';
+    return '$categoryName â€¢ $productCount products';
   }
 
   @override
@@ -1602,7 +1601,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity units × $price';
+    return '$quantity units Ã— $price';
   }
 
   @override
@@ -3104,6 +3103,154 @@ class AppLocalizationsEn extends AppLocalizations {
       'AI requirements generated successfully';
 
   @override
+  String get completeRetailerProfileTitle => 'Complete Retailer Profile';
+
+  @override
+  String get completeRetailerProfileSubtitle =>
+      'Provide your business information to continue.';
+
+  @override
+  String get enterFullName => 'Enter your full name';
+
+  @override
+  String get enterStoreName => 'Enter store name';
+
+  @override
+  String get enterStoreAddress => 'Enter store address';
+
+  @override
+  String get retailerProfileSavedSuccessfully =>
+      'Retailer profile saved successfully';
+
+  @override
+  String get loadingCities => 'Loading cities...';
+
+  @override
+  String get noCitiesFoundForCountry => 'No cities found for this country';
+
+  @override
+  String get searchCity => 'Search city...';
+
+  @override
+  String get cityRequiredError => 'City is required';
+
+  @override
+  String get couldNotLoadCountries =>
+      'Could not load countries. Please try again.';
+
+  @override
+  String get couldNotLoadCities => 'Could not load cities. Please try again.';
+
+  @override
+  String get verifyNewEmail => 'Verify new email';
+
+  @override
+  String get sixDigitCode => '6-digit code';
+
+  @override
+  String get verificationCodeSent => 'Verification code sent';
+
+  @override
+  String get couldNotResendCode => 'Could not resend code.';
+
+  @override
+  String get invalidVerificationCode => 'Invalid verification code.';
+
+  @override
+  String get verify => 'Verify';
+
+  @override
+  String get resend => 'Resend';
+
+  @override
+  String get verifyPasswordChange => 'Verify password change';
+
+  @override
+  String enterCodeSentToEmail(String email) {
+    return 'Enter the 6-digit code sent to $email';
+  }
+
+  @override
+  String get couldNotUpdatePassword => 'Could not update password.';
+
+  @override
+  String get newPasswordRequired => 'New password is required';
+
+  @override
+  String get passwordNotUpdatedCodeNotConfirmed =>
+      'Password was not updated because the verification code was not confirmed.';
+
+  @override
+  String get emailVerificationRequiredBeforeUpdating =>
+      'Email verification is required before updating the email.';
+
+  @override
+  String get emailNotUpdatedCodeNotConfirmed =>
+      'Email was not updated because the verification code was not confirmed.';
+
+  @override
+  String get rfqCategoryRequired => 'Category is required';
+
+  @override
+  String get rfqSubcategoryRequired => 'Subcategory is required';
+
+  @override
+  String get rfqUnitRequired => 'Unit is required';
+
+  @override
+  String get rfqTargetUnitPriceHint => 'Enter target unit price';
+
+  @override
+  String get rfqTargetUnitPriceRequired => 'Target unit price is required';
+
+  @override
+  String get rfqEnterValidTargetUnitPrice => 'Enter a valid target unit price';
+
+  @override
+  String get rfqPreferredDeliveryTimeRequired =>
+      'Preferred delivery time is required';
+
+  @override
+  String get rfqDeadlineRequired => 'Deadline date is required';
+
+  @override
+  String get rfqCityRequired => 'Delivery city is required';
+
+  @override
+  String get rfqDeliveryAddressRequired => 'Delivery address is required';
+
+  @override
+  String get wholesaleOpportunities => 'Wholesale Opportunities';
+
+  @override
+  String get bulkOrders => 'Bulk Orders';
+
+  @override
+  String get bulkOrdersDescription =>
+      'Save more when ordering larger quantities from suppliers.';
+
+  @override
+  String get viewAvailableOffers => 'View available offers';
+
+  @override
+  String get groupDeliveryAvailable => 'Group Delivery Available';
+
+  @override
+  String get groupDeliveryDescription =>
+      'Join other retailers in your area and save on shipping costs.';
+
+  @override
+  String groupDeliveryDynamicDescription(
+    int retailersJoined,
+    num savingsPercent,
+  ) {
+    return '$retailersJoined retailers joined nearby. Save up to $savingsPercent% on shipping costs.';
+  }
+
+  @override
+  String get learnMore => 'Learn More';
+
+  @override
   String get productDeletedSuccessfully => 'Product deleted successfully';
 
   @override
@@ -3167,4 +3314,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'Bank transfer';
+
+  @override
+  String get verifyPhoneChange => 'Verify phone number change';
+
+  @override
+  String enterStaticPhoneCode(String phoneNumber) {
+    return 'Enter the verification code sent to $phoneNumber';
+  }
+
+  @override
+  String get staticPhoneCodeSent => 'Phone verification code sent';
+
+  @override
+  String get invalidPhoneVerificationCode => 'Invalid phone verification code.';
+
+  @override
+  String get phoneNotUpdatedCodeNotConfirmed =>
+      'Phone number was not updated because the verification code was not confirmed.';
 }

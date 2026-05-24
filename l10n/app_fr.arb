@@ -144,7 +144,7 @@
   "resendCode": "Renvoyer le code",
   "verificationCode": "Code de vérification",
   "emailUpdatedSuccessfully": "E-mail mis à jour avec succès",
-  "passwordVerificationCodeSent": "Un code de vérification du mot de passe a été envoyé à votre e-mail.",
+  "passwordVerificationCodeSent": "Code de vérification du mot de passe envoyé",
   "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
   "passwordUpdatedSuccessfully": "Mot de passe mis à jour avec succès",
   "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
@@ -288,7 +288,7 @@
   "phoneSelectCountryFirstError": "Veuillez d’abord sélectionner un pays",
   "phoneCountryMismatchError": "Le pays du téléphone doit correspondre au pays sélectionné",
   "lebanesePhoneDigitsError": "Les numéros libanais doivent contenir 8 chiffres après +961",
-  "validPhoneForSelectedCountryError": "Entrez un numéro de téléphone valide pour le pays sélectionné",
+  "validPhoneForSelectedCountryError": "Entrez un numéro de téléphone valide avec l’indicatif du pays",
   "deleteBranchTitle": "Supprimer la succursale",
   "deleteBranchConfirmation": "Voulez-vous vraiment supprimer {branchName} ?",
   "@deleteBranchConfirmation": {
@@ -1178,7 +1178,7 @@
   "rfqNoDeliveryLocation": "Aucun lieu de livraison ajouté",
   "rfqLocation": "Lieu",
   "rfqDelivery": "Livraison",
-  "rfqQuantity": "Quantité",
+  "rfqQuantity": "Quantite",
   "rfqTargetPrice": "Prix cible",
   "rfqUnitPrice": "Prix unitaire",
   "rfqTotal": "Total",
@@ -1207,12 +1207,73 @@
   "aiUnavailable": "L’assistant IA est temporairement indisponible. Veuillez réessayer plus tard.",
   "aiTimeout": "L’assistant IA a pris trop de temps. Veuillez réessayer.",
   "aiEmptyAnswer": "Je n’ai pas pu générer de réponse. Veuillez réessayer.",
-  "rfqPostedSuccessfully": "تم نشر طلب التسعير بنجاح",
-  "rfqUpdatedSuccessfully": "تم تحديث طلب التسعير بنجاح",
-  "rfqCancelledSuccessfully": "تم إلغاء طلب التسعير بنجاح",
-  "rfqDeletedSuccessfully": "تم حذف طلب التسعير بنجاح",
-  "rfqQuotationAcceptedSuccessfully": "تم قبول عرض السعر بنجاح",
-  "rfqAiGeneratedSuccessfully": "تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح",
+  "rfqPostedSuccessfully": "Devis publiée avec succès",
+  "rfqUpdatedSuccessfully": "RFQ mise à jour avec succès",
+  "rfqCancelledSuccessfully": "RFQ annulée avec succès",
+  "rfqDeletedSuccessfully": "RFQ supprimée avec succès",
+  "rfqQuotationAcceptedSuccessfully": "Devis accepté avec succès",
+  "rfqAiGeneratedSuccessfully": " Devis générée par IA avec succès",
+  "completeRetailerProfileTitle": "Compléter le profil détaillant",
+  "completeRetailerProfileSubtitle": "Renseignez les informations de votre entreprise pour continuer.",
+  "enterFullName": "Entrez votre nom complet",
+  "enterStoreName": "Entrez le nom du magasin",
+  "enterStoreAddress": "Entrez l’adresse du magasin",
+  "retailerProfileSavedSuccessfully": "Le profil détaillant a été enregistré avec succès",
+  "loadingCities": "Chargement des villes...",
+  "noCitiesFoundForCountry": "Aucune ville trouvée pour ce pays",
+  "searchCity": "Rechercher une ville...",
+  "cityRequiredError": "La ville est obligatoire",
+  "couldNotLoadCountries": "Impossible de charger les pays. Veuillez réessayer.",
+  "couldNotLoadCities": "Impossible de charger les villes. Veuillez réessayer.",
+  "verifyNewEmail": "Vérifier le nouvel e-mail",
+  "sixDigitCode": "Code à 6 chiffres",
+  "verificationCodeSent": "Code de vérification envoyé",
+  "couldNotResendCode": "Impossible de renvoyer le code.",
+  "invalidVerificationCode": "Code de vérification invalide.",
+  "verify": "Vérifier",
+  "resend": "Renvoyer",
+  "verifyPasswordChange": "Vérifier le changement de mot de passe",
+  "enterCodeSentToEmail": "Entrez le code à 6 chiffres envoyé à {email}",
+  "@enterCodeSentToEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotUpdatePassword": "Impossible de mettre à jour le mot de passe.",
+  "newPasswordRequired": "Le nouveau mot de passe est obligatoire",
+  "passwordNotUpdatedCodeNotConfirmed": "Le mot de passe n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
+  "emailVerificationRequiredBeforeUpdating": "La vérification de l’e-mail est requise avant sa mise à jour.",
+  "emailNotUpdatedCodeNotConfirmed": "L’e-mail n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
+  "rfqCategoryRequired": "La catégorie est obligatoire",
+  "rfqSubcategoryRequired": "La sous-catégorie est obligatoire",
+  "rfqUnitRequired": "L’unité est obligatoire",
+  "rfqTargetUnitPriceHint": "Entrez le prix unitaire cible",
+  "rfqTargetUnitPriceRequired": "Le prix unitaire cible est obligatoire",
+  "rfqEnterValidTargetUnitPrice": "Entrez un prix unitaire cible valide",
+  "rfqPreferredDeliveryTimeRequired": "Le délai de livraison préféré est obligatoire",
+  "rfqDeadlineRequired": "La date limite est obligatoire",
+  "rfqCityRequired": "La ville de livraison est obligatoire",
+  "rfqDeliveryAddressRequired": "L’adresse de livraison est obligatoire",
+  "wholesaleOpportunities": "Opportunités de gros",
+  "bulkOrders": "Commandes en gros",
+  "bulkOrdersDescription": "Économisez davantage en commandant de plus grandes quantités auprès des fournisseurs.",
+  "viewAvailableOffers": "Voir les offres disponibles",
+  "groupDeliveryAvailable": "Livraison groupée disponible",
+  "groupDeliveryDescription": "Rejoignez d’autres détaillants de votre région et économisez sur les frais de livraison.",
+  "groupDeliveryDynamicDescription": "{retailersJoined} détaillants ont rejoint près de chez vous. Économisez jusqu’à {savingsPercent}% sur les frais de livraison.",
+  "@groupDeliveryDynamicDescription": {
+    "placeholders": {
+      "retailersJoined": {
+        "type": "int"
+      },
+      "savingsPercent": {
+        "type": "num"
+      }
+    }
+  },
+  "learnMore": "En savoir plus",
   "productDeletedSuccessfully": "Produit supprimé avec succès",
   "stockAssignedSuccessfully": "Stock attribué avec succès",
   "stockUpdatedSuccessfully": "Stock mis à jour avec succès",
@@ -1238,5 +1299,19 @@
   },
   "paymentCashOnDelivery": "Paiement à la livraison",
   "paymentCard": "Paiement par carte",
-  "paymentBankTransfer": "Virement bancaire"
+  "paymentBankTransfer": "Virement bancaire",
+  "verifyPhoneChange": "Vérifier le changement du numéro de téléphone",
+"enterStaticPhoneCode": "Entrez le code de vérification pour {phoneNumber}. Code de démonstration : 123456",
+"@enterStaticPhoneCode": {
+  "placeholders": {
+    "phoneNumber": {
+      "type": "String"
+    }
+  }
+},
+"staticPhoneCodeSent": "Code de vérification du téléphone envoyé. Code de démonstration : 123456",
+"invalidPhoneVerificationCode": "Code de vérification du téléphone invalide.",
+"phoneNotUpdatedCodeNotConfirmed": "Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
+"enterStaticPhoneCode": "Entrez le code de vérification envoyé à {phoneNumber}",
+"staticPhoneCodeSent": "Code de vérification du téléphone envoyé"
 }

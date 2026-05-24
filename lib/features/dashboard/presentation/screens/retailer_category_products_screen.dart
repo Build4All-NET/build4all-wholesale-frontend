@@ -56,14 +56,23 @@ class _RetailerCategoryProductsViewState
   }
 
   List<String> _extractSubCategories(List<HomeProductModel> products) {
-    final subCategories = products
-        .map((product) => product.subCategoryName?.trim())
-        .where((name) => name != null && name.isNotEmpty)
-        .cast<String>()
-        .toSet()
-        .toList();
+    final subCategoryNames = <String>{};
 
-    subCategories.sort();
+    for (final subCategory in widget.category.subCategories) {
+      final name = subCategory.name.trim();
+      if (name.isNotEmpty) {
+        subCategoryNames.add(name);
+      }
+    }
+
+    for (final product in products) {
+      final name = product.subCategoryName?.trim();
+      if (name != null && name.isNotEmpty) {
+        subCategoryNames.add(name);
+      }
+    }
+
+    final subCategories = subCategoryNames.toList()..sort();
     return subCategories;
   }
 
@@ -71,9 +80,11 @@ class _RetailerCategoryProductsViewState
     final cleanQuery = _query.trim().toLowerCase();
 
     return products.where((product) {
+      final productSubCategory = product.subCategoryName?.trim() ?? '';
       final matchesSubCategory =
           _selectedSubCategoryName == null ||
-          product.subCategoryName == _selectedSubCategoryName;
+          productSubCategory.toLowerCase() ==
+              _selectedSubCategoryName!.trim().toLowerCase();
 
       final searchableText = [
         product.name,
@@ -396,7 +407,6 @@ class RetailerProductListCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
-            clipBehavior: Clip.none,
             children: [
               _ProductImage(imageUrl: product.imageUrl),
               if (product.hasActivePromotion)
@@ -406,10 +416,10 @@ class RetailerProductListCard extends StatelessWidget {
                   child: RetailerPromotionBadge(
                     product: product,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 5,
+                      horizontal: 7,
+                      vertical: 4,
                     ),
-                    fontSize: 10,
+                    fontSize: 9,
                   ),
                 ),
             ],
@@ -456,16 +466,7 @@ class RetailerProductListCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '${product.currency}${product.price.toStringAsFixed(2)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: primary,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+                _ProductPriceLine(product: product, primary: primary),
                 const SizedBox(height: 8),
                 RetailerPromotionInfoPill(product: product),
                 if (product.hasActivePromotion) const SizedBox(height: 8),
@@ -477,16 +478,9 @@ class RetailerProductListCard extends StatelessWidget {
                       icon: Icons.inventory_2_outlined,
                       text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
                     ),
-                    _MiniInfo(
-                      icon: Icons.warehouse_outlined,
-                      text: '${l10n.stock}: ${product.totalStock}',
-                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
-
-                /// AI + Add actions.
-                /// They are separated and constrained to avoid button overflow.
                 Row(
                   children: [
                     Expanded(
@@ -525,6 +519,50 @@ class RetailerProductListCard extends StatelessWidget {
     if (subCategory.isNotEmpty) return subCategory;
 
     return '';
+  }
+}
+
+class _ProductPriceLine extends StatelessWidget {
+  final HomeProductModel product;
+  final Color primary;
+
+  const _ProductPriceLine({required this.product, required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            '${product.currency}${product.price.toStringAsFixed(2)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: primary,
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        if (product.shouldShowOriginalPrice) ...[
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.lineThrough,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }
 

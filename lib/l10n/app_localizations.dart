@@ -967,7 +967,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordVerificationCodeSent.
   ///
   /// In en, this message translates to:
-  /// **'A password verification code was sent to your email.'**
+  /// **'Password verification code sent'**
   String get passwordVerificationCodeSent;
 
   /// No description provided for @passwordsDoNotMatch.
@@ -1795,7 +1795,7 @@ abstract class AppLocalizations {
   /// No description provided for @validPhoneForSelectedCountryError.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid phone number for the selected country'**
+  /// **'Enter a valid phone number with country code'**
   String get validPhoneForSelectedCountryError;
 
   /// No description provided for @deleteBranchTitle.
@@ -2758,13 +2758,13 @@ abstract class AppLocalizations {
   /// No description provided for @categoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{productCount} products • {subCategoryCount} sub categories'**
+  /// **'{productCount} products â€¢ {subCategoryCount} sub categories'**
   String categoryStats(Object productCount, Object subCategoryCount);
 
   /// No description provided for @subCategoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{categoryName} • {productCount} products'**
+  /// **'{categoryName} â€¢ {productCount} products'**
   String subCategoryStats(Object categoryName, Object productCount);
 
   /// No description provided for @linkedLabel.
@@ -3100,7 +3100,7 @@ abstract class AppLocalizations {
   /// No description provided for @unitsTimesPrice.
   ///
   /// In en, this message translates to:
-  /// **'{quantity} units × {price}'**
+  /// **'{quantity} units Ã— {price}'**
   String unitsTimesPrice(Object quantity, Object price);
 
   /// No description provided for @deliveryInformationTitle.
@@ -5775,6 +5775,273 @@ abstract class AppLocalizations {
   /// **'AI requirements generated successfully'**
   String get rfqAiGeneratedSuccessfully;
 
+  /// No description provided for @completeRetailerProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Retailer Profile'**
+  String get completeRetailerProfileTitle;
+
+  /// No description provided for @completeRetailerProfileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide your business information to continue.'**
+  String get completeRetailerProfileSubtitle;
+
+  /// No description provided for @enterFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get enterFullName;
+
+  /// No description provided for @enterStoreName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter store name'**
+  String get enterStoreName;
+
+  /// No description provided for @enterStoreAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter store address'**
+  String get enterStoreAddress;
+
+  /// No description provided for @retailerProfileSavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailer profile saved successfully'**
+  String get retailerProfileSavedSuccessfully;
+
+  /// No description provided for @loadingCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading cities...'**
+  String get loadingCities;
+
+  /// No description provided for @noCitiesFoundForCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'No cities found for this country'**
+  String get noCitiesFoundForCountry;
+
+  /// No description provided for @searchCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Search city...'**
+  String get searchCity;
+
+  /// No description provided for @cityRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'City is required'**
+  String get cityRequiredError;
+
+  /// No description provided for @couldNotLoadCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load countries. Please try again.'**
+  String get couldNotLoadCountries;
+
+  /// No description provided for @couldNotLoadCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load cities. Please try again.'**
+  String get couldNotLoadCities;
+
+  /// No description provided for @verifyNewEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify new email'**
+  String get verifyNewEmail;
+
+  /// No description provided for @sixDigitCode.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit code'**
+  String get sixDigitCode;
+
+  /// No description provided for @verificationCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent'**
+  String get verificationCodeSent;
+
+  /// No description provided for @couldNotResendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not resend code.'**
+  String get couldNotResendCode;
+
+  /// No description provided for @invalidVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid verification code.'**
+  String get invalidVerificationCode;
+
+  /// No description provided for @verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// No description provided for @resend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get resend;
+
+  /// No description provided for @verifyPasswordChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify password change'**
+  String get verifyPasswordChange;
+
+  /// No description provided for @enterCodeSentToEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code sent to {email}'**
+  String enterCodeSentToEmail(String email);
+
+  /// No description provided for @couldNotUpdatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update password.'**
+  String get couldNotUpdatePassword;
+
+  /// No description provided for @newPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'New password is required'**
+  String get newPasswordRequired;
+
+  /// No description provided for @passwordNotUpdatedCodeNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Password was not updated because the verification code was not confirmed.'**
+  String get passwordNotUpdatedCodeNotConfirmed;
+
+  /// No description provided for @emailVerificationRequiredBeforeUpdating.
+  ///
+  /// In en, this message translates to:
+  /// **'Email verification is required before updating the email.'**
+  String get emailVerificationRequiredBeforeUpdating;
+
+  /// No description provided for @emailNotUpdatedCodeNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Email was not updated because the verification code was not confirmed.'**
+  String get emailNotUpdatedCodeNotConfirmed;
+
+  /// No description provided for @rfqCategoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Category is required'**
+  String get rfqCategoryRequired;
+
+  /// No description provided for @rfqSubcategoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory is required'**
+  String get rfqSubcategoryRequired;
+
+  /// No description provided for @rfqUnitRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit is required'**
+  String get rfqUnitRequired;
+
+  /// No description provided for @rfqTargetUnitPriceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter target unit price'**
+  String get rfqTargetUnitPriceHint;
+
+  /// No description provided for @rfqTargetUnitPriceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Target unit price is required'**
+  String get rfqTargetUnitPriceRequired;
+
+  /// No description provided for @rfqEnterValidTargetUnitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid target unit price'**
+  String get rfqEnterValidTargetUnitPrice;
+
+  /// No description provided for @rfqPreferredDeliveryTimeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred delivery time is required'**
+  String get rfqPreferredDeliveryTimeRequired;
+
+  /// No description provided for @rfqDeadlineRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline date is required'**
+  String get rfqDeadlineRequired;
+
+  /// No description provided for @rfqCityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery city is required'**
+  String get rfqCityRequired;
+
+  /// No description provided for @rfqDeliveryAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery address is required'**
+  String get rfqDeliveryAddressRequired;
+
+  /// No description provided for @wholesaleOpportunities.
+  ///
+  /// In en, this message translates to:
+  /// **'Wholesale Opportunities'**
+  String get wholesaleOpportunities;
+
+  /// No description provided for @bulkOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk Orders'**
+  String get bulkOrders;
+
+  /// No description provided for @bulkOrdersDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Save more when ordering larger quantities from suppliers.'**
+  String get bulkOrdersDescription;
+
+  /// No description provided for @viewAvailableOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'View available offers'**
+  String get viewAvailableOffers;
+
+  /// No description provided for @groupDeliveryAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Delivery Available'**
+  String get groupDeliveryAvailable;
+
+  /// No description provided for @groupDeliveryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Join other retailers in your area and save on shipping costs.'**
+  String get groupDeliveryDescription;
+
+  /// No description provided for @groupDeliveryDynamicDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{retailersJoined} retailers joined nearby. Save up to {savingsPercent}% on shipping costs.'**
+  String groupDeliveryDynamicDescription(
+    int retailersJoined,
+    num savingsPercent,
+  );
+
+  /// No description provided for @learnMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn More'**
+  String get learnMore;
+
   /// No description provided for @productDeletedSuccessfully.
   ///
   /// In en, this message translates to:
@@ -5888,6 +6155,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bank transfer'**
   String get paymentBankTransfer;
+
+  /// No description provided for @verifyPhoneChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify phone number change'**
+  String get verifyPhoneChange;
+
+  /// No description provided for @enterStaticPhoneCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to {phoneNumber}'**
+  String enterStaticPhoneCode(String phoneNumber);
+
+  /// No description provided for @staticPhoneCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone verification code sent'**
+  String get staticPhoneCodeSent;
+
+  /// No description provided for @invalidPhoneVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid phone verification code.'**
+  String get invalidPhoneVerificationCode;
+
+  /// No description provided for @phoneNotUpdatedCodeNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number was not updated because the verification code was not confirmed.'**
+  String get phoneNotUpdatedCodeNotConfirmed;
 }
 
 class _AppLocalizationsDelegate

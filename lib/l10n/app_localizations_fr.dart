@@ -464,7 +464,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get passwordVerificationCodeSent =>
-      'Un code de vérification du mot de passe a été envoyé à votre e-mail.';
+      'Code de vérification du mot de passe envoyé';
 
   @override
   String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
@@ -898,7 +898,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'Entrez un numéro de téléphone valide pour le pays sélectionné';
+      'Entrez un numéro de téléphone valide avec l’indicatif du pays';
 
   @override
   String get deleteBranchTitle => 'Supprimer la succursale';
@@ -3101,7 +3101,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqDelivery => 'Livraison';
 
   @override
-  String get rfqQuantity => 'Quantité';
+  String get rfqQuantity => 'Quantite';
 
   @override
   String get rfqTargetPrice => 'Prix cible';
@@ -3137,23 +3137,175 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rfqAccept => 'Accepter';
 
   @override
-  String get rfqPostedSuccessfully => 'تم نشر طلب التسعير بنجاح';
+  String get rfqPostedSuccessfully => 'Devis publiée avec succès';
 
   @override
-  String get rfqUpdatedSuccessfully => 'تم تحديث طلب التسعير بنجاح';
+  String get rfqUpdatedSuccessfully => 'RFQ mise à jour avec succès';
 
   @override
-  String get rfqCancelledSuccessfully => 'تم إلغاء طلب التسعير بنجاح';
+  String get rfqCancelledSuccessfully => 'RFQ annulée avec succès';
 
   @override
-  String get rfqDeletedSuccessfully => 'تم حذف طلب التسعير بنجاح';
+  String get rfqDeletedSuccessfully => 'RFQ supprimée avec succès';
 
   @override
-  String get rfqQuotationAcceptedSuccessfully => 'تم قبول عرض السعر بنجاح';
+  String get rfqQuotationAcceptedSuccessfully => 'Devis accepté avec succès';
 
   @override
-  String get rfqAiGeneratedSuccessfully =>
-      'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
+  String get rfqAiGeneratedSuccessfully => ' Devis générée par IA avec succès';
+
+  @override
+  String get completeRetailerProfileTitle => 'Compléter le profil détaillant';
+
+  @override
+  String get completeRetailerProfileSubtitle =>
+      'Renseignez les informations de votre entreprise pour continuer.';
+
+  @override
+  String get enterFullName => 'Entrez votre nom complet';
+
+  @override
+  String get enterStoreName => 'Entrez le nom du magasin';
+
+  @override
+  String get enterStoreAddress => 'Entrez l’adresse du magasin';
+
+  @override
+  String get retailerProfileSavedSuccessfully =>
+      'Le profil détaillant a été enregistré avec succès';
+
+  @override
+  String get loadingCities => 'Chargement des villes...';
+
+  @override
+  String get noCitiesFoundForCountry => 'Aucune ville trouvée pour ce pays';
+
+  @override
+  String get searchCity => 'Rechercher une ville...';
+
+  @override
+  String get cityRequiredError => 'La ville est obligatoire';
+
+  @override
+  String get couldNotLoadCountries =>
+      'Impossible de charger les pays. Veuillez réessayer.';
+
+  @override
+  String get couldNotLoadCities =>
+      'Impossible de charger les villes. Veuillez réessayer.';
+
+  @override
+  String get verifyNewEmail => 'Vérifier le nouvel e-mail';
+
+  @override
+  String get sixDigitCode => 'Code à 6 chiffres';
+
+  @override
+  String get verificationCodeSent => 'Code de vérification envoyé';
+
+  @override
+  String get couldNotResendCode => 'Impossible de renvoyer le code.';
+
+  @override
+  String get invalidVerificationCode => 'Code de vérification invalide.';
+
+  @override
+  String get verify => 'Vérifier';
+
+  @override
+  String get resend => 'Renvoyer';
+
+  @override
+  String get verifyPasswordChange => 'Vérifier le changement de mot de passe';
+
+  @override
+  String enterCodeSentToEmail(String email) {
+    return 'Entrez le code à 6 chiffres envoyé à $email';
+  }
+
+  @override
+  String get couldNotUpdatePassword =>
+      'Impossible de mettre à jour le mot de passe.';
+
+  @override
+  String get newPasswordRequired => 'Le nouveau mot de passe est obligatoire';
+
+  @override
+  String get passwordNotUpdatedCodeNotConfirmed =>
+      'Le mot de passe n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
+
+  @override
+  String get emailVerificationRequiredBeforeUpdating =>
+      'La vérification de l’e-mail est requise avant sa mise à jour.';
+
+  @override
+  String get emailNotUpdatedCodeNotConfirmed =>
+      'L’e-mail n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
+
+  @override
+  String get rfqCategoryRequired => 'La catégorie est obligatoire';
+
+  @override
+  String get rfqSubcategoryRequired => 'La sous-catégorie est obligatoire';
+
+  @override
+  String get rfqUnitRequired => 'L’unité est obligatoire';
+
+  @override
+  String get rfqTargetUnitPriceHint => 'Entrez le prix unitaire cible';
+
+  @override
+  String get rfqTargetUnitPriceRequired =>
+      'Le prix unitaire cible est obligatoire';
+
+  @override
+  String get rfqEnterValidTargetUnitPrice =>
+      'Entrez un prix unitaire cible valide';
+
+  @override
+  String get rfqPreferredDeliveryTimeRequired =>
+      'Le délai de livraison préféré est obligatoire';
+
+  @override
+  String get rfqDeadlineRequired => 'La date limite est obligatoire';
+
+  @override
+  String get rfqCityRequired => 'La ville de livraison est obligatoire';
+
+  @override
+  String get rfqDeliveryAddressRequired =>
+      'L’adresse de livraison est obligatoire';
+
+  @override
+  String get wholesaleOpportunities => 'Opportunités de gros';
+
+  @override
+  String get bulkOrders => 'Commandes en gros';
+
+  @override
+  String get bulkOrdersDescription =>
+      'Économisez davantage en commandant de plus grandes quantités auprès des fournisseurs.';
+
+  @override
+  String get viewAvailableOffers => 'Voir les offres disponibles';
+
+  @override
+  String get groupDeliveryAvailable => 'Livraison groupée disponible';
+
+  @override
+  String get groupDeliveryDescription =>
+      'Rejoignez d’autres détaillants de votre région et économisez sur les frais de livraison.';
+
+  @override
+  String groupDeliveryDynamicDescription(
+    int retailersJoined,
+    num savingsPercent,
+  ) {
+    return '$retailersJoined détaillants ont rejoint près de chez vous. Économisez jusqu’à $savingsPercent% sur les frais de livraison.';
+  }
+
+  @override
+  String get learnMore => 'En savoir plus';
 
   @override
   String get productDeletedSuccessfully => 'Produit supprimé avec succès';
@@ -3220,4 +3372,24 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'Virement bancaire';
+
+  @override
+  String get verifyPhoneChange =>
+      'Vérifier le changement du numéro de téléphone';
+
+  @override
+  String enterStaticPhoneCode(String phoneNumber) {
+    return 'Entrez le code de vérification envoyé à $phoneNumber';
+  }
+
+  @override
+  String get staticPhoneCodeSent => 'Code de vérification du téléphone envoyé';
+
+  @override
+  String get invalidPhoneVerificationCode =>
+      'Code de vérification du téléphone invalide.';
+
+  @override
+  String get phoneNotUpdatedCodeNotConfirmed =>
+      'Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
 }

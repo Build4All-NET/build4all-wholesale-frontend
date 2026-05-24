@@ -103,18 +103,14 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllVerifyEmailChange(userId),
-        data: {
-          'code': code.trim(),
-        },
+        data: {'code': code.trim()},
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<void> resendEmailChangeCode({
-    required int userId,
-  }) async {
+  Future<void> resendEmailChangeCode({required int userId}) async {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllResendEmailChange(userId),
@@ -131,9 +127,7 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllResetPassword(ownerProjectLinkId),
-        data: {
-          'email': email.trim(),
-        },
+        data: {'email': email.trim()},
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
@@ -148,10 +142,7 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.post(
         ApiConfig.build4AllVerifyResetCode(ownerProjectLinkId),
-        data: {
-          'email': email.trim(),
-          'code': code.trim(),
-        },
+        data: {'email': email.trim(), 'code': code.trim()},
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
@@ -197,6 +188,10 @@ class RetailerProfileService {
     required String storeName,
     required String phoneNumber,
     required String storeAddress,
+    required int countryId,
+    required String countryName,
+    required String countryIso2Code,
+    required String countryIso3Code,
     required String city,
     required String businessType,
   }) async {
@@ -208,6 +203,10 @@ class RetailerProfileService {
           'storeName': storeName.trim(),
           'phoneNumber': phoneNumber.trim(),
           'storeAddress': storeAddress.trim(),
+          'countryId': countryId,
+          'countryName': countryName.trim(),
+          'countryIso2Code': countryIso2Code.trim().toUpperCase(),
+          'countryIso3Code': countryIso3Code.trim().toUpperCase(),
           'city': city.trim(),
           'businessType': businessType.trim(),
         },
@@ -228,9 +227,7 @@ class RetailerProfileService {
     try {
       await centralApiClient.dio.delete(
         ApiConfig.build4AllDeleteUser(userId),
-        data: {
-          'password': password,
-        },
+        data: {'password': password},
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
