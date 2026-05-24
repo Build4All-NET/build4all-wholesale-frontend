@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 
@@ -11,7 +12,7 @@ class CatalogCard extends StatelessWidget {
   final VoidCallback onToggleStatus;
   final VoidCallback onDelete;
 
-  const CatalogCard({
+  CatalogCard({
     super.key,
     required this.title,
     required this.subtitle,
@@ -25,12 +26,12 @@ class CatalogCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusColor = isActive
-        ? const Color(0xFF16A34A)
+        ? Color(0xFF16A34A)
         : AppThemeTokens.error;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -47,35 +48,35 @@ class CatalogCard extends StatelessWidget {
               color: statusColor,
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w900,
                     color: AppThemeTokens.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: 5),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppThemeTokens.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 6,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 5,
                       ),
@@ -84,7 +85,7 @@ class CatalogCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        isActive ? 'Active' : 'Inactive',
+                        isActive ? context.l10n.activeStatus : context.l10n.inactiveStatus,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w900,
@@ -94,7 +95,7 @@ class CatalogCard extends StatelessWidget {
                     ),
                     if (!canDelete)
                       Container(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 5,
                         ),
@@ -103,8 +104,8 @@ class CatalogCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999),
                           border: Border.all(color: AppThemeTokens.border),
                         ),
-                        child: const Text(
-                          'Linked',
+                        child: Text(
+                          context.l10n.linkedLabel,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w900,
@@ -118,7 +119,7 @@ class CatalogCard extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(Icons.more_vert),
             onSelected: (value) {
               if (value == 'edit') {
                 onEdit();
@@ -134,13 +135,13 @@ class CatalogCard extends StatelessWidget {
             },
             itemBuilder: (context) {
               return [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
                   child: Row(
                     children: [
                       Icon(Icons.edit_outlined),
                       SizedBox(width: 10),
-                      Text('Edit'),
+                      Text(context.l10n.editButton),
                     ],
                   ),
                 ),
@@ -153,12 +154,12 @@ class CatalogCard extends StatelessWidget {
                             ? Icons.pause_circle_outline
                             : Icons.play_circle_outline,
                       ),
-                      const SizedBox(width: 10),
-                      Text(isActive ? 'Deactivate' : 'Activate'),
+                      SizedBox(width: 10),
+                      Text(isActive ? context.l10n.deactivateButton : context.l10n.activateButton),
                     ],
                   ),
                 ),
-                const PopupMenuDivider(),
+                PopupMenuDivider(),
                 PopupMenuItem(
                   value: 'delete',
                   child: Row(
@@ -169,7 +170,7 @@ class CatalogCard extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        'Delete',
+                        context.l10n.delete,
                         style: TextStyle(
                           color: AppThemeTokens.error,
                         ),

@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
-import '../../../../core/config/app_config.dart';
+import '../../../../core/branding/app_brand_logo.dart';
+import '../../../../core/branding/branding_cubit.dart';
+import '../../../../core/branding/branding_state.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
@@ -122,53 +124,39 @@ class _LoginScreenState extends State<LoginScreen> {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final l10n = context.l10n;
 
-    return Column(
-      children: [
-        Container(
-          width: 82,
-          height: 82,
-          decoration: BoxDecoration(
-            color: primaryColor.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Image.asset(
-              'assets/branding/logo.png',
-              fit: BoxFit.contain,
-              errorBuilder: (_, error, _) {
-                debugPrint('LOGIN LOGO ASSET ERROR: $error');
-
-                return Icon(
-                  Icons.storefront_outlined,
-                  size: 38,
-                  color: primaryColor,
-                );
-              },
+    return BlocBuilder<BrandingCubit, BrandingState>(
+      builder: (context, brandingState) {
+        return Column(
+          children: [
+            AppBrandLogo(
+              size: 82,
+              iconSize: 38,
+              fallbackIcon: Icons.storefront_outlined,
+              fallbackIconColor: primaryColor,
+              backgroundColor: primaryColor.withValues(alpha: 0.12),
             ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          AppConfig.appName,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w700,
-            color: AppThemeTokens.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.loginSubtitle,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 16,
-            color: AppThemeTokens.textSecondary,
-          ),
-        ),
-      ],
+            const SizedBox(height: 20),
+            Text(
+              brandingState.appName,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+                color: AppThemeTokens.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.loginSubtitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppThemeTokens.textSecondary,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

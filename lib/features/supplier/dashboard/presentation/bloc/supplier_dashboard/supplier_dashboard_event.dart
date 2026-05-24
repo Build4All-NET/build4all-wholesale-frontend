@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 
 abstract class SupplierDashboardEvent extends Equatable {
-  const SupplierDashboardEvent();
+  SupplierDashboardEvent();
 
   @override
   List<Object?> get props => [];
 }
 
 class SupplierDashboardStarted extends SupplierDashboardEvent {
-  const SupplierDashboardStarted();
+  SupplierDashboardStarted();
 }
 
 class SupplierDashboardRefreshed extends SupplierDashboardEvent {
-  const SupplierDashboardRefreshed();
+  SupplierDashboardRefreshed();
 }

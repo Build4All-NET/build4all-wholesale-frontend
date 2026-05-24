@@ -7,6 +7,7 @@ import '../../../../injection_container.dart';
 import '../../data/models/retailer_cart_model.dart';
 import '../cubit/retailer_cart_cubit.dart';
 import '../cubit/retailer_cart_state.dart';
+import '../widgets/retailer_product_image.dart';
 
 class RetailerCartScreen extends StatelessWidget {
   const RetailerCartScreen({super.key});
@@ -162,8 +163,6 @@ class _CartContent extends StatelessWidget {
           const SizedBox(height: 8),
           _OrderSummaryCard(cart: cart),
           const SizedBox(height: 18),
-
-          // Full-width buttons so text is not cut on real phone screens.
           OutlinedButton(
             onPressed: () => Navigator.of(context).pop(),
             style: OutlinedButton.styleFrom(
@@ -315,8 +314,6 @@ class _CartItemCard extends StatelessWidget {
           const SizedBox(height: 12),
           const Divider(height: 1),
           const SizedBox(height: 12),
-
-          // Separate bottom row avoids overflow.
           Row(
             children: [
               _QuantityControl(item: item, isUpdating: isUpdating),
@@ -349,34 +346,12 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cleanImageUrl = imageUrl?.trim();
-
-    return Container(
+    return RetailerProductImage(
+      imageUrl: imageUrl,
       width: 86,
       height: 86,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: cleanImageUrl == null || cleanImageUrl.isEmpty
-          ? const Icon(
-              Icons.inventory_2_outlined,
-              color: AppThemeTokens.textSecondary,
-              size: 36,
-            )
-          : Image.network(
-              cleanImageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.inventory_2_outlined,
-                  color: AppThemeTokens.textSecondary,
-                  size: 36,
-                );
-              },
-            ),
+      borderRadius: 16,
+      iconSize: 36,
     );
   }
 }
@@ -497,13 +472,14 @@ class _OrderSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _SummaryRow(
-            label: l10n.shippingEstimated,
-            value: '$currency${cart.shippingEstimated.toStringAsFixed(2)}',
+            label: l10n.shipping,
+            value: l10n.calculatedAtCheckout,
+            isMutedValue: true,
           ),
           const Divider(height: 30),
           _SummaryRow(
-            label: l10n.total,
-            value: '$currency${cart.total.toStringAsFixed(2)}',
+            label: l10n.totalBeforeShipping,
+            value: '$currency${cart.subtotal.toStringAsFixed(2)}',
             isTotal: true,
             totalColor: primaryColor,
           ),
@@ -517,12 +493,14 @@ class _SummaryRow extends StatelessWidget {
   final String label;
   final String value;
   final bool isTotal;
+  final bool isMutedValue;
   final Color? totalColor;
 
   const _SummaryRow({
     required this.label,
     required this.value,
     this.isTotal = false,
+    this.isMutedValue = false,
     this.totalColor,
   });
 
@@ -545,16 +523,21 @@ class _SummaryRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Text(
-          value,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: isTotal
-                ? (totalColor ?? AppThemeTokens.textPrimary)
-                : AppThemeTokens.textPrimary,
-            fontSize: isTotal ? 18 : 15,
-            fontWeight: FontWeight.w900,
+        Flexible(
+          child: Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              color: isMutedValue
+                  ? AppThemeTokens.textSecondary
+                  : isTotal
+                  ? (totalColor ?? AppThemeTokens.textPrimary)
+                  : AppThemeTokens.textPrimary,
+              fontSize: isTotal ? 18 : 15,
+              fontWeight: isTotal ? FontWeight.w900 : FontWeight.w800,
+            ),
           ),
         ),
       ],

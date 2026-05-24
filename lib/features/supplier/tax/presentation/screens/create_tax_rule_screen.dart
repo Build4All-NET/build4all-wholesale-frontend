@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../../injection_container.dart';
 import '../../data/models/tax_location_model.dart';
 import '../../data/services/tax_location_api_service.dart';
@@ -109,6 +112,10 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
     return matches.isEmpty ? null : matches.first;
   }
 
+  bool get _selectedCountryIsLebanon {
+    return _selectedCountry?.isLebanon == true;
+  }
+
   TaxRegionModel? get _selectedRegion {
     if (_selectedRegionValue == null ||
         _selectedRegionValue == _noRegionValue) {
@@ -188,15 +195,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           ..clear()
           ..addAll(countries);
 
-        if (_selectedCountryId == null || _selectedCountryId!.isEmpty) {
-          final lebanon = countries.where((country) => country.isLebanon);
-
-          if (lebanon.isNotEmpty) {
-            _selectedCountryId = lebanon.first.id;
-          } else if (countries.isNotEmpty) {
-            _selectedCountryId = countries.first.id;
-          }
-        } else {
+        if (_selectedCountryId != null && _selectedCountryId!.isNotEmpty) {
           final exists = countries.any(
             (country) => country.id == _selectedCountryId,
           );
@@ -204,7 +203,12 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           if (!exists) {
             _selectedCountryId = null;
             _selectedRegionValue = _noRegionValue;
+            _regions.clear();
           }
+        } else {
+          _selectedCountryId = null;
+          _selectedRegionValue = _noRegionValue;
+          _regions.clear();
         }
 
         _loadingCountries = false;
@@ -372,24 +376,24 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
 
     return null;
   }
 
   String? _rateValidator(String? value) {
-    final requiredError = _required(value, 'Tax Rate');
+    final requiredError = _required(value, context.l10n.supplierTaxRatePlain);
     if (requiredError != null) return requiredError;
 
     final parsed = double.tryParse(value!.trim());
 
     if (parsed == null || parsed <= 0) {
-      return 'Tax rate must be greater than 0';
+      return context.l10n.supplierTaxRateMustBeGreaterThan0;
     }
 
     if (parsed > 100) {
-      return 'Tax rate cannot be greater than 100';
+      return context.l10n.supplierTaxRateCannotBeGreaterThan100;
     }
 
     return null;
@@ -398,7 +402,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
   bool _validateLocation(BuildContext context) {
     if (_selectedCountryId == null || _selectedCountryId!.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a country')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectACountry)),
       );
       return false;
     }
@@ -498,7 +502,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                 icon: const Icon(Icons.arrow_back, size: 28),
               ),
               title: Text(
-                _isEditMode ? 'Edit Tax Rule' : 'Create Tax Rule',
+                _isEditMode ? context.l10n.supplierEditTaxRule : context.l10n.supplierCreateTaxRule,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 22,
@@ -530,8 +534,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
+                          child: Text(
+                            context.l10n.cancelButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -565,11 +569,19 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode ? 'Update Rule' : 'Create Rule',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                                  : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? context.l10n.supplierUpdateRule
+                                        : context.l10n.supplierCreateRule,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -587,24 +599,24 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Tax Rule Information',
+                        title: context.l10n.supplierTaxRuleInformation,
                         children: [
-                          _FieldLabel('Rule Preset'),
+                          _FieldLabel(context.l10n.supplierRulePreset),
                           _TaxRulePresetDropdown(
                             value: _selectedPreset,
                             onChanged: _handlePresetChanged,
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'Choose a preset or keep Custom and enter your own order-level tax rule.',
+                                context.l10n.supplierChooseAPresetOrKeepCustomAndEnterYourOwnOrderLevelTaxRule,
                           ),
                           const _DividerSpace(),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Auto-generate name',
+                                  context.l10n.supplierAutoGenerateName,
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w900,
@@ -623,17 +635,17 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _FieldLabel('Rule Name *'),
+                          _FieldLabel(context.l10n.supplierRuleName),
                           _InputField(
                             controller: _ruleNameController,
-                            hintText: 'Lebanon VAT',
+                            hintText: context.l10n.supplierLebanonVat,
                             enabled: !_autoGenerateName,
                             validator: (value) {
-                              return _required(value, 'Rule Name');
+                              return _required(value, context.l10n.supplierRuleNamePlain);
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Tax Rate % *'),
+                          _FieldLabel(context.l10n.supplierTaxRate),
                           _InputField(
                             controller: _rateController,
                             hintText: '11',
@@ -645,33 +657,20 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             onChanged: (_) => _syncGeneratedNameIfNeeded(),
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'Example: enter 11 for 11%. Tax is applied to the whole order based on country and region.',
+                                context.l10n.supplierExampleEnter11For11TaxIsAppliedToTheWholeOrderBasedOnCountryAndRegion,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Location',
+                        title: context.l10n.supplierLocation,
                         children: [
-                          Row(
-                            children: [
-                              const Expanded(
-                                child: _FieldLabel('Country *'),
-                              ),
-                              TextButton(
-                                onPressed:
-                                    _loadingCountries ? null : _loadCountries,
-                                child: const Text(
-                                  'Refresh',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          _CompactRefreshAction(
+                            onPressed: _loadingCountries ? null : _loadCountries,
                           ),
+                          const SizedBox(height: 4),
                           if (_loadingCountries)
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
@@ -686,32 +685,23 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                               onChanged: _handleCountryChanged,
                             ),
                           const SizedBox(height: 8),
-                          const _HelpText(
-                            text:
-                                'Country is required because tax is calculated from the retailer delivery country.',
+                          _HelpText(
+                            text: context.l10n
+                                .supplierCountryIsRequiredBecauseTaxIsCalculatedFromTheRetailerDeliveryCountry,
                           ),
-                          const _DividerSpace(),
-                          Row(
-                            children: [
-                              const Expanded(
-                                child: _FieldLabel('Region'),
-                              ),
-                              TextButton(
-                                onPressed: _selectedCountryId == null ||
-                                        _loadingRegions
-                                    ? null
-                                    : () => _loadRegionsForSelectedCountry(
-                                          resetRegion: false,
-                                        ),
-                                child: const Text(
-                                  'Refresh',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          const SizedBox(height: 12),
+                          const Divider(height: 1, color: AppThemeTokens.border),
+                          const SizedBox(height: 8),
+                          _CompactRefreshAction(
+                            onPressed: _selectedCountryId == null ||
+                                    _loadingRegions ||
+                                    !_selectedCountryIsLebanon
+                                ? null
+                                : () => _loadRegionsForSelectedCountry(
+                                      resetRegion: false,
+                                    ),
                           ),
+                          const SizedBox(height: 4),
                           if (_loadingRegions)
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
@@ -719,12 +709,26 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             )
                           else if (_regionErrorMessage != null)
                             _ErrorText(message: _regionErrorMessage!)
+                          else if (_selectedCountryId == null ||
+                              _selectedCountryId!.trim().isEmpty)
+                            _DisabledRegionField(
+                              label: context.l10n.regionLabel,
+                              hintText: context.l10n.selectCountryFirst,
+                            )
+                          else if (!_selectedCountryIsLebanon)
+                            _DisabledRegionField(
+                              label: context.l10n.regionLabel,
+                              hintText: context
+                                  .l10n
+                                  .supplierNoRegionsAvailableForCountry,
+                            )
                           else
                             _RegionDropdown(
                               regions: _regions,
                               selectedRegionValue:
                                   _selectedRegionValue ?? _noRegionValue,
                               noRegionValue: _noRegionValue,
+                              enabled: _regions.isNotEmpty,
                               onChanged: (value) {
                                 setState(() {
                                   _selectedRegionValue =
@@ -735,21 +739,21 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                               },
                             ),
                           const SizedBox(height: 8),
-                          const _HelpText(
-                            text:
-                                'Choose No region for a country-level rule, or choose a specific region for a more specific rule.',
+                          _HelpText(
+                            text: context.l10n
+                                .supplierChooseNoRegionForACountryLevelRuleOrChooseASpecificRegionForAMoreSpecificRule,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Tax Applicability',
+                        title: context.l10n.supplierTaxApplicability,
                         children: [
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Apply tax to shipping cost',
+                                  context.l10n.supplierApplyTaxToShippingCost,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -772,21 +776,21 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
+                          _HelpText(
                             text:
-                                'If enabled, checkout tax will include shipping cost. If disabled, tax applies only to items after promotion discount.',
+                                context.l10n.supplierIfEnabledCheckoutTaxWillIncludeShippingCostIfDisabledTaxAppliesOnlyToItemsAfterPromotionDiscount,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Status & Notes',
+                        title: context.l10n.supplierStatusNotes,
                         children: [
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
+                                  context.l10n.activeStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -809,10 +813,10 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                             ],
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Notes'),
+                          _FieldLabel(context.l10n.notesLabel),
                           _InputField(
                             controller: _notesController,
-                            hintText: 'Optional notes about this tax rule',
+                            hintText: context.l10n.supplierOptionalNotesAboutThisTaxRule,
                             maxLines: 3,
                           ),
                         ],
@@ -833,7 +837,7 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({
+  _SectionCard({
     required this.title,
     required this.children,
   });
@@ -878,7 +882,7 @@ class _SectionCard extends StatelessWidget {
 class _FieldLabel extends StatelessWidget {
   final String text;
 
-  const _FieldLabel(this.text);
+  _FieldLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -905,7 +909,7 @@ class _InputField extends StatelessWidget {
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
 
-  const _InputField({
+  _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType,
@@ -955,7 +959,7 @@ class _InputField extends StatelessWidget {
 
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -978,7 +982,7 @@ class _TaxRulePresetDropdown extends StatelessWidget {
       items: TaxRulePreset.values.map((preset) {
         return DropdownMenuItem<TaxRulePreset>(
           value: preset,
-          child: _DropdownText(preset.label),
+          child: _DropdownText(_localizedTaxRulePresetLabel(context, preset)),
         );
       }).toList(),
       onChanged: onChanged,
@@ -1000,35 +1004,86 @@ class _CountryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final safeSelectedId = countries.any(
-      (country) => country.id == selectedCountryId,
-    )
-        ? selectedCountryId
-        : null;
+    TaxCountryModel? selectedCountry;
+    for (final country in countries) {
+      if (country.id == selectedCountryId) {
+        selectedCountry = country;
+        break;
+      }
+    }
 
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      initialValue: safeSelectedId,
-      selectedItemBuilder: (context) {
-        return countries.map((country) {
-          return _DropdownText(country.name);
-        }).toList();
-      },
-      items: countries.map((country) {
-        return DropdownMenuItem<String>(
-          value: country.id,
-          child: _DropdownText(country.name),
-        );
-      }).toList(),
-      onChanged: onChanged,
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return 'Country is required';
+    return SearchableSelectionField<TaxCountryModel>(
+      label: context.l10n.countryRequiredLabel,
+      hintText: context.l10n.selectCountryHint,
+      searchHintText: context.l10n.searchCountryHint,
+      items: countries,
+      itemLabel: (country) => country.name,
+      value: selectedCountry,
+      onSelected: (country) => onChanged(country.id),
+      validator: (country) {
+        if (country == null || country.id.trim().isEmpty) {
+          return context.l10n.supplierCountryIsRequired;
         }
-
         return null;
       },
-      decoration: _dropdownDecoration(context),
+      emptyText: context.l10n.noCountriesFound,
+    );
+  }
+}
+
+
+class _DisabledRegionField extends StatelessWidget {
+  final String label;
+  final String hintText;
+
+  const _DisabledRegionField({
+    required this.label,
+    required this.hintText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchableSelectionField<TaxRegionModel>(
+      label: label,
+      hintText: hintText,
+      searchHintText: context.l10n.searchRegionHint,
+      items: const [],
+      itemLabel: (region) => region.name,
+      value: null,
+      enabled: false,
+      onSelected: (_) {},
+      emptyText: context.l10n.noRegionsFound,
+    );
+  }
+}
+
+class _CompactRefreshAction extends StatelessWidget {
+  final VoidCallback? onPressed;
+
+  const _CompactRefreshAction({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional.centerEnd,
+      child: SizedBox(
+        height: 32,
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: const Size(0, 32),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: Text(
+            context.l10n.refreshButton,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -1037,57 +1092,73 @@ class _RegionDropdown extends StatelessWidget {
   final List<TaxRegionModel> regions;
   final String selectedRegionValue;
   final String noRegionValue;
+  final bool enabled;
   final ValueChanged<String?> onChanged;
 
   const _RegionDropdown({
     required this.regions,
     required this.selectedRegionValue,
     required this.noRegionValue,
+    required this.enabled,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final values = [
-      noRegionValue,
-      ...regions.map((region) => region.id),
+    final options = <_TaxRegionOption>[
+      _TaxRegionOption(
+        id: noRegionValue,
+        name: context.l10n.noRegionLabel,
+      ),
+      ...regions.map(
+        (region) => _TaxRegionOption(
+          id: region.id,
+          name: region.name,
+        ),
+      ),
     ];
 
-    final safeSelectedValue = values.contains(selectedRegionValue)
-        ? selectedRegionValue
-        : noRegionValue;
+    final selectedOption = options.firstWhere(
+      (option) => option.id == selectedRegionValue,
+      orElse: () => options.first,
+    );
 
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      initialValue: safeSelectedValue,
-      selectedItemBuilder: (context) {
-        return [
-          const _DropdownText('No region'),
-          ...regions.map((region) => _DropdownText(region.name)),
-        ];
-      },
-      items: [
-        DropdownMenuItem<String>(
-          value: noRegionValue,
-          child: const _DropdownText('No region'),
-        ),
-        ...regions.map(
-          (region) => DropdownMenuItem<String>(
-            value: region.id,
-            child: _DropdownText(region.name),
-          ),
-        ),
-      ],
-      onChanged: onChanged,
-      decoration: _dropdownDecoration(context),
+    return SearchableSelectionField<_TaxRegionOption>(
+      label: context.l10n.regionLabel,
+      hintText: context.l10n.selectRegionHint,
+      searchHintText: context.l10n.searchRegionHint,
+      items: options,
+      itemLabel: (option) => option.name,
+      value: selectedOption,
+      enabled: enabled,
+      onSelected: (option) => onChanged(option.id),
+      emptyText: context.l10n.noRegionsFound,
     );
   }
+}
+
+class _TaxRegionOption {
+  final String id;
+  final String name;
+
+  const _TaxRegionOption({
+    required this.id,
+    required this.name,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    return other is _TaxRegionOption && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class _DropdownText extends StatelessWidget {
   final String text;
 
-  const _DropdownText(this.text);
+  _DropdownText(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -1108,7 +1179,7 @@ class _DropdownText extends StatelessWidget {
 class _HelpText extends StatelessWidget {
   final String text;
 
-  const _HelpText({required this.text});
+  _HelpText({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -1154,10 +1225,20 @@ class _DividerSpace extends StatelessWidget {
   }
 }
 
+
+String _localizedTaxRulePresetLabel(BuildContext context, TaxRulePreset preset) {
+  switch (preset) {
+    case TaxRulePreset.custom:
+      return 'Custom';
+    case TaxRulePreset.lebanonVat:
+      return 'Lebanon VAT';
+  }
+}
+
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }

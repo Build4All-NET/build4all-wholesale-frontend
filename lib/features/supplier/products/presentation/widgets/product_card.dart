@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import 'package:flutter/material.dart';
 import '../../../../../core/config/app_config.dart';
@@ -10,7 +11,7 @@ class ProductCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const ProductCard({
+  ProductCard({
     super.key,
     required this.product,
     required this.onEdit,
@@ -23,8 +24,8 @@ class ProductCard extends StatelessWidget {
     final totalStock = product.totalStock;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
+      margin: EdgeInsets.only(bottom: 18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -33,7 +34,7 @@ class ProductCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 14,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -44,28 +45,28 @@ class ProductCard extends StatelessWidget {
             primaryColor: primaryColor,
             imagePath: product.imagePath,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             product.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             product.subCategoryName == null ||
                     product.subCategoryName!.trim().isEmpty
                 ? product.categoryName
                 : '${product.categoryName} • ${product.subCategoryName}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: AppThemeTokens.textSecondary,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           Row(
             children: [
               Text(
@@ -76,52 +77,52 @@ class ProductCard extends StatelessWidget {
                   color: primaryColor,
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               _StatusBadge(status: product.status),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           _InventoryStockBadge(totalStock: totalStock),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: onEdit,
-                  icon: const Icon(Icons.edit_outlined, size: 20),
-                  label: const Text(
-                    'Edit',
+                  icon: Icon(Icons.edit_outlined, size: 20),
+                  label: Text(
+                    context.l10n.editButton,
                     style: TextStyle(fontWeight: FontWeight.w800),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeTokens.textPrimary,
-                    side: const BorderSide(color: AppThemeTokens.border),
+                    side: BorderSide(color: AppThemeTokens.border),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusSmall,
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    padding: EdgeInsets.symmetric(vertical: 13),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               OutlinedButton(
                 onPressed: onDelete,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppThemeTokens.error,
-                  side: const BorderSide(color: AppThemeTokens.border),
+                  side: BorderSide(color: AppThemeTokens.border),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       AppThemeTokens.radiusSmall,
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     vertical: 13,
                     horizontal: 14,
                   ),
                 ),
-                child: const Icon(Icons.delete_outline, size: 22),
+                child: Icon(Icons.delete_outline, size: 22),
               ),
             ],
           ),
@@ -135,7 +136,7 @@ class _ProductImagePlaceholder extends StatelessWidget {
   final Color primaryColor;
   final String? imagePath;
 
-  const _ProductImagePlaceholder({
+  _ProductImagePlaceholder({
     required this.primaryColor,
     required this.imagePath,
   });
@@ -233,7 +234,7 @@ class _ProductImagePlaceholder extends StatelessWidget {
 class _ImageFallbackIcon extends StatelessWidget {
   final Color primaryColor;
 
-  const _ImageFallbackIcon({
+  _ImageFallbackIcon({
     required this.primaryColor,
   });
 
@@ -251,7 +252,7 @@ class _ImageFallbackIcon extends StatelessWidget {
 class _InventoryStockBadge extends StatelessWidget {
   final int totalStock;
 
-  const _InventoryStockBadge({
+  _InventoryStockBadge({
     required this.totalStock,
   });
 
@@ -263,7 +264,7 @@ class _InventoryStockBadge extends StatelessWidget {
         : Theme.of(context).colorScheme.primary;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(999),
@@ -273,8 +274,8 @@ class _InventoryStockBadge extends StatelessWidget {
       ),
       child: Text(
         isOutOfStock
-            ? 'No branch stock assigned'
-            : 'Total Branch Stock: $totalStock',
+            ? context.l10n.noBranchStockAssigned
+            : context.l10n.totalBranchStockLabel(totalStock),
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w900,
@@ -288,20 +289,20 @@ class _InventoryStockBadge extends StatelessWidget {
 class _StatusBadge extends StatelessWidget {
   final ProductStatus status;
 
-  const _StatusBadge({
+  _StatusBadge({
     required this.status,
   });
 
   @override
   Widget build(BuildContext context) {
     final isActive = status == ProductStatus.active;
-    final label = isActive ? 'Active' : 'Inactive';
+    final label = isActive ? context.l10n.activeStatus : context.l10n.inactiveStatus;
     final color = isActive
         ? Theme.of(context).colorScheme.primary
         : AppThemeTokens.error;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: color.withOpacity(0.10),
         borderRadius: BorderRadius.circular(999),

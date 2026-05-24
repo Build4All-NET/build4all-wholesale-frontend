@@ -3,9 +3,7 @@ import '../../data/models/retailer_profile_model.dart';
 abstract class RetailerProfileRepository {
   Future<RetailerProfileCombinedModel> getProfile();
 
-  Future<void> validateCurrentPassword({
-    required String currentPassword,
-  });
+  Future<void> validateCurrentPassword({required String currentPassword});
 
   Future<AccountProfileUpdateResult> updateAccountInfo({
     required String username,
@@ -19,19 +17,19 @@ abstract class RetailerProfileRepository {
     required String storeName,
     required String phoneNumber,
     required String storeAddress,
+    required int countryId,
+    required String countryName,
+    required String countryIso2Code,
+    required String countryIso3Code,
     required String city,
     required String businessType,
   });
 
-  Future<void> verifyEmailChange({
-    required String code,
-  });
+  Future<void> verifyEmailChange({required String code});
 
   Future<void> resendEmailChangeCode();
 
-  Future<void> sendPasswordResetCode({
-    required String email,
-  });
+  Future<void> sendPasswordResetCode({required String email});
 
   Future<void> verifyPasswordResetCode({
     required String email,
@@ -44,9 +42,7 @@ abstract class RetailerProfileRepository {
     required String newPassword,
   });
 
-  Future<void> deleteAccount({
-    required String password,
-  });
+  Future<void> deleteAccount({required String password});
 
   Future<void> logout();
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ import '../bloc/branch_list/branch_list_state.dart';
 import '../widgets/branch_card.dart';
 
 class BranchManagementScreen extends StatefulWidget {
-  const BranchManagementScreen({super.key});
+  BranchManagementScreen({super.key});
 
   @override
   State<BranchManagementScreen> createState() => _BranchManagementScreenState();
@@ -31,7 +32,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
   @override
   void initState() {
     super.initState();
-    _branchListBloc.add(const LoadBranches());
+    _branchListBloc.add(LoadBranches());
   }
 
   @override
@@ -48,7 +49,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     _searchDebounce?.cancel();
 
     _searchDebounce = Timer(
-      const Duration(milliseconds: 350),
+      Duration(milliseconds: 350),
       () {
         _branchListBloc.add(SearchBranches(value));
       },
@@ -61,7 +62,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     if (result != null) {
       _branchListBloc.add(
         _searchText.trim().isEmpty
-            ? const LoadBranches()
+            ? LoadBranches()
             : SearchBranches(_searchText),
       );
     }
@@ -76,7 +77,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     if (result != null) {
       _branchListBloc.add(
         _searchText.trim().isEmpty
-            ? const LoadBranches()
+            ? LoadBranches()
             : SearchBranches(_searchText),
       );
     }
@@ -87,7 +88,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
 
     _branchListBloc.add(
       _searchText.trim().isEmpty
-          ? const LoadBranches()
+          ? LoadBranches()
           : SearchBranches(_searchText),
     );
   }
@@ -97,21 +98,21 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Branch',
+          title: Text(
+            context.l10n.deleteBranchTitle,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to delete ${branch.name}?',
+            context.l10n.deleteBranchConfirmation(branch.name),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Delete'),
+              child: Text(context.l10n.delete),
             ),
           ],
         );
@@ -126,7 +127,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
   Future<void> _refreshBranches() async {
     _branchListBloc.add(
       _searchText.trim().isEmpty
-          ? const LoadBranches()
+          ? LoadBranches()
           : SearchBranches(_searchText),
     );
   }
@@ -145,6 +146,17 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
     }
 
     return 0;
+  }
+
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'branchDeleted':
+      case 'Branch deleted':
+        return context.l10n.branchDeletedSuccessfully;
+      default:
+        return message;
+    }
   }
 
   @override
@@ -166,7 +178,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },
@@ -176,7 +188,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
 
             return Scaffold(
               backgroundColor: AppThemeTokens.background,
-              drawer: const SupplierAppDrawer(),
+              drawer: SupplierAppDrawer(),
               appBar: AppBar(
                 backgroundColor: AppThemeTokens.background,
                 elevation: 0,
@@ -184,12 +196,12 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
                   builder: (context) {
                     return IconButton(
                       onPressed: () => Scaffold.of(context).openDrawer(),
-                      icon: const Icon(Icons.menu),
+                      icon: Icon(Icons.menu),
                     );
                   },
                 ),
-                title: const Text(
-                  'Branch\nManagement',
+                title: Text(
+                  context.l10n.branchManagementTitle,
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     color: AppThemeTokens.textPrimary,
@@ -205,19 +217,19 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
                       size: 31,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                 ],
               ),
               body: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 14),
                     child: TextField(
                       controller: _searchController,
                       onChanged: _onSearchChanged,
                       decoration: InputDecoration(
-                        hintText: 'Search branches...',
-                        prefixIcon: const Icon(
+                        hintText: context.l10n.searchBranchesHint,
+                        prefixIcon: Icon(
                           Icons.search,
                           color: AppThemeTokens.textSecondary,
                         ),
@@ -232,16 +244,16 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
                       ),
                     ),
                   ),
-                  const Divider(height: 1, color: AppThemeTokens.border),
+                  Divider(height: 1, color: AppThemeTokens.border),
                   Expanded(
                     child: state.isLoading
-                        ? const Center(child: CircularProgressIndicator())
+                        ? Center(child: CircularProgressIndicator())
                         : state.branches.isEmpty
-                            ? const _EmptyBranchesView()
+                            ? _EmptyBranchesView()
                             : RefreshIndicator(
                                 onRefresh: _refreshBranches,
                                 child: ListView.builder(
-                                  padding: const EdgeInsets.all(16),
+                                  padding: EdgeInsets.all(16),
                                   itemCount: state.branches.length,
                                   itemBuilder: (context, index) {
                                     final branch = state.branches[index];
@@ -273,7 +285,7 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
 }
 
 class _EmptyBranchesView extends StatelessWidget {
-  const _EmptyBranchesView();
+  _EmptyBranchesView();
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +293,7 @@ class _EmptyBranchesView extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: EdgeInsets.all(28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -290,18 +302,18 @@ class _EmptyBranchesView extends StatelessWidget {
               size: 58,
               color: primaryColor,
             ),
-            const SizedBox(height: 14),
-            const Text(
-              'No branches found',
+            SizedBox(height: 14),
+            Text(
+              context.l10n.noBranchesFound,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
                 color: AppThemeTokens.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Add branches to manage stock and inventory by location.',
+            SizedBox(height: 8),
+            Text(
+              context.l10n.addBranchesEmptyMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,

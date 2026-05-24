@@ -5,8 +5,11 @@ import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../../data/models/retailer_home_model.dart';
+import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_product_image.dart';
+import '../widgets/retailer_promotion_badge.dart';
 
 class RetailerCategoryProductsScreen extends StatelessWidget {
   final HomeCategoryModel category;
@@ -53,14 +56,23 @@ class _RetailerCategoryProductsViewState
   }
 
   List<String> _extractSubCategories(List<HomeProductModel> products) {
-    final subCategories = products
-        .map((product) => product.subCategoryName?.trim())
-        .where((name) => name != null && name.isNotEmpty)
-        .cast<String>()
-        .toSet()
-        .toList();
+    final subCategoryNames = <String>{};
 
-    subCategories.sort();
+    for (final subCategory in widget.category.subCategories) {
+      final name = subCategory.name.trim();
+      if (name.isNotEmpty) {
+        subCategoryNames.add(name);
+      }
+    }
+
+    for (final product in products) {
+      final name = product.subCategoryName?.trim();
+      if (name != null && name.isNotEmpty) {
+        subCategoryNames.add(name);
+      }
+    }
+
+    final subCategories = subCategoryNames.toList()..sort();
     return subCategories;
   }
 
@@ -68,9 +80,11 @@ class _RetailerCategoryProductsViewState
     final cleanQuery = _query.trim().toLowerCase();
 
     return products.where((product) {
+      final productSubCategory = product.subCategoryName?.trim() ?? '';
       final matchesSubCategory =
           _selectedSubCategoryName == null ||
-          product.subCategoryName == _selectedSubCategoryName;
+          productSubCategory.toLowerCase() ==
+              _selectedSubCategoryName!.trim().toLowerCase();
 
       final searchableText = [
         product.name,
@@ -392,7 +406,24 @@ class RetailerProductListCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ProductImage(imageUrl: product.imageUrl),
+          Stack(
+            children: [
+              _ProductImage(imageUrl: product.imageUrl),
+              if (product.hasActivePromotion)
+                Positioned(
+                  top: 7,
+                  left: 7,
+                  child: RetailerPromotionBadge(
+                    product: product,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 4,
+                    ),
+                    fontSize: 9,
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -435,17 +466,10 @@ class RetailerProductListCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '${product.currency}${product.price.toStringAsFixed(2)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: primary,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+                _ProductPriceLine(product: product, primary: primary),
                 const SizedBox(height: 8),
+                RetailerPromotionInfoPill(product: product),
+                if (product.hasActivePromotion) const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 6,
@@ -454,23 +478,26 @@ class RetailerProductListCard extends StatelessWidget {
                       icon: Icons.inventory_2_outlined,
                       text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
                     ),
-                    _MiniInfo(
-                      icon: Icons.warehouse_outlined,
-                      text: '${l10n.stock}: ${product.totalStock}',
-                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
-                SizedBox(
-                  height: 40,
-                  child: Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: _AddButton(
+                Row(
+                  children: [
+                    Expanded(
+                      child: RetailerProductAiButton(
+                        productId: product.id,
+                        productName: product.name,
+                        imageUrl: product.imageUrl,
+                        expanded: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _AddButton(
                       isAdding: isAdding,
                       disabled: isOutOfStock,
                       onPressed: onAdd,
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -495,6 +522,50 @@ class RetailerProductListCard extends StatelessWidget {
   }
 }
 
+class _ProductPriceLine extends StatelessWidget {
+  final HomeProductModel product;
+  final Color primary;
+
+  const _ProductPriceLine({required this.product, required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            '${product.currency}${product.price.toStringAsFixed(2)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: primary,
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        if (product.shouldShowOriginalPrice) ...[
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.lineThrough,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 class _ProductImage extends StatelessWidget {
   final String? imageUrl;
 
@@ -502,34 +573,12 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cleanImageUrl = imageUrl?.trim();
-
-    return Container(
+    return RetailerProductImage(
+      imageUrl: imageUrl,
       width: 86,
       height: 96,
-      decoration: BoxDecoration(
-        color: AppThemeTokens.background,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: cleanImageUrl == null || cleanImageUrl.isEmpty
-          ? const Icon(
-              Icons.inventory_2_outlined,
-              color: AppThemeTokens.textSecondary,
-              size: 34,
-            )
-          : Image.network(
-              cleanImageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.inventory_2_outlined,
-                  color: AppThemeTokens.textSecondary,
-                  size: 34,
-                );
-              },
-            ),
+      borderRadius: 18,
+      iconSize: 34,
     );
   }
 }

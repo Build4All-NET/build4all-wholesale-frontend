@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -53,36 +55,32 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
   late final TextEditingController _maxDiscountAmountController;
 
   PromotionDiscountType _discountType = PromotionDiscountType.percent;
-  PromotionTargetType _targetType = PromotionTargetType.allProducts;
-  PromotionBranchScope _branchScope = PromotionBranchScope.allBranches;
+  PromotionTargetType _targetType = PromotionTargetType.product;
 
   String? _selectedTargetId;
   String? _selectedTargetName;
-  String? _selectedTargetCategoryId;
+  _PromotionEligibleTarget? _selectedTargetAvailability;
 
   DateTime? _startDate;
   DateTime? _endDate;
   String? _dateError;
 
   bool _active = true;
-
   bool _loadingTargets = true;
-  bool _loadingBranches = true;
-
   String? _targetErrorMessage;
-  String? _branchErrorMessage;
 
-  final List<_PromotionLookupOption> _products = [];
-  final List<_PromotionLookupOption> _categories = [];
-  final List<_PromotionLookupOption> _subCategories = [];
-  final List<_PromotionLookupOption> _branches = [];
-
-  final List<String> _selectedBranchIds = [];
-  final List<String> _selectedBranchNames = [];
+  final List<_PromotionEligibleTarget> _eligibleProducts = [];
+  final List<_PromotionEligibleTarget> _eligibleCategories = [];
 
   bool get _isEditMode => widget.promotion != null;
 
   bool get _isPercent => _discountType == PromotionDiscountType.percent;
+
+  List<_PromotionEligibleTarget> get _currentOptions {
+    return _targetType == PromotionTargetType.product
+        ? _eligibleProducts
+        : _eligibleCategories;
+  }
 
   @override
   void initState() {
@@ -105,25 +103,19 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     );
 
     _discountType = promotion?.discountType ?? PromotionDiscountType.percent;
-    _targetType = promotion?.targetType ?? PromotionTargetType.allProducts;
+    _targetType = _normalizeEditableTargetType(promotion?.targetType);
     _selectedTargetId = promotion?.targetId;
     _selectedTargetName = promotion?.targetName;
-
-    _branchScope = promotion?.branchScope ?? PromotionBranchScope.allBranches;
     _active = promotion?.active ?? true;
-
     _startDate = promotion?.startDate;
     _endDate = promotion?.endDate;
-
-    _selectedBranchIds.addAll(promotion?.selectedBranchIds ?? []);
-    _selectedBranchNames.addAll(promotion?.selectedBranchNames ?? []);
 
     if (!_isPercent) {
       _maxDiscountAmountController.clear();
     }
 
     _validateDates();
-    _loadLookups();
+    _loadTargets();
   }
 
   @override
@@ -136,11 +128,12 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     super.dispose();
   }
 
-  Future<void> _loadLookups() async {
-    await Future.wait([
-      _loadTargets(),
-      _loadBranches(),
-    ]);
+  PromotionTargetType _normalizeEditableTargetType(PromotionTargetType? value) {
+    if (value == PromotionTargetType.category) {
+      return PromotionTargetType.category;
+    }
+
+    return PromotionTargetType.product;
   }
 
   Future<void> _loadTargets() async {
@@ -151,27 +144,21 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
 
     try {
       final results = await Future.wait([
-        _lookupService.getProducts(),
-        _lookupService.getCategories(),
-        _lookupService.getSubCategories(),
+        _lookupService.getEligibleProducts(),
+        _lookupService.getEligibleCategories(),
       ]);
 
       if (!mounted) return;
 
       setState(() {
-        _products
+        _eligibleProducts
           ..clear()
           ..addAll(results[0]);
-
-        _categories
+        _eligibleCategories
           ..clear()
           ..addAll(results[1]);
 
-        _subCategories
-          ..clear()
-          ..addAll(results[2]);
-
-        _syncEditSubCategoryParent();
+        _syncSelectedTargetAfterReload();
         _loadingTargets = false;
       });
     } catch (e) {
@@ -184,51 +171,19 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     }
   }
 
-  Future<void> _loadBranches() async {
-    setState(() {
-      _loadingBranches = true;
-      _branchErrorMessage = null;
-    });
+  void _syncSelectedTargetAfterReload() {
+    if (_selectedTargetId == null) return;
 
-    try {
-      final branches = await _lookupService.getBranches();
-
-      if (!mounted) return;
-
-      setState(() {
-        _branches
-          ..clear()
-          ..addAll(branches);
-        _loadingBranches = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _branchErrorMessage = e.toString();
-        _loadingBranches = false;
-      });
-    }
-  }
-
-  void _syncEditSubCategoryParent() {
-    if (_targetType != PromotionTargetType.subcategory ||
-        _selectedTargetId == null) {
-      return;
-    }
-
-    final selectedSubCategory = _subCategories.where(
-      (item) => item.id == _selectedTargetId,
-    );
-
-    if (selectedSubCategory.isNotEmpty) {
-      _selectedTargetCategoryId = selectedSubCategory.first.categoryId;
+    final matched = _currentOptions.where((item) => item.id == _selectedTargetId);
+    if (matched.isNotEmpty) {
+      _selectedTargetAvailability = matched.first;
+      _selectedTargetName = matched.first.name;
     }
   }
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
 
     return null;
@@ -241,7 +196,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     final parsed = double.tryParse(value!.trim());
 
     if (parsed == null || parsed <= 0) {
-      return '$fieldName must be greater than 0';
+      return context.l10n.supplierFieldGreaterThanZero(fieldName);
     }
 
     return null;
@@ -253,20 +208,23 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     final parsed = double.tryParse(value.trim());
 
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
 
     return null;
   }
 
   String? _discountValueValidator(String? value) {
-    final baseError = _requiredPositiveNumber(value, 'Discount Value');
+    final baseError = _requiredPositiveNumber(
+      value,
+      context.l10n.supplierDiscountValuePlain,
+    );
     if (baseError != null) return baseError;
 
     final parsed = double.tryParse(value!.trim()) ?? 0;
 
     if (_discountType == PromotionDiscountType.percent && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
+      return context.l10n.supplierPercentDiscountCannotBeGreaterThan100;
     }
 
     return null;
@@ -296,49 +254,24 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       _targetType = value;
       _selectedTargetId = null;
       _selectedTargetName = null;
-      _selectedTargetCategoryId = null;
+      _selectedTargetAvailability = null;
     });
   }
 
-  void _handleTargetSelected(_PromotionLookupOption? option) {
+  void _handleTargetSelected(_PromotionEligibleTarget option) {
     setState(() {
-      _selectedTargetId = option?.id;
-      _selectedTargetName = option?.label;
-    });
-  }
-
-  void _handleSubCategoryParentSelected(String? categoryId) {
-    setState(() {
-      _selectedTargetCategoryId = categoryId;
-      _selectedTargetId = null;
-      _selectedTargetName = null;
-    });
-  }
-
-  void _toggleBranch(_PromotionLookupOption branch, bool selected) {
-    setState(() {
-      if (selected) {
-        if (!_selectedBranchIds.contains(branch.id)) {
-          _selectedBranchIds.add(branch.id);
-          _selectedBranchNames.add(branch.label);
-        }
-      } else {
-        _selectedBranchIds.remove(branch.id);
-        _selectedBranchNames.remove(branch.label);
-      }
+      _selectedTargetId = option.id;
+      _selectedTargetName = option.name;
+      _selectedTargetAvailability = option;
     });
   }
 
   String _formatDateTime(DateTime? date) {
     if (date == null) return '—';
 
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
+    final localeTag = Localizations.localeOf(context).toLanguageTag();
 
-    return '$year-$month-$day $hour:$minute';
+    return DateFormat('yyyy-MM-dd h:mm a', localeTag).format(date);
   }
 
   Future<DateTime?> _pickDateTime(DateTime? initial) async {
@@ -350,6 +283,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       initialDate: base,
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 5),
+      locale: Localizations.localeOf(context),
     );
 
     if (pickedDate == null || !mounted) return null;
@@ -370,38 +304,52 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     );
   }
 
-  void _validateDates() {
+  void _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startDate == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierStartDate,
+      );
+      return;
+    }
+
+    if (requireBothDates && _endDate == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierEndDate,
+      );
+      return;
+    }
+
     if (_startDate != null &&
         _endDate != null &&
         _startDate!.isAfter(_endDate!)) {
-      _dateError = 'End date must be after start date';
-    } else {
-      _dateError = null;
+      _dateError = context.l10n.supplierEndDateAfterStartDate;
+      return;
     }
-  }
 
-  List<_PromotionLookupOption> get _filteredSubCategories {
-    if (_selectedTargetCategoryId == null) return [];
-
-    return _subCategories
-        .where((item) => item.categoryId == _selectedTargetCategoryId)
-        .toList();
+    _dateError = null;
   }
 
   bool _validateTargetSelection(BuildContext context) {
-    if (_targetType == PromotionTargetType.allProducts) return true;
+    if (_selectedTargetId == null || _selectedTargetId!.trim().isEmpty) {
+      final targetName = _targetType == PromotionTargetType.product
+          ? context.l10n.productLabel
+          : context.l10n.categoryLabel;
 
-    if (_targetType == PromotionTargetType.subcategory &&
-        _selectedTargetCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a category first')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectTarget(targetName))),
       );
       return false;
     }
 
-    if (_selectedTargetId == null || _selectedTargetId!.trim().isEmpty) {
+    if (_selectedTargetAvailability == null ||
+        _selectedTargetAvailability!.totalStock <= 0 ||
+        _selectedTargetAvailability!.branches.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select ${_targetType.label}')),
+        const SnackBar(
+          content: Text(
+            'This target has no in-stock items in active branches. Please refresh and choose another target.',
+          ),
+        ),
       );
       return false;
     }
@@ -412,23 +360,13 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
   void _savePromotion(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    _validateDates();
+    _validateDates(requireBothDates: true);
     if (_dateError != null) {
       setState(() {});
       return;
     }
 
     if (!_validateTargetSelection(context)) return;
-
-    if (_branchScope == PromotionBranchScope.selectedBranches &&
-        _selectedBranchIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select at least one branch'),
-        ),
-      );
-      return;
-    }
 
     final now = DateTime.now();
 
@@ -441,12 +379,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       discountType: _discountType,
       discountValue: double.parse(_discountValueController.text.trim()),
       targetType: _targetType,
-      targetId: _targetType == PromotionTargetType.allProducts
-          ? null
-          : _selectedTargetId,
-      targetName: _targetType == PromotionTargetType.allProducts
-          ? 'All Products'
-          : _selectedTargetName,
+      targetId: _selectedTargetId,
+      targetName: _selectedTargetName,
       minOrderAmount: _parseOptionalDouble(_minOrderAmountController.text),
       maxDiscountAmount: _isPercent
           ? _parseOptionalDouble(_maxDiscountAmountController.text)
@@ -456,13 +390,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
       active: _active,
       status: widget.promotion?.status,
       currentlyValid: widget.promotion?.currentlyValid ?? false,
-      branchScope: _branchScope,
-      selectedBranchIds: _branchScope == PromotionBranchScope.allBranches
-          ? []
-          : List.unmodifiable(_selectedBranchIds),
-      selectedBranchNames: _branchScope == PromotionBranchScope.allBranches
-          ? []
-          : List.unmodifiable(_selectedBranchNames),
+      branchScope: PromotionBranchScope.allBranches,
+      selectedBranchIds: const [],
+      selectedBranchNames: const [],
       createdAt: widget.promotion?.createdAt ?? now,
       updatedAt: now,
     );
@@ -531,7 +461,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                 icon: const Icon(Icons.arrow_back, size: 28),
               ),
               title: Text(
-                _isEditMode ? 'Edit Promotion' : 'Create Promotion',
+                _isEditMode
+                    ? context.l10n.supplierEditPromotion
+                    : context.l10n.supplierCreatePromotion,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 22,
@@ -563,9 +495,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(
+                          child: Text(
+                            context.l10n.cancelButton,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
                             ),
@@ -573,18 +505,16 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: SizedBox(
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: state.saving
-                              ? null
-                              : () => _savePromotion(context),
+                          onPressed:
+                              state.saving ? null : () => _savePromotion(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primary,
                             foregroundColor: Colors.white,
-                            elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -594,14 +524,14 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                   width: 22,
                                   height: 22,
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 2.4,
+                                    strokeWidth: 2,
                                     color: Colors.white,
                                   ),
                                 )
                               : Text(
                                   _isEditMode
-                                      ? 'Update Promotion'
-                                      : 'Create Promotion',
+                                      ? context.l10n.updateButton
+                                      : context.l10n.addButton,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -622,31 +552,34 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Promotion Information',
+                        title: context.l10n.supplierPromotionInformation,
                         children: [
-                          _FieldLabel('Promotion Title *'),
+                          _FieldLabel(context.l10n.supplierPromotionTitle),
                           _InputField(
                             controller: _titleController,
-                            hintText: 'Food category wholesale deal',
+                            hintText: context.l10n.supplierPromotionTitleHint,
                             validator: (value) {
-                              return _required(value, 'Promotion Title');
+                              return _required(
+                                value,
+                                context.l10n.supplierPromotionTitlePlain,
+                              );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Description'),
+                          _FieldLabel(context.l10n.descriptionLabel),
                           _InputField(
                             controller: _descriptionController,
                             hintText:
-                                'Short description shown later to retailer side',
+                                context.l10n.supplierPromotionDescriptionHint,
                             maxLines: 3,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Discount',
+                        title: context.l10n.supplierDiscount,
                         children: [
-                          _FieldLabel('Discount Type *'),
+                          _FieldLabel(context.l10n.supplierDiscountType),
                           _DiscountTypeDropdown(
                             value: _discountType,
                             onChanged: _handleDiscountTypeChanged,
@@ -654,11 +587,11 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           const SizedBox(height: 8),
                           _HelpText(
                             text: _isPercent
-                                ? 'Percent discount means percentage off, for example 10% off. Maximum discount amount can limit supplier loss.'
-                                : 'Fixed discount means a fixed amount off, for example \$20 off.',
+                                ? context.l10n.supplierPercentDiscountHelp
+                                : context.l10n.supplierFixedDiscountHelp,
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Discount Value *'),
+                          _FieldLabel(context.l10n.supplierDiscountValue),
                           _InputField(
                             controller: _discountValueController,
                             hintText: _isPercent ? '10' : '20',
@@ -672,9 +605,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Promotion Target',
+                        title: context.l10n.supplierPromotionTarget,
                         children: [
-                          _FieldLabel('Applies To *'),
+                          _FieldLabel(context.l10n.supplierAppliesTo),
                           _TargetTypeDropdown(
                             value: _targetType,
                             onChanged: _handleTargetTypeChanged,
@@ -682,42 +615,48 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           const SizedBox(height: 8),
                           const _HelpText(
                             text:
-                                'The target defines which products are included in the promotion. Branch availability is selected separately below.',
+                                'Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.',
                           ),
-                          if (_targetType != PromotionTargetType.allProducts)
-                            ...[
-                              const _DividerSpace(),
-                              if (_loadingTargets)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                              else if (_targetErrorMessage != null)
-                                _ErrorText(message: _targetErrorMessage!)
-                              else
-                                _TargetSelectionSection(
-                                  targetType: _targetType,
-                                  products: _products,
-                                  categories: _categories,
-                                  subCategories: _subCategories,
-                                  selectedTargetId: _selectedTargetId,
-                                  selectedCategoryId: _selectedTargetCategoryId,
-                                  filteredSubCategories: _filteredSubCategories,
-                                  onRefresh: _loadTargets,
-                                  onTargetSelected: _handleTargetSelected,
-                                  onCategoryForSubCategorySelected:
-                                      _handleSubCategoryParentSelected,
-                                ),
-                            ],
+                          const _DividerSpace(),
+                          if (_loadingTargets)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (_targetErrorMessage != null)
+                            _ErrorText(message: _targetErrorMessage!)
+                          else
+                            _TargetSelectionSection(
+                              targetType: _targetType,
+                              options: _currentOptions,
+                              selectedTarget: _selectedTargetAvailability,
+                              selectedFallbackName: _selectedTargetName,
+                              onRefresh: _loadTargets,
+                              onTargetSelected: _handleTargetSelected,
+                            ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Promotion Rules',
+                        title: 'Automatic stock detection',
                         children: [
-                          _FieldLabel('Minimum Order Amount'),
+                          if (_selectedTargetAvailability == null)
+                            const _HelpText(
+                              text:
+                                  'Choose a product or category to see where it has available stock. You do not select branches manually anymore.',
+                            )
+                          else
+                            _AvailabilityDetails(
+                              target: _selectedTargetAvailability!,
+                              targetType: _targetType,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _SectionCard(
+                        title: context.l10n.supplierPromotionRules,
+                        children: [
+                          _FieldLabel(context.l10n.supplierMinimumOrderAmount),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '100',
@@ -728,16 +667,19 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             validator: (value) {
                               return _optionalNonNegativeNumber(
                                 value,
-                                'Minimum Order Amount',
+                                context.l10n.supplierMinimumOrderAmountPlain,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Maximum Discount Amount'),
+                          _FieldLabel(
+                            context.l10n.supplierMaximumDiscountAmount,
+                          ),
                           _InputField(
                             controller: _maxDiscountAmountController,
-                            hintText:
-                                _isPercent ? '50' : 'Only for percent discounts',
+                            hintText: _isPercent
+                                ? '50'
+                                : context.l10n.supplierOnlyForPercentDiscounts,
                             enabled: _isPercent,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -746,112 +688,24 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             validator: (value) {
                               return _optionalNonNegativeNumber(
                                 value,
-                                'Maximum Discount Amount',
+                                context.l10n.supplierMaximumDiscountAmountPlain,
                               );
                             },
                           ),
                           const SizedBox(height: 8),
                           _HelpText(
                             text: _isPercent
-                                ? 'Optional. It limits the total discount when using percent promotions.'
-                                : 'Maximum discount amount is not needed for fixed promotions.',
+                                ? context.l10n.supplierMaxDiscountPercentHelp
+                                : context.l10n.supplierMaxDiscountFixedHelp,
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Branch Applicability',
-                        children: [
-                          _FieldLabel('Applies To *'),
-                          _BranchScopeDropdown(
-                            value: _branchScope,
-                            onChanged: (value) {
-                              if (value == null) return;
-
-                              setState(() {
-                                _branchScope = value;
-
-                                if (_branchScope ==
-                                    PromotionBranchScope.allBranches) {
-                                  _selectedBranchIds.clear();
-                                  _selectedBranchNames.clear();
-                                }
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 8),
-                          const _HelpText(
-                            text:
-                                'Branches define where the promotion is valid. Product/category selection above is not filtered by branch.',
-                          ),
-                          if (_branchScope ==
-                              PromotionBranchScope.selectedBranches) ...[
-                            const _DividerSpace(),
-                            Row(
-                              children: [
-                                const Expanded(
-                                  child: _FieldLabel('Select Branches'),
-                                ),
-                                TextButton(
-                                  onPressed: _loadingBranches
-                                      ? null
-                                      : _loadBranches,
-                                  child: const Text(
-                                    'Refresh',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (_loadingBranches)
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              )
-                            else if (_branchErrorMessage != null)
-                              _ErrorText(message: _branchErrorMessage!)
-                            else if (_branches.isEmpty)
-                              const Text(
-                                'No active branches available. Add branches from Branch Management first.',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppThemeTokens.textSecondary,
-                                ),
-                              )
-                            else
-                              Wrap(
-                                spacing: 10,
-                                runSpacing: 10,
-                                children: _branches.map((branch) {
-                                  final selected =
-                                      _selectedBranchIds.contains(branch.id);
-
-                                  return FilterChip(
-                                    selected: selected,
-                                    label: Text(branch.label),
-                                    selectedColor:
-                                        primary.withValues(alpha: 0.15),
-                                    checkmarkColor: primary,
-                                    onSelected: (isSelected) {
-                                      _toggleBranch(branch, isSelected);
-                                    },
-                                  );
-                                }).toList(),
-                              ),
-                          ],
-                        ],
-                      ),
-                      const SizedBox(height: 18),
-                      _SectionCard(
-                        title: 'Schedule & Status',
+                        title: context.l10n.supplierScheduleStatus,
                         children: [
                           _DateTimePickerRow(
-                            label: 'Start Date',
+                            label: context.l10n.supplierStartDate,
                             value: _formatDateTime(_startDate),
                             onPick: () async {
                               final picked = await _pickDateTime(_startDate);
@@ -872,7 +726,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           ),
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
-                            label: 'End Date',
+                            label: context.l10n.supplierEndDate,
                             value: _formatDateTime(_endDate),
                             onPick: () async {
                               final picked = await _pickDateTime(_endDate);
@@ -898,10 +752,10 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           const _DividerSpace(),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
-                                  style: TextStyle(
+                                  context.l10n.activeStatus,
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
                                     color: AppThemeTokens.textPrimary,
@@ -938,116 +792,30 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
 
 class _TargetSelectionSection extends StatelessWidget {
   final PromotionTargetType targetType;
-  final List<_PromotionLookupOption> products;
-  final List<_PromotionLookupOption> categories;
-  final List<_PromotionLookupOption> subCategories;
-  final List<_PromotionLookupOption> filteredSubCategories;
-  final String? selectedTargetId;
-  final String? selectedCategoryId;
+  final List<_PromotionEligibleTarget> options;
+  final _PromotionEligibleTarget? selectedTarget;
+  final String? selectedFallbackName;
   final VoidCallback onRefresh;
-  final ValueChanged<_PromotionLookupOption?> onTargetSelected;
-  final ValueChanged<String?> onCategoryForSubCategorySelected;
+  final ValueChanged<_PromotionEligibleTarget> onTargetSelected;
 
   const _TargetSelectionSection({
     required this.targetType,
-    required this.products,
-    required this.categories,
-    required this.subCategories,
-    required this.filteredSubCategories,
-    required this.selectedTargetId,
-    required this.selectedCategoryId,
+    required this.options,
+    required this.selectedTarget,
+    required this.selectedFallbackName,
     required this.onRefresh,
     required this.onTargetSelected,
-    required this.onCategoryForSubCategorySelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (targetType == PromotionTargetType.product) {
-      return _LookupDropdownBlock(
-        label: 'Select Product *',
-        emptyText: 'No active products available.',
-        options: products,
-        selectedId: selectedTargetId,
-        onRefresh: onRefresh,
-        onChanged: onTargetSelected,
-      );
-    }
-
-    if (targetType == PromotionTargetType.category) {
-      return _LookupDropdownBlock(
-        label: 'Select Category *',
-        emptyText: 'No active categories available.',
-        options: categories,
-        selectedId: selectedTargetId,
-        onRefresh: onRefresh,
-        onChanged: onTargetSelected,
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _FieldLabel('Select Category *'),
-        _SimpleStringDropdown(
-          value: _safeSelectedId(selectedCategoryId, categories),
-          hintText: 'Choose category',
-          items: categories
-              .map(
-                (category) => DropdownMenuItem<String>(
-                  value: category.id,
-                  child: Text(category.label),
-                ),
-              )
-              .toList(),
-          onChanged: onCategoryForSubCategorySelected,
-        ),
-        const SizedBox(height: 12),
-        _LookupDropdownBlock(
-          label: 'Select SubCategory *',
-          emptyText: selectedCategoryId == null
-              ? 'Select a category first.'
-              : 'No active subcategories for this category.',
-          options: filteredSubCategories,
-          selectedId: selectedTargetId,
-          onRefresh: onRefresh,
-          onChanged: onTargetSelected,
-        ),
-      ],
-    );
-  }
-
-  static String? _safeSelectedId(
-    String? selectedId,
-    List<_PromotionLookupOption> options,
-  ) {
-    if (selectedId == null) return null;
-
-    return options.any((item) => item.id == selectedId) ? selectedId : null;
-  }
-}
-
-class _LookupDropdownBlock extends StatelessWidget {
-  final String label;
-  final String emptyText;
-  final List<_PromotionLookupOption> options;
-  final String? selectedId;
-  final VoidCallback onRefresh;
-  final ValueChanged<_PromotionLookupOption?> onChanged;
-
-  const _LookupDropdownBlock({
-    required this.label,
-    required this.emptyText,
-    required this.options,
-    required this.selectedId,
-    required this.onRefresh,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final safeSelectedId =
-        options.any((item) => item.id == selectedId) ? selectedId : null;
+    final isProduct = targetType == PromotionTargetType.product;
+    final label = isProduct
+        ? context.l10n.supplierSelectProduct
+        : context.l10n.supplierSelectCategory;
+    final emptyText = isProduct
+        ? 'No in-stock products are available for promotion.'
+        : 'No in-stock categories are available for promotion.';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1057,9 +825,9 @@ class _LookupDropdownBlock extends StatelessWidget {
             Expanded(child: _FieldLabel(label)),
             TextButton(
               onPressed: onRefresh,
-              child: const Text(
-                'Refresh',
-                style: TextStyle(fontWeight: FontWeight.w900),
+              child: Text(
+                context.l10n.refreshButton,
+                style: const TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
           ],
@@ -1074,40 +842,415 @@ class _LookupDropdownBlock extends StatelessWidget {
             ),
           )
         else
-          DropdownButtonFormField<String>(
-            initialValue: safeSelectedId,
-            items: options
-                .map(
-                  (option) => DropdownMenuItem<String>(
-                    value: option.id,
+          _SearchableTargetField(
+            hintText: isProduct
+                ? 'Search and choose an in-stock product'
+                : 'Search and choose an in-stock category',
+            selectedText: selectedTarget?.name ?? selectedFallbackName,
+            options: options,
+            targetType: targetType,
+            onSelected: onTargetSelected,
+          ),
+      ],
+    );
+  }
+}
+
+class _SearchableTargetField extends StatelessWidget {
+  final String hintText;
+  final String? selectedText;
+  final List<_PromotionEligibleTarget> options;
+  final PromotionTargetType targetType;
+  final ValueChanged<_PromotionEligibleTarget> onSelected;
+
+  const _SearchableTargetField({
+    required this.hintText,
+    required this.selectedText,
+    required this.options,
+    required this.targetType,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: () async {
+        final selected = await showModalBottomSheet<_PromotionEligibleTarget>(
+          context: context,
+          isScrollControlled: true,
+          useSafeArea: true,
+          backgroundColor: AppThemeTokens.surface,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          builder: (_) => _TargetSearchSheet(
+            title: targetType == PromotionTargetType.product
+                ? 'Choose product'
+                : 'Choose category',
+            options: options,
+            targetType: targetType,
+          ),
+        );
+
+        if (selected != null) {
+          onSelected(selected);
+        }
+      },
+      child: InputDecorator(
+        decoration: _dropdownDecoration(context),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                selectedText == null || selectedText!.trim().isEmpty
+                    ? hintText
+                    : selectedText!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: selectedText == null || selectedText!.trim().isEmpty
+                      ? AppThemeTokens.textSecondary
+                      : AppThemeTokens.textPrimary,
+                ),
+              ),
+            ),
+            const Icon(Icons.search, color: AppThemeTokens.textSecondary),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TargetSearchSheet extends StatefulWidget {
+  final String title;
+  final List<_PromotionEligibleTarget> options;
+  final PromotionTargetType targetType;
+
+  const _TargetSearchSheet({
+    required this.title,
+    required this.options,
+    required this.targetType,
+  });
+
+  @override
+  State<_TargetSearchSheet> createState() => _TargetSearchSheetState();
+}
+
+class _TargetSearchSheetState extends State<_TargetSearchSheet> {
+  final TextEditingController _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<_PromotionEligibleTarget> get _filteredOptions {
+    final normalized = _query.trim().toLowerCase();
+    if (normalized.isEmpty) return widget.options;
+
+    return widget.options.where((option) {
+      return option.name.toLowerCase().contains(normalized);
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottom = MediaQuery.of(context).viewInsets.bottom;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottom),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.78,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
+              child: Row(
+                children: [
+                  Expanded(
                     child: Text(
-                      option.label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      widget.title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppThemeTokens.textPrimary,
+                      ),
                     ),
                   ),
-                )
-                .toList(),
-            onChanged: (value) {
-              final selected = options.where((item) => item.id == value);
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: TextField(
+                controller: _searchController,
+                autofocus: true,
+                onChanged: (value) {
+                  setState(() {
+                    _query = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search by name...',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: AppThemeTokens.background,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: AppThemeTokens.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: AppThemeTokens.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: _filteredOptions.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No matching result',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppThemeTokens.textSecondary,
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      itemBuilder: (context, index) {
+                        final option = _filteredOptions[index];
+                        return _TargetOptionTile(
+                          option: option,
+                          targetType: widget.targetType,
+                          onTap: () => Navigator.of(context).pop(option),
+                        );
+                      },
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemCount: _filteredOptions.length,
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-              onChanged(selected.isEmpty ? null : selected.first);
-            },
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return '${label.replaceAll('*', '').trim()} is required';
-              }
+class _TargetOptionTile extends StatelessWidget {
+  final _PromotionEligibleTarget option;
+  final PromotionTargetType targetType;
+  final VoidCallback onTap;
 
-              return null;
-            },
+  const _TargetOptionTile({
+    required this.option,
+    required this.targetType,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isProduct = targetType == PromotionTargetType.product;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppThemeTokens.border),
+          color: AppThemeTokens.surface,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                isProduct ? Icons.inventory_2_outlined : Icons.category_outlined,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    option.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                      color: AppThemeTokens.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isProduct
+                        ? 'Available in ${option.branches.length} branches • Total stock: ${option.totalStock}'
+                        : '${option.eligibleProductsCount} eligible products • ${option.branches.length} branches • Total stock: ${option.totalStock}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppThemeTokens.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: AppThemeTokens.textSecondary),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AvailabilityDetails extends StatelessWidget {
+  final _PromotionEligibleTarget target;
+  final PromotionTargetType targetType;
+
+  const _AvailabilityDetails({
+    required this.target,
+    required this.targetType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isProduct = targetType == PromotionTargetType.product;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
+            ),
+          ),
+          child: Text(
+            isProduct
+                ? 'This product can be promoted because it has stock in ${target.branches.length} active branch(es).'
+                : 'This category can be promoted because it has ${target.eligibleProductsCount} in-stock product(s) across ${target.branches.length} active branch(es).',
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 13,
+              height: 1.35,
               fontWeight: FontWeight.w700,
               color: AppThemeTokens.textPrimary,
             ),
-            decoration: _dropdownDecoration(context),
           ),
+        ),
+        const SizedBox(height: 12),
+        const _FieldLabel('Detected branches'),
+        const SizedBox(height: 8),
+        ...target.branches.map(
+          (branch) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _DetectedBranchRow(branch: branch),
+          ),
+        ),
       ],
+    );
+  }
+}
+
+class _DetectedBranchRow extends StatelessWidget {
+  final _PromotionEligibilityBranch branch;
+
+  const _DetectedBranchRow({required this.branch});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppThemeTokens.border),
+        color: AppThemeTokens.background,
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.store_mall_directory_outlined,
+            color: AppThemeTokens.textSecondary,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  branch.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: AppThemeTokens.textPrimary,
+                  ),
+                ),
+                if (branch.city != null && branch.city!.trim().isNotEmpty)
+                  Text(
+                    branch.city!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppThemeTokens.textSecondary,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(999),
+              color: Colors.green.withValues(alpha: 0.12),
+            ),
+            child: Text(
+              'Stock ${branch.stockQuantity}',
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: Colors.green,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1125,33 +1268,32 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppThemeTokens.border),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 18,
+            offset: Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                color: AppThemeTokens.textPrimary,
-              ),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
             ),
           ),
-          const Divider(height: 1, color: AppThemeTokens.border),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: children,
-            ),
-          ),
+          const SizedBox(height: 14),
+          ...children,
         ],
       ),
     );
@@ -1166,11 +1308,11 @@ class _FieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 9),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
         style: const TextStyle(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w900,
           color: AppThemeTokens.textPrimary,
         ),
@@ -1235,7 +1377,7 @@ class _InputField extends StatelessWidget {
 
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1258,7 +1400,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
           .map(
             (type) => DropdownMenuItem<PromotionDiscountType>(
               value: type,
-              child: Text(type.label),
+              child: Text(_localizedEnumLabel(context, type.label)),
             ),
           )
           .toList(),
@@ -1284,85 +1426,22 @@ class _TargetTypeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const allowedTargetTypes = [
+      PromotionTargetType.product,
+      PromotionTargetType.category,
+    ];
+
     return DropdownButtonFormField<PromotionTargetType>(
       initialValue: value,
-      items: PromotionTargetType.values
+      items: allowedTargetTypes
           .map(
             (type) => DropdownMenuItem<PromotionTargetType>(
               value: type,
-              child: Text(type.label),
+              child: Text(_localizedEnumLabel(context, type.label)),
             ),
           )
           .toList(),
       onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
-    );
-  }
-}
-
-class _BranchScopeDropdown extends StatelessWidget {
-  final PromotionBranchScope value;
-  final ValueChanged<PromotionBranchScope?> onChanged;
-
-  const _BranchScopeDropdown({
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<PromotionBranchScope>(
-      initialValue: value,
-      items: PromotionBranchScope.values
-          .map(
-            (scope) => DropdownMenuItem<PromotionBranchScope>(
-              value: scope,
-              child: Text(scope.label),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context),
-    );
-  }
-}
-
-class _SimpleStringDropdown extends StatelessWidget {
-  final String? value;
-  final String hintText;
-  final List<DropdownMenuItem<String>> items;
-  final ValueChanged<String?> onChanged;
-
-  const _SimpleStringDropdown({
-    required this.value,
-    required this.hintText,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      items: items,
-      onChanged: onChanged,
-      validator: (selectedValue) {
-        if (selectedValue == null || selectedValue.trim().isEmpty) {
-          return hintText;
-        }
-
-        return null;
-      },
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
@@ -1398,69 +1477,39 @@ class _DateTimePickerRow extends StatelessWidget {
         border: Border.all(color: AppThemeTokens.border),
         color: AppThemeTokens.surface,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.w900,
-              color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              color: AppThemeTokens.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 44,
-                  child: OutlinedButton(
-                    onPressed: onClear,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppThemeTokens.textPrimary,
-                      side: const BorderSide(color: AppThemeTokens.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Clear',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppThemeTokens.textSecondary,
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: SizedBox(
-                  height: 44,
-                  child: ElevatedButton(
-                    onPressed: onPick,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      minimumSize: const Size(0, 44),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Pick',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    color: AppThemeTokens.textPrimary,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: onPick,
+            icon: Icon(Icons.calendar_month_outlined, color: primary),
+          ),
+          IconButton(
+            onPressed: onClear,
+            icon: const Icon(Icons.clear, color: AppThemeTokens.textSecondary),
           ),
         ],
       ),
@@ -1478,7 +1527,7 @@ class _HelpText extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 12,
+        fontSize: 12.5,
         height: 1.35,
         fontWeight: FontWeight.w600,
         color: AppThemeTokens.textSecondary,
@@ -1497,9 +1546,8 @@ class _ErrorText extends StatelessWidget {
     return Text(
       message,
       style: const TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
         color: Colors.red,
+        fontWeight: FontWeight.w700,
       ),
     );
   }
@@ -1510,17 +1558,124 @@ class _DividerSpace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 14),
-      child: Divider(height: 1, color: AppThemeTokens.border),
+    return const SizedBox(height: 16);
+  }
+}
+
+class _PromotionEligibilityBranch {
+  final String id;
+  final String name;
+  final String? city;
+  final int stockQuantity;
+
+  const _PromotionEligibilityBranch({
+    required this.id,
+    required this.name,
+    this.city,
+    required this.stockQuantity,
+  });
+
+  factory _PromotionEligibilityBranch.fromJson(Map<String, dynamic> json) {
+    return _PromotionEligibilityBranch(
+      id: json['id']?.toString() ?? '',
+      name: _cleanText(json['name']) ?? 'Branch',
+      city: _cleanText(json['city']),
+      stockQuantity: _intFromJson(json['stockQuantity']),
     );
+  }
+}
+
+class _PromotionEligibleTarget {
+  final String id;
+  final String name;
+  final PromotionTargetType targetType;
+  final int totalStock;
+  final int eligibleProductsCount;
+  final List<_PromotionEligibilityBranch> branches;
+
+  const _PromotionEligibleTarget({
+    required this.id,
+    required this.name,
+    required this.targetType,
+    required this.totalStock,
+    required this.eligibleProductsCount,
+    required this.branches,
+  });
+
+  factory _PromotionEligibleTarget.fromJson(Map<String, dynamic> json) {
+    final targetType = PromotionTargetTypeX.fromBackendValue(
+      json['targetType'],
+    );
+
+    final branches = <_PromotionEligibilityBranch>[];
+    final rawBranches = json['branches'];
+    if (rawBranches is List) {
+      for (final item in rawBranches) {
+        if (item is Map) {
+          final branch = _PromotionEligibilityBranch.fromJson(
+            Map<String, dynamic>.from(item),
+          );
+          if (branch.id.trim().isNotEmpty) {
+            branches.add(branch);
+          }
+        }
+      }
+    }
+
+    return _PromotionEligibleTarget(
+      id: json['id']?.toString() ?? '',
+      name: _cleanText(json['name']) ?? 'Target',
+      targetType: targetType,
+      totalStock: _intFromJson(json['totalStock']),
+      eligibleProductsCount: _intFromJson(json['eligibleProductsCount']),
+      branches: branches,
+    );
+  }
+}
+
+class _PromotionLookupService {
+  final ApiClient apiClient;
+
+  _PromotionLookupService(this.apiClient);
+
+  Future<List<_PromotionEligibleTarget>> getEligibleProducts() async {
+    final response = await apiClient.dio.get(
+      ApiConfig.supplierPromotionEligibleProducts,
+    );
+
+    return _parseEligibleTargets(response.data);
+  }
+
+  Future<List<_PromotionEligibleTarget>> getEligibleCategories() async {
+    final response = await apiClient.dio.get(
+      ApiConfig.supplierPromotionEligibleCategories,
+    );
+
+    return _parseEligibleTargets(response.data);
+  }
+
+  List<_PromotionEligibleTarget> _parseEligibleTargets(dynamic data) {
+    if (data is! List) return [];
+
+    return data
+        .whereType<Map>()
+        .map(
+          (item) => _PromotionEligibleTarget.fromJson(
+            Map<String, dynamic>.from(item),
+          ),
+        )
+        .where((item) =>
+            item.id.trim().isNotEmpty &&
+            item.totalStock > 0 &&
+            item.branches.isNotEmpty)
+        .toList();
   }
 }
 
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1542,154 +1697,31 @@ InputDecoration _dropdownDecoration(BuildContext context) {
   );
 }
 
-class _PromotionLookupOption {
-  final String id;
-  final String label;
-  final String? categoryId;
-  final String? categoryName;
-
-  const _PromotionLookupOption({
-    required this.id,
-    required this.label,
-    this.categoryId,
-    this.categoryName,
-  });
-
-  factory _PromotionLookupOption.fromJson(
-    Map<String, dynamic> json, {
-    required String fallbackPrefix,
-  }) {
-    final id = _firstNonEmpty(json, [
-      'id',
-      'productId',
-      'categoryId',
-      'subCategoryId',
-      'subcategoryId',
-    ]);
-
-    final name = _firstNonEmpty(json, [
-      'name',
-      'productName',
-      'categoryName',
-      'subCategoryName',
-      'subcategoryName',
-      'title',
-    ]);
-
-    final categoryId = _firstNonEmpty(json, [
-      'categoryId',
-      'parentCategoryId',
-    ]);
-
-    final categoryName = _firstNonEmpty(json, [
-      'categoryName',
-      'parentCategoryName',
-    ]);
-
-    return _PromotionLookupOption(
-      id: id,
-      label: name.isEmpty ? '$fallbackPrefix #$id' : name,
-      categoryId: categoryId.isEmpty ? null : categoryId,
-      categoryName: categoryName.isEmpty ? null : categoryName,
-    );
-  }
-
-  static String _firstNonEmpty(
-    Map<String, dynamic> json,
-    List<String> keys,
-  ) {
-    for (final key in keys) {
-      final value = json[key];
-
-      if (value != null && value.toString().trim().isNotEmpty) {
-        return value.toString();
-      }
-    }
-
-    return '';
-  }
+String? _cleanText(dynamic value) {
+  if (value == null) return null;
+  final text = value.toString().trim();
+  if (text.isEmpty || text.toLowerCase() == 'null') return null;
+  return text;
 }
 
-class _PromotionLookupService {
-  final ApiClient apiClient;
+int _intFromJson(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString()) ?? 0;
+}
 
-  _PromotionLookupService(this.apiClient);
-
-  Future<List<_PromotionLookupOption>> getProducts() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierProducts);
-
-    return _parseList(
-      response.data,
-      fallbackPrefix: 'Product',
-    );
-  }
-
-  Future<List<_PromotionLookupOption>> getCategories() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierCategories);
-
-    return _parseList(
-      response.data,
-      fallbackPrefix: 'Category',
-    );
-  }
-
-  Future<List<_PromotionLookupOption>> getSubCategories() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierSubCategories);
-
-    return _parseList(
-      response.data,
-      fallbackPrefix: 'SubCategory',
-    );
-  }
-
-  Future<List<_PromotionLookupOption>> getBranches() async {
-    final response = await apiClient.dio.get(ApiConfig.supplierBranches);
-
-    final rawOptions = _parseList(
-      response.data,
-      fallbackPrefix: 'Branch',
-    );
-
-    if (response.data is List) {
-      final filtered = <_PromotionLookupOption>[];
-
-      for (final item in response.data as List) {
-        if (item is! Map) continue;
-
-        final json = Map<String, dynamic>.from(item);
-        final status = json['status']?.toString().toUpperCase();
-
-        if (status == null || status == 'ACTIVE') {
-          filtered.add(
-            _PromotionLookupOption.fromJson(
-              json,
-              fallbackPrefix: 'Branch',
-            ),
-          );
-        }
-      }
-
-      return filtered;
-    }
-
-    return rawOptions;
-  }
-
-  List<_PromotionLookupOption> _parseList(
-    dynamic data, {
-    required String fallbackPrefix,
-  }) {
-    if (data is! List) return [];
-
-    return data
-        .whereType<Map>()
-        .map(
-          (item) => _PromotionLookupOption.fromJson(
-            Map<String, dynamic>.from(item),
-            fallbackPrefix: fallbackPrefix,
-          ),
-        )
-        .where((item) => item.id.trim().isNotEmpty)
-        .toList();
+String _localizedEnumLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    default:
+      return label;
   }
 }

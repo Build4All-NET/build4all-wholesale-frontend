@@ -6,12 +6,16 @@ import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
 
 class QuickActionsSection extends StatelessWidget {
-  /// Kept because your dashboard already passes actions.
-  /// We intentionally render only:
-  /// AI Assistant, Create RFQ, Loyalty Points, Promotions.
+  /// Kept because the dashboard already passes actions from backend/home model.
   ///
-  /// Live Chat is removed.
-  /// Top Ranking remains only in the bottom navbar.
+  /// Old generic AI Assistant is intentionally removed because AI is now
+  /// product-specific and appears inside product cards.
+  ///
+  /// Rendered quick actions:
+  /// - Create RFQ
+  /// - Loyalty Points
+  /// - Promotions
+  ///
   final List<QuickActionModel> actions;
 
   const QuickActionsSection({super.key, required this.actions});
@@ -21,14 +25,6 @@ class QuickActionsSection extends StatelessWidget {
     final l10n = context.l10n;
 
     final quickActions = [
-      _RetailerQuickActionUiModel(
-        title: l10n.aiAssistant,
-        subtitle: l10n.smartRecommendations,
-        icon: Icons.auto_awesome,
-        iconColor: const Color(0xFF8B5CF6),
-        iconBackgroundColor: const Color(0xFFF1E8FF),
-        route: '/retailer-ai-assistant',
-      ),
       _RetailerQuickActionUiModel(
         title: l10n.createRfq,
         subtitle: l10n.requestQuotesQuickly,
@@ -54,6 +50,10 @@ class QuickActionsSection extends StatelessWidget {
         route: '/retailer-promotions',
       ),
     ];
+
+    if (quickActions.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,9 +101,16 @@ class _QuickActionCard extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 82),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppThemeTokens.surface,
           border: Border.all(color: AppThemeTokens.border),
           borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.025),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Row(
           children: [

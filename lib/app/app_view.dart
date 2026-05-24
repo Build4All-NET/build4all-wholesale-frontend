@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../core/branding/branding_cubit.dart';
+import '../core/branding/branding_state.dart';
+import '../core/storage/branding_storage.dart';
 import '../core/theme/app_theme_builder.dart';
 import '../core/theme/locale_cubit.dart';
 import '../core/theme/locale_state.dart';
@@ -22,6 +25,9 @@ class AppView extends StatelessWidget {
       providers: [
         BlocProvider.value(value: sl<ThemeCubit>()),
         BlocProvider.value(value: sl<LocaleCubit>()),
+        BlocProvider(
+          create: (_) => BrandingCubit(BrandingStorage())..loadInitialBranding(),
+        ),
         RepositoryProvider.value(value: sl<RuntimeThemeService>()),
       ],
       child: RuntimeThemeBootstrapper(
@@ -29,23 +35,31 @@ class AppView extends StatelessWidget {
           builder: (context, themeState) {
             return BlocBuilder<LocaleCubit, LocaleState>(
               builder: (context, localeState) {
-                return MaterialApp.router(
-                  debugShowCheckedModeBanner: false,
-                  title: AppConfig.appName,
-                  theme: AppThemeBuilder.buildTheme(themeState.config),
-                  routerConfig: AppRouter.router,
-                  locale: localeState.locale,
-                  supportedLocales: const [
-                    Locale('en'),
-                    Locale('fr'),
-                    Locale('ar'),
-                  ],
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
+                return BlocBuilder<BrandingCubit, BrandingState>(
+                  builder: (context, brandingState) {
+                    final title = brandingState.appName.trim().isNotEmpty
+                        ? brandingState.appName.trim()
+                        : AppConfig.appName;
+
+                    return MaterialApp.router(
+                      debugShowCheckedModeBanner: false,
+                      title: title,
+                      theme: AppThemeBuilder.buildTheme(themeState.config),
+                      routerConfig: AppRouter.router,
+                      locale: localeState.locale,
+                      supportedLocales: const [
+                        Locale('en'),
+                        Locale('fr'),
+                        Locale('ar'),
+                      ],
+                      localizationsDelegates: const [
+                        AppLocalizations.delegate,
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                      ],
+                    );
+                  },
                 );
               },
             );

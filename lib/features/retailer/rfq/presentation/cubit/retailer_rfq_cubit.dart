@@ -6,6 +6,7 @@ import '../../domain/usecases/accept_rfq_quotation_usecase.dart';
 import '../../domain/usecases/cancel_rfq_usecase.dart';
 import '../../domain/usecases/create_rfq_usecase.dart';
 import '../../domain/usecases/delete_rfq_usecase.dart';
+import '../../domain/usecases/generate_rfq_requirements_usecase.dart';
 import '../../domain/usecases/get_my_rfqs_usecase.dart';
 import '../../domain/usecases/get_rfq_details_usecase.dart';
 import '../../domain/usecases/update_rfq_usecase.dart';
@@ -19,6 +20,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
   final CancelRfqUseCase cancelRfqUseCase;
   final DeleteRfqUseCase deleteRfqUseCase;
   final AcceptRfqQuotationUseCase acceptRfqQuotationUseCase;
+  final GenerateRfqRequirementsUseCase generateRfqRequirementsUseCase;
 
   RetailerRfqCubit({
     required this.getMyRfqsUseCase,
@@ -28,6 +30,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
     required this.cancelRfqUseCase,
     required this.deleteRfqUseCase,
     required this.acceptRfqQuotationUseCase,
+    required this.generateRfqRequirementsUseCase,
   }) : super(const RetailerRfqState());
 
   Future<void> loadMyRfqs() async {
@@ -100,6 +103,36 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
       return updated;
     } catch (error) {
       emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+
+      return null;
+    }
+  }
+
+  Future<String?> generateRequirementsWithAi(
+    GenerateRfqRequirementsParams params,
+  ) async {
+    emit(
+      state.copyWith(
+        isAiWriting: true,
+        clearMessages: true,
+        clearAiGeneratedRequirements: true,
+      ),
+    );
+
+    try {
+      final requirements = await generateRfqRequirementsUseCase(params);
+
+      emit(
+        state.copyWith(
+          isAiWriting: false,
+          aiGeneratedRequirements: requirements,
+          successMessage: 'AI requirements generated successfully',
+        ),
+      );
+
+      return requirements;
+    } catch (error) {
+      emit(state.copyWith(isAiWriting: false, errorMessage: error.toString()));
 
       return null;
     }

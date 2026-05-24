@@ -53,4 +53,11 @@ class RetailerRfqRepositoryImpl implements RetailerRfqRepository {
   }) {
     return apiService.acceptQuotation(rfqId: rfqId, quotationId: quotationId);
   }
+
+  @override
+  Future<String> generateRequirementsWithAi(
+    GenerateRfqRequirementsParams params,
+  ) {
+    return apiService.generateRequirementsWithAi(params);
+  }
 }

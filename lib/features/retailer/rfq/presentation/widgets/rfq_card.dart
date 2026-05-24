@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../domain/entities/rfq_request_entity.dart';
 import 'rfq_status_chip.dart';
 
@@ -22,6 +23,8 @@ class RfqCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final hasActions =
         (rfq.canEdit && onEdit != null) ||
         (rfq.canCancel && onCancel != null) ||
@@ -109,40 +112,40 @@ class RfqCard extends StatelessWidget {
                         itemBuilder: (context) {
                           return [
                             if (rfq.canEdit && onEdit != null)
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: _RfqCardAction.edit,
                                 child: Row(
                                   children: [
-                                    Icon(Icons.edit_outlined),
-                                    SizedBox(width: 10),
-                                    Text('Edit request'),
+                                    const Icon(Icons.edit_outlined),
+                                    const SizedBox(width: 10),
+                                    Text(l10n.rfqEditRequest),
                                   ],
                                 ),
                               ),
                             if (rfq.canCancel && onCancel != null)
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: _RfqCardAction.cancel,
                                 child: Row(
                                   children: [
-                                    Icon(Icons.cancel_outlined),
-                                    SizedBox(width: 10),
-                                    Text('Cancel request'),
+                                    const Icon(Icons.cancel_outlined),
+                                    const SizedBox(width: 10),
+                                    Text(l10n.rfqCancelRequest),
                                   ],
                                 ),
                               ),
                             if (rfq.canDelete && onDelete != null)
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: _RfqCardAction.delete,
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.delete_outline_rounded,
                                       color: AppThemeTokens.error,
                                     ),
-                                    SizedBox(width: 10),
+                                    const SizedBox(width: 10),
                                     Text(
-                                      'Delete request',
-                                      style: TextStyle(
+                                      l10n.rfqDeleteRequest,
+                                      style: const TextStyle(
                                         color: AppThemeTokens.error,
                                       ),
                                     ),
@@ -164,16 +167,15 @@ class RfqCard extends StatelessWidget {
               children: [
                 _MetaChip(
                   icon: Icons.inventory_2_outlined,
-                  label: rfq.quantityLabel,
+                  label: l10n.rfqQuantityLabel(rfq.quantity, rfq.unit),
                 ),
                 _MetaChip(
                   icon: Icons.local_shipping_outlined,
-                  label: rfq.preferredDeliveryLabel,
+                  label: _deliveryLabel(l10n, rfq.preferredDeliveryLabel),
                 ),
                 _MetaChip(
                   icon: Icons.request_quote_outlined,
-                  label:
-                      '${rfq.quotationsCount} quote${rfq.quotationsCount == 1 ? '' : 's'}',
+                  label: l10n.rfqQuotesCount(rfq.quotationsCount),
                 ),
                 if (rfq.categoryName != null)
                   _MetaChip(
@@ -186,6 +188,17 @@ class RfqCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _deliveryLabel(AppLocalizations l10n, String value) {
+    return switch (value) {
+      'Within 24 hours' => l10n.rfqDeliveryWithin24Hours,
+      'Within 2-3 days' => l10n.rfqDelivery2To3Days,
+      'Within 1 week' => l10n.rfqDeliveryWithin1Week,
+      'Within 2 weeks' => l10n.rfqDeliveryWithin2Weeks,
+      'Flexible' => l10n.rfqDeliveryFlexible,
+      _ => value,
+    };
   }
 }
 

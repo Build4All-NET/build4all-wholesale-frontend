@@ -12,7 +12,7 @@ class SupplierOrdersState extends Equatable {
   final Map<SupplierOrderStatus, int> statusCounts;
   final String? errorMessage;
 
-  const SupplierOrdersState({
+  SupplierOrdersState({
     required this.isLoading,
     required this.isRefreshing,
     required this.searchQuery,
@@ -24,7 +24,7 @@ class SupplierOrdersState extends Equatable {
   });
 
   factory SupplierOrdersState.initial() {
-    return const SupplierOrdersState(
+    return SupplierOrdersState(
       isLoading: false,
       isRefreshing: false,
       searchQuery: '',

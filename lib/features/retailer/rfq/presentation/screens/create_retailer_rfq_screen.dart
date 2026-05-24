@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../domain/repositories/retailer_rfq_repository.dart';
 import '../cubit/retailer_rfq_cubit.dart';
 import '../cubit/retailer_rfq_state.dart';
@@ -44,22 +45,11 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
   final _cityController = TextEditingController();
   final _addressController = TextEditingController();
 
-  final _deliveryOptions = const [
-    _DeliveryOption(label: 'Within 24 hours', days: 1),
-    _DeliveryOption(label: 'Within 2-3 days', days: 3),
-    _DeliveryOption(label: 'Within 1 week', days: 7),
-    _DeliveryOption(label: 'Within 2 weeks', days: 14),
-    _DeliveryOption(label: 'Flexible', days: null),
-  ];
-
-  _DeliveryOption _selectedDelivery = const _DeliveryOption(
-    label: 'Within 1 week',
-    days: 7,
-  );
-
+  String _selectedDeliveryValue = 'Within 1 week';
   DateTime? _deadlineDate;
   XFile? _pickedImage;
   bool _aiGenerated = false;
+  String? _deadlineError;
 
   @override
   void dispose() {
@@ -89,24 +79,63 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
     setState(() => _pickedImage = picked);
   }
 
-  void _writeWithAiHelper() {
+  Future<void> _writeWithAiHelper() async {
+    final l10n = AppLocalizations.of(context)!;
     final product = _productNameController.text.trim();
 
     if (product.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Write the product name first.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.rfqAiProductNameRequired)));
       return;
     }
 
-    final category = _categoryController.text.trim();
+    final currentRequirements = _requirementsController.text.trim();
 
-    final generated = [
-      'I am requesting a quotation for $product.',
-      if (category.isNotEmpty) 'Category: $category.',
-      'Please provide wholesale pricing, available quantity, product quality details, packaging information, and expected delivery time.',
-      'The quotation should include unit price, shipping cost if applicable, and any minimum order requirements.',
-    ].join('\n');
+    if (currentRequirements.isNotEmpty) {
+      final shouldReplace = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: Text(l10n.rfqAiReplaceTitle),
+            content: Text(l10n.rfqAiReplaceMessage),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: Text(l10n.rfqAiKeepAction),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(l10n.rfqAiReplaceAction),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (shouldReplace != true) return;
+    }
+
+    final generated = await context
+        .read<RetailerRfqCubit>()
+        .generateRequirementsWithAi(
+          GenerateRfqRequirementsParams(
+            productName: _productNameController.text.trim(),
+            categoryName: _emptyToNull(_categoryController.text),
+            subCategoryName: _emptyToNull(_subCategoryController.text),
+            quantity: int.tryParse(_quantityController.text.trim()),
+            unit: _unitController.text.trim().isEmpty
+                ? 'units'
+                : _unitController.text.trim(),
+            targetUnitPrice: _parseDouble(_targetPriceController.text),
+            preferredDeliveryLabel: _selectedDeliveryValue,
+            deliveryCity: _emptyToNull(_cityController.text),
+            deliveryAddress: _emptyToNull(_addressController.text),
+            notes: currentRequirements.isEmpty ? null : currentRequirements,
+          ),
+        );
+
+    if (generated == null || !mounted) return;
 
     setState(() {
       _requirementsController.text = generated;
@@ -126,29 +155,44 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
 
     if (selected == null) return;
 
-    setState(() => _deadlineDate = selected);
+    setState(() {
+      _deadlineDate = selected;
+      _deadlineError = null;
+    });
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
+
+    setState(() {
+      _deadlineError = _deadlineDate == null ? l10n.rfqDeadlineRequired : null;
+    });
+
     if (!_formKey.currentState!.validate()) return;
+
+    if (_deadlineDate == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.rfqDeadlineRequired)));
+      return;
+    }
 
     final created = await context.read<RetailerRfqCubit>().createRfq(
       CreateRfqParams(
         productName: _productNameController.text.trim(),
         requirements: _requirementsController.text.trim(),
         imagePath: _pickedImage?.path,
-        categoryName: _emptyToNull(_categoryController.text),
-        subCategoryName: _emptyToNull(_subCategoryController.text),
+        categoryName: _categoryController.text.trim(),
+        subCategoryName: _subCategoryController.text.trim(),
         quantity: int.parse(_quantityController.text.trim()),
-        unit: _unitController.text.trim().isEmpty
-            ? 'units'
-            : _unitController.text.trim(),
+        unit: _unitController.text.trim(),
         targetUnitPrice: _parseDouble(_targetPriceController.text),
-        preferredDeliveryLabel: _selectedDelivery.label,
-        preferredDeliveryDays: _selectedDelivery.days,
+        preferredDeliveryLabel: _selectedDeliveryValue,
+        preferredDeliveryDays: _deliveryDays(_selectedDeliveryValue),
         deadlineDate: _deadlineDate,
-        deliveryCity: _emptyToNull(_cityController.text),
-        deliveryAddress: _emptyToNull(_addressController.text),
+        deliveryCity: _cityController.text.trim(),
+        deliveryAddress: _addressController.text.trim(),
         aiGenerated: _aiGenerated,
       ),
     );
@@ -170,8 +214,88 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
     return double.tryParse(clean);
   }
 
+  int? _deliveryDays(String value) {
+    return switch (value) {
+      'Within 24 hours' => 1,
+      'Within 2-3 days' => 3,
+      'Within 1 week' => 7,
+      'Within 2 weeks' => 14,
+      'Flexible' => null,
+      _ => null,
+    };
+  }
+
+  List<_DeliveryOption> _deliveryOptions(AppLocalizations l10n) {
+    return [
+      _DeliveryOption(
+        value: 'Within 24 hours',
+        label: l10n.rfqDeliveryWithin24Hours,
+      ),
+      _DeliveryOption(
+        value: 'Within 2-3 days',
+        label: l10n.rfqDelivery2To3Days,
+      ),
+      _DeliveryOption(
+        value: 'Within 1 week',
+        label: l10n.rfqDeliveryWithin1Week,
+      ),
+      _DeliveryOption(
+        value: 'Within 2 weeks',
+        label: l10n.rfqDeliveryWithin2Weeks,
+      ),
+      _DeliveryOption(value: 'Flexible', label: l10n.rfqDeliveryFlexible),
+    ];
+  }
+
+  String? _requiredTextValidator({
+    required String? value,
+    required String requiredMessage,
+    int minLength = 1,
+    String? minLengthMessage,
+  }) {
+    final clean = value?.trim() ?? '';
+
+    if (clean.isEmpty) {
+      return requiredMessage;
+    }
+
+    if (clean.length < minLength) {
+      return minLengthMessage ?? requiredMessage;
+    }
+
+    return null;
+  }
+
+  String? _positiveIntegerValidator(String? value, AppLocalizations l10n) {
+    final quantity = int.tryParse(value?.trim() ?? '');
+
+    if (quantity == null || quantity <= 0) {
+      return l10n.rfqEnterValidQuantity;
+    }
+
+    return null;
+  }
+
+  String? _positivePriceValidator(String? value, AppLocalizations l10n) {
+    final clean = value?.trim() ?? '';
+
+    if (clean.isEmpty) {
+      return l10n.rfqTargetUnitPriceRequired;
+    }
+
+    final price = double.tryParse(clean);
+
+    if (price == null || price <= 0) {
+      return l10n.rfqEnterValidTargetUnitPrice;
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<RetailerRfqCubit, RetailerRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
@@ -188,9 +312,9 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
           appBar: AppBar(
             backgroundColor: AppThemeTokens.background,
             elevation: 0,
-            title: const Text(
-              'Create RFQ',
-              style: TextStyle(
+            title: Text(
+              l10n.rfqCreate,
+              style: const TextStyle(
                 color: AppThemeTokens.textPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -209,7 +333,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                       )
                     : const Icon(Icons.send_rounded),
                 label: Text(
-                  state.isSubmitting ? 'Posting RFQ...' : 'Post your RFQ',
+                  state.isSubmitting ? l10n.rfqPosting : l10n.rfqPost,
                   style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -232,20 +356,21 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                 const RfqInfoBanner(),
                 const SizedBox(height: 18),
                 _SectionCard(
-                  title: 'Product request',
+                  title: l10n.rfqProductRequest,
                   children: [
                     _TextFieldBox(
                       controller: _productNameController,
-                      label: 'Product name *',
-                      hint: 'Example: Organic milk cartons',
+                      label: l10n.rfqProductName,
+                      hint: l10n.rfqProductNameHint,
                       icon: Icons.inventory_2_outlined,
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
-                        final clean = value?.trim() ?? '';
-                        if (clean.isEmpty) return 'Product name is required';
-                        if (clean.length < 2) {
-                          return 'Product name must be at least 2 characters';
-                        }
-                        return null;
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqProductNameRequired,
+                          minLength: 2,
+                          minLengthMessage: l10n.rfqProductNameTooShort,
+                        );
                       },
                     ),
                     const SizedBox(height: 12),
@@ -260,18 +385,34 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                         Expanded(
                           child: _TextFieldBox(
                             controller: _categoryController,
-                            label: 'Category',
-                            hint: 'Food, Electronics...',
+                            label: l10n.rfqCategory,
+                            hint: l10n.rfqCategoryHint,
                             icon: Icons.category_outlined,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return _requiredTextValidator(
+                                value: value,
+                                requiredMessage: l10n.rfqCategoryRequired,
+                                minLength: 2,
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: _TextFieldBox(
                             controller: _subCategoryController,
-                            label: 'Subcategory',
-                            hint: 'Dairy, Phones...',
+                            label: l10n.rfqSubcategory,
+                            hint: l10n.rfqSubcategoryHint,
                             icon: Icons.account_tree_outlined,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return _requiredTextValidator(
+                                value: value,
+                                requiredMessage: l10n.rfqSubcategoryRequired,
+                                minLength: 2,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -280,28 +421,35 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                 ),
                 const SizedBox(height: 16),
                 _SectionCard(
-                  title: 'Detailed requirements',
+                  title: l10n.rfqDetailedRequirements,
                   children: [
                     _MultilineFieldBox(
                       controller: _requirementsController,
-                      label: 'Requirements *',
-                      hint:
-                          'Describe specs, quality, packaging, preferred brands, size, color, standards...',
+                      label: l10n.rfqRequirements,
+                      hint: l10n.rfqRequirementsHint,
                       validator: (value) {
-                        final clean = value?.trim() ?? '';
-                        if (clean.isEmpty) return 'Requirements are required';
-                        if (clean.length < 10) {
-                          return 'Requirements must be at least 10 characters';
-                        }
-                        return null;
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqRequirementsRequired,
+                          minLength: 10,
+                          minLengthMessage: l10n.rfqRequirementsTooShort,
+                        );
                       },
                     ),
                     const SizedBox(height: 10),
                     OutlinedButton.icon(
-                      onPressed: _writeWithAiHelper,
-                      icon: const Icon(Icons.auto_awesome),
+                      onPressed: state.isAiWriting ? null : _writeWithAiHelper,
+                      icon: state.isAiWriting
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.auto_awesome),
                       label: Text(
-                        _aiGenerated ? 'AI suggestion added' : 'Write with AI',
+                        state.isAiWriting
+                            ? l10n.rfqWritingWithAi
+                            : l10n.rfqWriteWithAi,
                       ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Theme.of(context).colorScheme.primary,
@@ -317,7 +465,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                 ),
                 const SizedBox(height: 16),
                 _SectionCard(
-                  title: 'Quantity and delivery',
+                  title: l10n.rfqQuantityAndDelivery,
                   children: [
                     Row(
                       children: [
@@ -325,18 +473,13 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                           flex: 2,
                           child: _TextFieldBox(
                             controller: _quantityController,
-                            label: 'Minimum quantity *',
-                            hint: '500',
+                            label: l10n.rfqMinimumQuantity,
+                            hint: l10n.rfqMinimumQuantityHint,
                             icon: Icons.numbers_rounded,
                             keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
-                              final quantity = int.tryParse(
-                                value?.trim() ?? '',
-                              );
-                              if (quantity == null || quantity <= 0) {
-                                return 'Enter valid quantity';
-                              }
-                              return null;
+                              return _positiveIntegerValidator(value, l10n);
                             },
                           ),
                         ),
@@ -344,9 +487,16 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                         Expanded(
                           child: _TextFieldBox(
                             controller: _unitController,
-                            label: 'Unit',
-                            hint: 'units',
+                            label: l10n.rfqUnit,
+                            hint: l10n.rfqUnitHint,
                             icon: Icons.straighten_outlined,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return _requiredTextValidator(
+                                value: value,
+                                requiredMessage: l10n.rfqUnitRequired,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -354,46 +504,71 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                     const SizedBox(height: 12),
                     _TextFieldBox(
                       controller: _targetPriceController,
-                      label: 'Target unit price',
-                      hint: 'Optional',
+                      label: l10n.rfqTargetUnitPrice,
+                      hint: l10n.rfqTargetUnitPriceHint,
                       icon: Icons.attach_money_rounded,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
                       ),
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return _positivePriceValidator(value, l10n);
+                      },
                     ),
                     const SizedBox(height: 12),
                     _DeliveryDropdown(
-                      selected: _selectedDelivery,
-                      options: _deliveryOptions,
+                      selectedValue: _selectedDeliveryValue,
+                      options: _deliveryOptions(l10n),
                       onChanged: (value) {
                         if (value == null) return;
-                        setState(() => _selectedDelivery = value);
+                        setState(() => _selectedDeliveryValue = value);
                       },
                     ),
                     const SizedBox(height: 12),
                     _DeadlineBox(
                       date: _deadlineDate,
+                      errorText: _deadlineError,
                       onPick: _pickDeadline,
-                      onClear: () => setState(() => _deadlineDate = null),
+                      onClear: () {
+                        setState(() {
+                          _deadlineDate = null;
+                          _deadlineError = l10n.rfqDeadlineRequired;
+                        });
+                      },
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 _SectionCard(
-                  title: 'Delivery location',
+                  title: l10n.rfqDeliveryLocation,
                   children: [
                     _TextFieldBox(
                       controller: _cityController,
-                      label: 'City',
-                      hint: 'Example: Beirut',
+                      label: l10n.rfqCity,
+                      hint: l10n.rfqCityHint,
                       icon: Icons.location_city_outlined,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqCityRequired,
+                          minLength: 2,
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
                     _MultilineFieldBox(
                       controller: _addressController,
-                      label: 'Delivery address',
-                      hint: 'Street, building, area, notes...',
+                      label: l10n.rfqDeliveryAddress,
+                      hint: l10n.rfqDeliveryAddressHint,
                       minLines: 2,
+                      validator: (value) {
+                        return _requiredTextValidator(
+                          value: value,
+                          requiredMessage: l10n.rfqDeliveryAddressRequired,
+                          minLength: 5,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -446,6 +621,7 @@ class _TextFieldBox extends StatelessWidget {
   final String hint;
   final IconData icon;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
 
   const _TextFieldBox({
@@ -454,6 +630,7 @@ class _TextFieldBox extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.keyboardType,
+    this.textInputAction,
     this.validator,
   });
 
@@ -462,6 +639,7 @@ class _TextFieldBox extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      textInputAction: textInputAction,
       validator: validator,
       decoration: _inputDecoration(
         context: context,
@@ -532,6 +710,14 @@ InputDecoration _inputDecoration({
         width: 1.5,
       ),
     ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: AppThemeTokens.error),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: AppThemeTokens.error, width: 1.5),
+    ),
   );
 }
 
@@ -548,6 +734,7 @@ class _ImagePickerBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hasImage = pickedImage != null;
 
     return InkWell(
@@ -585,28 +772,28 @@ class _ImagePickerBox extends StatelessWidget {
                   ),
                 ],
               )
-            : const Padding(
-                padding: EdgeInsets.all(18),
+            : Padding(
+                padding: const EdgeInsets.all(18),
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.add_photo_alternate_outlined,
                       size: 42,
                       color: AppThemeTokens.textSecondary,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
-                      'Upload product image',
-                      style: TextStyle(
+                      l10n.rfqUploadProductImage,
+                      style: const TextStyle(
                         color: AppThemeTokens.textPrimary,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      'Optional. This photo will also appear for suppliers when they view your RFQ.',
+                      l10n.rfqUploadProductImageHint,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppThemeTokens.textSecondary,
                         height: 1.35,
                         fontWeight: FontWeight.w500,
@@ -621,31 +808,41 @@ class _ImagePickerBox extends StatelessWidget {
 }
 
 class _DeliveryDropdown extends StatelessWidget {
-  final _DeliveryOption selected;
+  final String selectedValue;
   final List<_DeliveryOption> options;
-  final ValueChanged<_DeliveryOption?> onChanged;
+  final ValueChanged<String?> onChanged;
 
   const _DeliveryDropdown({
-    required this.selected,
+    required this.selectedValue,
     required this.options,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<_DeliveryOption>(
-      value: selected,
+    final l10n = AppLocalizations.of(context)!;
+
+    return DropdownButtonFormField<String>(
+      value: selectedValue,
       items: options
           .map(
-            (option) =>
-                DropdownMenuItem(value: option, child: Text(option.label)),
+            (option) => DropdownMenuItem(
+              value: option.value,
+              child: Text(option.label),
+            ),
           )
           .toList(),
       onChanged: onChanged,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return l10n.rfqPreferredDeliveryTimeRequired;
+        }
+        return null;
+      },
       decoration: _inputDecoration(
         context: context,
-        label: 'Preferred delivery time',
-        hint: 'Choose delivery time',
+        label: l10n.rfqPreferredDeliveryTime,
+        hint: l10n.rfqChooseDeliveryTime,
         icon: Icons.local_shipping_outlined,
       ),
     );
@@ -654,66 +851,95 @@ class _DeliveryDropdown extends StatelessWidget {
 
 class _DeadlineBox extends StatelessWidget {
   final DateTime? date;
+  final String? errorText;
   final VoidCallback onPick;
   final VoidCallback onClear;
 
   const _DeadlineBox({
     required this.date,
+    required this.errorText,
     required this.onPick,
     required this.onClear,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final label = date == null
-        ? 'Select deadline date'
+        ? l10n.rfqSelectDeadlineDate
         : '${date!.day.toString().padLeft(2, '0')}/'
               '${date!.month.toString().padLeft(2, '0')}/'
               '${date!.year}';
 
-    return InkWell(
-      onTap: onPick,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppThemeTokens.inputFill,
+    final hasError = errorText != null && errorText!.trim().isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: onPick,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppThemeTokens.border),
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.event_outlined,
-              color: AppThemeTokens.textSecondary,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppThemeTokens.inputFill,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: hasError ? AppThemeTokens.error : AppThemeTokens.border,
+              ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: date == null
-                      ? AppThemeTokens.textSecondary
-                      : AppThemeTokens.textPrimary,
-                  fontWeight: FontWeight.w700,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.event_outlined,
+                  color: hasError
+                      ? AppThemeTokens.error
+                      : AppThemeTokens.textSecondary,
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: date == null
+                          ? AppThemeTokens.textSecondary
+                          : AppThemeTokens.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (date != null)
+                  IconButton(
+                    onPressed: onClear,
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (hasError) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 12),
+            child: Text(
+              errorText!,
+              style: const TextStyle(
+                color: AppThemeTokens.error,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            if (date != null)
-              IconButton(
-                onPressed: onClear,
-                icon: const Icon(Icons.close_rounded),
-              ),
-          ],
-        ),
-      ),
+          ),
+        ],
+      ],
     );
   }
 }
 
 class _DeliveryOption {
+  final String value;
   final String label;
-  final int? days;
 
-  const _DeliveryOption({required this.label, required this.days});
+  const _DeliveryOption({required this.value, required this.label});
 }

@@ -16,12 +16,14 @@ import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_promotions_screen.dart';
 
 import '../features/retailer_profile/presentation/screens/edit_retailer_profile_screen.dart';
 import '../features/retailer_profile/presentation/screens/profile_verification_code_screen.dart';
 import '../features/retailer_profile/presentation/screens/retailer_profile_screen.dart';
 
 import '../features/supplier/dashboard/presentation/screens/supplier_dashboard_screen.dart';
+import '../features/supplier/profile/presentation/screens/supplier_profile_display_screen.dart';
 import '../features/supplier/shared/screens/supplier_coming_soon_screen.dart';
 import '../features/supplier/excel_import/presentation/screens/supplier_excel_import_screen.dart';
 
@@ -60,6 +62,10 @@ import '../features/supplier/tax/presentation/screens/tax_rules_screen.dart';
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
+import '../features/supplier/payment_methods/presentation/screens/supplier_payment_methods_screen.dart';
+
+import '../features/supplier/rfq/presentation/screens/supplier_rfq_details_screen.dart';
+import '../features/supplier/rfq/presentation/screens/supplier_rfq_list_screen.dart';
 
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
@@ -68,6 +74,9 @@ import '../features/retailer/rfq/presentation/screens/create_retailer_rfq_screen
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_details_screen.dart';
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_list_screen.dart';
 import '../features/retailer/rfq/presentation/screens/edit_retailer_rfq_screen.dart';
+import '../features/retailer/orders/presentation/screens/retailer_order_tracking_screen.dart';
+import '../features/retailer/orders/presentation/screens/retailer_reorder_review_screen.dart';
+import '../features/retailer/orders/presentation/screens/retailer_orders_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -140,15 +149,19 @@ class AppRouter {
       // =========================
       GoRoute(
         path: '/supplier-dashboard',
-        builder: (context, state) => const SupplierDashboardScreen(),
+        builder: (context, state) => SupplierDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-profile',
+        builder: (context, state) => SupplierProfileDisplayScreen(),
       ),
       GoRoute(
         path: '/supplier-products',
-        builder: (context, state) => const ProductManagementScreen(),
+        builder: (context, state) => ProductManagementScreen(),
       ),
       GoRoute(
         path: '/supplier-products/add',
-        builder: (context, state) => const AddProductScreen(),
+        builder: (context, state) => AddProductScreen(),
       ),
       GoRoute(
         path: '/supplier-products/edit',
@@ -168,15 +181,15 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-catalog',
-        builder: (context, state) => const SupplierCatalogScreen(),
+        builder: (context, state) => SupplierCatalogScreen(),
       ),
       GoRoute(
         path: '/supplier-branches',
-        builder: (context, state) => const BranchManagementScreen(),
+        builder: (context, state) => BranchManagementScreen(),
       ),
       GoRoute(
         path: '/supplier-branches/add',
-        builder: (context, state) => const AddBranchScreen(),
+        builder: (context, state) => AddBranchScreen(),
       ),
       GoRoute(
         path: '/supplier-branches/edit',
@@ -196,14 +209,14 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-inventory',
-        builder: (context, state) => const SupplierComingSoonScreen(
+        builder: (context, state) => SupplierComingSoonScreen(
           title: 'Branch Inventory',
           icon: Icons.warehouse_outlined,
         ),
       ),
       GoRoute(
         path: '/supplier-orders',
-        builder: (context, state) => const SupplierOrdersScreen(),
+        builder: (context, state) => SupplierOrdersScreen(),
       ),
       GoRoute(
         path: '/supplier-orders/details',
@@ -211,6 +224,29 @@ class AppRouter {
           final order = state.extra as SupplierOrderEntity;
 
           return SupplierOrderDetailsScreen(order: order);
+        },
+      ),
+      GoRoute(
+        path: '/supplier-payment-methods',
+        builder: (context, state) => const SupplierPaymentMethodsScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-rfqs',
+        builder: (context, state) => SupplierRfqListScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-rfqs/:rfqId',
+        builder: (context, state) {
+          final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
+
+          if (rfqId == null) {
+            return SupplierComingSoonScreen(
+              title: 'RFQ not found',
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return SupplierRfqDetailsScreen(rfqId: rfqId);
         },
       ),
       GoRoute(
@@ -312,15 +348,8 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: '/supplier-settings',
-        builder: (context, state) => const SupplierComingSoonScreen(
-          title: 'Settings',
-          icon: Icons.settings_outlined,
-        ),
-      ),
-      GoRoute(
         path: '/supplier-excel-import',
-        builder: (context, state) => const SupplierExcelImportScreen(),
+        builder: (context, state) => SupplierExcelImportScreen(),
       ),
 
       // =========================
@@ -409,38 +438,47 @@ class AppRouter {
       ),
       GoRoute(
         path: '/retailer-promotions',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.promotions,
-            message: l10n.promotionsComingSoon,
-            icon: Icons.local_offer_outlined,
-          );
-        },
+        builder: (context, state) => const RetailerPromotionsScreen(),
       ),
-      GoRoute(
-        path: '/retailer-top-ranking',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
 
-          return RetailerPlaceholderScreen(
-            title: l10n.topRanking,
-            message: l10n.topRankingComingSoon,
-            icon: Icons.trending_up_rounded,
-          );
-        },
-      ),
       GoRoute(
         path: '/retailer-orders',
+        builder: (context, state) => const RetailerOrdersScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-orders/:orderId',
         builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
+          final orderId = int.tryParse(state.pathParameters['orderId'] ?? '');
 
-          return RetailerPlaceholderScreen(
-            title: l10n.orders,
-            message: l10n.ordersComingSoon,
-            icon: Icons.receipt_long_outlined,
-          );
+          if (orderId == null) {
+            final l10n = AppLocalizations.of(context)!;
+
+            return RetailerPlaceholderScreen(
+              title: l10n.orders,
+              message: l10n.ordersComingSoon,
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return RetailerOrderTrackingScreen(orderId: orderId);
+        },
+      ),
+      GoRoute(
+        path: '/retailer-orders/:orderId/reorder',
+        builder: (context, state) {
+          final orderId = int.tryParse(state.pathParameters['orderId'] ?? '');
+
+          if (orderId == null) {
+            final l10n = AppLocalizations.of(context)!;
+
+            return RetailerPlaceholderScreen(
+              title: l10n.orders,
+              message: l10n.ordersComingSoon,
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return RetailerReorderReviewScreen(orderId: orderId);
         },
       ),
       GoRoute(
@@ -493,30 +531,6 @@ class AppRouter {
             title: l10n.loyaltyPoints,
             message: l10n.loyaltyComingSoon,
             icon: Icons.star_border_rounded,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/retailer-wallet',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.walletBalance,
-            message: l10n.walletComingSoon,
-            icon: Icons.account_balance_wallet_outlined,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/retailer-credit',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.creditBalance,
-            message: l10n.creditComingSoon,
-            icon: Icons.credit_card_outlined,
           );
         },
       ),

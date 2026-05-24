@@ -9,6 +9,8 @@ class UpdateBranchUseCase {
   Future<BranchEntity> call({
     required String branchId,
     required String name,
+    required String countryCode,
+    int? regionId,
     required String city,
     required String address,
     required String phoneNumber,
@@ -17,6 +19,8 @@ class UpdateBranchUseCase {
     return repository.updateBranch(
       branchId: branchId,
       name: name,
+      countryCode: countryCode,
+      regionId: regionId,
       city: city,
       address: address,
       phoneNumber: phoneNumber,

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/coupon_entity.dart';
+
 
 class CouponCard extends StatelessWidget {
   final CouponEntity coupon;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+
 
   const CouponCard({
     super.key,
@@ -16,8 +19,10 @@ class CouponCard extends StatelessWidget {
     required this.onDelete,
   });
 
+
   String _formatDate(DateTime? date) {
     if (date == null) return '—';
+
 
     final year = date.year.toString().padLeft(4, '0');
     final month = date.month.toString().padLeft(2, '0');
@@ -25,33 +30,41 @@ class CouponCard extends StatelessWidget {
     final hour = date.hour.toString().padLeft(2, '0');
     final minute = date.minute.toString().padLeft(2, '0');
 
+
     return '$year-$month-$day $hour:$minute';
   }
+
 
   String _usageText() {
     if (coupon.maxUses == null) {
       return '${coupon.usedCount} / ∞';
     }
 
+
     return '${coupon.usedCount} / ${coupon.maxUses}';
   }
 
-  String _remainingText() {
-    if (coupon.remainingUses == null) return 'Unlimited';
+
+  String _remainingText(BuildContext context) {
+    if (coupon.remainingUses == null) return context.l10n.supplierUnlimited;
     return coupon.remainingUses.toString();
   }
 
-  String _validityText() {
+
+  String _validityText(BuildContext context) {
     if (coupon.startsAt == null && coupon.expiresAt == null) {
-      return 'Always active';
+      return context.l10n.supplierAlwaysActive;
     }
+
 
     return '${_formatDate(coupon.startsAt)} → ${_formatDate(coupon.expiresAt)}';
   }
 
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+
 
     return Container(
       width: double.infinity,
@@ -92,7 +105,7 @@ class CouponCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${coupon.discountType.label} • ${coupon.discountLabel}',
+                      '${_localizedOptionLabel(context, coupon.discountType.label)} • ${coupon.discountLabel}',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
@@ -122,7 +135,7 @@ class CouponCard extends StatelessWidget {
           ],
           const SizedBox(height: 12),
           Text(
-            _validityText(),
+            _validityText(context),
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -134,27 +147,27 @@ class CouponCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _InfoChip(label: 'Used', value: _usageText()),
-              _InfoChip(label: 'Remaining', value: _remainingText()),
+              _InfoChip(label: context.l10n.supplierUsed, value: _usageText()),
+              _InfoChip(label: context.l10n.supplierRemaining, value: _remainingText(context)),
               _InfoChip(
-                label: 'Min order',
+                label: context.l10n.supplierMinOrder,
                 value: coupon.minOrderAmount == null
                     ? '—'
                     : coupon.minOrderAmount!.toStringAsFixed(2),
               ),
               _InfoChip(
-                label: 'Max discount',
+                label: context.l10n.supplierMaxDiscount,
                 value: coupon.maxDiscountAmount == null
                     ? '—'
                     : coupon.maxDiscountAmount!.toStringAsFixed(2),
               ),
               _InfoChip(
-                label: 'Branches',
+                label: context.l10n.branchesLabel,
                 value: coupon.branchApplicabilityLabel,
               ),
               _InfoChip(
-                label: 'Valid now',
-                value: coupon.currentlyValid ? 'Yes' : 'No',
+                label: context.l10n.supplierValidNow,
+                value: coupon.currentlyValid ? context.l10n.yesLabel : context.l10n.noLabel,
               ),
             ],
           ),
@@ -167,39 +180,9 @@ class CouponCard extends StatelessWidget {
                 child: SizedBox(
                   height: 40,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      Clipboard.setData(
-                        ClipboardData(text: coupon.code),
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${coupon.code} copied')),
-                      );
-                    },
-                    icon: const Icon(Icons.copy_outlined, size: 17),
-                    label: const Text('Copy'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppThemeTokens.textPrimary,
-                      side: const BorderSide(color: AppThemeTokens.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: OutlinedButton.icon(
                     onPressed: onEdit,
                     icon: const Icon(Icons.edit_outlined, size: 17),
-                    label: const Text('Edit'),
+                    label: Text(context.l10n.editButton),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: primary,
                       side: BorderSide(color: primary.withOpacity(0.35)),
@@ -215,14 +198,14 @@ class CouponCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: SizedBox(
                   height: 40,
                   child: OutlinedButton.icon(
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete_outline, size: 17),
-                    label: const Text('Delete'),
+                    label: Text(context.l10n.deleteButton),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFFDC2626),
                       side: const BorderSide(color: Color(0xFFFCA5A5)),
@@ -246,14 +229,17 @@ class CouponCard extends StatelessWidget {
   }
 }
 
+
 class _CouponCodeBox extends StatelessWidget {
   final String code;
   final Color primary;
+
 
   const _CouponCodeBox({
     required this.code,
     required this.primary,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -278,17 +264,22 @@ class _CouponCodeBox extends StatelessWidget {
   }
 }
 
+
 class _StatusBadge extends StatelessWidget {
   final CouponEntity coupon;
 
+
   const _StatusBadge({required this.coupon});
+
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
+
     final Color backgroundColor;
     final Color textColor;
+
 
     switch (coupon.status) {
       case 'INACTIVE':
@@ -314,6 +305,7 @@ class _StatusBadge extends StatelessWidget {
         break;
     }
 
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -321,7 +313,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        coupon.statusLabel,
+        _localizedStatusLabel(context, coupon.statusLabel),
         style: TextStyle(
           color: textColor,
           fontSize: 11,
@@ -332,14 +324,17 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
+
 class _InfoChip extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoChip({
+
+  _InfoChip({
     required this.label,
     required this.value,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -376,10 +371,13 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
+
 class _DashedBorderPainter extends CustomPainter {
   final Color color;
 
+
   const _DashedBorderPainter({required this.color});
+
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -388,18 +386,23 @@ class _DashedBorderPainter extends CustomPainter {
       ..strokeWidth = 1.8
       ..style = PaintingStyle.stroke;
 
+
     const dashWidth = 7.0;
     const dashGap = 5.0;
+
 
     final rect = RRect.fromRectAndRadius(
       Offset.zero & size,
       const Radius.circular(13),
     );
 
+
     final path = Path()..addRRect(rect);
+
 
     for (final metric in path.computeMetrics()) {
       double distance = 0;
+
 
       while (distance < metric.length) {
         final segment = metric.extractPath(
@@ -407,14 +410,78 @@ class _DashedBorderPainter extends CustomPainter {
           distance + dashWidth,
         );
 
+
         canvas.drawPath(segment, paint);
         distance += dashWidth + dashGap;
       }
     }
   }
 
+
   @override
   bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) {
     return oldDelegate.color != color;
   }
 }
+
+
+String _localizedOptionLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
+  }
+}
+
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    case 'scheduled':
+      return context.l10n.supplierScheduled;
+    case 'expired':
+      return context.l10n.supplierExpired;
+    case 'usage limit reached':
+    case 'usage_limit_reached':
+      return context.l10n.supplierUsageLimitReached;
+    default:
+      return label;
+  }
+}
+
+
+

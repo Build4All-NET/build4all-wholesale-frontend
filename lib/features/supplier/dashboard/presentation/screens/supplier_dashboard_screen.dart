@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_event.dart';
@@ -11,21 +13,29 @@ import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
 
+
+String _paymentMethodsDashboardLabel(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  if (languageCode == 'ar') return 'طرق الدفع';
+  if (languageCode == 'fr') return 'Méthodes de paiement';
+  return 'Payment Methods';
+}
+
 class SupplierDashboardScreen extends StatelessWidget {
-  const SupplierDashboardScreen({super.key});
+  SupplierDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplierDashboardBloc>(
       create: (_) =>
-          sl<SupplierDashboardBloc>()..add(const SupplierDashboardStarted()),
-      child: const _SupplierDashboardView(),
+          sl<SupplierDashboardBloc>()..add(SupplierDashboardStarted()),
+      child: _SupplierDashboardView(),
     );
   }
 }
 
 class _SupplierDashboardView extends StatelessWidget {
-  const _SupplierDashboardView();
+  _SupplierDashboardView();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +53,7 @@ class _SupplierDashboardView extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        drawer: const SupplierAppDrawer(),
+        drawer: SupplierAppDrawer(),
         appBar: AppBar(
           backgroundColor: AppThemeTokens.background,
           elevation: 0,
@@ -51,13 +61,20 @@ class _SupplierDashboardView extends StatelessWidget {
           leading: Builder(
             builder: (context) {
               return IconButton(
-                icon: const Icon(Icons.menu, size: 32),
+                tooltip: context.l10n.supplierDashboardMenuTooltip,
+                icon: Icon(
+                  Icons.menu,
+                  size: 32,
+                  color: primary,
+                ),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               );
             },
           ),
           title: Text(
-            'Supplier Dashboard',
+            context.l10n.supplierDashboardTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: primary,
               fontSize: 22,
@@ -66,18 +83,28 @@ class _SupplierDashboardView extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                context.read<SupplierDashboardBloc>().add(
-                      const SupplierDashboardRefreshed(),
-                    );
-              },
-              icon: const Icon(Icons.refresh_outlined, size: 27),
+              tooltip: context.l10n.supplierProfileTitle,
+              onPressed: () => context.go('/supplier-profile'),
+              icon: Icon(
+                Icons.person_outline,
+                color: primary,
+                size: 27,
+              ),
             ),
             IconButton(
-              onPressed: () => context.go('/supplier-settings'),
-              icon: const Icon(Icons.settings_outlined, size: 27),
+              tooltip: context.l10n.supplierProfileRefreshTooltip,
+              onPressed: () {
+                context.read<SupplierDashboardBloc>().add(
+                      SupplierDashboardRefreshed(),
+                    );
+              },
+              icon: Icon(
+                Icons.refresh_outlined,
+                color: primary,
+                size: 27,
+              ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
           ],
         ),
         body: BlocBuilder<SupplierDashboardBloc, SupplierDashboardState>(
@@ -86,44 +113,44 @@ class _SupplierDashboardView extends StatelessWidget {
               child: RefreshIndicator(
                 onRefresh: () async {
                   context.read<SupplierDashboardBloc>().add(
-                        const SupplierDashboardRefreshed(),
+                        SupplierDashboardRefreshed(),
                       );
                 },
                 child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(
                     AppThemeTokens.screenHorizontalPadding,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (state.isLoading)
-                        const _DashboardLoadingCard()
+                        _DashboardLoadingCard()
                       else
-                        _buildStatsGrid(state),
-                      const SizedBox(height: 24),
+                        _buildStatsGrid(context, state),
+                      SizedBox(height: 24),
                       _buildFinancialSummary(context, state),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'Low Stock Alerts',
+                      SizedBox(height: 24),
+                      Text(
+                        context.l10n.supplierDashboardLowStockAlerts,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w900,
                           color: AppThemeTokens.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      _buildLowStockAlerts(state),
-                      const SizedBox(height: 28),
-                      const Text(
-                        'Quick Actions',
+                      SizedBox(height: 12),
+                      _buildLowStockAlerts(context, state),
+                      SizedBox(height: 28),
+                      Text(
+                        context.l10n.supplierDashboardQuickActions,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w900,
                           color: AppThemeTokens.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       _buildQuickActions(context),
                     ],
                   ),
@@ -136,43 +163,43 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsGrid(SupplierDashboardState state) {
+  Widget _buildStatsGrid(BuildContext context, SupplierDashboardState state) {
     final cards = [
       SupplierDashboardStatCard(
-        title: 'Pending Orders',
+        title: context.l10n.supplierPendingOrders,
         value: state.pendingOrders.toString(),
         icon: Icons.receipt_long_outlined,
-        iconColor: const Color(0xFFF97316),
-        iconBackgroundColor: const Color(0xFFFFEDD5),
+        iconColor: Color(0xFFF97316),
+        iconBackgroundColor: Color(0xFFFFEDD5),
       ),
       SupplierDashboardStatCard(
-        title: 'Active Orders',
+        title: context.l10n.supplierActiveOrders,
         value: state.activeOrders.toString(),
         icon: Icons.inventory_2_outlined,
-        iconColor: const Color(0xFF2563EB),
-        iconBackgroundColor: const Color(0xFFDBEAFE),
+        iconColor: Color(0xFF2563EB),
+        iconBackgroundColor: Color(0xFFDBEAFE),
       ),
       SupplierDashboardStatCard(
-        title: 'Shipped Orders',
+        title: context.l10n.supplierShippedOrders,
         value: state.shippedOrders.toString(),
         icon: Icons.local_shipping_outlined,
-        iconColor: const Color(0xFFA855F7),
-        iconBackgroundColor: const Color(0xFFF3E8FF),
+        iconColor: Color(0xFFA855F7),
+        iconBackgroundColor: Color(0xFFF3E8FF),
       ),
       SupplierDashboardStatCard(
-        title: 'Completed Orders',
+        title: context.l10n.supplierCompletedOrders,
         value: state.completedOrders.toString(),
         icon: Icons.check_circle_outline,
-        iconColor: const Color(0xFF16A34A),
-        iconBackgroundColor: const Color(0xFFDCFCE7),
+        iconColor: Color(0xFF16A34A),
+        iconBackgroundColor: Color(0xFFDCFCE7),
       ),
     ];
 
     return GridView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       itemCount: cards.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 14,
         crossAxisSpacing: 14,
@@ -190,7 +217,7 @@ class _SupplierDashboardView extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -199,35 +226,35 @@ class _SupplierDashboardView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Financial Summary',
+          Text(
+            context.l10n.supplierFinancialSummary,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 22),
+          SizedBox(height: 22),
           Row(
             children: [
               Expanded(
                 child: _FinancialItem(
-                  value: _formatMoney(state.todaysSales),
-                  label: "Today's Sales",
+                  value: formatSupplierCurrency(context, state.todaysSales),
+                  label: context.l10n.supplierTodaySales,
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
-                  value: _formatMoney(state.monthlyRevenue),
-                  label: 'Monthly Revenue',
+                  value: formatSupplierCurrency(context, state.monthlyRevenue),
+                  label: context.l10n.supplierMonthlyRevenue,
                   valueColor: primary,
                 ),
               ),
               Expanded(
                 child: _FinancialItem(
                   value: state.totalOrdersToday.toString(),
-                  label: 'Orders Today',
+                  label: context.l10n.supplierOrdersToday,
                   valueColor: primary,
                 ),
               ),
@@ -238,21 +265,21 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildLowStockAlerts(SupplierDashboardState state) {
+  Widget _buildLowStockAlerts(BuildContext context, SupplierDashboardState state) {
     if (state.lowStockAlerts.isEmpty) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(18),
+        padding: EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppThemeTokens.surface,
           borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
           border: Border.all(color: AppThemeTokens.border),
         ),
-        child: const Center(
+        child: Center(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 18),
             child: Text(
-              'No low stock alerts',
+              context.l10n.supplierNoLowStockAlerts,
               style: TextStyle(
                 fontSize: 16,
                 color: AppThemeTokens.textSecondary,
@@ -274,52 +301,57 @@ class _SupplierDashboardView extends StatelessWidget {
   Widget _buildQuickActions(BuildContext context) {
     final actions = [
       SupplierQuickActionCard(
-        title: 'Add Product',
+        title: context.l10n.supplierAddProduct,
         icon: Icons.add,
         onTap: () => context.push('/supplier-products/add'),
       ),
       SupplierQuickActionCard(
-        title: 'Create Promotion',
+        title: context.l10n.supplierCreatePromotion,
         icon: Icons.local_offer_outlined,
         onTap: () => context.go('/supplier-promotions/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Manage Branches',
+        title: context.l10n.supplierManageBranches,
         icon: Icons.location_on_outlined,
         onTap: () => context.go('/supplier-branches'),
       ),
       SupplierQuickActionCard(
-        title: 'Shipping Methods',
+        title: context.l10n.supplierDrawerShippingMethods,
         icon: Icons.local_shipping_outlined,
         onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Configure Taxes',
+        title: context.l10n.supplierConfigureTaxes,
         icon: Icons.percent_outlined,
         onTap: () => context.go('/supplier-tax-rules/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Import Excel',
+        title: context.l10n.supplierImportExcel,
         icon: Icons.upload_file_outlined,
         onTap: () => context.go('/supplier-excel-import'),
       ),
       SupplierQuickActionCard(
-        title: 'Home Banners',
+        title: context.l10n.supplierDrawerHomeBanners,
         icon: Icons.image_outlined,
         onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
-        title: 'Coupons',
+        title: context.l10n.supplierDrawerCoupons,
         icon: Icons.sell_outlined,
         onTap: () => context.go('/supplier-coupons/create'),
+      ),
+      SupplierQuickActionCard(
+        title: _paymentMethodsDashboardLabel(context),
+        icon: Icons.account_balance_wallet_outlined,
+        onTap: () => context.go('/supplier-payment-methods'),
       ),
     ];
 
     return GridView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       itemCount: actions.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 14,
         crossAxisSpacing: 14,
@@ -329,31 +361,28 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-  String _formatMoney(double amount) {
-    return '\$${amount.toStringAsFixed(2)}';
-  }
 }
 
 class _DashboardLoadingCard extends StatelessWidget {
-  const _DashboardLoadingCard();
+  _DashboardLoadingCard();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
         border: Border.all(color: AppThemeTokens.border),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 14),
             Text(
-              'Loading dashboard data...',
+              context.l10n.supplierLoadingDashboardData,
               style: TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontWeight: FontWeight.w700,
@@ -371,7 +400,7 @@ class _FinancialItem extends StatelessWidget {
   final String label;
   final Color valueColor;
 
-  const _FinancialItem({
+  _FinancialItem({
     required this.value,
     required this.label,
     required this.valueColor,
@@ -390,11 +419,11 @@ class _FinancialItem extends StatelessWidget {
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6),
         Text(
           label,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppThemeTokens.textSecondary,
             fontSize: 13,
             height: 1.25,
@@ -409,21 +438,21 @@ class _FinancialItem extends StatelessWidget {
 class _LowStockAlertCard extends StatelessWidget {
   final dynamic alert;
 
-  const _LowStockAlertCard({
+  _LowStockAlertCard({
     required this.alert,
   });
 
   @override
   Widget build(BuildContext context) {
-    final productName = _readProductName();
+    final productName = _readProductName(context);
     final branchName = _readBranchName();
     final currentStock = _readCurrentStock();
     final minimumStock = _readMinimumStock();
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -435,41 +464,41 @@ class _LowStockAlertCard extends StatelessWidget {
           Container(
             width: 44,
             height: 44,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Color(0xFFFFEDD5),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.warning_amber_rounded,
               color: Color(0xFFF97316),
               size: 24,
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   productName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppThemeTokens.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
-                  branchName.isEmpty ? 'Low stock item' : branchName,
-                  style: const TextStyle(
+                  branchName.isEmpty ? context.l10n.supplierLowStockItem : branchName,
+                  style: TextStyle(
                     color: AppThemeTokens.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
-                  'Current stock: $currentStock | Minimum: $minimumStock',
-                  style: const TextStyle(
+                  context.l10n.supplierCurrentMinimumStock(currentStock, minimumStock),
+                  style: TextStyle(
                     color: AppThemeTokens.error,
                     fontWeight: FontWeight.w800,
                   ),
@@ -482,7 +511,7 @@ class _LowStockAlertCard extends StatelessWidget {
     );
   }
 
-  String _readProductName() {
+  String _readProductName(BuildContext context) {
     try {
       final value = alert.productName;
       if (value != null && value.toString().trim().isNotEmpty) {
@@ -497,7 +526,7 @@ class _LowStockAlertCard extends StatelessWidget {
       }
     } catch (_) {}
 
-    return 'Low stock product';
+    return context.l10n.supplierLowStockProduct;
   }
 
   String _readBranchName() {

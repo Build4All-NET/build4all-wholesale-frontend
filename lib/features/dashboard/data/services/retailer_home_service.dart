@@ -42,6 +42,22 @@ class RetailerHomeService {
     }
   }
 
+  Future<List<HomeProductModel>> getPromotedProducts() async {
+    try {
+      final response = await apiClient.dio.get(ApiConfig.retailerPromotions);
+
+      return (response.data as List<dynamic>? ?? [])
+          .map(
+            (item) => HomeProductModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList();
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   Future<void> addToCart({required HomeProductModel product}) async {
     try {
       final quantity = product.moq <= 0 ? 1 : product.moq;

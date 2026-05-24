@@ -17,6 +17,7 @@ class ProductApiService {
     try {
       final response = await apiClient.dio.get(ApiConfig.supplierProducts);
 
+
       final data = response.data;
 
       if (data is List) {
@@ -114,9 +115,15 @@ class ProductApiService {
     required int minimumOrderQuantity,
     required ProductStatus status,
     String? imagePath,
+    String? existingImageUrl,
   }) async {
     try {
-      final imageUrl = await _resolveProductImageUrl(imagePath);
+      final resolvedImageUrl = await _resolveProductImageUrl(imagePath);
+
+      // Important:
+      // If the supplier edits a product without selecting a new image,
+      // keep the old imageUrl instead of sending null and deleting the image.
+      final imageUrl = resolvedImageUrl ?? _normalizeExistingImageUrl(existingImageUrl);
 
       final response = await apiClient.dio.put(
         ApiConfig.supplierProductById(productId),
@@ -178,6 +185,26 @@ class ProductApiService {
     }
 
     return _uploadProductImage(file);
+  }
+
+  String? _normalizeExistingImageUrl(String? existingImageUrl) {
+    if (existingImageUrl == null || existingImageUrl.trim().isEmpty) {
+      return null;
+    }
+
+    final normalized = existingImageUrl.trim();
+
+    if (normalized.startsWith('/uploadsPublic/')) {
+      return normalized;
+    }
+
+    if (normalized.contains('/uploadsPublic/')) {
+      return normalized.substring(
+        normalized.indexOf('/uploadsPublic/'),
+      );
+    }
+
+    return normalized;
   }
 
   Future<String> _uploadProductImage(File file) async {

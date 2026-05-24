@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
+
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/tax_rule_entity.dart';
 
@@ -58,7 +60,7 @@ class TaxRuleCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${rule.rateLabel} • ${rule.scopeLabel}',
+                      '${rule.rateLabel} • ${_localizedTaxScopeLabel(context, rule.scopeLabel)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -71,7 +73,7 @@ class TaxRuleCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StatusPill(status: rule.statusLabel),
+              _StatusPill(status: _localizedStatusLabel(context, rule.statusLabel)),
             ],
           ),
           if (rule.notes != null && rule.notes!.trim().isNotEmpty) ...[
@@ -95,7 +97,7 @@ class TaxRuleCard extends StatelessWidget {
             children: [
               _TextChip(text: rule.locationLabel),
               _TextChip(text: rule.shippingTaxLabel),
-              _TextChip(text: 'Order-level tax'),
+              _TextChip(text: context.l10n.supplierOrderLevelTax),
             ],
           ),
           const SizedBox(height: 16),
@@ -107,7 +109,7 @@ class TaxRuleCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.edit_outlined,
-                    label: 'Edit',
+                    label: context.l10n.editButton,
                     onPressed: onEdit!,
                     borderColor: primary.withValues(alpha: 0.35),
                     textColor: primary,
@@ -119,7 +121,7 @@ class TaxRuleCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.delete_outline,
-                    label: 'Delete',
+                    label: context.l10n.deleteButton,
                     onPressed: onDelete!,
                     borderColor: Colors.red.withValues(alpha: 0.45),
                     textColor: Colors.red,
@@ -163,7 +165,7 @@ class _StatusPill extends StatelessWidget {
 class _TextChip extends StatelessWidget {
   final String text;
 
-  const _TextChip({required this.text});
+  _TextChip({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -242,4 +244,20 @@ class _ActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    default:
+      return label;
+  }
+}
+
+String _localizedTaxScopeLabel(BuildContext context, String label) {
+  if (label == 'Order-level tax') return context.l10n.supplierOrderLevelTax;
+  return label;
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -12,19 +13,19 @@ import '../bloc/supplier_orders/supplier_orders_state.dart';
 import '../widgets/supplier_order_card.dart';
 
 class SupplierOrdersScreen extends StatelessWidget {
-  const SupplierOrdersScreen({super.key});
+  SupplierOrdersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplierOrdersBloc>(
-      create: (_) => sl<SupplierOrdersBloc>()..add(const SupplierOrdersStarted()),
-      child: const _SupplierOrdersView(),
+      create: (_) => sl<SupplierOrdersBloc>()..add(SupplierOrdersStarted()),
+      child: _SupplierOrdersView(),
     );
   }
 }
 
 class _SupplierOrdersView extends StatefulWidget {
-  const _SupplierOrdersView();
+  _SupplierOrdersView();
 
   @override
   State<_SupplierOrdersView> createState() => _SupplierOrdersViewState();
@@ -33,7 +34,7 @@ class _SupplierOrdersView extends StatefulWidget {
 class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
   final TextEditingController _searchController = TextEditingController();
 
-  final List<SupplierOrderStatus> _statuses = const [
+  final List<SupplierOrderStatus> _statuses = [
     SupplierOrderStatus.pending,
     SupplierOrderStatus.accepted,
     SupplierOrderStatus.preparing,
@@ -60,7 +61,7 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
     if (!context.mounted) return;
 
     if (result == true) {
-      context.read<SupplierOrdersBloc>().add(const SupplierOrdersRefreshed());
+      context.read<SupplierOrdersBloc>().add(SupplierOrdersRefreshed());
     }
   }
 
@@ -80,7 +81,7 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
       },
       child: Scaffold(
         backgroundColor: AppThemeTokens.background,
-        drawer: const SupplierAppDrawer(),
+        drawer: SupplierAppDrawer(),
         appBar: AppBar(
           backgroundColor: AppThemeTokens.background,
           elevation: 0,
@@ -88,12 +89,12 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
             builder: (context) {
               return IconButton(
                 onPressed: () => Scaffold.of(context).openDrawer(),
-                icon: const Icon(Icons.menu),
+                icon: Icon(Icons.menu),
               );
             },
           ),
           title: Text(
-            'Orders Management',
+            context.l10n.supplierOrdersTitle,
             style: TextStyle(
               fontWeight: FontWeight.w900,
               color: primary,
@@ -106,7 +107,7 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 12),
                   child: TextField(
                     controller: _searchController,
                     onChanged: (value) {
@@ -115,8 +116,8 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
                           );
                     },
                     decoration: InputDecoration(
-                      hintText: 'Search orders, retailers...',
-                      prefixIcon: const Icon(
+                      hintText: context.l10n.searchOrdersHint,
+                      prefixIcon: Icon(
                         Icons.search,
                         color: AppThemeTokens.textSecondary,
                       ),
@@ -135,15 +136,15 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
                   height: 46,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     children: [
                       _StatusFilterChip(
-                        label: 'All',
+                        label: context.l10n.allLabel,
                         count: null,
                         isSelected: state.selectedStatus == null,
                         onTap: () {
                           context.read<SupplierOrdersBloc>().add(
-                                const SupplierOrdersStatusFilterChanged(null),
+                                SupplierOrdersStatusFilterChanged(null),
                               );
                         },
                       ),
@@ -162,21 +163,21 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Divider(height: 1, color: AppThemeTokens.border),
+                SizedBox(height: 10),
+                Divider(height: 1, color: AppThemeTokens.border),
                 Expanded(
                   child: state.isLoading
-                      ? const Center(child: CircularProgressIndicator())
+                      ? Center(child: CircularProgressIndicator())
                       : state.orders.isEmpty
-                          ? const _EmptyOrdersView()
+                          ? _EmptyOrdersView()
                           : RefreshIndicator(
                               onRefresh: () async {
                                 context.read<SupplierOrdersBloc>().add(
-                                      const SupplierOrdersRefreshed(),
+                                      SupplierOrdersRefreshed(),
                                     );
                               },
                               child: ListView.builder(
-                                padding: const EdgeInsets.all(16),
+                                padding: EdgeInsets.all(16),
                                 itemCount: state.orders.length,
                                 itemBuilder: (context, index) {
                                   final order = state.orders[index];
@@ -202,17 +203,17 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
   String _statusLabel(SupplierOrderStatus status) {
     switch (status) {
       case SupplierOrderStatus.pending:
-        return 'Pending';
+        return context.l10n.orderStatusPending;
       case SupplierOrderStatus.accepted:
-        return 'Accepted';
+        return context.l10n.orderStatusAccepted;
       case SupplierOrderStatus.preparing:
-        return 'Preparing';
+        return context.l10n.orderStatusPreparing;
       case SupplierOrderStatus.shipped:
-        return 'Shipped';
+        return context.l10n.orderStatusShipped;
       case SupplierOrderStatus.delivered:
-        return 'Delivered';
+        return context.l10n.orderStatusDelivered;
       case SupplierOrderStatus.cancelled:
-        return 'Cancelled';
+        return context.l10n.orderStatusCancelled;
     }
   }
 }
@@ -223,7 +224,7 @@ class _StatusFilterChip extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _StatusFilterChip({
+  _StatusFilterChip({
     required this.label,
     required this.count,
     required this.isSelected,
@@ -235,12 +236,12 @@ class _StatusFilterChip extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
 
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: EdgeInsets.only(right: 8),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(999),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? primary.withValues(alpha: 0.12) : Colors.white,
             borderRadius: BorderRadius.circular(999),
@@ -263,7 +264,7 @@ class _StatusFilterChip extends StatelessWidget {
 }
 
 class _EmptyOrdersView extends StatelessWidget {
-  const _EmptyOrdersView();
+  _EmptyOrdersView();
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +272,7 @@ class _EmptyOrdersView extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: EdgeInsets.all(28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -280,8 +281,8 @@ class _EmptyOrdersView extends StatelessWidget {
               size: 58,
               color: primary,
             ),
-            const SizedBox(height: 14),
-            const Text(
+            SizedBox(height: 14),
+            Text(
               'No orders found',
               style: TextStyle(
                 fontSize: 20,
@@ -289,9 +290,9 @@ class _EmptyOrdersView extends StatelessWidget {
                 color: AppThemeTokens.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Incoming retailer orders will appear here.',
+            SizedBox(height: 8),
+            Text(
+              context.l10n.incomingOrdersEmptyMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,

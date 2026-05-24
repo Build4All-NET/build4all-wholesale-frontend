@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../utils/supplier_excel_import_i18n.dart';
 
 class SupplierExcelValidationSummaryCard extends StatelessWidget {
   final int totalRows;
@@ -18,30 +19,31 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = SupplierExcelImportI18n(context);
+
     final tiles = [
       _SummaryTileData(
-        label: 'Rows',
+        label: l.rows,
         value: totalRows.toString(),
         icon: Icons.table_rows_outlined,
       ),
       _SummaryTileData(
-        label: 'Valid',
+        label: l.valid,
         value: validRows.toString(),
         icon: Icons.check_circle_outline,
       ),
       _SummaryTileData(
-        label: 'Errors',
+        label: l.errors,
         value: errorRows.toString(),
         icon: Icons.error_outline,
         isError: true,
       ),
-      if (warningRows > 0)
-        _SummaryTileData(
-          label: 'Warnings',
-          value: warningRows.toString(),
-          icon: Icons.info_outline,
-          isWarning: true,
-        ),
+      _SummaryTileData(
+        label: l.warnings,
+        value: warningRows.toString(),
+        icon: Icons.info_outline,
+        isWarning: true,
+      ),
     ];
 
     return GridView.builder(
@@ -49,19 +51,52 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: tiles.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 10,
+        crossAxisCount: 2,
         crossAxisSpacing: 10,
-        childAspectRatio: 0.95,
+        mainAxisSpacing: 10,
+        childAspectRatio: 2.35,
       ),
       itemBuilder: (context, index) {
         final tile = tiles[index];
-        return _SummaryTile(
-          label: tile.label,
-          value: tile.value,
-          icon: tile.icon,
-          isError: tile.isError,
-          isWarning: tile.isWarning,
+        final color = tile.isError
+            ? AppThemeTokens.error
+            : tile.isWarning
+                ? Colors.orange
+                : Theme.of(context).colorScheme.primary;
+
+        return Container(
+          padding: const EdgeInsets.all(13),
+          decoration: BoxDecoration(
+            color: AppThemeTokens.surface,
+            borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
+            border: Border.all(color: AppThemeTokens.border),
+          ),
+          child: Row(
+            children: [
+              Icon(tile.icon, color: color),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  tile.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                tile.value,
+                style: TextStyle(
+                  color: color,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -82,65 +117,4 @@ class _SummaryTileData {
     this.isError = false,
     this.isWarning = false,
   });
-}
-
-class _SummaryTile extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final bool isError;
-  final bool isWarning;
-
-  const _SummaryTile({
-    required this.label,
-    required this.value,
-    required this.icon,
-    this.isError = false,
-    this.isWarning = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isError
-        ? AppThemeTokens.error
-        : isWarning
-            ? Colors.orange
-            : Theme.of(context).colorScheme.primary;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w900,
-              fontSize: 20,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: AppThemeTokens.textSecondary,
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

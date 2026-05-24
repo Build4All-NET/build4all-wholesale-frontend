@@ -1,12 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../categories/domain/entities/supplier_category_entity.dart';
+import '../../../branches/domain/usecases/get_branches_usecase.dart';
 import '../../../categories/domain/entities/supplier_sub_category_entity.dart';
 import '../../../categories/domain/usecases/get_categories_usecase.dart';
 import '../../../categories/domain/usecases/get_subcategories_by_category_usecase.dart';
-import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/domain/usecases/get_products_usecase.dart';
-import '../../domain/entities/supplier_excel_product_row_entity.dart';
+import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
 import '../../domain/usecases/clear_supplier_excel_import_usecase.dart';
 import '../../domain/usecases/import_supplier_excel_products_usecase.dart';
 import '../../domain/usecases/parse_supplier_excel_file_usecase.dart';
@@ -17,6 +21,9 @@ import 'supplier_excel_import_state.dart';
 
 class SupplierExcelImportBloc
     extends Bloc<SupplierExcelImportEvent, SupplierExcelImportState> {
+  static const String _templateAssetPath =
+      'assets/templates/supplier_import_template.xlsx';
+
   final PickSupplierExcelFileUseCase pickSupplierExcelFileUseCase;
   final ParseSupplierExcelFileUseCase parseSupplierExcelFileUseCase;
   final ValidateSupplierExcelRowsUseCase validateSupplierExcelRowsUseCase;
@@ -25,6 +32,7 @@ class SupplierExcelImportBloc
   final GetCategoriesUseCase getCategoriesUseCase;
   final GetSubCategoriesByCategoryUseCase getSubCategoriesByCategoryUseCase;
   final GetProductsUseCase getProductsUseCase;
+  final GetBranchesUseCase getBranchesUseCase;
 
   SupplierExcelImportBloc({
     required this.pickSupplierExcelFileUseCase,
@@ -35,11 +43,113 @@ class SupplierExcelImportBloc
     required this.getCategoriesUseCase,
     required this.getSubCategoriesByCategoryUseCase,
     required this.getProductsUseCase,
+    required this.getBranchesUseCase,
   }) : super(SupplierExcelImportState.initial()) {
+    on<SupplierExcelDownloadTemplateRequested>(_onDownloadTemplateRequested);
     on<SupplierExcelPickFileRequested>(_onPickFileRequested);
+    on<SupplierExcelRowUpdated>(_onRowUpdated);
     on<SupplierExcelImportRequested>(_onImportRequested);
     on<SupplierExcelClearRequested>(_onClearRequested);
-    on<SupplierExcelRowUpdated>(_onRowUpdated);
+  }
+
+  Future<void> _onDownloadTemplateRequested(
+    SupplierExcelDownloadTemplateRequested event,
+    Emitter<SupplierExcelImportState> emit,
+  ) async {
+    if (state.isDownloadingTemplate) return;
+
+    emit(
+      state.copyWith(
+        isDownloadingTemplate: true,
+        clearMessages: true,
+        clearTemplatePath: true,
+      ),
+    );
+
+    try {
+      final data = await rootBundle.load(_templateAssetPath);
+      final bytes = data.buffer.asUint8List();
+
+      if (!_looksLikeXlsx(bytes)) {
+        throw Exception('The supplier template asset is not a valid .xlsx file.');
+      }
+
+      final selectedPath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save supplier Excel import template',
+        fileName: 'supplier_import_template.xlsx',
+        type: FileType.custom,
+        allowedExtensions: const ['xlsx'],
+        bytes: bytes,
+      );
+
+      final savedPath = selectedPath == null
+          ? null
+          : await _ensureTemplateSavedAsXlsx(
+              selectedPath: selectedPath,
+              bytes: bytes,
+            );
+
+      emit(
+        state.copyWith(
+          isDownloadingTemplate: false,
+          successMessage: savedPath == null
+              ? null
+              : 'supplierExcelTemplateDownloaded',
+          templateSavePath: savedPath,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isDownloadingTemplate: false,
+          error: _message(error),
+        ),
+      );
+    }
+  }
+
+
+  bool _looksLikeXlsx(Uint8List bytes) {
+    if (bytes.length < 4) return false;
+
+    // .xlsx files are ZIP archives and must start with PK.
+    return bytes[0] == 0x50 && bytes[1] == 0x4B;
+  }
+
+  Future<String> _ensureTemplateSavedAsXlsx({
+    required String selectedPath,
+    required Uint8List bytes,
+  }) async {
+    // Some Android/desktop file pickers may return a path without the .xlsx
+    // extension even when the suggested file name has it. In that case, Excel
+    // and Google Sheets may not recognize the file. We enforce the extension
+    // and also write the bytes ourselves when the returned path is a normal
+    // filesystem path.
+    if (selectedPath.startsWith('content://')) {
+      return selectedPath;
+    }
+
+    final normalizedPath = selectedPath.trim();
+    final finalPath = normalizedPath.toLowerCase().endsWith('.xlsx')
+        ? normalizedPath
+        : '$normalizedPath.xlsx';
+
+    final file = File(finalPath);
+    await file.parent.create(recursive: true);
+    await file.writeAsBytes(bytes, flush: true);
+
+    if (finalPath != normalizedPath) {
+      final wrongExtensionFile = File(normalizedPath);
+      if (await wrongExtensionFile.exists()) {
+        try {
+          await wrongExtensionFile.delete();
+        } catch (_) {
+          // Best effort only. The correctly named .xlsx file was already saved.
+        }
+      }
+    }
+
+    return finalPath;
   }
 
   Future<void> _onPickFileRequested(
@@ -69,148 +179,132 @@ class SupplierExcelImportBloc
       }
 
       final parsedFile = await parseSupplierExcelFileUseCase(file: pickedFile);
-      final categories = await getCategoriesUseCase();
-      final existingProducts = await getProductsUseCase();
-      final subCategoriesByCategoryId =
-          <String, List<SupplierSubCategoryEntity>>{};
-
-      for (final category in categories) {
-        subCategoriesByCategoryId[category.id] =
-            await getSubCategoriesByCategoryUseCase(categoryId: category.id);
-      }
-
-      final validatedRows = _validateRows(
-        parsedFile.rows,
-        categories: categories,
-        subCategoriesByCategoryId: subCategoriesByCategoryId,
-        existingProducts: existingProducts,
-      );
+      final validatedFile = await _validateFile(parsedFile);
 
       emit(
         state.copyWith(
           isPickingOrParsing: false,
-          fileName: parsedFile.fileName,
-          rows: validatedRows,
-          categories: categories,
-          subCategoriesByCategoryId: subCategoriesByCategoryId,
-          existingProducts: existingProducts,
+          parsedFile: validatedFile,
           clearMessages: true,
           clearImportResult: true,
         ),
       );
-    } catch (e) {
+    } catch (error) {
       emit(
         state.copyWith(
           isPickingOrParsing: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: _message(error),
+          clearImportResult: true,
         ),
       );
     }
   }
 
-  Future<void> _onImportRequested(
-    SupplierExcelImportRequested event,
+
+  Future<void> _onRowUpdated(
+    SupplierExcelRowUpdated event,
     Emitter<SupplierExcelImportState> emit,
   ) async {
-    if (!state.canImport) return;
+    final currentFile = state.parsedFile;
+    if (currentFile == null) return;
+
+    final rowsBySection = {...currentFile.rowsBySection};
+    final rows = List.of(currentFile.rowsFor(event.section));
+    final index = rows.indexWhere((row) => row.rowNumber == event.rowNumber);
+    if (index < 0) return;
+
+    rows[index] = rows[index].copyWith(values: event.values);
+    rowsBySection[event.section] = rows;
+
+    final editedFile = SupplierExcelParsedFileEntity(
+      fileName: currentFile.fileName,
+      rowsBySection: Map.from(rowsBySection),
+    );
 
     emit(
       state.copyWith(
-        isImporting: true,
+        parsedFile: editedFile,
         clearMessages: true,
         clearImportResult: true,
       ),
     );
 
     try {
-      // Always refresh products before import. This prevents duplicate creation
-      // if the same Excel was imported before, or if another screen created
-      // a product while this preview was open.
-      final latestProductsBeforeImport = await getProductsUseCase();
-      final rowsValidatedBeforeImport = _validateRows(
-        state.rows,
-        categories: state.categories,
-        subCategoriesByCategoryId: state.subCategoriesByCategoryId,
-        existingProducts: latestProductsBeforeImport,
-      );
-
-      final validRowsBeforeImport =
-          rowsValidatedBeforeImport.where((row) => row.isValid).length;
-
-      if (validRowsBeforeImport == 0) {
-        emit(
-          state.copyWith(
-            isImporting: false,
-            rows: rowsValidatedBeforeImport,
-            existingProducts: latestProductsBeforeImport,
-            error:
-                'No products can be imported. Some rows already exist or need correction.',
-          ),
-        );
-        return;
-      }
-
-      final result = await importSupplierExcelProductsUseCase(
-        rows: rowsValidatedBeforeImport,
-      );
-
-      // Refresh again after import so imported rows immediately become invalid
-      // as existing products. This disables the button and prevents importing
-      // the same Excel twice from the same preview.
-      final latestProductsAfterImport = await getProductsUseCase();
-      final rowsValidatedAfterImport = _validateRows(
-        rowsValidatedBeforeImport,
-        categories: state.categories,
-        subCategoriesByCategoryId: state.subCategoriesByCategoryId,
-        existingProducts: latestProductsAfterImport,
-      );
-
-      final message = result.hasFailures
-          ? 'Imported ${result.importedCount} products. ${result.failedCount} rows failed.'
-          : 'Imported ${result.importedCount} products successfully. Existing rows are now protected from duplicate import.';
-
+      final validatedFile = await _validateFile(editedFile);
       emit(
         state.copyWith(
-          isImporting: false,
-          rows: rowsValidatedAfterImport,
-          existingProducts: latestProductsAfterImport,
-          importResult: result,
-          successMessage: message,
+          parsedFile: validatedFile,
+          clearMessages: true,
+          clearImportResult: true,
         ),
       );
-    } catch (e) {
+    } catch (error) {
       emit(
         state.copyWith(
-          isImporting: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: _message(error),
+          clearImportResult: true,
         ),
       );
     }
   }
 
-  void _onRowUpdated(
-    SupplierExcelRowUpdated event,
-    Emitter<SupplierExcelImportState> emit,
-  ) {
-    final updatedRows = state.rows.map((row) {
-      if (row.rowNumber == event.row.rowNumber) return event.row;
-      return row;
-    }).toList();
+  Future<SupplierExcelParsedFileEntity> _validateFile(
+    SupplierExcelParsedFileEntity parsedFile,
+  ) async {
+    final categories = await getCategoriesUseCase();
+    final existingProducts = await getProductsUseCase();
+    final existingBranches = await getBranchesUseCase();
+    final subCategoriesByCategoryId = <String, List<SupplierSubCategoryEntity>>{};
 
-    final validatedRows = _validateRows(
-      updatedRows,
-      categories: state.categories,
-      subCategoriesByCategoryId: state.subCategoriesByCategoryId,
-      existingProducts: state.existingProducts,
+    for (final category in categories) {
+      subCategoriesByCategoryId[category.id] =
+          await getSubCategoriesByCategoryUseCase(categoryId: category.id);
+    }
+
+    return validateSupplierExcelRowsUseCase(
+      parsedFile: parsedFile,
+      categories: categories,
+      subCategoriesByCategoryId: subCategoriesByCategoryId,
+      existingProducts: existingProducts,
+      existingBranches: existingBranches,
     );
+  }
+
+  Future<void> _onImportRequested(
+    SupplierExcelImportRequested event,
+    Emitter<SupplierExcelImportState> emit,
+  ) async {
+    if (!state.canImport || state.parsedFile == null) return;
 
     emit(
       state.copyWith(
-        rows: validatedRows,
+        isImporting: true,
         clearMessages: true,
-        clearImportResult: true,
       ),
     );
+
+    try {
+      final result = await importSupplierExcelProductsUseCase(
+        parsedFile: state.parsedFile!,
+      );
+
+      emit(
+        state.copyWith(
+          isImporting: false,
+          importResult: result,
+          successMessage: result.hasFailures
+              ? 'supplierExcelImportPartial'
+              : 'supplierExcelImportSuccess',
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isImporting: false,
+          error: _message(error),
+        ),
+      );
+    }
   }
 
   void _onClearRequested(
@@ -218,20 +312,11 @@ class SupplierExcelImportBloc
     Emitter<SupplierExcelImportState> emit,
   ) {
     clearSupplierExcelImportUseCase();
+
     emit(SupplierExcelImportState.initial());
   }
 
-  List<SupplierExcelProductRowEntity> _validateRows(
-    List<SupplierExcelProductRowEntity> rows, {
-    required List<SupplierCategoryEntity> categories,
-    required Map<String, List<SupplierSubCategoryEntity>> subCategoriesByCategoryId,
-    required List<ProductEntity> existingProducts,
-  }) {
-    return validateSupplierExcelRowsUseCase(
-      rows: rows,
-      categories: categories,
-      subCategoriesByCategoryId: subCategoriesByCategoryId,
-      existingProducts: existingProducts,
-    );
+  String _message(Object error) {
+    return error.toString().replaceFirst('Exception: ', '').trim();
   }
 }

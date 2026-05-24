@@ -16,7 +16,7 @@ class BranchInventoryItemEntity {
 
   final int stockQuantity;
 
-  const BranchInventoryItemEntity({
+  BranchInventoryItemEntity({
     required this.id,
     required this.branchId,
     required this.branchName,

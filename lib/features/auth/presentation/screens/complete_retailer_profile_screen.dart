@@ -7,9 +7,14 @@ import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/extensions/select_option_l10n_extension.dart';
+import '../../../../core/location/data/models/country_model.dart';
+import '../../../../core/location/data/models/region_model.dart';
+import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/models/select_option.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../injection_container.dart';
 import '../../data/services/auth_service.dart';
 
@@ -29,23 +34,19 @@ class _CompleteRetailerProfileScreenState
   late final TextEditingController _storeNameController;
   late final TextEditingController _phoneNumberController;
   late final TextEditingController _storeAddressController;
+  late final LocationApiService _locationApiService;
 
-  String? _selectedCity;
+  List<CountryModel> _countries = [];
+  List<RegionModel> _cities = [];
+
+  CountryModel? _selectedCountry;
+  RegionModel? _selectedCity;
   String? _selectedBusinessType;
-  bool _isLoading = false;
 
-  final List<SelectOption> _cities = const [
-    SelectOption(value: 'Beirut', labelKey: 'cityBeirut'),
-    SelectOption(value: 'Tripoli', labelKey: 'cityTripoli'),
-    SelectOption(value: 'Sidon', labelKey: 'citySidon'),
-    SelectOption(value: 'Tyre', labelKey: 'cityTyre'),
-    SelectOption(value: 'Zahle', labelKey: 'cityZahle'),
-    SelectOption(value: 'Jounieh', labelKey: 'cityJounieh'),
-    SelectOption(value: 'Nabatieh', labelKey: 'cityNabatieh'),
-    SelectOption(value: 'Byblos', labelKey: 'cityByblos'),
-    SelectOption(value: 'Aley', labelKey: 'cityAley'),
-    SelectOption(value: 'Baalbek', labelKey: 'cityBaalbek'),
-  ];
+  bool _isLoading = false;
+  bool _isLoadingCountries = true;
+  bool _isLoadingCities = false;
+  String? _locationError;
 
   final List<SelectOption> _businessTypes = const [
     SelectOption(
@@ -76,10 +77,17 @@ class _CompleteRetailerProfileScreenState
   @override
   void initState() {
     super.initState();
+
     _fullNameController = TextEditingController();
     _storeNameController = TextEditingController();
     _phoneNumberController = TextEditingController();
     _storeAddressController = TextEditingController();
+
+    _locationApiService = LocationApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    );
+
+    _loadCountries();
   }
 
   @override
@@ -88,30 +96,96 @@ class _CompleteRetailerProfileScreenState
     _storeNameController.dispose();
     _phoneNumberController.dispose();
     _storeAddressController.dispose();
+
     super.dispose();
   }
 
-  String? _validateLebanesePhone(String? value) {
+  Future<void> _loadCountries() async {
+    setState(() {
+      _isLoadingCountries = true;
+      _locationError = null;
+    });
+
+    try {
+      final countries = await _locationApiService.getCountries();
+
+      if (!mounted) return;
+
+      setState(() {
+        _countries = countries;
+        _isLoadingCountries = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingCountries = false;
+        _locationError = e.toString().replaceFirst('Exception: ', '');
+      });
+    }
+  }
+
+  Future<void> _loadCitiesForCountry(CountryModel country) async {
+    setState(() {
+      _isLoadingCities = true;
+      _cities = [];
+      _selectedCity = null;
+      _locationError = null;
+    });
+
+    try {
+      final cities = await _locationApiService.getRegionsByCountry(country.id);
+
+      if (!mounted) return;
+
+      setState(() {
+        _cities = cities;
+        _isLoadingCities = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingCities = false;
+        _locationError = e.toString().replaceFirst('Exception: ', '');
+      });
+    }
+  }
+
+  String? _validatePhone(String? value) {
     final l10n = context.l10n;
 
     if (value == null || value.trim().isEmpty) {
       return '${l10n.phoneNumber} is required';
     }
 
-    final cleaned = value.replaceAll(' ', '');
-    final lebanesePhoneRegex = RegExp(
-      r'^(\+961|0)?(3|70|71|76|78|79|81)\d{6}$',
-    );
+    final cleaned = value.trim();
 
-    if (!lebanesePhoneRegex.hasMatch(cleaned)) {
-      return l10n.enterValidLebanesePhone;
+    if (cleaned.length < 6) {
+      return l10n.validPhoneForSelectedCountryError;
     }
 
     return null;
   }
 
   Future<void> _submit() async {
+    final l10n = context.l10n;
+
     if (!_formKey.currentState!.validate()) return;
+
+    if (_selectedCountry == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.countryRequiredError)));
+      return;
+    }
+
+    if (_selectedCity == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${l10n.city} is required')));
+      return;
+    }
 
     setState(() => _isLoading = true);
 
@@ -121,14 +195,18 @@ class _CompleteRetailerProfileScreenState
         storeName: _storeNameController.text.trim(),
         phoneNumber: _phoneNumberController.text.trim(),
         storeAddress: _storeAddressController.text.trim(),
-        city: _selectedCity!,
+        countryId: _selectedCountry!.id,
+        countryName: _selectedCountry!.name,
+        countryIso2Code: _selectedCountry!.iso2Code,
+        countryIso3Code: _selectedCountry!.iso3Code,
+        city: _selectedCity!.name,
         businessType: _selectedBusinessType!,
       );
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Retailer profile saved successfully')),
+        SnackBar(content: Text(l10n.retailerProfileSavedSuccessfully)),
       );
 
       context.go('/retailer-dashboard');
@@ -152,7 +230,7 @@ class _CompleteRetailerProfileScreenState
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
-        title: const Text('Complete Retailer Profile'),
+        title: Text(l10n.completeRetailerProfileTitle),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
         actions: const [
@@ -196,11 +274,11 @@ class _CompleteRetailerProfileScreenState
                           ),
                         ),
                         const SizedBox(height: 16),
-                        const Center(
+                        Center(
                           child: Text(
-                            'Complete Retailer Profile',
+                            l10n.completeRetailerProfileTitle,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: AppThemeTokens.textPrimary,
@@ -208,11 +286,11 @@ class _CompleteRetailerProfileScreenState
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Center(
+                        Center(
                           child: Text(
-                            'Provide your business information to continue.',
+                            l10n.completeRetailerProfileSubtitle,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               color: AppThemeTokens.textSecondary,
                             ),
@@ -220,27 +298,27 @@ class _CompleteRetailerProfileScreenState
                         ),
                         const SizedBox(height: 28),
 
-                        const Text('Full Name'),
+                        Text(l10n.fullName),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _fullNameController,
-                          hintText: 'Enter your full name',
+                          hintText: l10n.enterFullName,
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Full Name',
+                            fieldName: l10n.fullName,
                           ),
                         ),
 
                         const SizedBox(height: 16),
 
-                        const Text('Store Name'),
+                        Text(l10n.storeName),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _storeNameController,
-                          hintText: 'Enter store name',
+                          hintText: l10n.enterStoreName,
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Store Name',
+                            fieldName: l10n.storeName,
                           ),
                         ),
 
@@ -250,50 +328,92 @@ class _CompleteRetailerProfileScreenState
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _phoneNumberController,
-                          hintText: '+961 70 123 456',
+                          hintText: l10n.enterPhoneNumber,
                           keyboardType: TextInputType.phone,
-                          validator: _validateLebanesePhone,
+                          validator: _validatePhone,
                         ),
 
                         const SizedBox(height: 16),
 
-                        const Text('Store Address'),
-                        const SizedBox(height: 8),
-                        PrimaryTextField(
-                          controller: _storeAddressController,
-                          hintText: 'Enter store address',
-                          validator: (value) => Validators.requiredField(
-                            value,
-                            fieldName: 'Store Address',
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        Text(l10n.city),
-                        const SizedBox(height: 8),
-                        PrimaryDropdownField<String>(
-                          value: _selectedCity,
-                          hintText: l10n.selectCity,
-                          items: _cities
-                              .map(
-                                (city) => DropdownMenuItem<String>(
-                                  value: city.value,
-                                  child: Text(context.trOption(city.labelKey)),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
+                        SearchableSelectionField<CountryModel>(
+                          label: l10n.countryLabel,
+                          hintText: _isLoadingCountries
+                              ? l10n.loadingCountries
+                              : l10n.selectCountry,
+                          searchHintText: l10n.searchCountry,
+                          items: _countries,
+                          value: _selectedCountry,
+                          itemLabel: (country) => country.name,
+                          isLoading: _isLoadingCountries,
+                          emptyText: l10n.noCountriesFound,
+                          onSelected: (country) {
                             setState(() {
-                              _selectedCity = value;
+                              _selectedCountry = country;
+                              _selectedCity = null;
+                              _cities = [];
                             });
+
+                            _loadCitiesForCountry(country);
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null) {
+                              return l10n.countryRequiredError;
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        SearchableSelectionField<RegionModel>(
+                          label: l10n.city,
+                          hintText: _selectedCountry == null
+                              ? l10n.selectCountryFirst
+                              : _isLoadingCities
+                              ? l10n.loadingCities
+                              : l10n.selectCity,
+                          searchHintText: l10n.selectCity,
+                          items: _cities,
+                          value: _selectedCity,
+                          itemLabel: (city) => city.name,
+                          enabled:
+                              _selectedCountry != null && !_isLoadingCities,
+                          isLoading: _isLoadingCities,
+                          emptyText: l10n.noCitiesFoundForCountry,
+                          onSelected: (city) {
+                            setState(() => _selectedCity = city);
+                          },
+                          validator: (value) {
+                            if (value == null) {
                               return '${l10n.city} is required';
                             }
                             return null;
                           },
+                        ),
+
+                        if (_locationError != null &&
+                            _locationError!.trim().isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            _locationError!,
+                            style: const TextStyle(
+                              color: AppThemeTokens.error,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+
+                        const SizedBox(height: 16),
+
+                        Text(l10n.storeAddress),
+                        const SizedBox(height: 8),
+                        PrimaryTextField(
+                          controller: _storeAddressController,
+                          hintText: l10n.enterStoreAddress,
+                          validator: (value) => Validators.requiredField(
+                            value,
+                            fieldName: l10n.storeAddress,
+                          ),
                         ),
 
                         const SizedBox(height: 16),

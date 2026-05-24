@@ -73,6 +73,10 @@ class RetailerProfileRepositoryImpl implements RetailerProfileRepository {
     required String storeName,
     required String phoneNumber,
     required String storeAddress,
+    required int countryId,
+    required String countryName,
+    required String countryIso2Code,
+    required String countryIso3Code,
     required String city,
     required String businessType,
   }) {
@@ -81,6 +85,10 @@ class RetailerProfileRepositoryImpl implements RetailerProfileRepository {
       storeName: storeName,
       phoneNumber: phoneNumber,
       storeAddress: storeAddress,
+      countryId: countryId,
+      countryName: countryName,
+      countryIso2Code: countryIso2Code,
+      countryIso3Code: countryIso3Code,
       city: city,
       businessType: businessType,
     );

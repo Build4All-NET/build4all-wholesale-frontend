@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -15,7 +16,7 @@ import '../widgets/branch_inventory_item_card.dart';
 class BranchInventoryScreen extends StatefulWidget {
   final BranchEntity branch;
 
-  const BranchInventoryScreen({
+  BranchInventoryScreen({
     super.key,
     required this.branch,
   });
@@ -63,9 +64,9 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
 
     if (availableProducts.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'All available products are already assigned to this branch',
+            context.l10n.allProductsAssigned,
           ),
         ),
       );
@@ -81,8 +82,8 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
         return StatefulBuilder(
           builder: (dialogContext, setDialogState) {
             return AlertDialog(
-              title: const Text(
-                'Assign Product to Branch',
+              title: Text(
+                context.l10n.assignProductToBranchTitle,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
               content: SingleChildScrollView(
@@ -90,14 +91,14 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Product',
+                    Text(
+                      context.l10n.productLabel,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         color: AppThemeTokens.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     DropdownButtonFormField<ProductEntity>(
                       initialValue: selectedProduct,
                       items: availableProducts.map((product) {
@@ -127,20 +128,20 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    const Text(
-                      'Stock Quantity',
+                    SizedBox(height: 14),
+                    Text(
+                      context.l10n.stockQuantityLabel,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         color: AppThemeTokens.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     TextField(
                       controller: stockController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: 'e.g., 100',
+                        hintText: context.l10n.stockQuantityHint,
                         filled: true,
                         fillColor: AppThemeTokens.inputFill,
                         border: OutlineInputBorder(
@@ -151,9 +152,9 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'This creates an inventory record for this branch and product.',
+                    SizedBox(height: 8),
+                    Text(
+                      context.l10n.inventoryRecordNote,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -166,7 +167,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(context.l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -186,7 +187,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                       ),
                     );
                   },
-                  child: const Text('Assign'),
+                  child: Text(context.l10n.assignButton),
                 ),
               ],
             );
@@ -217,8 +218,8 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Update Stock',
+          title: Text(
+            context.l10n.updateStockTitle,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Column(
@@ -226,18 +227,18 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
             children: [
               Text(
                 item.productName,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: AppThemeTokens.textPrimary,
                 ),
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14),
               TextField(
                 controller: controller,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Stock quantity',
-                  hintText: 'e.g., 500',
+                decoration: InputDecoration(
+                  labelText: context.l10n.stockQuantityFieldLabel,
+                  hintText: context.l10n.stockQuantityUpdateHint,
                 ),
               ),
             ],
@@ -245,7 +246,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -257,7 +258,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
 
                 Navigator.of(dialogContext).pop(value);
               },
-              child: const Text('Update'),
+              child: Text(context.l10n.updateButton),
             ),
           ],
         );
@@ -282,17 +283,17 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Remove Product from Branch',
+          title: Text(
+            context.l10n.removeProductFromBranchTitle,
             style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: Text(
-            'Are you sure you want to remove ${item.productName} from ${widget.branch.name} inventory?',
+            context.l10n.removeProductFromBranchConfirmation(item.productName, widget.branch.name),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -300,7 +301,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                 backgroundColor: AppThemeTokens.error,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Remove'),
+              child: Text(context.l10n.removeButton),
             ),
           ],
         );
@@ -315,6 +316,23 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
         inventoryId: item.id,
       ),
     );
+  }
+
+
+  String _localizedSuccessMessage(BuildContext context, String message) {
+    switch (message) {
+      case 'productAssignedToBranch':
+      case 'Product assigned to branch':
+        return context.l10n.productAssignedToBranchSuccessfully;
+      case 'stockUpdated':
+      case 'Stock updated':
+        return context.l10n.stockUpdatedSuccessfully;
+      case 'inventoryItemRemoved':
+      case 'Inventory item removed':
+        return context.l10n.inventoryItemRemovedSuccessfully;
+      default:
+        return message;
+    }
   }
 
   @override
@@ -336,7 +354,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.successMessage!)),
+              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
             );
           }
         },
@@ -351,23 +369,23 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                 elevation: 0,
                 leading: IconButton(
                   onPressed: () => context.pop(),
-                  icon: const Icon(Icons.arrow_back),
+                  icon: Icon(Icons.arrow_back),
                 ),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${widget.branch.name} Inventory',
-                      style: const TextStyle(
+                      context.l10n.branchInventoryTitle(widget.branch.name),
+                      style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w900,
                         color: AppThemeTokens.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       widget.branch.city,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: AppThemeTokens.textSecondary,
@@ -386,11 +404,11 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                       size: 30,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                 ],
               ),
               body: state.isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CircularProgressIndicator())
                   : state.inventoryItems.isEmpty
                       ? _EmptyInventoryView(
                           onAssignProduct: () =>
@@ -399,7 +417,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                       : RefreshIndicator(
                           onRefresh: _refreshInventory,
                           child: ListView.builder(
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(16),
                             itemCount: state.inventoryItems.length,
                             itemBuilder: (context, index) {
                               final item = state.inventoryItems[index];
@@ -426,7 +444,7 @@ class _AssignProductResult {
   final ProductEntity product;
   final int stockQuantity;
 
-  const _AssignProductResult({
+  _AssignProductResult({
     required this.product,
     required this.stockQuantity,
   });
@@ -435,7 +453,7 @@ class _AssignProductResult {
 class _EmptyInventoryView extends StatelessWidget {
   final VoidCallback onAssignProduct;
 
-  const _EmptyInventoryView({
+  _EmptyInventoryView({
     required this.onAssignProduct,
   });
 
@@ -445,7 +463,7 @@ class _EmptyInventoryView extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: EdgeInsets.all(28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -454,37 +472,37 @@ class _EmptyInventoryView extends StatelessWidget {
               size: 58,
               color: primaryColor,
             ),
-            const SizedBox(height: 14),
-            const Text(
-              'No inventory found',
+            SizedBox(height: 14),
+            Text(
+              context.l10n.noInventoryFound,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
                 color: AppThemeTokens.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Assign products to this branch to start tracking stock.',
+            SizedBox(height: 8),
+            Text(
+              context.l10n.assignProductsToBranchEmpty,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppThemeTokens.textSecondary,
               ),
             ),
-            const SizedBox(height: 18),
+            SizedBox(height: 18),
             ElevatedButton.icon(
               onPressed: onAssignProduct,
-              icon: const Icon(Icons.add),
-              label: const Text(
-                'Assign Product',
+              icon: Icon(Icons.add),
+              label: Text(
+                context.l10n.assignProductButton,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 18,
                   vertical: 14,
                 ),

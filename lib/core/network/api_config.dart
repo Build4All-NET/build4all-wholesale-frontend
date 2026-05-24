@@ -13,6 +13,8 @@ class ApiConfig {
   static const String verifyEmailCode = '/auth/verify-email-code';
   static const String completeProfile = '/auth/complete-profile';
 
+  static const String build4AllAdminProfileMe = '/admin/users/me';
+
   static const String currentUser = '/auth/me';
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
@@ -23,6 +25,7 @@ class ApiConfig {
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
   static const String retailerProfileMe = '/retailer-profile/me';
+
   // =========================
   // Shared Catalog: Countries / Regions
   // =========================
@@ -42,6 +45,11 @@ class ApiConfig {
   static String retailerHomeCategoryProducts(int categoryId) =>
       '/retailer-home/categories/$categoryId/products';
 
+  // Important:
+  // Keep this endpoint as retailer-home promotions because it belongs to the
+  // retailer home aggregation flow, not a standalone /retailer/promotions route.
+  static const String retailerPromotions = '/retailer-home/promotions';
+
   // =========================
   // Retailer Cart
   // =========================
@@ -51,6 +59,46 @@ class ApiConfig {
 
   static String retailerCartItemById(int cartItemId) =>
       '/retailer/cart/items/$cartItemId';
+
+  // =========================
+  // Retailer Orders
+  // =========================
+  static const String retailerOrders = '/retailer/orders';
+
+  static String retailerOrderById(String orderId) {
+    return '/retailer/orders/$orderId';
+  }
+
+  static String retailerOrderCancel(String orderId) {
+    return '/retailer/orders/$orderId/cancel';
+  }
+
+  static String retailerOrderReorder(String orderId) {
+    return '/retailer/orders/$orderId/reorder';
+  }
+
+
+
+  // =========================
+  // Supplier Payment Methods
+  // =========================
+  static const String supplierPaymentMethods = '/supplier/payment-methods';
+
+  static String supplierPaymentMethodByCode(String methodCode) {
+    return '/supplier/payment-methods/${methodCode.toUpperCase()}';
+  }
+
+  static String supplierPaymentMethodTest(String methodCode) {
+    return '/supplier/payment-methods/${methodCode.toUpperCase()}/test';
+  }
+
+  static String supplierOrderPayment(int orderId) {
+    return '/supplier/orders/$orderId/payment';
+  }
+
+  static String supplierOrderCashPaid(int orderId) {
+    return '/supplier/orders/$orderId/payment/cash-paid';
+  }
 
   // =========================
   // Build4All user endpoints
@@ -76,7 +124,9 @@ class ApiConfig {
 
   static String build4AllDeleteUser(int userId) => '/users/$userId';
 
+  // =========================
   // Supplier Categories
+  // =========================
   static const String supplierCategories = '/supplier/categories';
   static const String supplierCategoriesAll = '/supplier/categories/all';
   static const String supplierSubCategories = '/supplier/subcategories';
@@ -135,6 +185,7 @@ class ApiConfig {
   static const String supplierBranchInventory = '/supplier/branch-inventory';
   static const String supplierLowStockAlerts =
       '/supplier/branch-inventory/low-stock?threshold=50';
+
   static String supplierInventoryByBranch(String branchId) {
     return '/supplier/branch-inventory/branch/$branchId';
   }
@@ -173,8 +224,24 @@ class ApiConfig {
   // =========================
   static const String supplierPromotions = '/supplier/promotions';
 
+  // Important:
+  // These endpoints must stay promotion-specific because the promotion screen
+  // uses them to show only eligible products/categories, including stock logic.
+  static const String supplierPromotionEligibleProducts =
+      '/supplier/promotions/eligible-products';
+
+  static const String supplierPromotionEligibleCategories =
+      '/supplier/promotions/eligible-categories';
+
   static String supplierPromotionById(String id) {
     return '/supplier/promotions/$id';
+  }
+
+  static String supplierPromotionAvailability({
+    required String targetType,
+    required String targetId,
+  }) {
+    return '/supplier/promotions/availability?targetType=$targetType&targetId=$targetId';
   }
 
   // =========================
@@ -199,7 +266,7 @@ class ApiConfig {
   }
 
   // =========================
-  // SUPPLIER TAX RULES
+  // Supplier Tax Rules
   // =========================
   static const String supplierTaxRules = '/supplier/tax-rules';
 
@@ -227,6 +294,27 @@ class ApiConfig {
   }
 
   // =========================
+  // Supplier RFQ
+  // =========================
+  static const String supplierRfqsOpen = '/supplier/rfqs/open';
+
+  static String supplierRfqById(int rfqId) {
+    return '/supplier/rfqs/$rfqId';
+  }
+
+  static String submitSupplierRfqQuotation(int rfqId) {
+    return '/supplier/rfqs/$rfqId/quotations';
+  }
+
+  static String updateSupplierRfqQuotation(int quotationId) {
+    return '/supplier/rfqs/quotations/$quotationId';
+  }
+
+  static String withdrawSupplierRfqQuotation(int quotationId) {
+    return '/supplier/rfqs/quotations/$quotationId/withdraw';
+  }
+
+  // =========================
   // Retailer RFQ
   // =========================
   static const String retailerRfqs = '/retailer/rfqs';
@@ -251,4 +339,16 @@ class ApiConfig {
   static String acceptRetailerRfqQuotation(int rfqId, int quotationId) {
     return '/retailer/rfqs/$rfqId/quotations/$quotationId/accept';
   }
+
+  // =========================
+  // Retailer Product AI
+  // =========================
+  static String retailerProductAiChat(int productId) =>
+      '/retailer-ai/products/$productId/chat';
+
+  // =========================
+  // Retailer RFQ AI
+  // =========================
+  static const String retailerRfqAiRequirements =
+      '/retailer-ai/rfq/requirements';
 }

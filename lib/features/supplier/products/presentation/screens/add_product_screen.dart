@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +17,7 @@ import '../../domain/repositories/product_repository.dart';
 class AddProductScreen extends StatefulWidget {
   final ProductEntity? productToEdit;
 
-  const AddProductScreen({super.key, this.productToEdit});
+  AddProductScreen({super.key, this.productToEdit});
 
   bool get isEditMode => productToEdit != null;
 
@@ -183,21 +184,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Add Category',
-            style: TextStyle(fontWeight: FontWeight.w900),
-          ),
+          title: Text(context.l10n.addCategoryTitle, style: TextStyle(fontWeight: FontWeight.w900)),
           content: TextField(
             controller: controller,
             autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'e.g., Furniture, Stationery',
-            ),
+            decoration: InputDecoration(hintText: context.l10n.categoryNameHint),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -207,7 +203,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
                 Navigator.of(dialogContext).pop(value);
               },
-              child: const Text('Add'),
+              child: Text(context.l10n.addButton),
             ),
           ],
         );
@@ -237,7 +233,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('${category.name} added')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.categoryAddedMessage(category.name))));
     } catch (e) {
       if (!mounted) return;
 
@@ -255,7 +251,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Select a category first')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
       return;
     }
 
@@ -265,21 +261,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Add Sub Category',
-            style: TextStyle(fontWeight: FontWeight.w900),
-          ),
+          title: Text(context.l10n.addSubCategoryTitle, style: TextStyle(fontWeight: FontWeight.w900)),
           content: TextField(
             controller: controller,
             autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'e.g., Office Chairs, Notebooks',
-            ),
+            decoration: InputDecoration(hintText: context.l10n.subCategoryNameHint),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -289,7 +280,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
                 Navigator.of(dialogContext).pop(value);
               },
-              child: const Text('Add'),
+              child: Text(context.l10n.addButton),
             ),
           ],
         );
@@ -318,7 +309,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('${subCategory.name} added')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.subCategoryAddedMessage(subCategory.name))));
     } catch (e) {
       if (!mounted) return;
 
@@ -336,7 +327,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Select a category first')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
       return;
     }
 
@@ -347,7 +338,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     if (selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selected category was not found')),
+        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
       );
       return;
     }
@@ -356,18 +347,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Category',
-            style: TextStyle(fontWeight: FontWeight.w900),
-          ),
+          title: Text(context.l10n.deleteCategoryTitle, style: TextStyle(fontWeight: FontWeight.w900)),
           content: Text(
-            'Are you sure you want to delete "${selectedCategory.name}"?\n\n'
-            'If this category is already used by products or subcategories, the backend may prevent deleting it.',
+            '${context.l10n.deleteCategoryPermanentConfirmation(selectedCategory.name)}\n\n${context.l10n.deleteCategoryHelp}',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -375,7 +362,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 backgroundColor: AppThemeTokens.error,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Delete'),
+              child: Text(context.l10n.delete),
             ),
           ],
         );
@@ -405,7 +392,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${selectedCategory.name} deleted')),
+        SnackBar(content: Text(context.l10n.categoryDeletedMessage(selectedCategory.name))),
       );
     } catch (e) {
       if (!mounted) return;
@@ -423,7 +410,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     if (_selectedSubCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select a sub category first')),
+        SnackBar(content: Text(context.l10n.selectSubCategoryFirstMessage)),
       );
       return;
     }
@@ -435,7 +422,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     if (selectedSubCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selected sub category was not found')),
+        SnackBar(content: Text(context.l10n.selectedSubCategoryNotFound)),
       );
       return;
     }
@@ -444,18 +431,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text(
-            'Delete Sub Category',
-            style: TextStyle(fontWeight: FontWeight.w900),
-          ),
+          title: Text(context.l10n.deleteSubCategoryTitle, style: TextStyle(fontWeight: FontWeight.w900)),
           content: Text(
-            'Are you sure you want to delete "${selectedSubCategory.name}"?\n\n'
-            'If this sub category is already used by products, the backend may prevent deleting it.',
+            '${context.l10n.deleteSubCategoryPermanentConfirmation(selectedSubCategory.name)}\n\n${context.l10n.deleteSubCategoryHelp}',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -463,7 +446,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 backgroundColor: AppThemeTokens.error,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Delete'),
+              child: Text(context.l10n.delete),
             ),
           ],
         );
@@ -493,7 +476,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${selectedSubCategory.name} deleted')),
+        SnackBar(content: Text(context.l10n.subCategoryDeletedMessage(selectedSubCategory.name))),
       );
     } catch (e) {
       if (!mounted) return;
@@ -507,85 +490,91 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _saveProduct() async {
-    if (_isSavingProduct) return;
-    if (!_formKey.currentState!.validate()) return;
+  if (_isSavingProduct) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    final selectedCategory = _categories
-        .where((category) => category.id == _selectedCategoryId)
-        .cast<SupplierCategoryEntity?>()
-        .firstWhere((category) => category != null, orElse: () => null);
+  final selectedCategory = _categories
+      .where((category) => category.id == _selectedCategoryId)
+      .cast<SupplierCategoryEntity?>()
+      .firstWhere((category) => category != null, orElse: () => null);
 
-    if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selected category was not found')),
-      );
-      return;
-    }
-
-    final selectedSubCategory = _selectedSubCategoryId == null
-        ? null
-        : _subCategories
-              .where((subCategory) => subCategory.id == _selectedSubCategoryId)
-              .cast<SupplierSubCategoryEntity?>()
-              .firstWhere(
-                (subCategory) => subCategory != null,
-                orElse: () => null,
-              );
-
-    setState(() {
-      _isSavingProduct = true;
-    });
-
-    try {
-      final ProductEntity product;
-
-      if (widget.isEditMode) {
-        product = await _productRepository.updateProduct(
-          productId: widget.productToEdit!.id,
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          categoryId: selectedCategory.id,
-          subCategoryId: selectedSubCategory?.id,
-          price: double.parse(_priceController.text.trim()),
-          minimumOrderQuantity: int.parse(
-            _minimumOrderQuantityController.text.trim(),
-          ),
-          status: _selectedStatus,
-          imagePath: _selectedImagePath,
-        );
-      } else {
-        product = await _productRepository.createProduct(
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          categoryId: selectedCategory.id,
-          subCategoryId: selectedSubCategory?.id,
-          price: double.parse(_priceController.text.trim()),
-          minimumOrderQuantity: int.parse(
-            _minimumOrderQuantityController.text.trim(),
-          ),
-          status: _selectedStatus,
-          imagePath: _selectedImagePath,
-        );
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _isSavingProduct = false;
-      });
-
-      context.pop(product);
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isSavingProduct = false;
-      });
-
-      _showError(e);
-    }
+  if (selectedCategory == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
+    );
+    return;
   }
 
+  final selectedSubCategory = _selectedSubCategoryId == null
+      ? null
+      : _subCategories
+            .where((subCategory) => subCategory.id == _selectedSubCategoryId)
+            .cast<SupplierSubCategoryEntity?>()
+            .firstWhere(
+              (subCategory) => subCategory != null,
+              orElse: () => null,
+            );
+
+  setState(() {
+    _isSavingProduct = true;
+  });
+
+  try {
+    final ProductEntity product;
+
+    if (widget.isEditMode) {
+      product = await _productRepository.updateProduct(
+        productId: widget.productToEdit!.id,
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        categoryId: selectedCategory.id,
+        subCategoryId: selectedSubCategory?.id,
+        price: double.parse(_priceController.text.trim()),
+        minimumOrderQuantity: int.parse(
+          _minimumOrderQuantityController.text.trim(),
+        ),
+        status: _selectedStatus,
+
+        // If supplier selected a new local image, this path will be uploaded.
+        // If not, this remains the old backend image path from productToEdit.
+        imagePath: _selectedImagePath,
+
+        // Important:
+        // Keep old product image when editing without selecting a new image.
+        existingImageUrl: widget.productToEdit?.imagePath,
+      );
+    } else {
+      product = await _productRepository.createProduct(
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        categoryId: selectedCategory.id,
+        subCategoryId: selectedSubCategory?.id,
+        price: double.parse(_priceController.text.trim()),
+        minimumOrderQuantity: int.parse(
+          _minimumOrderQuantityController.text.trim(),
+        ),
+        status: _selectedStatus,
+        imagePath: _selectedImagePath,
+      );
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingProduct = false;
+    });
+
+    context.pop(product);
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingProduct = false;
+    });
+
+    _showError(e);
+  }
+}
   void _showError(Object error) {
     final message = error is AppException
         ? error.message
@@ -599,8 +588,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final title = widget.isEditMode ? 'Edit Product' : 'Add Product';
-    final buttonText = widget.isEditMode ? 'Update Product' : 'Save Product';
+    final title = widget.isEditMode ? context.l10n.editProductTitle : context.l10n.addProductTitle;
+    final buttonText = widget.isEditMode ? context.l10n.updateProductButton : context.l10n.saveProductButton;
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -609,7 +598,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         elevation: 0,
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w900,
             color: AppThemeTokens.textPrimary,
           ),
@@ -617,8 +606,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.fromLTRB(14, 10, 14, 12),
+          decoration: BoxDecoration(
             color: AppThemeTokens.background,
             border: Border(top: BorderSide(color: AppThemeTokens.border)),
           ),
@@ -629,16 +618,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   onPressed: _isSavingProduct ? null : () => context.pop(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeTokens.textPrimary,
-                    side: const BorderSide(color: AppThemeTokens.border),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    side: BorderSide(color: AppThemeTokens.border),
+                    padding: EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: const Text(
-                    'Cancel',
+                  child: Text(
+                    context.l10n.cancel,
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _isSavingProduct ? null : _saveProduct,
@@ -646,10 +635,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: _isSavingProduct
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 18,
                           width: 18,
                           child: CircularProgressIndicator(
@@ -659,7 +648,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         )
                       : Text(
                           buttonText,
-                          style: const TextStyle(fontWeight: FontWeight.w900),
+                          style: TextStyle(fontWeight: FontWeight.w900),
                         ),
                 ),
               ),
@@ -668,49 +657,49 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ),
       ),
       body: _isLoadingCategories
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : Form(
               key: _formKey,
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 24),
+                padding: EdgeInsets.fromLTRB(14, 0, 14, 24),
                 children: [
                   _SectionCard(
-                    title: 'Product Information',
+                    title: context.l10n.productInformationTitle,
                     children: [
                       _AppTextField(
-                        label: 'Product Name *',
-                        hint: 'e.g., Coca-Cola 24-Pack, Cotton T-Shirt Box',
+                        label: context.l10n.productNameLabel,
+                        hint: context.l10n.productNameHint,
                         controller: _nameController,
                         validator: (value) {
                           final name = value?.trim() ?? '';
 
-                          if (name.isEmpty) return 'Product name is required';
+                          if (name.isEmpty) return context.l10n.productNameRequiredError;
                           if (name.length < 3) {
-                            return 'Product name must be at least 3 characters';
+                            return context.l10n.productNameMinError;
                           }
                           if (name.length > 80) {
-                            return 'Product name is too long';
+                            return context.l10n.productNameTooLongError;
                           }
 
                           return null;
                         },
                       ),
                       _AppTextField(
-                        label: 'Description *',
-                        hint: 'Write a clear wholesale product description...',
+                        label: context.l10n.productDescriptionLabel,
+                        hint: context.l10n.productDescriptionHint,
                         controller: _descriptionController,
                         maxLines: 3,
                         validator: (value) {
                           final description = value?.trim() ?? '';
 
                           if (description.isEmpty) {
-                            return 'Description is required';
+                            return context.l10n.productDescriptionRequiredError;
                           }
                           if (description.length < 10) {
-                            return 'Description must be at least 10 characters';
+                            return context.l10n.productDescriptionMinError;
                           }
                           if (description.length > 300) {
-                            return 'Description is too long';
+                            return context.l10n.productDescriptionTooLongError;
                           }
 
                           return null;
@@ -755,26 +744,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
 
                       _AppTextField(
-                        label: 'Price per Unit *',
+                        label: context.l10n.pricePerUnitLabel,
                         hint: '0.00',
                         controller: _priceController,
-                        keyboardType: const TextInputType.numberWithOptions(
+                        keyboardType: TextInputType.numberWithOptions(
                           decimal: true,
                         ),
                         validator: (value) {
                           final price = double.tryParse(value?.trim() ?? '');
 
-                          if (price == null) return 'Enter a valid price';
+                          if (price == null) return context.l10n.productPriceInvalidError;
                           if (price <= 0) {
-                            return 'Price must be greater than 0';
+                            return context.l10n.priceGreaterThanZeroError;
                           }
-                          if (price > 100000) return 'Price is too high';
+                          if (price > 100000) return context.l10n.priceTooHighError;
 
                           return null;
                         },
                       ),
                       _AppTextField(
-                        label: 'Minimum Order Quantity *',
+                        label: context.l10n.minimumOrderQuantityLabel,
                         hint: '10',
                         controller: _minimumOrderQuantityController,
                         keyboardType: TextInputType.number,
@@ -782,13 +771,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           final quantity = int.tryParse(value?.trim() ?? '');
 
                           if (quantity == null) {
-                            return 'Enter a valid quantity';
+                            return context.l10n.quantityInvalidError;
                           }
                           if (quantity < 5) {
-                            return 'Minimum order quantity must be at least 5 for wholesale';
+                            return context.l10n.moqWholesaleMinError;
                           }
                           if (quantity > 10000) {
-                            return 'Minimum order quantity is too high';
+                            return context.l10n.moqTooHighError;
                           }
 
                           return null;
@@ -810,7 +799,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(height: 18),
                   _InventoryManagedInfoCard(
                     isEditMode: widget.isEditMode,
                     product: widget.productToEdit,
@@ -826,7 +815,7 @@ class _InventoryManagedInfoCard extends StatelessWidget {
   final bool isEditMode;
   final ProductEntity? product;
 
-  const _InventoryManagedInfoCard({
+  _InventoryManagedInfoCard({
     required this.isEditMode,
     required this.product,
   });
@@ -836,7 +825,7 @@ class _InventoryManagedInfoCard extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -849,25 +838,25 @@ class _InventoryManagedInfoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.inventory_2_outlined, color: primaryColor, size: 28),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Product Branch Stock',
+                    Text(
+                      context.l10n.productBranchStockTitle,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w900,
                         color: AppThemeTokens.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       isEditMode
-                          ? 'Manage this product stock across all branches directly. Stock updates are saved immediately in Branch Inventory.'
-                          : 'Save this product first, then assign its stock per branch from Product Branch Stock.',
-                      style: const TextStyle(
+                          ? context.l10n.manageProductStockSavedNote
+                          : context.l10n.manageProductStockAfterSaveNote,
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: AppThemeTokens.textSecondary,
@@ -879,7 +868,7 @@ class _InventoryManagedInfoCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           if (isEditMode && product != null)
             SizedBox(
               width: double.infinity,
@@ -890,15 +879,15 @@ class _InventoryManagedInfoCard extends StatelessWidget {
                     extra: product,
                   );
                 },
-                icon: const Icon(Icons.store_mall_directory_outlined),
-                label: const Text(
-                  'Manage Product Branch Stock',
+                icon: Icon(Icons.store_mall_directory_outlined),
+                label: Text(
+                  context.l10n.productBranchStockTitle,
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: primaryColor,
                   side: BorderSide(color: primaryColor.withOpacity(0.35)),
-                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  padding: EdgeInsets.symmetric(vertical: 13),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       AppThemeTokens.radiusSmall,
@@ -910,13 +899,13 @@ class _InventoryManagedInfoCard extends StatelessWidget {
           else
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: AppThemeTokens.inputFill,
                 borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
                 border: Border.all(color: AppThemeTokens.border),
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   Icon(
                     Icons.info_outline,
@@ -926,7 +915,7 @@ class _InventoryManagedInfoCard extends StatelessWidget {
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Branch stock becomes available after saving the product.',
+                      context.l10n.branchStockAfterSaveNote,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -952,7 +941,7 @@ class _CategorySelector extends StatelessWidget {
   final VoidCallback onAddCategory;
   final VoidCallback onDeleteCategory;
 
-  const _CategorySelector({
+  _CategorySelector({
     required this.selectedCategoryId,
     required this.categories,
     required this.isCreatingCategory,
@@ -971,7 +960,7 @@ class _CategorySelector extends StatelessWidget {
         : null;
 
     return _DropdownSection(
-      label: 'Category *',
+      label: context.l10n.categoryLabel,
       dropdown: DropdownButtonFormField<String>(
         initialValue: safeSelectedCategoryId,
         items: categories.map((category) {
@@ -983,16 +972,16 @@ class _CategorySelector extends StatelessWidget {
         onChanged: onChanged,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Category is required';
+            return context.l10n.categoryRequiredError;
           }
           return null;
         },
-        decoration: _dropdownDecoration('Select category'),
+        decoration: _dropdownDecoration(context.l10n.selectCategoryHint),
       ),
-      addButtonText: isCreatingCategory ? 'Adding...' : 'Add Category',
+      addButtonText: isCreatingCategory ? context.l10n.addingLabel : context.l10n.addCategoryTitle,
       onAddPressed: isCreatingCategory ? null : onAddCategory,
       deleteButtonText:
-          isDeletingCategory ? 'Deleting...' : 'Delete Selected Category',
+          isDeletingCategory ? context.l10n.deletingLabel : context.l10n.deleteSelectedCategory,
       onDeletePressed: safeSelectedCategoryId == null || isDeletingCategory
           ? null
           : onDeleteCategory,
@@ -1011,7 +1000,7 @@ class _SubCategorySelector extends StatelessWidget {
   final VoidCallback onAddSubCategory;
   final VoidCallback onDeleteSubCategory;
 
-  const _SubCategorySelector({
+  _SubCategorySelector({
     required this.selectedSubCategoryId,
     required this.subCategories,
     required this.isEnabled,
@@ -1032,7 +1021,7 @@ class _SubCategorySelector extends StatelessWidget {
         : null;
 
     return _DropdownSection(
-      label: 'Sub Category',
+      label: context.l10n.subCategoryLabel,
       dropdown: DropdownButtonFormField<String>(
         initialValue: safeSelectedSubCategoryId,
         items: subCategories.map((subCategory) {
@@ -1044,19 +1033,19 @@ class _SubCategorySelector extends StatelessWidget {
         onChanged: isEnabled ? onChanged : null,
         decoration: _dropdownDecoration(
           isLoading
-              ? 'Loading sub categories...'
+              ? context.l10n.loadingSubCategories
               : isEnabled
-                  ? 'Select sub category if needed'
-                  : 'Select category first',
+                  ? context.l10n.selectSubCategoryIfNeeded
+                  : context.l10n.selectCountryFirst,
         ),
       ),
       addButtonText:
-          isCreatingSubCategory ? 'Adding...' : 'Add Sub Category',
+          isCreatingSubCategory ? context.l10n.addingLabel : context.l10n.addSubCategoryTitle,
       onAddPressed:
           isEnabled && !isCreatingSubCategory ? onAddSubCategory : null,
       deleteButtonText: isDeletingSubCategory
-          ? 'Deleting...'
-          : 'Delete Selected Sub Category',
+          ? context.l10n.deletingLabel
+          : context.l10n.deleteSelectedSubCategory,
       onDeletePressed:
           safeSelectedSubCategoryId == null || isDeletingSubCategory
               ? null
@@ -1077,34 +1066,50 @@ class _StatusSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isActive = selectedStatus == ProductStatus.active;
+    final statusLabel = isActive
+        ? context.l10n.activeStatus
+        : context.l10n.inactiveStatus;
+    final statusColor = isActive
+        ? Theme.of(context).colorScheme.primary
+        : AppThemeTokens.textSecondary;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Product Status *',
-            style: TextStyle(
+          Text(
+            context.l10n.productStatusLabel,
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<ProductStatus>(
-            initialValue: selectedStatus,
-            items: const [
-              DropdownMenuItem(
-                value: ProductStatus.active,
-                child: Text('Active'),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  statusLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    color: statusColor,
+                  ),
+                ),
               ),
-              DropdownMenuItem(
-                value: ProductStatus.inactive,
-                child: Text('Inactive'),
+              Switch.adaptive(
+                value: isActive,
+                activeColor: Theme.of(context).colorScheme.primary,
+                onChanged: (value) {
+                  onChanged(value ? ProductStatus.active : ProductStatus.inactive);
+                },
               ),
             ],
-            onChanged: onChanged,
-            decoration: _dropdownDecoration('Select product status'),
           ),
         ],
       ),
@@ -1120,7 +1125,7 @@ class _DropdownSection extends StatelessWidget {
   final String deleteButtonText;
   final VoidCallback? onDeletePressed;
 
-  const _DropdownSection({
+  _DropdownSection({
     required this.label,
     required this.dropdown,
     required this.addButtonText,
@@ -1134,31 +1139,31 @@ class _DropdownSection extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 17),
+      padding: EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           dropdown,
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 6,
             children: [
               TextButton.icon(
                 onPressed: onAddPressed,
-                icon: const Icon(Icons.add, size: 18),
+                icon: Icon(Icons.add, size: 18),
                 label: Text(
                   addButtonText,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
                 style: TextButton.styleFrom(
                   foregroundColor: onAddPressed == null
@@ -1168,10 +1173,10 @@ class _DropdownSection extends StatelessWidget {
               ),
               TextButton.icon(
                 onPressed: onDeletePressed,
-                icon: const Icon(Icons.delete_outline, size: 18),
+                icon: Icon(Icons.delete_outline, size: 18),
                 label: Text(
                   deleteButtonText,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
                 style: TextButton.styleFrom(
                   foregroundColor: onDeletePressed == null
@@ -1199,13 +1204,13 @@ InputDecoration _dropdownDecoration(String hint) {
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-      borderSide: const BorderSide(color: AppThemeTokens.error),
+      borderSide: BorderSide(color: AppThemeTokens.error),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-      borderSide: const BorderSide(color: AppThemeTokens.error),
+      borderSide: BorderSide(color: AppThemeTokens.error),
     ),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
   );
 }
 
@@ -1213,12 +1218,12 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({required this.title, required this.children});
+  _SectionCard({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -1229,13 +1234,13 @@ class _SectionCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           ...children,
         ],
       ),
@@ -1251,7 +1256,7 @@ class _AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?) validator;
 
-  const _AppTextField({
+  _AppTextField({
     required this.label,
     required this.hint,
     required this.controller,
@@ -1263,19 +1268,19 @@ class _AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 17),
+      padding: EdgeInsets.only(bottom: 17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           TextFormField(
             controller: controller,
             maxLines: maxLines,
@@ -1291,13 +1296,13 @@ class _AppTextField extends StatelessWidget {
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-                borderSide: const BorderSide(color: AppThemeTokens.error),
+                borderSide: BorderSide(color: AppThemeTokens.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
-                borderSide: const BorderSide(color: AppThemeTokens.error),
+                borderSide: BorderSide(color: AppThemeTokens.error),
               ),
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 14,
               ),
@@ -1313,7 +1318,7 @@ class _UploadImagesBox extends StatelessWidget {
   final String? imagePath;
   final VoidCallback onTap;
 
-  const _UploadImagesBox({
+  _UploadImagesBox({
     required this.imagePath,
     required this.onTap,
   });
@@ -1327,15 +1332,15 @@ class _UploadImagesBox extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Upload Images',
+        Text(
+          context.l10n.uploadImagesTitle,
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w900,
             color: AppThemeTokens.textPrimary,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
@@ -1344,7 +1349,7 @@ class _UploadImagesBox extends StatelessWidget {
             height: hasImage ? 190 : null,
             padding: hasImage
                 ? EdgeInsets.zero
-                : const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
+                : EdgeInsets.symmetric(vertical: 28, horizontal: 18),
             decoration: BoxDecoration(
               color: AppThemeTokens.surface,
               borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
@@ -1366,11 +1371,11 @@ class _UploadImagesBox extends StatelessWidget {
                             width: double.infinity,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
-                              return const _UploadImagePlaceholder();
+                              return _UploadImagePlaceholder();
                             },
                           ),
                   )
-                : const _UploadImagePlaceholder(),
+                : _UploadImagePlaceholder(),
           ),
         ),
       ],
@@ -1426,11 +1431,11 @@ class _UploadImagesBox extends StatelessWidget {
 }
 
 class _UploadImagePlaceholder extends StatelessWidget {
-  const _UploadImagePlaceholder();
+  _UploadImagePlaceholder();
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
@@ -1440,7 +1445,7 @@ class _UploadImagePlaceholder extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Text(
-          'Tap to upload product image',
+          context.l10n.tapToUploadProductImage,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -1449,7 +1454,7 @@ class _UploadImagePlaceholder extends StatelessWidget {
         ),
         SizedBox(height: 4),
         Text(
-          'PNG, JPG up to 10MB',
+          context.l10n.imageFormatHint,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppThemeTokens.textSecondary,

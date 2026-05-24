@@ -1,7 +1,7 @@
 import '../../domain/entities/branch_inventory_item_entity.dart';
 
 class BranchInventoryItemModel extends BranchInventoryItemEntity {
-  const BranchInventoryItemModel({
+  BranchInventoryItemModel({
     required super.id,
     required super.branchId,
     required super.branchName,

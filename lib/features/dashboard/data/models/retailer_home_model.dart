@@ -176,12 +176,27 @@ class HomeCategoryModel {
   final String name;
   final String icon;
   final int productCount;
+  final List<HomeSubCategoryModel> subCategories;
+
+  final bool hasActivePromotion;
+  final int? promotionId;
+  final String? promotionTitle;
+  final String? promotionDiscountType;
+  final double? promotionDiscountValue;
+  final String? promotionLabel;
 
   const HomeCategoryModel({
     required this.id,
     required this.name,
     required this.icon,
     required this.productCount,
+    required this.subCategories,
+    required this.hasActivePromotion,
+    required this.promotionId,
+    required this.promotionTitle,
+    required this.promotionDiscountType,
+    required this.promotionDiscountValue,
+    required this.promotionLabel,
   });
 
   factory HomeCategoryModel.fromJson(Map<String, dynamic> json) {
@@ -190,6 +205,35 @@ class HomeCategoryModel {
       name: json['name']?.toString() ?? '',
       icon: json['icon']?.toString() ?? '📦',
       productCount: _toInt(json['productCount']),
+      subCategories: (json['subCategories'] as List<dynamic>? ?? [])
+          .map(
+            (item) => HomeSubCategoryModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(),
+      hasActivePromotion: json['hasActivePromotion'] == true,
+      promotionId: json['promotionId'] == null
+          ? null
+          : _toInt(json['promotionId']),
+      promotionTitle: json['promotionTitle']?.toString(),
+      promotionDiscountType: json['promotionDiscountType']?.toString(),
+      promotionDiscountValue: _toNullableDouble(json['promotionDiscountValue']),
+      promotionLabel: json['promotionLabel']?.toString(),
+    );
+  }
+}
+
+class HomeSubCategoryModel {
+  final int id;
+  final String name;
+
+  const HomeSubCategoryModel({required this.id, required this.name});
+
+  factory HomeSubCategoryModel.fromJson(Map<String, dynamic> json) {
+    return HomeSubCategoryModel(
+      id: _toInt(json['id']),
+      name: json['name']?.toString() ?? '',
     );
   }
 }
@@ -208,7 +252,14 @@ class HomeProductModel {
   final String description;
   final String? imageUrl;
 
+  /// Backend-calculated final selling price.
+  /// If promotion is active, this is the discounted price.
+  /// If no promotion is active, this is the original supplier price.
   final double price;
+
+  /// Original supplier product price before promotion.
+  final double? originalPrice;
+
   final String currency;
 
   final int moq;
@@ -220,6 +271,16 @@ class HomeProductModel {
   final String? badgeColor;
   final int? discountPercent;
 
+  final bool hasActivePromotion;
+  final int? promotionId;
+  final String? promotionTitle;
+  final String? promotionTargetType;
+  final String? promotionDiscountType;
+  final double? promotionDiscountValue;
+  final String? promotionLabel;
+
+  /// Used only for availability logic.
+  /// Do not display this number to retailer.
   final int totalStock;
 
   const HomeProductModel({
@@ -233,6 +294,7 @@ class HomeProductModel {
     required this.description,
     required this.imageUrl,
     required this.price,
+    required this.originalPrice,
     required this.currency,
     required this.moq,
     required this.moqUnit,
@@ -241,10 +303,26 @@ class HomeProductModel {
     required this.badgeLabel,
     required this.badgeColor,
     required this.discountPercent,
+    required this.hasActivePromotion,
+    required this.promotionId,
+    required this.promotionTitle,
+    required this.promotionTargetType,
+    required this.promotionDiscountType,
+    required this.promotionDiscountValue,
+    required this.promotionLabel,
     required this.totalStock,
   });
 
+  bool get shouldShowOriginalPrice {
+    if (!hasActivePromotion) return false;
+    if (originalPrice == null) return false;
+    return originalPrice! > price;
+  }
+
   factory HomeProductModel.fromJson(Map<String, dynamic> json) {
+    final parsedPrice = _toDouble(json['price']);
+    final parsedOriginalPrice = _toNullableDouble(json['originalPrice']);
+
     return HomeProductModel(
       id: _toInt(json['id']),
       supplierBuild4allUserId: json['supplierBuild4allUserId'] == null
@@ -261,7 +339,8 @@ class HomeProductModel {
       name: json['name']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       imageUrl: json['imageUrl']?.toString(),
-      price: _toDouble(json['price']),
+      price: parsedPrice,
+      originalPrice: parsedOriginalPrice,
       currency: json['currency']?.toString() ?? r'$',
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',
@@ -272,6 +351,15 @@ class HomeProductModel {
       discountPercent: json['discountPercent'] == null
           ? null
           : _toInt(json['discountPercent']),
+      hasActivePromotion: json['hasActivePromotion'] == true,
+      promotionId: json['promotionId'] == null
+          ? null
+          : _toInt(json['promotionId']),
+      promotionTitle: json['promotionTitle']?.toString(),
+      promotionTargetType: json['promotionTargetType']?.toString(),
+      promotionDiscountType: json['promotionDiscountType']?.toString(),
+      promotionDiscountValue: _toNullableDouble(json['promotionDiscountValue']),
+      promotionLabel: json['promotionLabel']?.toString(),
       totalStock: _toInt(json['totalStock']),
     );
   }
@@ -289,4 +377,11 @@ double _toDouble(dynamic value, {double fallback = 0}) {
   if (value is double) return value;
   if (value is int) return value.toDouble();
   return double.tryParse(value.toString()) ?? fallback;
+}
+
+double? _toNullableDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  return double.tryParse(value.toString());
 }

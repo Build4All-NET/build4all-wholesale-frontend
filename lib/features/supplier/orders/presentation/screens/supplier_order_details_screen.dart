@@ -1,18 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../../domain/entities/supplier_order_entity.dart';
+import '../../../payment/domain/entities/order_payment_entity.dart';
 import '../bloc/supplier_order_details/supplier_order_details_bloc.dart';
 import '../bloc/supplier_order_details/supplier_order_details_event.dart';
 import '../bloc/supplier_order_details/supplier_order_details_state.dart';
 import '../widgets/order_status_badge.dart';
+import '../../../payment/presentation/widgets/order_payment_section.dart';
+
+
+String _localizedSuccessMessage(
+  BuildContext context,
+  String message,
+  SupplierOrderDetailsState state,
+) {
+  switch (message) {
+    case 'orderStatusUpdated':
+      final status = state.order?.status;
+      if (status == null) return context.l10n.orderUpdatedSuccessfully;
+      return context.l10n.orderMarkedAsStatus(
+        _supplierOrderStatusLabel(context, status),
+      );
+    case 'cashPaymentMarkedPaid':
+      return _localizedPaymentText(context, 'Cash payment marked as paid');
+    default:
+      return message;
+  }
+}
+
+String _supplierOrderStatusLabel(
+  BuildContext context,
+  SupplierOrderStatus status,
+) {
+  switch (status) {
+    case SupplierOrderStatus.pending:
+      return context.l10n.orderStatusPending;
+    case SupplierOrderStatus.accepted:
+      return context.l10n.orderStatusAccepted;
+    case SupplierOrderStatus.preparing:
+      return context.l10n.orderStatusPreparing;
+    case SupplierOrderStatus.shipped:
+      return context.l10n.orderStatusShipped;
+    case SupplierOrderStatus.delivered:
+      return context.l10n.orderStatusDelivered;
+    case SupplierOrderStatus.cancelled:
+      return context.l10n.orderStatusCancelled;
+  }
+}
+
+String _localizedPaymentText(BuildContext context, String key) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+
+  const ar = {
+    'Cash payment marked as paid': 'تم تأكيد تحصيل الكاش بنجاح',
+  };
+
+  const fr = {
+    'Cash payment marked as paid': 'Le paiement en espèces a été marqué comme payé',
+  };
+
+  if (languageCode == 'ar') return ar[key] ?? key;
+  if (languageCode == 'fr') return fr[key] ?? key;
+  return key;
+}
 
 class SupplierOrderDetailsScreen extends StatelessWidget {
   final SupplierOrderEntity order;
 
-  const SupplierOrderDetailsScreen({
+  SupplierOrderDetailsScreen({
     super.key,
     required this.order,
   });
@@ -27,13 +87,13 @@ class SupplierOrderDetailsScreen extends StatelessWidget {
             initialOrder: order,
           ),
         ),
-      child: const _SupplierOrderDetailsView(),
+      child: _SupplierOrderDetailsView(),
     );
   }
 }
 
 class _SupplierOrderDetailsView extends StatelessWidget {
-  const _SupplierOrderDetailsView();
+  _SupplierOrderDetailsView();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +111,11 @@ class _SupplierOrderDetailsView extends StatelessWidget {
 
         if (state.successMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
+            SnackBar(
+              content: Text(
+                _localizedSuccessMessage(context, state.successMessage!, state),
+              ),
+            ),
           );
         }
       },
@@ -59,7 +123,7 @@ class _SupplierOrderDetailsView extends StatelessWidget {
         final order = state.order;
 
         if (state.isLoading && order == null) {
-          return const Scaffold(
+          return Scaffold(
             backgroundColor: AppThemeTokens.background,
             body: Center(child: CircularProgressIndicator()),
           );
@@ -71,14 +135,14 @@ class _SupplierOrderDetailsView extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: AppThemeTokens.background,
               elevation: 0,
-              title: const Text(
-                'Order Details',
+              title: Text(
+                context.l10n.orderDetailsTitle,
                 style: TextStyle(fontWeight: FontWeight.w900),
               ),
             ),
-            body: const Center(
+            body: Center(
               child: Text(
-                'Order not found',
+                context.l10n.orderNotFound,
                 style: TextStyle(
                   color: AppThemeTokens.textSecondary,
                   fontWeight: FontWeight.w800,
@@ -90,7 +154,10 @@ class _SupplierOrderDetailsView extends StatelessWidget {
 
         return _OrderDetailsContent(
           order: order,
+          payment: state.payment,
           isUpdating: state.isUpdating,
+          isPaymentLoading: state.isPaymentLoading,
+          isPaymentUpdating: state.isPaymentUpdating,
         );
       },
     );
@@ -99,11 +166,17 @@ class _SupplierOrderDetailsView extends StatelessWidget {
 
 class _OrderDetailsContent extends StatelessWidget {
   final SupplierOrderEntity order;
+  final OrderPaymentEntity? payment;
   final bool isUpdating;
+  final bool isPaymentLoading;
+  final bool isPaymentUpdating;
 
-  const _OrderDetailsContent({
+  _OrderDetailsContent({
     required this.order,
+    required this.payment,
     required this.isUpdating,
+    required this.isPaymentLoading,
+    required this.isPaymentUpdating,
   });
 
   @override
@@ -117,13 +190,13 @@ class _OrderDetailsContent extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(true),
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Order Details',
+            Text(
+              context.l10n.orderDetailsTitle,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 color: AppThemeTokens.textPrimary,
@@ -132,7 +205,7 @@ class _OrderDetailsContent extends StatelessWidget {
             ),
             Text(
               order.orderNumber,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -147,22 +220,39 @@ class _OrderDetailsContent extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    _buildOrderSummary(primary),
-                    const SizedBox(height: 16),
-                    _buildStatusTimeline(primary),
-                    const SizedBox(height: 16),
-                    _buildProductsCard(),
-                    const SizedBox(height: 16),
-                    _buildDeliveryCard(),
+                    _buildOrderSummary(context, primary),
+                    SizedBox(height: 16),
+                    _buildStatusTimeline(context, primary),
+                    SizedBox(height: 16),
+                    _buildProductsCard(context),
+                    SizedBox(height: 16),
+                    _buildDeliveryCard(context),
+                    SizedBox(height: 16),
+                    OrderPaymentSection(
+                      paymentMethodFromOrder: order.paymentMethod,
+                      payment: payment,
+                      isLoading: isPaymentLoading,
+                      isUpdating: isPaymentUpdating,
+                      onRefresh: () {
+                        context.read<SupplierOrderDetailsBloc>().add(
+                              SupplierOrderDetailsPaymentRefreshRequested(),
+                            );
+                      },
+                      onMarkCashAsPaid: () {
+                        context.read<SupplierOrderDetailsBloc>().add(
+                              SupplierOrderDetailsMarkCashPaidRequested(),
+                            );
+                      },
+                    ),
                     if (order.notes != null &&
                         order.notes!.trim().isNotEmpty) ...[
-                      const SizedBox(height: 16),
-                      _buildNotesCard(),
+                      SizedBox(height: 16),
+                      _buildNotesCard(context),
                     ],
-                    const SizedBox(height: 100),
+                    SizedBox(height: 100),
                   ],
                 ),
               ),
@@ -174,10 +264,10 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderSummary(Color primary) {
+  Widget _buildOrderSummary(BuildContext context, Color primary) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +277,7 @@ class _OrderDetailsContent extends StatelessWidget {
               Expanded(
                 child: Text(
                   order.retailerName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w900,
                     color: AppThemeTokens.textPrimary,
@@ -197,18 +287,18 @@ class _OrderDetailsContent extends StatelessWidget {
               OrderStatusBadge(status: order.status),
             ],
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             order.deliveryAddress,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppThemeTokens.inputFill,
               borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
@@ -216,18 +306,18 @@ class _OrderDetailsContent extends StatelessWidget {
             child: Column(
               children: [
                 _InfoRow(
-                  label: 'Order Date',
-                  value: _formatFullDate(order.orderDate),
+                  label: context.l10n.orderDateLabel,
+                  value: formatSupplierFullDateTime(context, order.orderDate),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14),
                 _InfoRow(
-                  label: 'Payment Method',
-                  value: order.paymentMethod,
+                  label: context.l10n.paymentMethodLabel,
+                  value: _localizedPaymentMethod(context, order.paymentMethod),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14),
                 _InfoRow(
-                  label: 'Total Amount',
-                  value: _formatMoney(order.totalAmount),
+                  label: context.l10n.totalAmountLabel,
+                  value: formatSupplierCurrency(context, order.totalAmount),
                   valueColor: primary,
                 ),
               ],
@@ -238,7 +328,7 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTimeline(Color primary) {
+  Widget _buildStatusTimeline(BuildContext context, Color primary) {
     final statuses = [
       SupplierOrderStatus.pending,
       SupplierOrderStatus.accepted,
@@ -252,15 +342,15 @@ class _OrderDetailsContent extends StatelessWidget {
     if (order.status == SupplierOrderStatus.cancelled) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         decoration: _cardDecoration(),
-        child: const Row(
+        child: Row(
           children: [
             Icon(Icons.cancel_outlined, color: AppThemeTokens.error),
             SizedBox(width: 10),
             Expanded(
               child: Text(
-                'This order was cancelled.',
+                context.l10n.orderCancelledMessage,
                 style: TextStyle(
                   color: AppThemeTokens.error,
                   fontWeight: FontWeight.w800,
@@ -274,20 +364,20 @@ class _OrderDetailsContent extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Order Status Timeline',
+          Text(
+            context.l10n.orderTimelineLabel,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Column(
             children: List.generate(statuses.length, (index) {
               final status = statuses[index];
@@ -315,11 +405,11 @@ class _OrderDetailsContent extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Padding(
-                    padding: const EdgeInsets.only(top: 2),
+                    padding: EdgeInsets.only(top: 2),
                     child: Text(
-                      _statusLabel(status),
+                      _statusLabel(context, status),
                       style: TextStyle(
                         fontWeight:
                             isCompleted ? FontWeight.w900 : FontWeight.w700,
@@ -338,23 +428,23 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProductsCard() {
+  Widget _buildProductsCard(context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Products Ordered',
+          Text(
+            context.l10n.productsOrderedTitle,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           ...order.items.map((item) {
             return Column(
               children: [
@@ -367,16 +457,16 @@ class _OrderDetailsContent extends StatelessWidget {
                         children: [
                           Text(
                             item.productName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
                               color: AppThemeTokens.textPrimary,
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          SizedBox(height: 5),
                           Text(
-                            '${item.quantity} units × ${_formatMoney(item.unitPrice)}',
-                            style: const TextStyle(
+                            context.l10n.unitsTimesPrice(item.quantity, formatSupplierCurrency(context, item.unitPrice)),
+                            style: TextStyle(
                               color: AppThemeTokens.textSecondary,
                               fontWeight: FontWeight.w600,
                             ),
@@ -385,8 +475,8 @@ class _OrderDetailsContent extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _formatMoney(item.totalPrice),
-                      style: const TextStyle(
+                      formatSupplierCurrency(context, item.totalPrice),
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
                         color: AppThemeTokens.textPrimary,
@@ -395,9 +485,9 @@ class _OrderDetailsContent extends StatelessWidget {
                   ],
                 ),
                 if (item != order.items.last) ...[
-                  const SizedBox(height: 14),
-                  const Divider(color: AppThemeTokens.border),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14),
+                  Divider(color: AppThemeTokens.border),
+                  SizedBox(height: 14),
                 ],
               ],
             );
@@ -407,37 +497,37 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildDeliveryCard() {
+  Widget _buildDeliveryCard(context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Delivery Information',
+          Text(
+            context.l10n.deliveryInformationTitle,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           _InfoRow(
-            label: 'Retailer Phone',
+            label: context.l10n.retailerPhoneLabel,
             value: order.retailerPhone,
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           _InfoRow(
-            label: 'Delivery Address',
+            label: context.l10n.deliveryAddressLabel,
             value: order.deliveryAddress,
           ),
           if (order.branchName != null &&
               order.branchName!.trim().isNotEmpty) ...[
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
             _InfoRow(
-              label: 'Branch',
+              label: context.l10n.branchLabelPlain,
               value: order.branchName!,
             ),
           ],
@@ -446,26 +536,26 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildNotesCard() {
+  Widget _buildNotesCard(context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: _cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Order Notes',
+          Text(
+            context.l10n.orderNotesTitle,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Text(
             order.notes!,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w600,
               height: 1.4,
@@ -482,15 +572,15 @@ class _OrderDetailsContent extends StatelessWidget {
     if (actions.isEmpty) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.fromLTRB(16, 12, 16, 18),
+        decoration: BoxDecoration(
           color: AppThemeTokens.background,
           border: Border(
             top: BorderSide(color: AppThemeTokens.border),
           ),
         ),
-        child: const Text(
-          'No more status actions available for this order.',
+        child: Text(
+          context.l10n.noMoreStatusActions,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppThemeTokens.textSecondary,
@@ -501,8 +591,8 @@ class _OrderDetailsContent extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 18),
+      decoration: BoxDecoration(
         color: AppThemeTokens.background,
         border: Border(
           top: BorderSide(color: AppThemeTokens.border),
@@ -522,7 +612,7 @@ class _OrderDetailsContent extends StatelessWidget {
             children: [
               Expanded(
                 child: _ActionButton(
-                  label: 'Reject Order',
+                  label: context.l10n.rejectOrderButton,
                   icon: Icons.cancel_outlined,
                   color: AppThemeTokens.error,
                   isOutlined: true,
@@ -533,10 +623,10 @@ class _OrderDetailsContent extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: _ActionButton(
-                  label: 'Accept Order',
+                  label: context.l10n.acceptOrderButton,
                   icon: Icons.check_circle_outline,
                   color: Theme.of(context).colorScheme.primary,
                   isLoading: isUpdating,
@@ -553,7 +643,7 @@ class _OrderDetailsContent extends StatelessWidget {
       case SupplierOrderStatus.accepted:
         return [
           _ActionButton(
-            label: 'Mark Preparing',
+            label: context.l10n.markPreparingButton,
             icon: Icons.inventory_2_outlined,
             color: Theme.of(context).colorScheme.primary,
             isLoading: isUpdating,
@@ -562,9 +652,9 @@ class _OrderDetailsContent extends StatelessWidget {
               SupplierOrderStatus.preparing,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           _ActionButton(
-            label: 'Cancel Order',
+            label: context.l10n.cancelOrderButton,
             icon: Icons.cancel_outlined,
             color: AppThemeTokens.error,
             isOutlined: true,
@@ -579,7 +669,7 @@ class _OrderDetailsContent extends StatelessWidget {
       case SupplierOrderStatus.preparing:
         return [
           _ActionButton(
-            label: 'Ship Order',
+            label: context.l10n.shipOrderButton,
             icon: Icons.local_shipping_outlined,
             color: Theme.of(context).colorScheme.primary,
             isLoading: isUpdating,
@@ -588,9 +678,9 @@ class _OrderDetailsContent extends StatelessWidget {
               SupplierOrderStatus.shipped,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           _ActionButton(
-            label: 'Cancel Order',
+            label: context.l10n.cancelOrderButton,
             icon: Icons.cancel_outlined,
             color: AppThemeTokens.error,
             isOutlined: true,
@@ -605,7 +695,7 @@ class _OrderDetailsContent extends StatelessWidget {
       case SupplierOrderStatus.shipped:
         return [
           _ActionButton(
-            label: 'Mark Delivered',
+            label: context.l10n.markDeliveredButton,
             icon: Icons.task_alt,
             color: Theme.of(context).colorScheme.primary,
             isLoading: isUpdating,
@@ -636,57 +726,40 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  String _formatMoney(double amount) {
-    return '\$${amount.toStringAsFixed(2)}';
+  String _localizedPaymentMethod(BuildContext context, String value) {
+    final normalized = value.trim().toUpperCase().replaceAll(' ', '_');
+
+    switch (normalized) {
+      case 'CASH':
+      case 'CASH_ON_DELIVERY':
+      case 'COD':
+        return context.l10n.paymentCashOnDelivery;
+      case 'CARD':
+      case 'CREDIT_CARD':
+      case 'DEBIT_CARD':
+        return context.l10n.paymentCard;
+      case 'BANK_TRANSFER':
+      case 'TRANSFER':
+        return context.l10n.paymentBankTransfer;
+      default:
+        return value.trim().isEmpty ? context.l10n.supplierNotProvided : value;
+    }
   }
 
-  String _formatFullDate(DateTime date) {
-    final month = _monthName(date.month);
-    final hour = date.hour > 12
-        ? date.hour - 12
-        : date.hour == 0
-            ? 12
-            : date.hour;
-    final minute = date.minute.toString().padLeft(2, '0');
-    final period = date.hour >= 12 ? 'PM' : 'AM';
-
-    return '$month ${date.day}, ${date.year}, $hour:$minute $period';
-  }
-
-  String _monthName(int month) {
-    const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
-    return months[month];
-  }
-
-  String _statusLabel(SupplierOrderStatus status) {
+  String _statusLabel(BuildContext context, SupplierOrderStatus status) {
     switch (status) {
       case SupplierOrderStatus.pending:
-        return 'Pending';
+        return context.l10n.orderStatusPending;
       case SupplierOrderStatus.accepted:
-        return 'Accepted';
+        return context.l10n.orderStatusAccepted;
       case SupplierOrderStatus.preparing:
-        return 'Preparing';
+        return context.l10n.orderStatusPreparing;
       case SupplierOrderStatus.shipped:
-        return 'Shipped';
+        return context.l10n.orderStatusShipped;
       case SupplierOrderStatus.delivered:
-        return 'Delivered';
+        return context.l10n.orderStatusDelivered;
       case SupplierOrderStatus.cancelled:
-        return 'Cancelled';
+        return context.l10n.orderStatusCancelled;
     }
   }
 }
@@ -696,7 +769,7 @@ class _InfoRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
-  const _InfoRow({
+  _InfoRow({
     required this.label,
     required this.value,
     this.valueColor,
@@ -711,7 +784,7 @@ class _InfoRow extends StatelessWidget {
           width: 125,
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w700,
             ),
@@ -740,7 +813,7 @@ class _ActionButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onPressed;
 
-  const _ActionButton({
+  _ActionButton({
     required this.label,
     required this.icon,
     required this.color,
@@ -752,7 +825,7 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = isLoading
-        ? const SizedBox(
+        ? SizedBox(
             width: 18,
             height: 18,
             child: CircularProgressIndicator(strokeWidth: 2),
@@ -761,10 +834,10 @@ class _ActionButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 20),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
               ),

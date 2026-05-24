@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../../injection_container.dart';
 import '../../data/services/banner_image_upload_service.dart';
 import '../../domain/entities/banner_entity.dart';
@@ -98,8 +102,15 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     );
 
     _targetType = banner?.targetType ?? BannerTargetType.none;
-    _selectedTargetValue = banner?.targetValue;
-    _selectedTargetLabel = banner?.targetLabel;
+    if (_targetType == BannerTargetType.url) {
+      _targetType = BannerTargetType.none;
+    }
+    _selectedTargetValue = _targetType == BannerTargetType.none
+        ? null
+        : banner?.targetValue;
+    _selectedTargetLabel = _targetType == BannerTargetType.none
+        ? null
+        : banner?.targetLabel;
     _active = banner?.active ?? true;
     _startsAt = banner?.startsAt;
     _expiresAt = banner?.expiresAt;
@@ -136,8 +147,10 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = true;
       });
 
-      final imageUrl = await _imageUploadService.uploadBannerImage(
-        pickedFile.path,
+      final imageUrl = UploadedImageUrlResolver.normalizeForBackend(
+        await _imageUploadService.uploadBannerImage(
+          pickedFile.path,
+        ),
       );
 
       if (!mounted) return;
@@ -148,8 +161,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Banner image uploaded successfully'),
+        SnackBar(
+          content: Text(context.l10n.supplierBannerImageUploadedSuccessfully),
         ),
       );
     } catch (e) {
@@ -252,16 +265,16 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     return [];
   }
 
-  String _formatDateTime(DateTime? date) {
+  String _formatDateTime(BuildContext context, DateTime? date) {
     if (date == null) return '—';
 
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
+    final locale = Localizations.localeOf(context).toLanguageTag();
 
-    return '$year-$month-$day $hour:$minute';
+    try {
+      return DateFormat('MMM d, yyyy • h:mm a', locale).format(date);
+    } catch (_) {
+      return DateFormat('MMM d, yyyy • h:mm a').format(date);
+    }
   }
 
   Future<DateTime?> _pickDateTime(DateTime? initial) async {
@@ -273,6 +286,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
       initialDate: base,
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 10),
+      locale: Localizations.localeOf(context),
     );
 
     if (!mounted || pickedDate == null) return null;
@@ -280,6 +294,12 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
 
     if (!mounted || pickedTime == null) return null;
@@ -293,11 +313,25 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     );
   }
 
-  bool _validateDates() {
+  bool _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startsAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidFrom,
+      );
+      return false;
+    }
+
+    if (requireBothDates && _expiresAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidTo,
+      );
+      return false;
+    }
+
     if (_startsAt != null &&
         _expiresAt != null &&
         _startsAt!.isAfter(_expiresAt!)) {
-      _dateError = 'Valid From must be before Valid To';
+      _dateError = context.l10n.supplierValidFromBeforeValidTo;
       return false;
     }
 
@@ -307,7 +341,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
 
     return null;
@@ -318,7 +352,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
     if (_usesDropdownTarget) {
       if (_selectedTargetValue == null || _selectedTargetValue!.isEmpty) {
-        return 'Please select a ${_targetType.label.toLowerCase()}';
+        return context.l10n.supplierPleaseSelectTarget(
+          _localizedOptionLabel(context, _targetType.label).toLowerCase(),
+        );
       }
 
       return null;
@@ -326,7 +362,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
     if (_usesUrlTarget) {
       if (value == null || value.trim().isEmpty) {
-        return 'Target URL is required';
+        return context.l10n.supplierTargetUrlRequired;
       }
 
       final text = value.trim();
@@ -341,13 +377,13 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
   String? _sortOrderValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Sort order is required';
+      return context.l10n.supplierSortOrderRequired;
     }
 
     final parsed = int.tryParse(value.trim());
 
     if (parsed == null || parsed < 0) {
-      return 'Sort order must be a valid positive number';
+      return context.l10n.supplierSortOrderPositiveNumber;
     }
 
     return null;
@@ -372,8 +408,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
   void _saveBanner(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
-
-    if (!_validateDates()) {
+    if (!_validateDates(requireBothDates: true)) {
       setState(() {});
       return;
     }
@@ -402,7 +437,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
       subtitle: _subtitleController.text.trim().isEmpty
           ? null
           : _subtitleController.text.trim(),
-      imageUrl: _imageUrlController.text.trim(),
+      imageUrl: UploadedImageUrlResolver.normalizeForBackend(
+        _imageUrlController.text,
+      ),
       targetType: _targetType,
       targetValue: targetValue,
       targetLabel: targetLabel,
@@ -475,7 +512,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                 onPressed: state.saving || _uploadingImage ? null : _cancel,
               ),
               title: Text(
-                _isEditMode ? 'Edit Banner' : 'Create Banner',
+                _isEditMode
+                    ? context.l10n.supplierEditBanner
+                    : context.l10n.supplierCreateBanner,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 24,
@@ -509,8 +548,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
+                          child: Text(
+                            context.l10n.cancelButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -544,13 +583,19 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(
-                                  _isEditMode
-                                      ? 'Update Banner'
-                                      : 'Create Banner',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
+                              : FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    _isEditMode
+                                        ? context.l10n.supplierUpdateBanner
+                                        : context.l10n.supplierCreateBanner,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.visible,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                         ),
@@ -568,25 +613,28 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Banner Information',
+                        title: context.l10n.supplierBannerInformation,
                         children: [
-                          _FieldLabel('Title *'),
+                          _FieldLabel(context.l10n.supplierTitle),
                           _InputField(
                             controller: _titleController,
-                            hintText: 'Wholesale Deals',
+                            hintText: context.l10n.supplierWholesaleDeals,
                             validator: (value) {
-                              return _required(value, 'Title');
+                              return _required(
+                                value,
+                                context.l10n.supplierTitlePlain,
+                              );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Subtitle'),
+                          _FieldLabel(context.l10n.supplierSubtitle),
                           _InputField(
                             controller: _subtitleController,
-                            hintText: 'Special offers for retailers',
+                            hintText: context.l10n.supplierSpecialOffersForRetailers,
                             maxLines: 2,
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Banner Image *'),
+                          _FieldLabel(context.l10n.supplierBannerImage2),
                           _ImageUploadBox(
                             imageUrl: uploadedImageUrl,
                             uploading: _uploadingImage,
@@ -596,14 +644,18 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           const SizedBox(height: 10),
                           _InputField(
                             controller: _imageUrlController,
-                            hintText: 'Uploaded image URL will appear here',
+                            hintText:
+                                context.l10n.supplierUploadedImageUrlWillAppearHere,
                             validator: (value) {
-                              return _required(value, 'Banner Image');
+                              return _required(
+                                value,
+                                context.l10n.supplierBannerImagePlain,
+                              );
                             },
                           ),
                           const SizedBox(height: 8),
-                          const Text(
-                            'Upload an image from your device. The backend returns a URL and stores it in the banner imageUrl field.',
+                          Text(
+                            context.l10n.supplierUploadAnImageFromYourDeviceTheBackendReturnsAUrlAndStoresItInTheBannerImageurlField,
                             style: TextStyle(
                               fontSize: 12,
                               height: 1.35,
@@ -615,9 +667,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Target',
+                        title: context.l10n.supplierTarget,
                         children: [
-                          _FieldLabel('Target Type *'),
+                          _FieldLabel(context.l10n.supplierTargetType),
                           _TargetTypeDropdown(
                             value: _targetType,
                             onChanged: _handleTargetTypeChanged,
@@ -625,14 +677,18 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           if (_targetType != BannerTargetType.none) ...[
                             const _DividerSpace(),
                             if (_usesUrlTarget) ...[
-                              _FieldLabel('Target URL *'),
+                              _FieldLabel(context.l10n.supplierTargetUrl),
                               _InputField(
                                 controller: _targetValueController,
                                 hintText: 'https://example.com',
                                 validator: _targetValueValidator,
                               ),
                             ] else ...[
-                              _FieldLabel('Select ${_targetType.label} *'),
+                              _FieldLabel(
+                                context.l10n.supplierSelectTargetLabel(
+                                  _localizedOptionLabel(context, _targetType.label),
+                                ),
+                              ),
                               if (_loadingTargets)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -669,8 +725,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                   },
                                 ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'The selected item name is shown here, but the backend saves its ID in targetValue.',
+                              Text(
+                                context.l10n.supplierSelectedItemNameShownHere,
                                 style: TextStyle(
                                   fontSize: 12,
                                   height: 1.35,
@@ -684,9 +740,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Display Rules',
+                        title: context.l10n.supplierDisplayRules,
                         children: [
-                          _FieldLabel('Sort Order *'),
+                          _FieldLabel(context.l10n.supplierSortOrder),
                           _InputField(
                             controller: _sortOrderController,
                             hintText: '0',
@@ -695,8 +751,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           ),
                           const _DividerSpace(),
                           _DateTimePickerRow(
-                            label: 'Valid From',
-                            value: _formatDateTime(_startsAt),
+                            label: context.l10n.supplierValidFrom,
+                            value: _formatDateTime(context, _startsAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_startsAt);
 
@@ -716,8 +772,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           ),
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
-                            label: 'Valid To',
-                            value: _formatDateTime(_expiresAt),
+                            label: context.l10n.supplierValidTo,
+                            value: _formatDateTime(context, _expiresAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_expiresAt);
 
@@ -748,9 +804,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                           const _DividerSpace(),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
+                                  context.l10n.activeStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -861,7 +917,8 @@ class _ImageUploadBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = imageUrl.trim().isNotEmpty;
+    final resolvedImageUrl = UploadedImageUrlResolver.resolve(imageUrl);
+    final hasImage = resolvedImageUrl != null;
 
     return Container(
       width: double.infinity,
@@ -889,7 +946,7 @@ class _ImageUploadBox extends StatelessWidget {
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
-                          imageUrl.trim(),
+                          resolvedImageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
@@ -914,7 +971,8 @@ class _ImageUploadBox extends StatelessWidget {
               onPressed: uploading ? null : onUpload,
               icon: const Icon(Icons.upload_outlined),
               label: Text(
-                uploading ? 'Uploading...' : 'Upload Image',
+                uploading ? context.l10n.uploadingLabel
+                    : context.l10n.uploadImageButton,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
@@ -938,7 +996,7 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({
+  _SectionCard({
     required this.title,
     required this.children,
   });
@@ -983,7 +1041,7 @@ class _SectionCard extends StatelessWidget {
 class _FieldLabel extends StatelessWidget {
   final String text;
 
-  const _FieldLabel(this.text);
+  _FieldLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -1008,7 +1066,7 @@ class _InputField extends StatelessWidget {
   final int maxLines;
   final String? Function(String?)? validator;
 
-  const _InputField({
+  _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType,
@@ -1053,7 +1111,7 @@ class _InputField extends StatelessWidget {
 
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1070,13 +1128,21 @@ class _TargetTypeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final visibleTypes = BannerTargetType.values
+        .where((type) => type != BannerTargetType.url)
+        .toList();
+
+    final safeValue = visibleTypes.contains(value)
+        ? value
+        : BannerTargetType.none;
+
     return DropdownButtonFormField<BannerTargetType>(
-      initialValue: value,
-      items: BannerTargetType.values
+      initialValue: safeValue,
+      items: visibleTypes
           .map(
             (type) => DropdownMenuItem<BannerTargetType>(
               value: type,
-              child: Text(type.label),
+              child: Text(_localizedEnumLabel(context, type.label)),
             ),
           )
           .toList(),
@@ -1133,7 +1199,9 @@ class _TargetOptionDropdown extends StatelessWidget {
         color: AppThemeTokens.textPrimary,
       ),
       decoration: _dropdownDecoration(context).copyWith(
-        hintText: 'Select ${targetType.label.toLowerCase()}',
+        hintText: context.l10n.supplierSelectTargetHint(
+          _localizedOptionLabel(context, targetType.label).toLowerCase(),
+        ),
       ),
     );
   }
@@ -1161,8 +1229,8 @@ class _TargetErrorBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Could not load target options',
+          Text(
+            context.l10n.supplierCouldNotLoadTargetOptions,
             style: TextStyle(
               color: Colors.red,
               fontWeight: FontWeight.w900,
@@ -1179,8 +1247,8 @@ class _TargetErrorBox extends StatelessWidget {
           const SizedBox(height: 10),
           TextButton(
             onPressed: onRetry,
-            child: const Text(
-              'Retry',
+            child: Text(
+              context.l10n.retryButton,
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
@@ -1190,10 +1258,50 @@ class _TargetErrorBox extends StatelessWidget {
   }
 }
 
+
+String _localizedEnumLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
+  }
+}
+
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
@@ -1230,50 +1338,98 @@ class _DateTimePickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: onPick,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppThemeTokens.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppThemeTokens.border),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppThemeTokens.border),
+        color: AppThemeTokens.surface,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear),
-        ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppThemeTokens.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 44,
+                  child: OutlinedButton(
+                    onPressed: onClear,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppThemeTokens.textPrimary,
+                      side: const BorderSide(color: AppThemeTokens.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.l10n.clearButton,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SizedBox(
+                  height: 44,
+                  child: ElevatedButton(
+                    onPressed: onPick,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      minimumSize: const Size(0, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.l10n.pickButton,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1287,5 +1443,62 @@ class _DividerSpace extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 14),
       child: Divider(height: 1, color: AppThemeTokens.border),
     );
+  }
+}
+
+String _localizedOptionLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
+  }
+}
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    case 'scheduled':
+      return context.l10n.supplierScheduled;
+    case 'expired':
+      return context.l10n.supplierExpired;
+    case 'usage limit reached':
+    case 'usage_limit_reached':
+      return context.l10n.supplierUsageLimitReached;
+    default:
+      return label;
   }
 }

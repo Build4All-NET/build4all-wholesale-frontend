@@ -28,6 +28,7 @@ abstract class ProductRepository {
     required int minimumOrderQuantity,
     required ProductStatus status,
     String? imagePath,
+    String? existingImageUrl,
   });
 
   Future<void> deleteProduct({

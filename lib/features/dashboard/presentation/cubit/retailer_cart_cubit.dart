@@ -26,24 +26,31 @@ class RetailerCartCubit extends Cubit<RetailerCartState> {
     }
   }
 
+  /// Correct B2B MOQ behavior:
+  /// - First add to cart = MOQ
+  /// - After that, cart plus button increases by 1 only
   Future<void> increaseQuantity({
     required int cartItemId,
     required int currentQuantity,
     required int moq,
   }) async {
-    final newQuantity = currentQuantity + moq;
+    final newQuantity = currentQuantity + 1;
 
     await _updateQuantity(cartItemId: cartItemId, quantity: newQuantity);
   }
 
+  /// Correct B2B MOQ behavior:
+  /// - Minus button decreases by 1 only
+  /// - Quantity cannot go below MOQ
   Future<void> decreaseQuantity({
     required int cartItemId,
     required int currentQuantity,
     required int moq,
   }) async {
-    final newQuantity = currentQuantity - moq;
+    final safeMoq = moq <= 0 ? 1 : moq;
+    final newQuantity = currentQuantity - 1;
 
-    if (newQuantity < moq) return;
+    if (newQuantity < safeMoq) return;
 
     await _updateQuantity(cartItemId: cartItemId, quantity: newQuantity);
   }

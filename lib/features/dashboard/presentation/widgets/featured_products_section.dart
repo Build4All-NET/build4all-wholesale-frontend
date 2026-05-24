@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
+import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
+import 'retailer_product_image.dart';
+import 'retailer_promotion_badge.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
   final List<HomeProductModel> products;
@@ -11,12 +14,14 @@ class FeaturedProductsSection extends StatelessWidget {
   final int? addingProductId;
 
   final void Function(HomeProductModel product) onAddToCart;
+  final VoidCallback onViewAll;
 
   const FeaturedProductsSection({
     super.key,
     required this.products,
     required this.addingProductId,
     required this.onAddToCart,
+    required this.onViewAll,
   });
 
   @override
@@ -42,7 +47,7 @@ class FeaturedProductsSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: null,
+              onPressed: onViewAll,
               child: Text(
                 l10n.viewAll,
                 maxLines: 1,
@@ -57,7 +62,7 @@ class FeaturedProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 380,
+          height: 438,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
@@ -106,7 +111,7 @@ class _ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.035),
+            color: Colors.black.withValues(alpha: 0.035),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -116,7 +121,18 @@ class _ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ProductImage(product: product),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _ProductImage(product: product),
+              if (product.hasActivePromotion)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: RetailerPromotionBadge(product: product),
+                ),
+            ],
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
@@ -164,33 +180,29 @@ class _ProductCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '${product.currency}${product.price.toStringAsFixed(2)}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                    ),
+                  _ProductPriceBlock(
+                    product: product,
+                    primaryColor: primaryColor,
                   ),
                   const SizedBox(height: 8),
+                  RetailerPromotionInfoPill(product: product),
+                  if (product.hasActivePromotion) const SizedBox(height: 8),
                   _MiniInfo(
                     icon: Icons.inventory_2_outlined,
                     text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
                   ),
-                  const SizedBox(height: 6),
-                  _MiniInfo(
-                    icon: Icons.warehouse_outlined,
-                    text: '${l10n.stock}: ${product.totalStock}',
-                  ),
                   const Spacer(),
+                  RetailerProductAiButton(
+                    productId: product.id,
+                    productName: product.name,
+                    imageUrl: product.imageUrl,
+                    expanded: true,
+                  ),
+                  const SizedBox(height: 8),
                   SizedBox(
                     width: double.infinity,
                     height: 40,
                     child: ElevatedButton(
-                      /// Only clicked product is disabled/loading.
-                      /// Other product buttons stay normal.
                       onPressed: isAddingThisProduct || isOutOfStock
                           ? null
                           : () => onAddToCart(product),
@@ -260,6 +272,50 @@ class _ProductCard extends StatelessWidget {
   }
 }
 
+class _ProductPriceBlock extends StatelessWidget {
+  final HomeProductModel product;
+  final Color primaryColor;
+
+  const _ProductPriceBlock({required this.product, required this.primaryColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            '${product.currency}${product.price.toStringAsFixed(2)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: primaryColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        if (product.shouldShowOriginalPrice) ...[
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.lineThrough,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 class _ProductImage extends StatelessWidget {
   final HomeProductModel product;
 
@@ -267,29 +323,12 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = product.imageUrl;
-
-    return Container(
-      height: 108,
+    return RetailerProductImage(
+      imageUrl: product.imageUrl,
       width: double.infinity,
-      color: AppThemeTokens.background,
-      child: imageUrl == null || imageUrl.trim().isEmpty
-          ? const Icon(
-              Icons.inventory_2_outlined,
-              size: 46,
-              color: AppThemeTokens.textSecondary,
-            )
-          : Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.inventory_2_outlined,
-                  size: 46,
-                  color: AppThemeTokens.textSecondary,
-                );
-              },
-            ),
+      height: 108,
+      borderRadius: 0,
+      iconSize: 46,
     );
   }
 }

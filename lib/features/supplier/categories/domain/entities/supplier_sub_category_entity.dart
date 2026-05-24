@@ -9,7 +9,7 @@ class SupplierSubCategoryEntity {
   final int productCount;
   final bool canDelete;
 
-  const SupplierSubCategoryEntity({
+  SupplierSubCategoryEntity({
     required this.id,
     required this.categoryId,
     this.categoryName = '',

@@ -53,7 +53,7 @@ class SupplierOrderEntity {
   final List<SupplierOrderItemEntity> items;
   final String? notes;
 
-  const SupplierOrderEntity({
+  SupplierOrderEntity({
     required this.id,
     required this.orderNumber,
     required this.retailerName,

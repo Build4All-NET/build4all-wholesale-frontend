@@ -10,7 +10,7 @@ class SupplierDashboardState extends Equatable {
   final List<LowStockAlertEntity> lowStockAlerts;
   final String? errorMessage;
 
-  const SupplierDashboardState({
+  SupplierDashboardState({
     required this.isLoading,
     required this.isRefreshing,
     required this.orders,
@@ -19,7 +19,7 @@ class SupplierDashboardState extends Equatable {
   });
 
   factory SupplierDashboardState.initial() {
-    return const SupplierDashboardState(
+    return SupplierDashboardState(
       isLoading: false,
       isRefreshing: false,
       orders: [],

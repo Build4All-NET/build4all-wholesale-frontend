@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+
+
+import '../../../../../core/extensions/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -11,13 +15,16 @@ import '../bloc/coupons_bloc.dart';
 import '../bloc/coupons_event.dart';
 import '../bloc/coupons_state.dart';
 
+
 class CreateCouponScreen extends StatelessWidget {
   final CouponEntity? coupon;
+
 
   const CreateCouponScreen({
     super.key,
     this.coupon,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +35,27 @@ class CreateCouponScreen extends StatelessWidget {
   }
 }
 
+
 class _CreateCouponView extends StatefulWidget {
   final CouponEntity? coupon;
+
 
   const _CreateCouponView({
     this.coupon,
   });
 
+
   @override
   State<_CreateCouponView> createState() => _CreateCouponViewState();
 }
 
+
 class _CreateCouponViewState extends State<_CreateCouponView> {
   final _formKey = GlobalKey<FormState>();
 
+
   final BranchApiService _branchApiService = sl<BranchApiService>();
+
 
   late final TextEditingController _codeController;
   late final TextEditingController _descriptionController;
@@ -51,30 +64,38 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
   late final TextEditingController _minOrderAmountController;
   late final TextEditingController _maxDiscountAmountController;
 
+
   CouponDiscountType _discountType = CouponDiscountType.percent;
   CouponBranchScope _branchScope = CouponBranchScope.allBranches;
   bool _active = true;
+
 
   DateTime? _startsAt;
   DateTime? _expiresAt;
   String? _dateError;
 
+
   bool _loadingBranches = true;
   String? _branchErrorMessage;
+
 
   final List<BranchEntity> _availableBranches = [];
   final List<String> _selectedBranchIds = [];
   final List<String> _selectedBranchNames = [];
 
+
   bool get _isEditMode => widget.coupon != null;
   bool get _isPercent => _discountType == CouponDiscountType.percent;
   bool get _isFreeShipping => _discountType == CouponDiscountType.freeShipping;
+
 
   @override
   void initState() {
     super.initState();
 
+
     final coupon = widget.coupon;
+
 
     _codeController = TextEditingController(text: coupon?.code ?? '');
     _descriptionController = TextEditingController(
@@ -96,26 +117,32 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
       text: coupon?.maxDiscountAmount?.toString() ?? '',
     );
 
+
     _discountType = coupon?.discountType ?? CouponDiscountType.percent;
     _branchScope = coupon?.branchScope ?? CouponBranchScope.allBranches;
     _active = coupon?.active ?? true;
     _startsAt = coupon?.startsAt;
     _expiresAt = coupon?.expiresAt;
 
+
     _selectedBranchIds.addAll(coupon?.selectedBranchIds ?? []);
     _selectedBranchNames.addAll(coupon?.selectedBranchNames ?? []);
+
 
     if (!_isPercent) {
       _maxDiscountAmountController.clear();
     }
 
+
     if (_isFreeShipping) {
       _discountValueController.clear();
     }
 
+
     _validateDates();
     _loadBranches();
   }
+
 
   @override
   void dispose() {
@@ -128,20 +155,25 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     super.dispose();
   }
 
+
   Future<void> _loadBranches() async {
     setState(() {
       _loadingBranches = true;
       _branchErrorMessage = null;
     });
 
+
     try {
       final branches = await _branchApiService.getBranches();
 
+
       if (!mounted) return;
+
 
       final activeBranches = branches
           .where((branch) => branch.status == BranchStatus.active)
           .toList();
+
 
       setState(() {
         _availableBranches
@@ -152,6 +184,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     } catch (e) {
       if (!mounted) return;
 
+
       setState(() {
         _branchErrorMessage = e.toString();
         _loadingBranches = false;
@@ -159,8 +192,10 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     }
   }
 
+
   String _formatDateTime(DateTime? date) {
     if (date == null) return '—';
+
 
     final year = date.year.toString().padLeft(4, '0');
     final month = date.month.toString().padLeft(2, '0');
@@ -168,12 +203,15 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     final hour = date.hour.toString().padLeft(2, '0');
     final minute = date.minute.toString().padLeft(2, '0');
 
+
     return '$year-$month-$day $hour:$minute';
   }
+
 
   Future<DateTime?> _pickDateTime(DateTime? initial) async {
     final now = DateTime.now();
     final base = initial ?? now;
+
 
     final pickedDate = await showDatePicker(
       context: context,
@@ -182,14 +220,18 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
       lastDate: DateTime(now.year + 10),
     );
 
+
     if (!mounted || pickedDate == null) return null;
+
 
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
     );
 
+
     if (!mounted || pickedTime == null) return null;
+
 
     return DateTime(
       pickedDate.year,
@@ -200,80 +242,117 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     );
   }
 
-  bool _validateDates() {
+
+  bool _validateDates({bool requireBothDates = false}) {
+    if (requireBothDates && _startsAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidFrom,
+      );
+      return false;
+    }
+
+
+    if (requireBothDates && _expiresAt == null) {
+      _dateError = context.l10n.supplierFieldRequired(
+        context.l10n.supplierValidTo,
+      );
+      return false;
+    }
+
+
     if (_startsAt != null &&
         _expiresAt != null &&
         _startsAt!.isAfter(_expiresAt!)) {
-      _dateError = 'Valid From must be before Valid To';
+      _dateError = context.l10n.supplierValidFromBeforeValidTo;
       return false;
     }
+
 
     _dateError = null;
     return true;
   }
+
 
   double? _parseDouble(String value) {
     if (value.trim().isEmpty) return null;
     return double.tryParse(value.trim());
   }
 
+
   int? _parseInt(String value) {
     if (value.trim().isEmpty) return null;
     return int.tryParse(value.trim());
   }
 
+
   String? _required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return context.l10n.supplierFieldRequired(fieldName);
     }
+
 
     return null;
   }
 
+
   String? _numberValidator(String? value, String fieldName) {
-    if (_isFreeShipping && fieldName == 'Discount Value') {
+    if (_isFreeShipping && fieldName == context.l10n.supplierDiscountValuePlain) {
       return null;
     }
+
 
     final requiredError = _required(value, fieldName);
     if (requiredError != null) return requiredError;
 
+
     final parsed = double.tryParse(value!.trim());
 
+
     if (parsed == null || parsed <= 0) {
-      return '$fieldName must be greater than 0';
+      return context.l10n.supplierFieldGreaterThanZero(fieldName);
     }
 
-    if (_isPercent && fieldName == 'Discount Value' && parsed > 100) {
-      return 'Percent discount cannot be greater than 100';
+
+    if (_isPercent && fieldName == context.l10n.supplierDiscountValuePlain && parsed > 100) {
+      return context.l10n.supplierPercentDiscountCannotBeGreaterThan100;
     }
+
 
     return null;
   }
+
 
   String? _optionalPositiveNumber(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) return null;
 
+
     final parsed = double.tryParse(value.trim());
 
+
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
+
 
     return null;
   }
+
 
   String? _optionalPositiveInt(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) return null;
 
+
     final parsed = int.tryParse(value.trim());
 
+
     if (parsed == null || parsed < 0) {
-      return '$fieldName must be a valid number';
+      return context.l10n.supplierFieldValidNumber(fieldName);
     }
+
 
     return null;
   }
+
 
   void _toggleBranch(BranchEntity branch, bool isSelected) {
     setState(() {
@@ -289,21 +368,25 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     });
   }
 
+
   void _saveCoupon(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!_validateDates()) {
+
+    if (!_validateDates(requireBothDates: true)) {
       setState(() {});
       return;
     }
 
+
     if (_branchScope == CouponBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one branch')),
+        SnackBar(content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch)),
       );
       return;
     }
+
 
     final coupon = CouponEntity(
       id: widget.coupon?.id ?? '',
@@ -334,12 +417,14 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
           : List.unmodifiable(_selectedBranchNames),
     );
 
+
     if (_isEditMode) {
       context.read<CouponsBloc>().add(UpdateCouponRequested(coupon));
     } else {
       context.read<CouponsBloc>().add(CreateCouponRequested(coupon));
     }
   }
+
 
   void _cancel() {
     if (_isEditMode) {
@@ -349,9 +434,11 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+
 
     return BlocListener<CouponsBloc, CouponsState>(
       listener: (context, state) {
@@ -360,19 +447,23 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
             SnackBar(content: Text(state.errorMessage!)),
           );
 
+
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
         }
+
 
         if (state.successMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.successMessage!)),
           );
 
+
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
+
 
           if (_isEditMode) {
             context.go('/supplier-coupons');
@@ -394,7 +485,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                 onPressed: state.saving ? null : _cancel,
               ),
               title: Text(
-                _isEditMode ? 'Edit Coupon' : 'Create Coupon',
+                _isEditMode ? context.l10n.supplierEditCoupon : context.l10n.supplierCreateCoupon,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
                   fontSize: 24,
@@ -426,8 +517,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            'Cancel',
+                          child: Text(
+                            context.l10n.cancelButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -463,8 +554,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                 )
                               : Text(
                                   _isEditMode
-                                      ? 'Update Coupon'
-                                      : 'Create Coupon',
+                                      ? context.l10n.supplierUpdateCoupon
+                                      : context.l10n.supplierCreateCoupon,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -485,37 +576,40 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                   child: Column(
                     children: [
                       _SectionCard(
-                        title: 'Coupon Information',
+                        title: context.l10n.supplierCouponInformation,
                         children: [
-                          _FieldLabel('Coupon Code *'),
+                          _FieldLabel(context.l10n.supplierCouponCode),
                           _InputField(
                             controller: _codeController,
                             hintText: 'SPRING25',
                             textCapitalization: TextCapitalization.characters,
                             validator: (value) {
-                              return _required(value, 'Coupon Code');
+                              return _required(value, context.l10n.supplierCouponCodePlain);
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Description'),
+                          _FieldLabel(context.l10n.descriptionLabel),
                           _InputField(
                             controller: _descriptionController,
-                            hintText: 'Describe this coupon',
+                            hintText: context.l10n.supplierCouponDescriptionHint,
                             maxLines: 2,
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Discount Type *'),
+                          _FieldLabel(context.l10n.supplierDiscountType),
                           _DiscountTypeDropdown(
                             value: _discountType,
                             onChanged: (value) {
                               if (value == null) return;
 
+
                               setState(() {
                                 _discountType = value;
+
 
                                 if (!_isPercent) {
                                   _maxDiscountAmountController.clear();
                                 }
+
 
                                 if (_isFreeShipping) {
                                   _discountValueController.clear();
@@ -526,12 +620,12 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           const _DividerSpace(),
                           _FieldLabel(
                             _isPercent
-                                ? 'Discount Value (%) *'
-                                : 'Discount Value *',
+                                ? context.l10n.supplierDiscountValuePercent
+                                : context.l10n.supplierDiscountValue,
                           ),
                           _InputField(
                             controller: _discountValueController,
-                            hintText: _isFreeShipping ? 'Not required' : '25',
+                            hintText: _isFreeShipping ? context.l10n.notRequiredLabel : '25',
                             enabled: !_isFreeShipping,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -540,7 +634,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _numberValidator(
                                 value,
-                                'Discount Value',
+                                context.l10n.supplierDiscountValuePlain,
                               );
                             },
                           ),
@@ -548,9 +642,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Coupon Rules',
+                        title: context.l10n.supplierCouponRules,
                         children: [
-                          _FieldLabel('Max Uses'),
+                          _FieldLabel(context.l10n.supplierMaxUses),
                           _InputField(
                             controller: _maxUsesController,
                             hintText: '100',
@@ -558,12 +652,12 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _optionalPositiveInt(
                                 value,
-                                'Max Uses',
+                                context.l10n.supplierMaxUses,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Min Order Amount'),
+                          _FieldLabel(context.l10n.supplierMinOrderAmount),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '50',
@@ -574,16 +668,16 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _optionalPositiveNumber(
                                 value,
-                                'Min Order Amount',
+                                context.l10n.supplierMinOrderAmount,
                               );
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel('Max Discount Amount'),
+                          _FieldLabel(context.l10n.supplierMaxDiscountAmount),
                           _InputField(
                             controller: _maxDiscountAmountController,
                             hintText:
-                                _isPercent ? '30' : 'Only for percent coupons',
+                                _isPercent ? '30' : context.l10n.supplierOnlyForPercentCoupons,
                             enabled: _isPercent,
                             keyboardType:
                                 const TextInputType.numberWithOptions(
@@ -592,7 +686,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             validator: (value) {
                               return _optionalPositiveNumber(
                                 value,
-                                'Max Discount Amount',
+                                context.l10n.supplierMaxDiscountAmount,
                               );
                             },
                           ),
@@ -600,16 +694,18 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Branch Applicability',
+                        title: context.l10n.supplierBranchApplicability,
                         children: [
-                          _FieldLabel('Applies To *'),
+                          _FieldLabel(context.l10n.supplierAppliesTo),
                           _BranchScopeDropdown(
                             value: _branchScope,
                             onChanged: (value) {
                               if (value == null) return;
 
+
                               setState(() {
                                 _branchScope = value;
+
 
                                 if (_branchScope ==
                                     CouponBranchScope.allBranches) {
@@ -624,15 +720,15 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             const _DividerSpace(),
                             Row(
                               children: [
-                                const Expanded(
-                                  child: _FieldLabel('Select Branches'),
+                                Expanded(
+                                  child: _FieldLabel(context.l10n.supplierSelectBranches),
                                 ),
                                 TextButton(
                                   onPressed: _loadingBranches
                                       ? null
                                       : _loadBranches,
-                                  child: const Text(
-                                    'Refresh',
+                                  child: Text(
+                                    context.l10n.refreshButton,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w900,
                                     ),
@@ -657,8 +753,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                 ),
                               )
                             else if (_availableBranches.isEmpty)
-                              const Text(
-                                'No active branches available. Add branches from Branch Management first.',
+                              Text(
+                                context.l10n.supplierNoActiveBranchesAvailableAddBranchesFirst,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -673,6 +769,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                   final selected =
                                       _selectedBranchIds.contains(branch.id);
 
+
                                   return FilterChip(
                                     selected: selected,
                                     label: Text(branch.name),
@@ -685,8 +782,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                                 }).toList(),
                               ),
                             const SizedBox(height: 10),
-                            const Text(
-                              'Selected branches are loaded from the backend Branch Management module.',
+                            Text(
+                              context.l10n.supplierSelectedBranchesLoadedFromBackendBranchManagement,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -698,15 +795,17 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Validity',
+                        title: context.l10n.supplierValidity,
                         children: [
                           _DateTimePickerRow(
-                            label: 'Valid From',
+                            label: context.l10n.supplierValidFrom,
                             value: _formatDateTime(_startsAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_startsAt);
 
+
                               if (picked == null) return;
+
 
                               setState(() {
                                 _startsAt = picked;
@@ -722,12 +821,14 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           ),
                           const SizedBox(height: 12),
                           _DateTimePickerRow(
-                            label: 'Valid To',
+                            label: context.l10n.supplierValidTo,
                             value: _formatDateTime(_expiresAt),
                             onPick: () async {
                               final picked = await _pickDateTime(_expiresAt);
 
+
                               if (picked == null) return;
+
 
                               setState(() {
                                 _expiresAt = picked;
@@ -754,9 +855,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           const _DividerSpace(),
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'Active',
+                                  context.l10n.activeStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -792,14 +893,17 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
   }
 }
 
+
 class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const _SectionCard({
+
+  _SectionCard({
     required this.title,
     required this.children,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -838,10 +942,13 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
+
 class _FieldLabel extends StatelessWidget {
   final String text;
 
-  const _FieldLabel(this.text);
+
+  _FieldLabel(this.text);
+
 
   @override
   Widget build(BuildContext context) {
@@ -859,6 +966,7 @@ class _FieldLabel extends StatelessWidget {
   }
 }
 
+
 class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -868,7 +976,8 @@ class _InputField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final String? Function(String?)? validator;
 
-  const _InputField({
+
+  _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType,
@@ -877,6 +986,7 @@ class _InputField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.validator,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -916,22 +1026,26 @@ class _InputField extends StatelessWidget {
     );
   }
 
+
   OutlineInputBorder _border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
 }
 
+
 class _DiscountTypeDropdown extends StatelessWidget {
   final CouponDiscountType value;
   final ValueChanged<CouponDiscountType?> onChanged;
+
 
   const _DiscountTypeDropdown({
     required this.value,
     required this.onChanged,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -941,7 +1055,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
           .map(
             (type) => DropdownMenuItem<CouponDiscountType>(
               value: type,
-              child: Text(type.label),
+              child: Text(_localizedEnumLabel(context, type.label)),
             ),
           )
           .toList(),
@@ -956,14 +1070,17 @@ class _DiscountTypeDropdown extends StatelessWidget {
   }
 }
 
+
 class _BranchScopeDropdown extends StatelessWidget {
   final CouponBranchScope value;
   final ValueChanged<CouponBranchScope?> onChanged;
+
 
   const _BranchScopeDropdown({
     required this.value,
     required this.onChanged,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -973,7 +1090,7 @@ class _BranchScopeDropdown extends StatelessWidget {
           .map(
             (scope) => DropdownMenuItem<CouponBranchScope>(
               value: scope,
-              child: Text(scope.label),
+              child: Text(_localizedEnumLabel(context, scope.label)),
             ),
           )
           .toList(),
@@ -988,13 +1105,57 @@ class _BranchScopeDropdown extends StatelessWidget {
   }
 }
 
+
+
+
+String _localizedEnumLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    case 'All Branches':
+      return context.l10n.supplierAllBranches;
+    case 'Selected Branches':
+      return context.l10n.supplierSelectedBranches;
+    case 'Percent':
+      return context.l10n.supplierPercent;
+    case 'Fixed Amount':
+      return context.l10n.supplierFixedAmount;
+    case 'Fixed':
+      return context.l10n.supplierFixed;
+    case 'Free Shipping':
+      return context.l10n.supplierFreeShipping;
+    case 'All Products':
+      return context.l10n.supplierAllProducts;
+    case 'Product':
+      return context.l10n.productLabel;
+    case 'Category':
+      return context.l10n.categoryLabel;
+    case 'SubCategory':
+      return context.l10n.subCategoryLabel;
+    case 'Subcategory':
+      return context.l10n.subcategoryLabel;
+    case 'None':
+      return context.l10n.noneLabel;
+    case 'URL':
+      return context.l10n.urlLabel;
+    default:
+      return label;
+  }
+}
+
+
 InputDecoration _dropdownDecoration(BuildContext context) {
   OutlineInputBorder border({Color color = AppThemeTokens.border}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(color: color, width: 1.2),
     );
   }
+
 
   return InputDecoration(
     filled: true,
@@ -1011,11 +1172,13 @@ InputDecoration _dropdownDecoration(BuildContext context) {
   );
 }
 
+
 class _DateTimePickerRow extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onPick;
   final VoidCallback onClear;
+
 
   const _DateTimePickerRow({
     required this.label,
@@ -1024,58 +1187,112 @@ class _DateTimePickerRow extends StatelessWidget {
     required this.onClear,
   });
 
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: onPick,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppThemeTokens.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppThemeTokens.border),
+    final primary = Theme.of(context).colorScheme.primary;
+    final hasValue = value != '—';
+
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: onPick,
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppThemeTokens.textPrimary,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 15,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: primary.withOpacity(0.10),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      child: Icon(
+                        Icons.event_available_outlined,
+                        color: primary,
+                        size: 22,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppThemeTokens.textSecondary,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: AppThemeTokens.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: hasValue
+                                  ? AppThemeTokens.textPrimary
+                                  : AppThemeTokens.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear),
-        ),
-      ],
+          Container(
+            width: 1,
+            height: 48,
+            color: AppThemeTokens.border,
+          ),
+          TextButton.icon(
+            onPressed: hasValue ? onClear : null,
+            icon: const Icon(Icons.close_rounded, size: 18),
+            label: Text(context.l10n.clearButton),
+            style: TextButton.styleFrom(
+              foregroundColor: AppThemeTokens.textSecondary,
+              disabledForegroundColor:
+                  AppThemeTokens.textSecondary.withOpacity(0.35),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              textStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+
 class _DividerSpace extends StatelessWidget {
   const _DividerSpace();
+
 
   @override
   Widget build(BuildContext context) {
@@ -1085,3 +1302,4 @@ class _DividerSpace extends StatelessWidget {
     );
   }
 }
+

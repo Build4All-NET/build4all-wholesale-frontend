@@ -4,177 +4,173 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "Reading env from: $EnvFile"
-
-if (!(Test-Path $EnvFile)) {
-  throw "Env file not found: $EnvFile"
+function Ensure-Dir($p) {
+  if (!(Test-Path $p)) { New-Item -ItemType Directory -Path $p | Out-Null }
 }
 
-$envJson = Get-Content $EnvFile -Raw | ConvertFrom-Json
+function Get-JsonPropValue($obj, $propName) {
+  if ($null -eq $obj) { return $null }
+  $names = $obj.PSObject.Properties.Name
+  if ($names -contains $propName) { return $obj.$propName }
+  return $null
+}
 
-function Clean-AppName([string]$name) {
-  if ([string]::IsNullOrWhiteSpace($name)) {
-    return "B2B Wholesale App"
+function First-Text([object[]]$values) {
+  foreach ($v in $values) {
+    if ($null -eq $v) { continue }
+    $t = ("" + $v).Trim()
+    if (![string]::IsNullOrWhiteSpace($t)) { return $t }
   }
+  return ""
+}
 
-  $clean = $name.Trim()
-  $clean = $clean.Replace("'", "\'")
-  $clean = [regex]::Replace($clean, '[\x00-\x1F\x7F]', ' ').Trim()
-
-  if ([string]::IsNullOrWhiteSpace($clean)) {
-    return "B2B Wholesale App"
-  }
-
+function Normalize-RootUrl([string]$url) {
+  $clean = ("" + $url).Trim().TrimEnd('/')
+  if ($clean.EndsWith('/api')) { return $clean.Substring(0, $clean.Length - 4) }
   return $clean
 }
 
-$appName = Clean-AppName "$($envJson.APP_NAME)"
-$appNameEscaped = [System.Security.SecurityElement]::Escape($appName)
-
-$apiBaseUrl = "$($envJson.API_BASE_URL)".TrimEnd("/")
-$apiRootUrl = $apiBaseUrl -replace "/api/?$", ""
-
-$logoPath = ""
-$splashColor = "#FFFFFF"
-
-if ($envJson.BRANDING -ne $null) {
-  $logoPath = "$($envJson.BRANDING.logoPath)"
-
-  if (![string]::IsNullOrWhiteSpace("$($envJson.BRANDING.splashColor)")) {
-    $splashColor = "$($envJson.BRANDING.splashColor)"
-  }
+function Resolve-Url([string]$root, [string]$raw) {
+  $r = ("" + $raw).Trim()
+  if ([string]::IsNullOrWhiteSpace($r)) { return "" }
+  if ($r.StartsWith('http://') -or $r.StartsWith('https://')) { return $r }
+  if (-not $r.StartsWith('/')) { $r = "/$r" }
+  return "$(Normalize-RootUrl $root)$r"
 }
 
-$brandingDir = "assets/branding"
-New-Item -ItemType Directory -Force -Path $brandingDir | Out-Null
+function Run-Ok([string]$cmd) {
+  Write-Host ">> $cmd"
+  & cmd.exe /c $cmd
+  if ($LASTEXITCODE -ne 0) { throw "Command failed (exit $LASTEXITCODE): $cmd" }
+}
 
-$logoFile = "$brandingDir/logo.png"
-$launcherPath = "$brandingDir/launcher.png"
-$splashPath = "$brandingDir/splash.png"
+try {
+  if (!(Test-Path $EnvFile)) { throw "Env file not found: $EnvFile" }
 
-$fallbackLogo = "assets/logo/default_launcher_icon.png"
+  $cfg = (Get-Content $EnvFile -Raw) | ConvertFrom-Json
 
-if (![string]::IsNullOrWhiteSpace($logoPath)) {
-  if ($logoPath.StartsWith("http")) {
-    $logoUrl = $logoPath
-  } elseif ($logoPath.StartsWith("/")) {
-    $logoUrl = "$apiRootUrl$logoPath"
+  $apiBase = First-Text @((Get-JsonPropValue $cfg "API_BASE_URL"))
+  if ([string]::IsNullOrWhiteSpace($apiBase)) { throw "API_BASE_URL missing in env json" }
+  $apiRoot = Normalize-RootUrl $apiBase
+
+  $runtimeUrl = First-Text @((Get-JsonPropValue $cfg "RUNTIME_CONFIG_URL"))
+  $ownerProjectLinkId = First-Text @((Get-JsonPropValue $cfg "OWNER_PROJECT_LINK_ID"))
+  if ([string]::IsNullOrWhiteSpace($runtimeUrl) -and -not [string]::IsNullOrWhiteSpace($ownerProjectLinkId)) {
+    $runtimeUrl = "$apiRoot/api/public/runtime-config/by-link?linkId=$ownerProjectLinkId"
+  }
+
+  $runtime = $null
+  if (-not [string]::IsNullOrWhiteSpace($runtimeUrl)) {
+    try {
+      $headers = @{}
+      $runtimeToken = First-Text @((Get-JsonPropValue $cfg "RUNTIME_CONFIG_TOKEN"))
+      if (-not [string]::IsNullOrWhiteSpace($runtimeToken)) { $headers["X-Auth-Token"] = $runtimeToken }
+      Write-Host "Runtime config URL: $runtimeUrl"
+      $runtime = Invoke-RestMethod -Uri $runtimeUrl -Headers $headers -Method Get
+    } catch {
+      Write-Host "Could not fetch runtime config. Using env/local fallback. $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+  }
+
+  $branding = Get-JsonPropValue $cfg "BRANDING"
+
+  $appName = First-Text @(
+    (Get-JsonPropValue $runtime "APP_NAME"),
+    (Get-JsonPropValue $runtime "appName"),
+    (Get-JsonPropValue $runtime "displayName"),
+    (Get-JsonPropValue $cfg "APP_NAME"),
+    "B2B Wholesale App"
+  )
+
+  $logoRaw = First-Text @(
+    (Get-JsonPropValue $runtime "LOGO_URL"),
+    (Get-JsonPropValue $runtime "APP_LOGO_URL"),
+    (Get-JsonPropValue $runtime "logoUrl"),
+    (Get-JsonPropValue $runtime "logoPath"),
+    (Get-JsonPropValue $cfg "APP_LOGO_URL"),
+    (Get-JsonPropValue $branding "logoPath"),
+    (Get-JsonPropValue $branding "logoUrl")
+  )
+
+  $splashColor = First-Text @(
+    (Get-JsonPropValue $branding "splashColor"),
+    "#FFFFFF"
+  )
+
+  Ensure-Dir "assets/branding"
+  Ensure-Dir "android/app/src/main/res/values"
+
+  $logoPath = "assets/branding/logo.png"
+  $launcherPath = "assets/branding/launcher.png"
+  $splashPath = "assets/branding/splash.png"
+
+  if (-not [string]::IsNullOrWhiteSpace($logoRaw)) {
+    $logoUrl = Resolve-Url $apiRoot $logoRaw
+    Write-Host "Logo URL: $logoUrl"
+    Invoke-WebRequest -Uri $logoUrl -OutFile $logoPath -UseBasicParsing
+  } elseif (!(Test-Path $logoPath)) {
+    throw "No LOGO_URL/logoPath found and assets/branding/logo.png does not exist."
   } else {
-    $logoUrl = "$apiRootUrl/$logoPath"
+    Write-Host "Using existing local logo: $logoPath"
   }
 
-  Write-Host "Logo URL: $logoUrl"
+  Copy-Item $logoPath $launcherPath -Force
+  Copy-Item $logoPath $splashPath -Force
 
-  try {
-    Invoke-WebRequest -Uri $logoUrl -OutFile $logoFile
-    Write-Host "Logo downloaded to: $logoFile"
-  } catch {
-    Write-Host "Logo download failed. Using fallback logo."
-    Write-Host "Error: $($_.Exception.Message)"
+  Write-Host "APP_NAME: $appName"
+  Write-Host "Splash color: $splashColor"
 
-    if (Test-Path $fallbackLogo) {
-      Copy-Item $fallbackLogo $logoFile -Force
-    }
-  }
-} else {
-  Write-Host "No BRANDING.logoPath found. Using fallback logo."
-
-  if (Test-Path $fallbackLogo) {
-    Copy-Item $fallbackLogo $logoFile -Force
-  }
-}
-
-if (!(Test-Path $logoFile)) {
-  throw "Logo file was not created. Please check assets/logo/default_launcher_icon.png"
-}
-
-Add-Type -AssemblyName System.Drawing
-
-$original = [System.Drawing.Image]::FromFile((Resolve-Path $logoFile).Path)
-
-$size = 1024
-$canvas = New-Object System.Drawing.Bitmap $size, $size
-$graphics = [System.Drawing.Graphics]::FromImage($canvas)
-
-$backgroundColor = [System.Drawing.ColorTranslator]::FromHtml($splashColor)
-$graphics.Clear($backgroundColor)
-
-$paddingPercent = 0.30
-$targetSize = [int]($size * (1 - $paddingPercent))
-
-$x = [int](($size - $targetSize) / 2)
-$y = [int](($size - $targetSize) / 2)
-
-$graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-$graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
-$graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-
-$graphics.DrawImage($original, $x, $y, $targetSize, $targetSize)
-
-$canvas.Save($launcherPath, [System.Drawing.Imaging.ImageFormat]::Png)
-$canvas.Save($splashPath, [System.Drawing.Imaging.ImageFormat]::Png)
-
-$graphics.Dispose()
-$canvas.Dispose()
-$original.Dispose()
-
-Write-Host "Launcher generated: $launcherPath"
-Write-Host "Splash generated: $splashPath"
-
-# Android app name
-$valuesDir = "android/app/src/main/res/values"
-$stringsFile = Join-Path $valuesDir "strings.xml"
-
-New-Item -ItemType Directory -Force -Path $valuesDir | Out-Null
-
-$androidXml = @"
-<?xml version="1.0" encoding="utf-8"?>
+  # Android app label
+  $stringsPath = "android/app/src/main/res/values/strings.xml"
+  if (!(Test-Path $stringsPath)) {
+@"
 <resources>
-    <string name="app_name">$appNameEscaped</string>
+    <string name="app_name">$appName</string>
 </resources>
-"@
-
-[System.IO.File]::WriteAllText(
-  (Resolve-Path $valuesDir).Path + "\strings.xml",
-  $androidXml,
-  [System.Text.UTF8Encoding]::new($false)
-)
-
-Write-Host "Android app_name updated: $appName"
-
-# iOS app name
-$iosInfoPlist = "ios/Runner/Info.plist"
-
-if (Test-Path $iosInfoPlist) {
-  [xml]$plist = Get-Content $iosInfoPlist
-
-  $dict = $plist.plist.dict
-  $nodes = @($dict.ChildNodes)
-
-  function Set-PlistValue {
-    param(
-      [string]$Key,
-      [string]$Value
-    )
-
-    $nodes = @($dict.ChildNodes)
-
-    for ($i = 0; $i -lt $nodes.Count; $i++) {
-      if ($nodes[$i].Name -eq "key" -and $nodes[$i].InnerText -eq $Key) {
-        if (($i + 1) -lt $nodes.Count) {
-          $nodes[$i + 1].InnerText = $Value
-          return
-        }
-      }
+"@ | Set-Content $stringsPath -Encoding UTF8
+  } else {
+    $strings = Get-Content $stringsPath -Raw
+    if ($strings -match 'name="app_name"') {
+      $strings = $strings -replace '(?s)(<string name="app_name">).*?(</string>)', "`$1$appName`$2"
+    } else {
+      $strings = $strings -replace '</resources>', "    <string name=`"app_name`">$appName</string>`n</resources>"
     }
+    Set-Content $stringsPath $strings -Encoding UTF8
   }
 
-  Set-PlistValue -Key "CFBundleDisplayName" -Value $appName
-  Set-PlistValue -Key "CFBundleName" -Value $appName
+  # Android manifest should read label from strings.xml
+  $manifestPath = "android/app/src/main/AndroidManifest.xml"
+  if (Test-Path $manifestPath) {
+    $m = Get-Content $manifestPath -Raw
+    if ($m -match 'android:label="[^"]*"') {
+      $m = $m -replace 'android:label="[^"]*"', 'android:label="@string/app_name"'
+    } else {
+      $m = $m -replace '<application', '<application android:label="@string/app_name"'
+    }
+    Set-Content $manifestPath $m -Encoding UTF8
+  }
 
-  $plist.Save((Resolve-Path $iosInfoPlist).Path)
+  # iOS display name
+  $plistPath = "ios/Runner/Info.plist"
+  if (Test-Path $plistPath) {
+    $plist = Get-Content $plistPath -Raw
+    if ($plist -match '<key>CFBundleDisplayName</key>') {
+      $plist = $plist -replace '(?s)(<key>CFBundleDisplayName</key>\s*<string>).*?(</string>)', "`$1$appName`$2"
+    } else {
+      $inject = "  <key>CFBundleDisplayName</key>`n  <string>$appName</string>`n"
+      $plist = $plist -replace '</dict>', "$inject</dict>"
+    }
+    Set-Content $plistPath $plist -Encoding UTF8
+  }
 
-  Write-Host "iOS app name updated: $appName"
+  Run-Ok "flutter pub get"
+  Run-Ok "flutter pub run flutter_launcher_icons"
+  Run-Ok "flutter pub run flutter_native_splash:create"
+
+  Write-Host "Branding applied successfully from $EnvFile"
+  exit 0
 }
-
-Write-Host "Done branding from env."
+catch {
+  Write-Host "apply_env_branding failed: $($_.Exception.Message)" -ForegroundColor Red
+  exit 1
+}

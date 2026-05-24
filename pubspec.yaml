@@ -42,6 +42,7 @@ flutter:
   generate: true
   assets:
     - assets/branding/
+    - assets/templates/supplier_import_template.xlsx
 
 flutter_icons:
   android: true

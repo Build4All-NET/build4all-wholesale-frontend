@@ -135,6 +135,34 @@ class UpdateRfqParams {
   });
 }
 
+class GenerateRfqRequirementsParams {
+  final int? productId;
+  final String? productName;
+  final String? categoryName;
+  final String? subCategoryName;
+  final int? quantity;
+  final String? unit;
+  final double? targetUnitPrice;
+  final String? preferredDeliveryLabel;
+  final String? deliveryCity;
+  final String? deliveryAddress;
+  final String? notes;
+
+  const GenerateRfqRequirementsParams({
+    this.productId,
+    this.productName,
+    this.categoryName,
+    this.subCategoryName,
+    this.quantity,
+    this.unit,
+    this.targetUnitPrice,
+    this.preferredDeliveryLabel,
+    this.deliveryCity,
+    this.deliveryAddress,
+    this.notes,
+  });
+}
+
 abstract class RetailerRfqRepository {
   Future<List<RfqRequestEntity>> getMyRfqs();
 
@@ -157,4 +185,8 @@ abstract class RetailerRfqRepository {
     required int rfqId,
     required int quotationId,
   });
+
+  Future<String> generateRequirementsWithAi(
+    GenerateRfqRequirementsParams params,
+  );
 }

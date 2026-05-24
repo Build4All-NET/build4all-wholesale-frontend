@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
+
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/shipping_method_entity.dart';
 
@@ -60,7 +62,7 @@ class ShippingMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${method.methodTypeLabel} • ${method.costLabel}',
+                      '${_localizedOptionLabel(context, method.methodTypeLabel)} • ${_localizedShippingCostLabel(context, method.costLabel)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -73,7 +75,7 @@ class ShippingMethodCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StatusPill(status: method.statusLabel),
+              _StatusPill(status: _localizedStatusLabel(context, method.statusLabel)),
             ],
           ),
           if (method.notes != null && method.notes!.trim().isNotEmpty) ...[
@@ -95,11 +97,11 @@ class ShippingMethodCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _TextChip(text: method.locationLabel),
-              _TextChip(text: method.estimatedDeliveryTime),
-              _TextChip(text: method.minimumOrderLabel),
-              _TextChip(text: method.freeShippingLabel),
-              _TextChip(text: 'Branches: ${method.branchScopeLabel}'),
+              _TextChip(text: _localizedLocationLabel(context, method.locationLabel)),
+              _TextChip(text: _localizedEstimatedTime(context, method.estimatedDeliveryTime)),
+              _TextChip(text: _localizedMinimumOrderLabel(context, method.minimumOrderLabel)),
+              _TextChip(text: _localizedFreeShippingLabel(context, method.freeShippingLabel)),
+              _TextChip(text: context.l10n.supplierBranchesValue(_localizedBranchScopeLabel(context, method.branchScopeLabel))),
             ],
           ),
           const SizedBox(height: 16),
@@ -111,7 +113,7 @@ class ShippingMethodCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.edit_outlined,
-                    label: 'Edit',
+                    label: context.l10n.editButton,
                     onPressed: onEdit!,
                     borderColor: primary.withValues(alpha: 0.35),
                     textColor: primary,
@@ -123,7 +125,7 @@ class ShippingMethodCard extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.delete_outline,
-                    label: 'Delete',
+                    label: context.l10n.deleteButton,
                     onPressed: onDelete!,
                     borderColor: Colors.red.withValues(alpha: 0.45),
                     textColor: Colors.red,
@@ -167,7 +169,7 @@ class _StatusPill extends StatelessWidget {
 class _TextChip extends StatelessWidget {
   final String text;
 
-  const _TextChip({required this.text});
+  _TextChip({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -246,4 +248,66 @@ class _ActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedOptionLabel(BuildContext context, String label) {
+  switch (label) {
+    case 'Pickup from Branch':
+      return context.l10n.supplierPickupFromBranch;
+    case 'Express Delivery':
+      return context.l10n.supplierExpressDelivery;
+    case 'Standard Delivery':
+      return context.l10n.supplierStandardDelivery;
+    default:
+      return label;
+  }
+}
+
+String _localizedStatusLabel(BuildContext context, String label) {
+  switch (label.toLowerCase()) {
+    case 'active':
+      return context.l10n.activeStatus;
+    case 'inactive':
+      return context.l10n.inactiveStatus;
+    default:
+      return label;
+  }
+}
+
+String _localizedShippingCostLabel(BuildContext context, String label) {
+  if (label == 'Free pickup') return context.l10n.supplierFreePickup;
+  return label;
+}
+
+String _localizedMinimumOrderLabel(BuildContext context, String label) {
+  if (label == 'No minimum') return context.l10n.supplierNoMinimum;
+  if (label.endsWith(' minimum')) {
+    return context.l10n.supplierMinimumValue(label.replaceFirst(' minimum', ''));
+  }
+  return label;
+}
+
+String _localizedFreeShippingLabel(BuildContext context, String label) {
+  if (label == 'Pickup only') return context.l10n.supplierPickupOnly;
+  if (label == 'No free shipping') return context.l10n.supplierNoFreeShipping;
+  if (label.startsWith('Free above ')) {
+    return context.l10n.supplierFreeAboveValue(label.replaceFirst('Free above ', ''));
+  }
+  return label;
+}
+
+String _localizedEstimatedTime(BuildContext context, String label) {
+  if (label == 'Pickup from branch') return context.l10n.supplierPickupFromBranch;
+  return label;
+}
+
+String _localizedLocationLabel(BuildContext context, String label) {
+  if (label == 'No location selected') return context.l10n.supplierNoLocationSelected;
+  return label;
+}
+
+String _localizedBranchScopeLabel(BuildContext context, String label) {
+  if (label == 'All Branches') return context.l10n.supplierAllBranches;
+  if (label == 'No branches selected') return context.l10n.supplierNoBranchesSelected;
+  return label;
 }
