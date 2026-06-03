@@ -114,6 +114,27 @@ jobs:
           echo "----- pretty -----"
           python3 -m json.tool payload.json || true
 
+      - name: Install Android NDK 27.0.12077973
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r27
+          local-cache: false
+
+      - name: Link NDK into Android SDK directory
+        run: |
+          NDK_PATH="${{ steps.setup-ndk.outputs.ndk-path }}"
+          NDK_TARGET="${ANDROID_SDK_ROOT}/ndk/27.0.12077973"
+          if [ ! -d "$NDK_TARGET" ]; then
+            mkdir -p "${ANDROID_SDK_ROOT}/ndk"
+            ln -s "$NDK_PATH" "$NDK_TARGET"
+            echo "✅ Linked NDK: $NDK_PATH -> $NDK_TARGET"
+          else
+            echo "✅ NDK 27.0.12077973 already at $NDK_TARGET"
+          fi
+          echo "Installed NDK versions:"
+          ls "${ANDROID_SDK_ROOT}/ndk/" || true
+
       - name: Force Android NDK 27
         run: |
           set -e
