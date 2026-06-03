@@ -121,19 +121,13 @@ jobs:
           ndk-version: r27
           local-cache: false
 
-      - name: Link NDK into Android SDK directory
+      - name: Configure NDK path (local.properties)
         run: |
           NDK_PATH="${{ steps.setup-ndk.outputs.ndk-path }}"
-          NDK_TARGET="${ANDROID_SDK_ROOT}/ndk/27.0.12077973"
-          if [ ! -d "$NDK_TARGET" ]; then
-            mkdir -p "${ANDROID_SDK_ROOT}/ndk"
-            ln -s "$NDK_PATH" "$NDK_TARGET"
-            echo "✅ Linked NDK: $NDK_PATH -> $NDK_TARGET"
-          else
-            echo "✅ NDK 27.0.12077973 already at $NDK_TARGET"
-          fi
-          echo "Installed NDK versions:"
-          ls "${ANDROID_SDK_ROOT}/ndk/" || true
+          echo "ndk.dir=$NDK_PATH" >> android/local.properties
+          echo "✅ ndk.dir=$NDK_PATH written to android/local.properties"
+          echo "---- android/local.properties ----"
+          cat android/local.properties || true
 
       - name: Force Android NDK 27
         run: |
