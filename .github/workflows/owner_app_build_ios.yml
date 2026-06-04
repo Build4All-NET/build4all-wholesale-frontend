@@ -1,4 +1,4 @@
-name: Owner App Build (iOS) - Hybrid Internal + External Testing Auto
+name: Owner App Build (iOS) - Wholesale
 
 on:
   repository_dispatch:
@@ -16,6 +16,7 @@ jobs:
     runs-on: macos-15
 
     env:
+      CI_AUTH_TOKEN: ${{ secrets.CI_AUTH_TOKEN }}
       CI_CALLBACK_TOKEN: ${{ secrets.CI_CALLBACK_TOKEN }}
       CI_RUNTIME_TOKEN: ${{ secrets.CI_RUNTIME_TOKEN }}
 
@@ -197,6 +198,17 @@ jobs:
 
           api_base = (cfg.get("API_BASE_URL") or payload.get("API_BASE_URL") or "").strip().rstrip("/")
 
+          override_base = str(
+              cfg.get("OVERRIDE_BASE_URL")
+              or cfg.get("WHOLESALE_API_BASE_URL")
+              or payload.get("OVERRIDE_BASE_URL")
+              or payload.get("WHOLESALE_API_BASE_URL")
+              or ""
+          ).strip().rstrip("/")
+          if not override_base:
+              override_base = api_base
+              print("⚠️ OVERRIDE_BASE_URL not found in payload, defaulting to API_BASE_URL")
+
           link_id = str(
               cfg.get("OWNER_PROJECT_LINK_ID")
               or payload.get("OWNER_PROJECT_LINK_ID")
@@ -245,7 +257,7 @@ jobs:
               return default
 
           app_name = pick("APP_NAME", "My App")
-          app_type = pick("APP_TYPE", "ECOMMERCE")
+          app_type = pick("APP_TYPE", "WHOLESALE")
           project_id = str(pick("PROJECT_ID", "")).strip()
 
           ios_bundle = (
@@ -278,6 +290,7 @@ jobs:
 
           env = {
               "API_BASE_URL": api_base,
+              "OVERRIDE_BASE_URL": override_base,
               "APP_NAME": app_name,
               "APP_TYPE": app_type,
               "OWNER_PROJECT_LINK_ID": link_id,
@@ -314,6 +327,7 @@ jobs:
               logo_url = (runtime.get("logoUrl") or cfg.get("logoUrl") or payload.get("logoUrl") or "").strip()
           if logo_url:
               env["LOGO_URL"] = logo_url
+              env["APP_LOGO_URL"] = logo_url
 
           open("ci_api_base.txt", "w", encoding="utf-8").write(api_base)
           open("ci_link_id.txt", "w", encoding="utf-8").write(link_id)
@@ -324,6 +338,7 @@ jobs:
 
           print("✅ ci_env.json written")
           print("API_BASE_URL =", api_base)
+          print("OVERRIDE_BASE_URL =", override_base)
           print("OWNER_PROJECT_LINK_ID =", link_id)
           print("PROJECT_ID =", project_id)
           print("IOS_BUNDLE_ID =", ios_bundle)
@@ -722,8 +737,10 @@ except:
         shell: bash
         run: |
           set -euo pipefail
-          VN=$(python3 -c "import json; print(json.load(open('lib/env/ci_env.json'))['IOS_VERSION_NAME'])")
-          BN=$(python3 -c "import json; print(json.load(open('lib/env/ci_env.json'))['IOS_BUILD_NUMBER'])")
+
+          VN="$(python3 -c "import json; print(json.load(open('lib/env/ci_env.json'))['IOS_VERSION_NAME'])")"  
+          BN="$(python3 -c "import json; print(json.load(open('lib/env/ci_env.json'))['IOS_BUILD_NUMBER'])")"
+
           echo "IOS_VERSION_NAME=$VN" >> "$GITHUB_ENV"
           echo "IOS_BUILD_NUMBER=$BN" >> "$GITHUB_ENV"
           python3 - <<PY
@@ -758,7 +775,6 @@ except:
           contact_phone  = sys.argv[5]
           demo_email     = sys.argv[6]
           demo_password  = sys.argv[7]
-
           try:
               r = requests.get(f"https://api.appstoreconnect.apple.com/v1/apps?filter[bundleId]={bundle_id}", headers=h())
               r.raise_for_status()
@@ -771,7 +787,6 @@ except:
           except Exception as e:
               print(f"⚠️ Could not fetch app: {e} — skipping beta review setup (non-fatal)")
               sys.exit(0)
-
           try:
               r = requests.get(f"https://api.appstoreconnect.apple.com/v1/betaAppLocalizations?filter[app]={app_id}&filter[locale]=en-US", headers=h())
               r.raise_for_status()
@@ -786,21 +801,12 @@ except:
                   print("✅ Beta localization created")
           except Exception as e:
               print(f"⚠️ Beta localization error (non-fatal): {e}")
-
           try:
               r = requests.get(f"https://api.appstoreconnect.apple.com/v1/apps/{app_id}/betaAppReviewDetail", headers=h())
               email_name = feedback_email.split('@')[0] if '@' in feedback_email else "Beta"
               first_name = email_name.split('.')[0].capitalize() if '.' in email_name else email_name.capitalize()
               last_name  = email_name.split('.')[1].capitalize() if '.' in email_name and len(email_name.split('.')) > 1 else "Tester"
-              review_data = {
-                  "contactEmail": feedback_email,
-                  "contactFirstName": first_name,
-                  "contactLastName": last_name,
-                  "contactPhone": contact_phone,
-                  "demoAccountRequired": True,
-                  "demoAccountName": demo_email,
-                  "demoAccountPassword": demo_password
-              }
+              review_data = {"contactEmail": feedback_email,"contactFirstName": first_name,"contactLastName": last_name,"contactPhone": contact_phone,"demoAccountRequired": True,"demoAccountName": demo_email,"demoAccountPassword": demo_password}
               if r.status_code == 200:
                   detail_id = r.json()['data']['id']
                   requests.patch(f"https://api.appstoreconnect.apple.com/v1/betaAppReviewDetails/{detail_id}", headers=h(), json={"data":{"type":"betaAppReviewDetails","id":detail_id,"attributes":review_data}})
