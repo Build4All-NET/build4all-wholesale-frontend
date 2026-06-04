@@ -6,6 +6,14 @@ import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/theme/locale_cubit.dart';
 
+
+String _paymentMethodsLabel(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  if (languageCode == 'ar') return 'طرق الدفع';
+  if (languageCode == 'fr') return 'Méthodes de paiement';
+  return 'Payment Methods';
+}
+
 class SupplierAppDrawer extends StatelessWidget {
   const SupplierAppDrawer({super.key});
 
@@ -214,6 +222,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     icon: Icons.local_shipping_outlined,
                     title: l10n.supplierDrawerShippingMethods,
                     route: '/supplier-shipping',
+                  ),
+                  _DrawerItem(
+                    icon: Icons.account_balance_wallet_outlined,
+                    title: _paymentMethodsLabel(context),
+                    route: '/supplier-payment-methods',
                   ),
                   _DrawerItem(
                     icon: Icons.percent_outlined,

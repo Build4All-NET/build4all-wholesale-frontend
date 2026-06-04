@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
-import 'retailer_promotion_badge.dart';
 
 class CategoriesGridSection extends StatelessWidget {
   final List<HomeCategoryModel> categories;
@@ -17,7 +16,12 @@ class CategoriesGridSection extends StatelessWidget {
 
     if (categories.isEmpty) return const SizedBox.shrink();
 
+    final visibleCategories = categories.length > 6
+        ? categories.take(6).toList()
+        : categories;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
           title: l10n.categories,
@@ -26,17 +30,17 @@ class CategoriesGridSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         GridView.builder(
-          itemCount: categories.length > 6 ? 6 : categories.length,
+          itemCount: visibleCategories.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: 2,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 0.88,
+            childAspectRatio: 1.55,
           ),
           itemBuilder: (context, index) {
-            return _CategoryTile(category: categories[index]);
+            return _CategoryTile(category: visibleCategories[index]);
           },
         ),
       ],
@@ -52,75 +56,127 @@ class _CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    final promotionLabel = category.promotionLabel?.trim() ?? '';
+    final hasPromotion =
+        category.hasActivePromotion && promotionLabel.isNotEmpty;
 
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: () => context.push('/retailer-category-products', extra: category),
       child: Container(
-        padding: const EdgeInsets.all(10),
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppThemeTokens.surface,
-          border: Border.all(color: AppThemeTokens.border),
           borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppThemeTokens.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.025),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
-        child: Stack(
-          clipBehavior: Clip.none,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 82,
-                    height: 42,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.center,
-                      children: [
-                        Text(category.icon, style: const TextStyle(fontSize: 30)),
-                        Positioned(
-                          top: -1,
-                          right: 2,
-                          child: RetailerCategoryPromotionBadge(
-                            category: category,
-                            maxWidth: 58,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 5,
-                              vertical: 2,
-                            ),
-                            fontSize: 8,
-                            iconSize: 9,
-                            gap: 2,
-                          ),
-                        ),
-                      ],
-                    ),
+            if (hasPromotion) ...[
+              _PromotionBadge(label: promotionLabel),
+              const SizedBox(height: 6),
+            ],
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  category.name,
+                  maxLines: hasPromotion ? 2 : 3,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    height: 1.15,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    category.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppThemeTokens.textPrimary,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w800,
-                      height: 1.15,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.inventory_2_outlined, size: 14, color: primaryColor),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
                     '${category.productCount} ${l10n.productsLabel}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
                     style: const TextStyle(
                       color: AppThemeTokens.textSecondary,
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ],
+                ),
+                const SizedBox(width: 4),
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Icon(
+                    Directionality.of(context) == TextDirection.rtl
+                        ? Icons.chevron_left_rounded
+                        : Icons.chevron_right_rounded,
+                    size: 20,
+                    color: AppThemeTokens.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PromotionBadge extends StatelessWidget {
+  final String label;
+
+  const _PromotionBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 138),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+        decoration: BoxDecoration(
+          color: primaryColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: primaryColor.withValues(alpha: 0.18)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.local_offer_outlined, size: 11, color: primaryColor),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: primaryColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  height: 1,
+                ),
               ),
             ),
           ],
@@ -148,6 +204,9 @@ class _SectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.start,
             style: const TextStyle(
               color: AppThemeTokens.textPrimary,
               fontSize: 20,

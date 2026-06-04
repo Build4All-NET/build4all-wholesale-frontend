@@ -31,3 +31,13 @@ class SupplierOrderDetailsStatusUpdateRequested
   @override
   List<Object?> get props => [status];
 }
+
+class SupplierOrderDetailsPaymentRefreshRequested
+    extends SupplierOrderDetailsEvent {
+  SupplierOrderDetailsPaymentRefreshRequested();
+}
+
+class SupplierOrderDetailsMarkCashPaidRequested
+    extends SupplierOrderDetailsEvent {
+  SupplierOrderDetailsMarkCashPaidRequested();
+}

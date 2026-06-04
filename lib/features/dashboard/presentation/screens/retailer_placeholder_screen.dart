@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme_tokens.dart';
 
@@ -24,9 +25,16 @@ class RetailerPlaceholderScreen extends StatelessWidget {
         title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
-
-        // Do not set leading manually.
-        // Flutter automatically shows back button when opened using context.push().
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/retailer-dashboard');
+            }
+          },
+        ),
       ),
       body: Center(
         child: Padding(

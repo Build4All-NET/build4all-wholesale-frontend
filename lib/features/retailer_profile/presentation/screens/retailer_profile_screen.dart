@@ -4,11 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/theme/locale_cubit.dart';
 import '../../../../injection_container.dart';
 import '../cubit/retailer_profile_cubit.dart';
 import '../cubit/retailer_profile_state.dart';
-
-import '../../../../core/theme/locale_cubit.dart';
 
 class RetailerProfileScreen extends StatelessWidget {
   const RetailerProfileScreen({super.key});
@@ -42,7 +41,6 @@ class _RetailerProfileView extends StatelessWidget {
       },
       builder: (context, state) {
         final l10n = context.l10n;
-        final primaryColor = Theme.of(context).colorScheme.primary;
 
         if (state.isLoading && state.profile == null) {
           return const Scaffold(
@@ -80,8 +78,6 @@ class _RetailerProfileView extends StatelessWidget {
                       email: profile.account.email,
                       storeName: profile.business.storeName,
                     ),
-                  const SizedBox(height: 18),
-                  _BalanceCards(primaryColor: primaryColor),
                   const SizedBox(height: 24),
                   Align(
                     alignment: AlignmentDirectional.centerStart,
@@ -105,22 +101,19 @@ class _RetailerProfileView extends StatelessWidget {
             ),
           ),
           bottomNavigationBar: _ProfileBottomNav(
-            currentIndex: 4,
+            currentIndex: 3,
             onTap: (index) {
               switch (index) {
                 case 0:
                   context.go('/retailer-dashboard');
                   break;
                 case 1:
-                  context.go('/retailer-top-ranking');
+                  context.push('/retailer-orders');
                   break;
                 case 2:
-                  context.go('/retailer-orders');
+                  context.push('/retailer-rfqs');
                   break;
                 case 3:
-                  context.go('/retailer-rfq');
-                  break;
-                case 4:
                   break;
               }
             },
@@ -237,96 +230,6 @@ class _ProfileHeaderCard extends StatelessWidget {
           child: Icon(Icons.storefront_rounded, color: primaryColor, size: 48),
         ),
       ],
-    );
-  }
-}
-
-class _BalanceCards extends StatelessWidget {
-  final Color primaryColor;
-
-  const _BalanceCards({required this.primaryColor});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    return Row(
-      children: [
-        Expanded(
-          child: _BalanceCard(
-            icon: Icons.account_balance_wallet_outlined,
-            title: l10n.walletBalance,
-            value: l10n.comingSoon,
-            color: primaryColor,
-            onTap: () => context.push('/retailer-wallet'),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _BalanceCard(
-            icon: Icons.credit_card_outlined,
-            title: l10n.creditBalance,
-            value: l10n.comingSoon,
-            color: primaryColor,
-            onTap: () => context.push('/retailer-credit'),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _BalanceCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String value;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _BalanceCard({
-    required this.icon,
-    required this.title,
-    required this.value,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(22),
-      onTap: onTap,
-      child: Container(
-        height: 128,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: AppThemeTokens.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: 28),
-            const Spacer(),
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                color: AppThemeTokens.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: const TextStyle(
-                color: AppThemeTokens.textSecondary,
-                fontSize: 13,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -487,14 +390,18 @@ class _ProfileBottomNav extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Theme.of(context).colorScheme.primary,
       unselectedItemColor: AppThemeTokens.textSecondary,
+      selectedLabelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+      ),
+      unselectedLabelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+      ),
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_rounded),
           label: l10n.home,
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.trending_up_rounded),
-          label: l10n.topRanking,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.receipt_long_outlined),

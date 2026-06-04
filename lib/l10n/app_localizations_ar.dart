@@ -447,8 +447,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailUpdatedSuccessfully => 'تم تحديث البريد الإلكتروني بنجاح';
 
   @override
-  String get passwordVerificationCodeSent =>
-      'تم إرسال رمز تحقق كلمة المرور إلى بريدك الإلكتروني.';
+  String get passwordVerificationCodeSent => 'تم إرسال رمز تأكيد كلمة المرور';
 
   @override
   String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
@@ -801,25 +800,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchCountryLabel => 'الدولة *';
 
   @override
-  String get loadingCountries => 'جاري تحميل الدول...';
+  String get loadingCountries => 'جارٍ تحميل البلدان...';
 
   @override
-  String get selectCountry => 'اختر الدولة';
+  String get selectCountry => 'اختر البلد';
 
   @override
-  String get searchCountry => 'ابحث عن الدولة...';
+  String get searchCountry => 'ابحث عن بلد...';
 
   @override
-  String get noCountriesFound => 'لا توجد دول';
+  String get noCountriesFound => 'لم يتم العثور على بلدان';
 
   @override
-  String get countryRequiredError => 'الدولة مطلوبة';
+  String get countryRequiredError => 'البلد مطلوب';
 
   @override
   String get branchRegionLabel => 'المنطقة / الولاية';
 
   @override
-  String get selectCountryFirst => 'اختر الدولة أولاً';
+  String get selectCountryFirst => 'اختر البلد أولاً';
 
   @override
   String get loadingRegions => 'جاري تحميل المناطق...';
@@ -874,7 +873,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get validPhoneForSelectedCountryError =>
-      'أدخل رقم هاتف صحيح للدولة المختارة';
+      'أدخل رقم هاتف صحيحاً مع رمز البلد';
 
   @override
   String get deleteBranchTitle => 'حذف الفرع';
@@ -1780,7 +1779,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supplierBanners => 'البنرات';
 
   @override
-  String get countryLabel => 'الدولة';
+  String get countryLabel => 'البلد';
 
   @override
   String get supplierPercent => 'نسبة مئوية';
@@ -3084,6 +3083,151 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح';
 
   @override
+  String get completeRetailerProfileTitle => 'إكمال ملف التاجر';
+
+  @override
+  String get completeRetailerProfileSubtitle => 'أدخل معلومات عملك للمتابعة.';
+
+  @override
+  String get enterFullName => 'أدخل الاسم الكامل';
+
+  @override
+  String get enterStoreName => 'أدخل اسم المتجر';
+
+  @override
+  String get enterStoreAddress => 'أدخل عنوان المتجر';
+
+  @override
+  String get retailerProfileSavedSuccessfully => 'تم حفظ ملف التاجر بنجاح';
+
+  @override
+  String get loadingCities => 'جارٍ تحميل المدن...';
+
+  @override
+  String get noCitiesFoundForCountry => 'لا توجد مدن لهذا البلد';
+
+  @override
+  String get searchCity => 'ابحث عن مدينة...';
+
+  @override
+  String get cityRequiredError => 'المدينة مطلوبة';
+
+  @override
+  String get couldNotLoadCountries =>
+      'تعذر تحميل البلدان. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get couldNotLoadCities => 'تعذر تحميل المدن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get verifyNewEmail => 'تأكيد البريد الإلكتروني الجديد';
+
+  @override
+  String get sixDigitCode => 'رمز مكوّن من 6 أرقام';
+
+  @override
+  String get verificationCodeSent => 'تم إرسال رمز التحقق';
+
+  @override
+  String get couldNotResendCode => 'تعذر إعادة إرسال الرمز.';
+
+  @override
+  String get invalidVerificationCode => 'رمز التحقق غير صحيح.';
+
+  @override
+  String get verify => 'تحقق';
+
+  @override
+  String get resend => 'إعادة الإرسال';
+
+  @override
+  String get verifyPasswordChange => 'تأكيد تغيير كلمة المرور';
+
+  @override
+  String enterCodeSentToEmail(String email) {
+    return 'أدخل الرمز المكوّن من 6 أرقام المرسل إلى $email';
+  }
+
+  @override
+  String get couldNotUpdatePassword => 'تعذر تحديث كلمة المرور.';
+
+  @override
+  String get newPasswordRequired => 'كلمة المرور الجديدة مطلوبة';
+
+  @override
+  String get passwordNotUpdatedCodeNotConfirmed =>
+      'لم يتم تحديث كلمة المرور لأن رمز التحقق لم يتم تأكيده.';
+
+  @override
+  String get emailVerificationRequiredBeforeUpdating =>
+      'يجب تأكيد البريد الإلكتروني قبل تحديثه.';
+
+  @override
+  String get emailNotUpdatedCodeNotConfirmed =>
+      'لم يتم تحديث البريد الإلكتروني لأن رمز التحقق لم يتم تأكيده.';
+
+  @override
+  String get rfqCategoryRequired => 'الفئة مطلوبة';
+
+  @override
+  String get rfqSubcategoryRequired => 'الفئة الفرعية مطلوبة';
+
+  @override
+  String get rfqUnitRequired => 'الوحدة مطلوبة';
+
+  @override
+  String get rfqTargetUnitPriceHint => 'أدخل السعر المستهدف للوحدة';
+
+  @override
+  String get rfqTargetUnitPriceRequired => 'السعر المستهدف للوحدة مطلوب';
+
+  @override
+  String get rfqEnterValidTargetUnitPrice => 'أدخل سعراً صحيحاً للوحدة';
+
+  @override
+  String get rfqPreferredDeliveryTimeRequired => 'وقت التسليم المفضل مطلوب';
+
+  @override
+  String get rfqDeadlineRequired => 'تاريخ الموعد النهائي مطلوب';
+
+  @override
+  String get rfqCityRequired => 'مدينة التسليم مطلوبة';
+
+  @override
+  String get rfqDeliveryAddressRequired => 'عنوان التسليم مطلوب';
+
+  @override
+  String get wholesaleOpportunities => 'فرص الجملة';
+
+  @override
+  String get bulkOrders => 'طلبات الجملة';
+
+  @override
+  String get bulkOrdersDescription =>
+      'وفّر أكثر عند طلب كميات كبيرة من الموردين.';
+
+  @override
+  String get viewAvailableOffers => 'عرض العروض المتاحة';
+
+  @override
+  String get groupDeliveryAvailable => 'التوصيل الجماعي متاح';
+
+  @override
+  String get groupDeliveryDescription =>
+      'انضم إلى تجار آخرين في منطقتك ووفّر في تكاليف الشحن.';
+
+  @override
+  String groupDeliveryDynamicDescription(
+    int retailersJoined,
+    num savingsPercent,
+  ) {
+    return 'انضم $retailersJoined تجار بالقرب منك. وفّر حتى $savingsPercent% من تكاليف الشحن.';
+  }
+
+  @override
+  String get learnMore => 'اعرف المزيد';
+
+  @override
   String get productDeletedSuccessfully => 'تم حذف المنتج بنجاح';
 
   @override
@@ -3143,4 +3287,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentBankTransfer => 'تحويل مصرفي';
+
+  @override
+  String get verifyPhoneChange => 'تأكيد تغيير رقم الهاتف';
+
+  @override
+  String enterStaticPhoneCode(String phoneNumber) {
+    return 'أدخل رمز التحقق المرسل إلى $phoneNumber';
+  }
+
+  @override
+  String get staticPhoneCodeSent => 'تم إرسال رمز تحقق الهاتف';
+
+  @override
+  String get invalidPhoneVerificationCode => 'رمز تحقق الهاتف غير صحيح.';
+
+  @override
+  String get phoneNotUpdatedCodeNotConfirmed =>
+      'لم يتم تحديث رقم الهاتف لأن رمز التحقق لم يتم تأكيده.';
 }

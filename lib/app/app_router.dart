@@ -62,6 +62,7 @@ import '../features/supplier/tax/presentation/screens/tax_rules_screen.dart';
 import '../features/supplier/orders/domain/entities/supplier_order_entity.dart';
 import '../features/supplier/orders/presentation/screens/supplier_order_details_screen.dart';
 import '../features/supplier/orders/presentation/screens/supplier_orders_screen.dart';
+import '../features/supplier/payment_methods/presentation/screens/supplier_payment_methods_screen.dart';
 
 import '../features/supplier/rfq/presentation/screens/supplier_rfq_details_screen.dart';
 import '../features/supplier/rfq/presentation/screens/supplier_rfq_list_screen.dart';
@@ -224,6 +225,10 @@ class AppRouter {
 
           return SupplierOrderDetailsScreen(order: order);
         },
+      ),
+      GoRoute(
+        path: '/supplier-payment-methods',
+        builder: (context, state) => const SupplierPaymentMethodsScreen(),
       ),
       GoRoute(
         path: '/supplier-rfqs',
@@ -435,18 +440,7 @@ class AppRouter {
         path: '/retailer-promotions',
         builder: (context, state) => const RetailerPromotionsScreen(),
       ),
-      GoRoute(
-        path: '/retailer-top-ranking',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
 
-          return RetailerPlaceholderScreen(
-            title: l10n.topRanking,
-            message: l10n.topRankingComingSoon,
-            icon: Icons.trending_up_rounded,
-          );
-        },
-      ),
       GoRoute(
         path: '/retailer-orders',
         builder: (context, state) => const RetailerOrdersScreen(),
@@ -537,30 +531,6 @@ class AppRouter {
             title: l10n.loyaltyPoints,
             message: l10n.loyaltyComingSoon,
             icon: Icons.star_border_rounded,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/retailer-wallet',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.walletBalance,
-            message: l10n.walletComingSoon,
-            icon: Icons.account_balance_wallet_outlined,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/retailer-credit',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.creditBalance,
-            message: l10n.creditComingSoon,
-            icon: Icons.credit_card_outlined,
           );
         },
       ),

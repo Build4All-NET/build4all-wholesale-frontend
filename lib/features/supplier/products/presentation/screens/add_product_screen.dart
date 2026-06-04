@@ -962,7 +962,7 @@ class _CategorySelector extends StatelessWidget {
     return _DropdownSection(
       label: context.l10n.categoryLabel,
       dropdown: DropdownButtonFormField<String>(
-        initialValue: safeSelectedCategoryId,
+        value: safeSelectedCategoryId,
         items: categories.map((category) {
           return DropdownMenuItem<String>(
             value: category.id,
@@ -1023,7 +1023,7 @@ class _SubCategorySelector extends StatelessWidget {
     return _DropdownSection(
       label: context.l10n.subCategoryLabel,
       dropdown: DropdownButtonFormField<String>(
-        initialValue: safeSelectedSubCategoryId,
+        value: safeSelectedSubCategoryId,
         items: subCategories.map((subCategory) {
           return DropdownMenuItem<String>(
             value: subCategory.id,

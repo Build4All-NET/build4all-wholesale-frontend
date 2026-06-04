@@ -14,10 +14,7 @@ class AuthService {
   final ApiClient centralApiClient;
   final ApiClient projectApiClient;
 
-  AuthService({
-    required this.centralApiClient,
-    required this.projectApiClient,
-  });
+  AuthService({required this.centralApiClient, required this.projectApiClient});
 
   Future<AdminLoginResponseModel> adminLoginFront(
     AdminLoginRequestModel request,
@@ -82,10 +79,7 @@ class AuthService {
     try {
       final response = await centralApiClient.dio.post(
         ApiConfig.verifyEmailCode,
-        data: {
-          'email': email.trim(),
-          'code': code.trim(),
-        },
+        data: {'email': email.trim(), 'code': code.trim()},
       );
 
       final data = Map<String, dynamic>.from(response.data as Map);
@@ -143,12 +137,8 @@ class AuthService {
 
       final response = await centralApiClient.dio.post(
         '/users/reset-password',
-        queryParameters: {
-          'ownerProjectLinkId': ownerProjectLinkId,
-        },
-        data: {
-          'email': email.trim(),
-        },
+        queryParameters: {'ownerProjectLinkId': ownerProjectLinkId},
+        data: {'email': email.trim()},
       );
 
       final data = Map<String, dynamic>.from(response.data as Map);
@@ -170,13 +160,8 @@ class AuthService {
 
       final response = await centralApiClient.dio.post(
         '/users/verify-reset-code',
-        queryParameters: {
-          'ownerProjectLinkId': ownerProjectLinkId,
-        },
-        data: {
-          'email': email.trim(),
-          'code': code.trim(),
-        },
+        queryParameters: {'ownerProjectLinkId': ownerProjectLinkId},
+        data: {'email': email.trim(), 'code': code.trim()},
       );
 
       return ApiResponseModel.fromJson(
@@ -200,9 +185,7 @@ class AuthService {
 
       final response = await centralApiClient.dio.post(
         '/users/update-password',
-        queryParameters: {
-          'ownerProjectLinkId': ownerProjectLinkId,
-        },
+        queryParameters: {'ownerProjectLinkId': ownerProjectLinkId},
         data: {
           'email': email.trim(),
           'code': code.trim(),
@@ -280,6 +263,10 @@ class AuthService {
     required String storeName,
     required String phoneNumber,
     required String storeAddress,
+    required int countryId,
+    required String countryName,
+    required String countryIso2Code,
+    required String countryIso3Code,
     required String city,
     required String businessType,
   }) async {
@@ -287,12 +274,16 @@ class AuthService {
       await projectApiClient.dio.put(
         ApiConfig.retailerProfileMe,
         data: {
-          'fullName': fullName,
-          'storeName': storeName,
-          'phoneNumber': phoneNumber,
-          'storeAddress': storeAddress,
-          'city': city,
-          'businessType': businessType,
+          'fullName': fullName.trim(),
+          'storeName': storeName.trim(),
+          'phoneNumber': phoneNumber.trim(),
+          'storeAddress': storeAddress.trim(),
+          'countryId': countryId,
+          'countryName': countryName.trim(),
+          'countryIso2Code': countryIso2Code.trim().toUpperCase(),
+          'countryIso3Code': countryIso3Code.trim().toUpperCase(),
+          'city': city.trim(),
+          'businessType': businessType.trim(),
         },
       );
     } on DioException catch (e) {

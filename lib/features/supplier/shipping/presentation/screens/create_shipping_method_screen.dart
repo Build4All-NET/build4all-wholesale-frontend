@@ -909,9 +909,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1084,7 +1083,7 @@ class _MethodTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingMethodType>(
-      initialValue: value,
+      value: value,
       items: ShippingMethodType.values
           .map(
             (type) => DropdownMenuItem<ShippingMethodType>(
@@ -1116,7 +1115,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingBranchScope>(
-      initialValue: value,
+      value: value,
       items: ShippingBranchScope.values
           .map(
             (scope) => DropdownMenuItem<ShippingBranchScope>(

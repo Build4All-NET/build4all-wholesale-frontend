@@ -144,7 +144,7 @@
   "resendCode": "إعادة إرسال الرمز",
   "verificationCode": "رمز التحقق",
   "emailUpdatedSuccessfully": "تم تحديث البريد الإلكتروني بنجاح",
-  "passwordVerificationCodeSent": "تم إرسال رمز تحقق كلمة المرور إلى بريدك الإلكتروني.",
+  "passwordVerificationCodeSent": "تم إرسال رمز تأكيد كلمة المرور",
   "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
   "passwordUpdatedSuccessfully": "تم تحديث كلمة المرور بنجاح",
   "passwordMinLength": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
@@ -265,13 +265,13 @@
   "addressSpecificError": "يجب أن يكون العنوان أكثر تفصيلاً",
   "addressTooLongError": "العنوان طويل جدًا",
   "branchCountryLabel": "الدولة *",
-  "loadingCountries": "جاري تحميل الدول...",
-  "selectCountry": "اختر الدولة",
-  "searchCountry": "ابحث عن الدولة...",
-  "noCountriesFound": "لا توجد دول",
-  "countryRequiredError": "الدولة مطلوبة",
+  "loadingCountries": "جارٍ تحميل البلدان...",
+  "selectCountry": "اختر البلد",
+  "searchCountry": "ابحث عن بلد...",
+  "noCountriesFound": "لم يتم العثور على بلدان",
+  "countryRequiredError": "البلد مطلوب",
   "branchRegionLabel": "المنطقة / الولاية",
-  "selectCountryFirst": "اختر الدولة أولاً",
+  "selectCountryFirst": "اختر البلد أولاً",
   "loadingRegions": "جاري تحميل المناطق...",
   "noPredefinedRegions": "لا توجد مناطق محددة، يمكنك المتابعة بالمدينة/المنطقة",
   "selectRegionState": "اختر المنطقة / المحافظة",
@@ -288,7 +288,7 @@
   "phoneSelectCountryFirstError": "يرجى اختيار الدولة أولاً",
   "phoneCountryMismatchError": "يجب أن تتطابق دولة الهاتف مع الدولة المختارة",
   "lebanesePhoneDigitsError": "يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961",
-  "validPhoneForSelectedCountryError": "أدخل رقم هاتف صحيح للدولة المختارة",
+  "validPhoneForSelectedCountryError": "أدخل رقم هاتف صحيحاً مع رمز البلد",
   "deleteBranchTitle": "حذف الفرع",
   "deleteBranchConfirmation": "هل أنت متأكد أنك تريد حذف {branchName}؟",
   "@deleteBranchConfirmation": {
@@ -688,7 +688,7 @@
   "searchLabel": "بحث",
   "supplierTarget": "الهدف",
   "supplierBanners": "البنرات",
-  "countryLabel": "الدولة",
+  "countryLabel": "البلد",
   "supplierPercent": "نسبة مئوية",
   "refreshButton": "تحديث",
   "supplierTitle": "العنوان *",
@@ -1213,6 +1213,67 @@
   "rfqDeletedSuccessfully": "تم حذف طلب التسعير بنجاح",
   "rfqQuotationAcceptedSuccessfully": "تم قبول عرض السعر بنجاح",
   "rfqAiGeneratedSuccessfully": "تم إنشاء المتطلبات بالذكاء الاصطناعي بنجاح",
+  "completeRetailerProfileTitle": "إكمال ملف التاجر",
+  "completeRetailerProfileSubtitle": "أدخل معلومات عملك للمتابعة.",
+  "enterFullName": "أدخل الاسم الكامل",
+  "enterStoreName": "أدخل اسم المتجر",
+  "enterStoreAddress": "أدخل عنوان المتجر",
+  "retailerProfileSavedSuccessfully": "تم حفظ ملف التاجر بنجاح",
+  "loadingCities": "جارٍ تحميل المدن...",
+  "noCitiesFoundForCountry": "لا توجد مدن لهذا البلد",
+  "searchCity": "ابحث عن مدينة...",
+  "cityRequiredError": "المدينة مطلوبة",
+  "couldNotLoadCountries": "تعذر تحميل البلدان. يرجى المحاولة مرة أخرى.",
+  "couldNotLoadCities": "تعذر تحميل المدن. يرجى المحاولة مرة أخرى.",
+  "verifyNewEmail": "تأكيد البريد الإلكتروني الجديد",
+  "sixDigitCode": "رمز مكوّن من 6 أرقام",
+  "verificationCodeSent": "تم إرسال رمز التحقق",
+  "couldNotResendCode": "تعذر إعادة إرسال الرمز.",
+  "invalidVerificationCode": "رمز التحقق غير صحيح.",
+  "verify": "تحقق",
+  "resend": "إعادة الإرسال",
+  "verifyPasswordChange": "تأكيد تغيير كلمة المرور",
+  "enterCodeSentToEmail": "أدخل الرمز المكوّن من 6 أرقام المرسل إلى {email}",
+  "@enterCodeSentToEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotUpdatePassword": "تعذر تحديث كلمة المرور.",
+  "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+  "passwordNotUpdatedCodeNotConfirmed": "لم يتم تحديث كلمة المرور لأن رمز التحقق لم يتم تأكيده.",
+  "emailVerificationRequiredBeforeUpdating": "يجب تأكيد البريد الإلكتروني قبل تحديثه.",
+  "emailNotUpdatedCodeNotConfirmed": "لم يتم تحديث البريد الإلكتروني لأن رمز التحقق لم يتم تأكيده.",
+  "rfqCategoryRequired": "الفئة مطلوبة",
+  "rfqSubcategoryRequired": "الفئة الفرعية مطلوبة",
+  "rfqUnitRequired": "الوحدة مطلوبة",
+  "rfqTargetUnitPriceHint": "أدخل السعر المستهدف للوحدة",
+  "rfqTargetUnitPriceRequired": "السعر المستهدف للوحدة مطلوب",
+  "rfqEnterValidTargetUnitPrice": "أدخل سعراً صحيحاً للوحدة",
+  "rfqPreferredDeliveryTimeRequired": "وقت التسليم المفضل مطلوب",
+  "rfqDeadlineRequired": "تاريخ الموعد النهائي مطلوب",
+  "rfqCityRequired": "مدينة التسليم مطلوبة",
+  "rfqDeliveryAddressRequired": "عنوان التسليم مطلوب",
+  "wholesaleOpportunities": "فرص الجملة",
+  "bulkOrders": "طلبات الجملة",
+  "bulkOrdersDescription": "وفّر أكثر عند طلب كميات كبيرة من الموردين.",
+  "viewAvailableOffers": "عرض العروض المتاحة",
+  "groupDeliveryAvailable": "التوصيل الجماعي متاح",
+  "groupDeliveryDescription": "انضم إلى تجار آخرين في منطقتك ووفّر في تكاليف الشحن.",
+  "groupDeliveryDynamicDescription": "انضم {retailersJoined} تجار بالقرب منك. وفّر حتى {savingsPercent}% من تكاليف الشحن.",
+  "@groupDeliveryDynamicDescription": {
+    "placeholders": {
+      "retailersJoined": {
+        "type": "int"
+      },
+      "savingsPercent": {
+        "type": "num"
+      }
+    }
+  },
+  "learnMore": "اعرف المزيد",
   "productDeletedSuccessfully": "تم حذف المنتج بنجاح",
   "stockAssignedSuccessfully": "تم تعيين المخزون بنجاح",
   "stockUpdatedSuccessfully": "تم تحديث المخزون بنجاح",
@@ -1238,5 +1299,19 @@
   },
   "paymentCashOnDelivery": "الدفع عند الاستلام",
   "paymentCard": "الدفع بالبطاقة",
-  "paymentBankTransfer": "تحويل مصرفي"
+  "paymentBankTransfer": "تحويل مصرفي",
+  "verifyPhoneChange": "تأكيد تغيير رقم الهاتف",
+"enterStaticPhoneCode": "أدخل رمز التحقق لرقم الهاتف {phoneNumber}. رمز التجربة: 123456",
+"@enterStaticPhoneCode": {
+  "placeholders": {
+    "phoneNumber": {
+      "type": "String"
+    }
+  }
+},
+"staticPhoneCodeSent": "تم إرسال رمز تحقق الهاتف. رمز التجربة: 123456",
+"invalidPhoneVerificationCode": "رمز تحقق الهاتف غير صحيح.",
+"phoneNotUpdatedCodeNotConfirmed": "لم يتم تحديث رقم الهاتف لأن رمز التحقق لم يتم تأكيده.",
+"enterStaticPhoneCode": "أدخل رمز التحقق المرسل إلى {phoneNumber}",
+"staticPhoneCodeSent": "تم إرسال رمز تحقق الهاتف"
 }
