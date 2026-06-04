@@ -198,17 +198,6 @@ jobs:
 
           api_base = (cfg.get("API_BASE_URL") or payload.get("API_BASE_URL") or "").strip().rstrip("/")
 
-          override_base = str(
-              cfg.get("OVERRIDE_BASE_URL")
-              or cfg.get("WHOLESALE_API_BASE_URL")
-              or payload.get("OVERRIDE_BASE_URL")
-              or payload.get("WHOLESALE_API_BASE_URL")
-              or ""
-          ).strip().rstrip("/")
-          if not override_base:
-              override_base = api_base
-              print("⚠️ OVERRIDE_BASE_URL not found in payload, defaulting to API_BASE_URL")
-
           link_id = str(
               cfg.get("OWNER_PROJECT_LINK_ID")
               or payload.get("OWNER_PROJECT_LINK_ID")
@@ -255,6 +244,19 @@ jobs:
               if v not in (None, "", []):
                   return v
               return default
+
+          # Wholesale-specific: OVERRIDE_BASE_URL — checked in runtime (backend) first, then payload
+          override_base = (
+              pick("OVERRIDE_BASE_URL")
+              or pick("WHOLESALE_API_BASE_URL")
+              or pick("wholesaleApiBaseUrl")
+              or pick("overrideBaseUrl")
+              or ""
+          )
+          override_base = str(override_base).strip().rstrip("/")
+          if not override_base:
+              print("⚠️ OVERRIDE_BASE_URL not found in payload/runtime. Using API_BASE_URL as fallback.")
+              override_base = api_base
 
           app_name = pick("APP_NAME", "My App")
           app_type = pick("APP_TYPE", "WHOLESALE")
