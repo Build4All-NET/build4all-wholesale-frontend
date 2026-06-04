@@ -626,9 +626,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                               ),
                               Switch(
                                 value: _autoGenerateName,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: _handleAutoGenerateChanged,
                               ),
@@ -763,9 +762,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                               ),
                               Switch(
                                 value: _appliesToShipping,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -800,9 +798,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -978,7 +975,7 @@ class _TaxRulePresetDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<TaxRulePreset>(
       isExpanded: true,
-      initialValue: value,
+      value: value,
       items: TaxRulePreset.values.map((preset) {
         return DropdownMenuItem<TaxRulePreset>(
           value: preset,
