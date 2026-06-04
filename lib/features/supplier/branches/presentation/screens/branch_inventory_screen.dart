@@ -100,7 +100,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                     ),
                     SizedBox(height: 8),
                     DropdownButtonFormField<ProductEntity>(
-                      initialValue: selectedProduct,
+                      value: selectedProduct,
                       items: availableProducts.map((product) {
                         return DropdownMenuItem<ProductEntity>(
                           value: product,

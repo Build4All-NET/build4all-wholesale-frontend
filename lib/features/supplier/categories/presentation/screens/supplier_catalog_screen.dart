@@ -178,7 +178,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      initialValue: selectedCategoryId,
+                      value: selectedCategoryId,
                       items: activeCategories.map((category) {
                         return DropdownMenuItem<String>(
                           value: category.id,
