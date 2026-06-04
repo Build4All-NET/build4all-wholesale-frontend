@@ -226,6 +226,7 @@ jobs:
           # Wholesale-specific: OVERRIDE_BASE_URL — checked in runtime (backend) first, then payload
           override_base = (
               pick("OVERRIDE_BASE_URL")
+              or pick("API_BASE_URL_OVERRIDE")
               or pick("WHOLESALE_API_BASE_URL")
               or pick("wholesaleApiBaseUrl")
               or pick("overrideBaseUrl")
