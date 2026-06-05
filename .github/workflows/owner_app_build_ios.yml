@@ -642,6 +642,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          gem install multi_json -N
           gem install fastlane -N --force
           gem install cocoapods -N
           gem install xcodeproj -N
