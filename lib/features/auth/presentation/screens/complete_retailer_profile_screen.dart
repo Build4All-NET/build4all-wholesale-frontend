@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
@@ -120,7 +122,7 @@ class _CompleteRetailerProfileScreenState
 
       setState(() {
         _isLoadingCountries = false;
-        _locationError = e.toString().replaceFirst('Exception: ', '');
+        _locationError = AppErrorMapper.toMessage(e);
       });
     }
   }
@@ -147,7 +149,7 @@ class _CompleteRetailerProfileScreenState
 
       setState(() {
         _isLoadingCities = false;
-        _locationError = e.toString().replaceFirst('Exception: ', '');
+        _locationError = AppErrorMapper.toMessage(e);
       });
     }
   }
@@ -174,16 +176,12 @@ class _CompleteRetailerProfileScreenState
     if (!_formKey.currentState!.validate()) return;
 
     if (_selectedCountry == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.countryRequiredError)));
+      AppToast.error(context, l10n.countryRequiredError);
       return;
     }
 
     if (_selectedCity == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('${l10n.city} is required')));
+      AppToast.error(context, '${l10n.city} is required');
       return;
     }
 
@@ -205,17 +203,13 @@ class _CompleteRetailerProfileScreenState
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.retailerProfileSavedSuccessfully)),
-      );
+      AppToast.success(context, l10n.retailerProfileSavedSuccessfully);
 
       context.go('/retailer-dashboard');
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-      );
+      AppToast.error(context, e);
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

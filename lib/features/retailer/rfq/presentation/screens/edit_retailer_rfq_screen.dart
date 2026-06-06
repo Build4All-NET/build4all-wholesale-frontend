@@ -2,6 +2,7 @@
 // It is separated to keep edit logic safe and pre-filled from backend.
 
 import 'dart:io';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -137,9 +138,7 @@ class _EditRetailerRfqViewState extends State<_EditRetailerRfqView> {
     final product = _productNameController.text.trim();
 
     if (product.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.rfqAiProductNameRequired)));
+      AppToast.error(context, l10n.rfqAiProductNameRequired);
       return;
     }
 
@@ -318,10 +317,7 @@ class _EditRetailerRfqViewState extends State<_EditRetailerRfqView> {
     return BlocConsumer<RetailerRfqCubit, RetailerRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          AppToast.error(context, state.errorMessage!);
           context.read<RetailerRfqCubit>().clearMessages();
         }
       },

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
@@ -73,33 +75,23 @@ class _RetailerCompleteProfileScreenState
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Retailer account created successfully. Please login.'),
-        ),
-      );
+      AppToast.success(context, 'Retailer account created successfully. Please login.');
 
       context.go('/login');
       return;
     } catch (e) {
       if (!mounted) return;
 
-      final message = e.toString().replaceFirst('Exception: ', '');
+      final message = AppErrorMapper.toMessage(e);
 
       if (message.toLowerCase().contains('username already in use')) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account already created. Please login.'),
-          ),
-        );
+        AppToast.info(context, 'Account already created. Please login.');
 
         context.go('/login');
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      AppToast.error(context, message);
     } finally {
       if (mounted && !_completed) {
         setState(() => _isSaving = false);

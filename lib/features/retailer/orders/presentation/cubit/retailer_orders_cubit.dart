@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../domain/entities/retailer_order_entity.dart';
 import '../../domain/usecases/cancel_retailer_order_usecase.dart';
@@ -27,7 +28,7 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
       final orders = await getRetailerOrdersUseCase();
       emit(state.copyWith(isLoading: false, orders: orders));
     } catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: AppErrorMapper.toMessage(e)));
     }
   }
 
@@ -53,7 +54,7 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
       emit(
         state.copyWith(
           isDetailsLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -80,7 +81,7 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
       emit(
         state.copyWith(
           isDetailsLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -102,7 +103,7 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
       emit(
         state.copyWith(
           isDetailsLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
