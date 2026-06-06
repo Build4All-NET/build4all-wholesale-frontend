@@ -16,17 +16,23 @@ class SupplierPaymentMethodModel extends SupplierPaymentMethodEntity {
   });
 
   factory SupplierPaymentMethodModel.fromJson(Map<String, dynamic> json) {
+    final methodCode = (json['code'] ?? json['methodName'] ?? '').toString();
+    final description =
+        (json['helperText'] ?? json['description'] ?? '').toString();
+
     return SupplierPaymentMethodModel(
       id: _asInt(json['id']),
-      code: (json['code'] ?? '').toString(),
-      displayName: (json['displayName'] ?? json['code'] ?? '').toString(),
-      platformEnabled: json['platformEnabled'] == true,
-      projectEnabled: json['projectEnabled'] == true,
+      code: methodCode,
+      displayName: (json['displayName'] ?? methodCode).toString(),
+      platformEnabled:
+          json['platformEnabled'] == true || json['globallyEnabled'] == true,
+      projectEnabled:
+          json['projectEnabled'] == true || json['enabledForSupplier'] == true,
       supportedNow: json['supportedNow'] == true,
       requiresCredentials: json['requiresCredentials'] == true,
-      helperText: (json['helperText'] ?? '').toString(),
+      helperText: description,
       configSchema: _asMap(json['configSchema']),
-      configValues: _asMap(json['configValues']),
+      configValues: _readConfigValues(json),
       updatedAt: _asDate(json['updatedAt']),
     );
   }
@@ -46,6 +52,25 @@ class SupplierPaymentMethodModel extends SupplierPaymentMethodEntity {
     if (value is Map) {
       return Map<String, dynamic>.from(value);
     }
+
+    return <String, dynamic>{};
+  }
+
+  static Map<String, dynamic> _readConfigValues(Map<String, dynamic> json) {
+    final directConfigValues = json['configValues'];
+
+    if (directConfigValues is Map) {
+      return Map<String, dynamic>.from(directConfigValues);
+    }
+
+    final configJson = json['configJson'];
+
+    if (configJson is String && configJson.trim().isNotEmpty) {
+      return <String, dynamic>{
+        'rawConfigJson': configJson,
+      };
+    }
+
     return <String, dynamic>{};
   }
 }

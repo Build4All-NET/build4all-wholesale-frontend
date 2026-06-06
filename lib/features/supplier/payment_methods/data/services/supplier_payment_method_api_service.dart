@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
@@ -12,18 +14,26 @@ class SupplierPaymentMethodApiService {
 
   Future<List<SupplierPaymentMethodModel>> getPaymentMethods() async {
     try {
-      final response = await apiClient.dio.get(ApiConfig.supplierPaymentMethods);
+      final response = await apiClient.dio.get(
+        ApiConfig.supplierPaymentMethods,
+      );
+
       final data = response.data;
+
       if (data is List) {
         return data
-            .map((item) => SupplierPaymentMethodModel.fromJson(
-                  Map<String, dynamic>.from(item as Map),
-                ))
+            .whereType<Map>()
+            .map(
+              (item) => SupplierPaymentMethodModel.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
             .toList();
       }
-      return [];
-    } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+
+      return <SupplierPaymentMethodModel>[];
+    } on DioException catch (error) {
+      throw AppException(_extractMessage(error));
     }
   }
 
@@ -33,40 +43,106 @@ class SupplierPaymentMethodApiService {
     Map<String, dynamic> configValues = const {},
   }) async {
     try {
+      final normalizedMethodCode = methodCode.trim().toUpperCase();
+
+      if (normalizedMethodCode.isEmpty) {
+        throw AppException('Payment method code is missing.');
+      }
+
       final response = await apiClient.dio.put(
-        ApiConfig.supplierPaymentMethodByCode(methodCode),
+        ApiConfig.supplierPaymentMethodByCode(normalizedMethodCode),
         data: {
           'enabled': enabled,
-          'configValues': configValues,
+          'configJson': _encodeConfigJson(
+            methodCode: normalizedMethodCode,
+            configValues: configValues,
+          ),
         },
       );
-      return SupplierPaymentMethodModel.fromJson(
-        Map<String, dynamic>.from(response.data as Map),
-      );
-    } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+
+      final data = response.data;
+
+      if (data is Map<String, dynamic>) {
+        return SupplierPaymentMethodModel.fromJson(data);
+      }
+
+      if (data is Map) {
+        return SupplierPaymentMethodModel.fromJson(
+          Map<String, dynamic>.from(data),
+        );
+      }
+
+      throw AppException('Invalid payment method response.');
+    } on DioException catch (error) {
+      throw AppException(_extractMessage(error));
     }
   }
 
   Future<SupplierPaymentMethodModel> testPaymentMethod(String methodCode) async {
     try {
+      final normalizedMethodCode = methodCode.trim().toUpperCase();
+
+      if (normalizedMethodCode.isEmpty) {
+        throw AppException('Payment method code is missing.');
+      }
+
       final response = await apiClient.dio.post(
-        ApiConfig.supplierPaymentMethodTest(methodCode),
+        ApiConfig.supplierPaymentMethodTest(normalizedMethodCode),
       );
-      return SupplierPaymentMethodModel.fromJson(
-        Map<String, dynamic>.from(response.data as Map),
-      );
-    } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+
+      final data = response.data;
+
+      if (data is Map<String, dynamic>) {
+        return SupplierPaymentMethodModel.fromJson(data);
+      }
+
+      if (data is Map) {
+        return SupplierPaymentMethodModel.fromJson(
+          Map<String, dynamic>.from(data),
+        );
+      }
+
+      throw AppException('Invalid payment method test response.');
+    } on DioException catch (error) {
+      throw AppException(_extractMessage(error));
     }
   }
 
-  String _extractMessage(DioException e) {
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) {
-      if (data['message'] != null) return data['message'].toString();
-      if (data['error'] != null) return data['error'].toString();
+  String _encodeConfigJson({
+    required String methodCode,
+    required Map<String, dynamic> configValues,
+  }) {
+    if (configValues.isNotEmpty) {
+      return jsonEncode(configValues);
     }
-    return e.message ?? 'Something went wrong';
+
+    if (methodCode == 'CASH') {
+      return jsonEncode({
+        'instructions': 'Pay cash on delivery.',
+      });
+    }
+
+    return '{}';
+  }
+
+  String _extractMessage(DioException error) {
+    final data = error.response?.data;
+
+    if (data is Map<String, dynamic>) {
+      final message = data['message'] ?? data['error'];
+      if (message != null) {
+        return message.toString();
+      }
+    }
+
+    if (data is Map) {
+      final mappedData = Map<String, dynamic>.from(data);
+      final message = mappedData['message'] ?? mappedData['error'];
+      if (message != null) {
+        return message.toString();
+      }
+    }
+
+    return error.message ?? 'Payment request failed';
   }
 }
