@@ -96,6 +96,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logoUrl => 'URL du logo';
 
   @override
+  String get supplierLogo => 'Logo du fournisseur';
+
+  @override
+  String get uploadSupplierLogo => 'Téléverser le logo du fournisseur';
+
+  @override
+  String get tapToUploadLogoImage =>
+      'Appuyez pour choisir une image JPG, PNG ou WEBP';
+
+  @override
+  String get changeLogo => 'Changer le logo';
+
+  @override
+  String get removeLogo => 'Supprimer le logo';
+
+  @override
+  String get supplierLogoRequiredError =>
+      'Veuillez téléverser le logo du fournisseur';
+
+  @override
   String get saveAndContinue => 'Enregistrer et continuer';
 
   @override
@@ -602,6 +622,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierDashboardQuickActions => 'Actions rapides';
+
+  @override
+  String get supplierDashboardOverviewSubtitle =>
+      'Voici un aperçu de votre activité';
 
   @override
   String get supplierPendingOrders => 'Commandes en attente';

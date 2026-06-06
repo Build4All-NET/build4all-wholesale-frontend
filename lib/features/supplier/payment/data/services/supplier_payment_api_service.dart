@@ -21,8 +21,8 @@ class SupplierPaymentApiService {
         response.data,
         fallbackErrorMessage: 'Invalid supplier order payment response',
       );
-    } on DioException catch (e) {
-      throw Exception(_extractMessage(e));
+    } on DioException catch (error) {
+      throw Exception(_extractMessage(error));
     }
   }
 
@@ -38,8 +38,8 @@ class SupplierPaymentApiService {
         response.data,
         fallbackErrorMessage: 'Invalid mark cash payment as paid response',
       );
-    } on DioException catch (e) {
-      throw Exception(_extractMessage(e));
+    } on DioException catch (error) {
+      throw Exception(_extractMessage(error));
     }
   }
 
@@ -60,8 +60,8 @@ class SupplierPaymentApiService {
     throw Exception(fallbackErrorMessage);
   }
 
-  String _extractMessage(DioException e) {
-    final data = e.response?.data;
+  String _extractMessage(DioException error) {
+    final data = error.response?.data;
 
     if (data is Map<String, dynamic>) {
       final message = data['message'] ?? data['error'];
@@ -78,6 +78,6 @@ class SupplierPaymentApiService {
       }
     }
 
-    return e.message ?? 'Payment request failed';
+    return error.message ?? 'Payment request failed';
   }
 }

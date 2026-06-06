@@ -28,6 +28,12 @@
   "companyAddress": "Adresse de l'entreprise",
   "description": "Description",
   "logoUrl": "URL du logo",
+  "supplierLogo": "Logo du fournisseur",
+  "uploadSupplierLogo": "Téléverser le logo du fournisseur",
+  "tapToUploadLogoImage": "Appuyez pour choisir une image JPG, PNG ou WEBP",
+  "changeLogo": "Changer le logo",
+  "removeLogo": "Supprimer le logo",
+  "supplierLogoRequiredError": "Veuillez téléverser le logo du fournisseur",
   "saveAndContinue": "Enregistrer et continuer",
   "supplierDashboard": "Tableau de bord fournisseur",
   "retailerDashboard": "Tableau de bord détaillant",
@@ -189,6 +195,7 @@
   "supplierDashboardSettingsTooltip": "Paramètres",
   "supplierDashboardLowStockAlerts": "Alertes de stock faible",
   "supplierDashboardQuickActions": "Actions rapides",
+  "supplierDashboardOverviewSubtitle": "Voici un aperçu de votre activité",
   "supplierPendingOrders": "Commandes en attente",
   "supplierActiveOrders": "Commandes actives",
   "supplierShippedOrders": "Commandes expédiées",
@@ -1301,17 +1308,15 @@
   "paymentCard": "Paiement par carte",
   "paymentBankTransfer": "Virement bancaire",
   "verifyPhoneChange": "Vérifier le changement du numéro de téléphone",
-"enterStaticPhoneCode": "Entrez le code de vérification pour {phoneNumber}. Code de démonstration : 123456",
-"@enterStaticPhoneCode": {
-  "placeholders": {
-    "phoneNumber": {
-      "type": "String"
+  "enterStaticPhoneCode": "Entrez le code de vérification envoyé à {phoneNumber}",
+  "@enterStaticPhoneCode": {
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
     }
-  }
-},
-"staticPhoneCodeSent": "Code de vérification du téléphone envoyé. Code de démonstration : 123456",
-"invalidPhoneVerificationCode": "Code de vérification du téléphone invalide.",
-"phoneNotUpdatedCodeNotConfirmed": "Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé.",
-"enterStaticPhoneCode": "Entrez le code de vérification envoyé à {phoneNumber}",
-"staticPhoneCodeSent": "Code de vérification du téléphone envoyé"
+  },
+  "staticPhoneCodeSent": "Code de vérification du téléphone envoyé",
+  "invalidPhoneVerificationCode": "Code de vérification du téléphone invalide.",
+  "phoneNotUpdatedCodeNotConfirmed": "Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé."
 }

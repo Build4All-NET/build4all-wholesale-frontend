@@ -268,6 +268,42 @@ abstract class AppLocalizations {
   /// **'Logo URL'**
   String get logoUrl;
 
+  /// No description provided for @supplierLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Logo'**
+  String get supplierLogo;
+
+  /// No description provided for @uploadSupplierLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload supplier logo'**
+  String get uploadSupplierLogo;
+
+  /// No description provided for @tapToUploadLogoImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose JPG, PNG, or WEBP image'**
+  String get tapToUploadLogoImage;
+
+  /// No description provided for @changeLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Change logo'**
+  String get changeLogo;
+
+  /// No description provided for @removeLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove logo'**
+  String get removeLogo;
+
+  /// No description provided for @supplierLogoRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your supplier logo'**
+  String get supplierLogoRequiredError;
+
   /// No description provided for @saveAndContinue.
   ///
   /// In en, this message translates to:
@@ -1233,6 +1269,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quick Actions'**
   String get supplierDashboardQuickActions;
+
+  /// No description provided for @supplierDashboardOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Here’s an overview of your business'**
+  String get supplierDashboardOverviewSubtitle;
 
   /// No description provided for @supplierPendingOrders.
   ///

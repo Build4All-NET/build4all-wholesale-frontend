@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
@@ -41,7 +44,6 @@ class _CompleteSupplierProfileScreenState
   late final TextEditingController _phoneNumberController;
   late final TextEditingController _cityController;
   late final TextEditingController _descriptionController;
-  late final TextEditingController _logoUrlController;
   late final LocationApiService _locationApiService;
 
   List<CountryModel> _countries = [];
@@ -49,6 +51,7 @@ class _CompleteSupplierProfileScreenState
   CountryModel? _selectedCountry;
   RegionModel? _selectedRegion;
   String? _selectedBusinessType;
+  String? _selectedLogoImagePath;
 
   bool _isLoadingCountries = true;
   bool _isLoadingRegions = false;
@@ -90,7 +93,6 @@ class _CompleteSupplierProfileScreenState
     _phoneNumberController = TextEditingController();
     _cityController = TextEditingController();
     _descriptionController = TextEditingController();
-    _logoUrlController = TextEditingController();
     _locationApiService = LocationApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     );
@@ -104,7 +106,6 @@ class _CompleteSupplierProfileScreenState
     _phoneNumberController.dispose();
     _cityController.dispose();
     _descriptionController.dispose();
-    _logoUrlController.dispose();
     super.dispose();
   }
 
@@ -165,6 +166,26 @@ class _CompleteSupplierProfileScreenState
     return error.toString().replaceFirst('Exception: ', '');
   }
 
+
+  Future<void> _pickLogoImage() async {
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+
+    if (pickedImage == null) return;
+
+    setState(() {
+      _selectedLogoImagePath = pickedImage.path;
+    });
+  }
+
+  void _removeLogoImage() {
+    setState(() {
+      _selectedLogoImagePath = null;
+    });
+  }
+
   String? _validatePhone(PhoneNumber? phone) {
     final country = _selectedCountry;
     final rawLocalNumber = phone?.number.trim() ?? _phoneNumberController.text.trim();
@@ -216,6 +237,14 @@ class _CompleteSupplierProfileScreenState
         ? _completePhoneNumber.trim()
         : _phoneNumberController.text.trim();
 
+
+    if (_selectedLogoImagePath == null || _selectedLogoImagePath!.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.supplierLogoRequiredError)),
+      );
+      return;
+    }
+
     context.read<SupplierProfileCubit>().createSupplierProfile(
           userId: 0,
           companyName: _companyNameController.text.trim(),
@@ -226,7 +255,7 @@ class _CompleteSupplierProfileScreenState
           city: _cityController.text.trim(),
           businessType: _selectedBusinessType!,
           description: _descriptionController.text.trim(),
-          logoUrl: _logoUrlController.text.trim(),
+          logoImagePath: _selectedLogoImagePath!,
         );
   }
 
@@ -505,12 +534,12 @@ class _CompleteSupplierProfileScreenState
 
                               const SizedBox(height: 16),
 
-                              Text(l10n.logoUrl),
+                              Text(l10n.supplierLogo),
                               const SizedBox(height: 8),
-                              PrimaryTextField(
-                                controller: _logoUrlController,
-                                hintText: 'https://example.com/logo.png',
-                                keyboardType: TextInputType.url,
+                              _LogoUploadBox(
+                                imagePath: _selectedLogoImagePath,
+                                onPick: _pickLogoImage,
+                                onRemove: _removeLogoImage,
                               ),
 
                               const SizedBox(height: 28),
@@ -531,6 +560,107 @@ class _CompleteSupplierProfileScreenState
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+
+class _LogoUploadBox extends StatelessWidget {
+  final String? imagePath;
+  final VoidCallback onPick;
+  final VoidCallback onRemove;
+
+  const _LogoUploadBox({
+    required this.imagePath,
+    required this.onPick,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasImage = imagePath != null && imagePath!.trim().isNotEmpty;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return InkWell(
+      onTap: onPick,
+      borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppThemeTokens.inputFill,
+          borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+          border: Border.all(color: AppThemeTokens.border),
+        ),
+        child: hasImage
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        AppThemeTokens.radiusLarge,
+                      ),
+                      child: Image.file(
+                        File(imagePath!),
+                        height: 120,
+                        width: 120,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: onPick,
+                          icon: const Icon(Icons.edit_outlined),
+                          label: Text(context.l10n.changeLogo),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: onRemove,
+                        icon: const Icon(Icons.close_rounded),
+                        color: AppThemeTokens.error,
+                        tooltip: context.l10n.removeLogo,
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  CircleAvatar(
+                    radius: 32,
+                    backgroundColor: primaryColor.withValues(alpha: 0.10),
+                    child: Icon(
+                      Icons.cloud_upload_outlined,
+                      color: primaryColor,
+                      size: 34,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    context.l10n.uploadSupplierLogo,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: AppThemeTokens.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    context.l10n.tapToUploadLogoImage,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }

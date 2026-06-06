@@ -19,8 +19,12 @@ class SupplierProfileRepositoryImpl implements SupplierProfileRepository {
     required String city,
     required String businessType,
     required String description,
-    required String logoUrl,
+    required String logoImagePath,
   }) async {
+    final uploadedLogoUrl = await supplierProfileService.uploadSupplierLogo(
+      logoImagePath,
+    );
+
     final response = await supplierProfileService.createSupplierProfile(
       request: SupplierProfileRequestModel(
         companyName: companyName,
@@ -31,7 +35,7 @@ class SupplierProfileRepositoryImpl implements SupplierProfileRepository {
         city: city,
         businessType: businessType,
         description: description,
-        logoUrl: logoUrl,
+        logoUrl: uploadedLogoUrl,
       ),
     );
 

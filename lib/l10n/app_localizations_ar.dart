@@ -93,6 +93,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logoUrl => 'رابط الشعار';
 
   @override
+  String get supplierLogo => 'شعار المورد';
+
+  @override
+  String get uploadSupplierLogo => 'رفع شعار المورد';
+
+  @override
+  String get tapToUploadLogoImage => 'اضغط لاختيار صورة JPG أو PNG أو WEBP';
+
+  @override
+  String get changeLogo => 'تغيير الشعار';
+
+  @override
+  String get removeLogo => 'إزالة الشعار';
+
+  @override
+  String get supplierLogoRequiredError => 'يرجى رفع شعار المورد';
+
+  @override
   String get saveAndContinue => 'حفظ ومتابعة';
 
   @override
@@ -583,6 +601,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supplierDashboardQuickActions => 'إجراءات سريعة';
+
+  @override
+  String get supplierDashboardOverviewSubtitle =>
+      'هذه نظرة عامة على نشاطك التجاري';
 
   @override
   String get supplierPendingOrders => 'طلبات قيد الانتظار';

@@ -11,6 +11,6 @@ abstract class SupplierProfileRepository {
     required String city,
     required String businessType,
     required String description,
-    required String logoUrl,
+    required String logoImagePath,
   });
 }

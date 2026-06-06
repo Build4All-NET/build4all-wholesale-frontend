@@ -1118,6 +1118,7 @@ Future<void> init() async {
     () => SupplierDashboardBloc(
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
       getSupplierLowStockAlertsUseCase: sl<GetSupplierLowStockAlertsUseCase>(),
+      getSupplierProfileDisplayUseCase: sl<GetSupplierProfileDisplayUseCase>(),
     ),
   );
 
