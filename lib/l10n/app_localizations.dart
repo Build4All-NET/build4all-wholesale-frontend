@@ -6227,6 +6227,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone number was not updated because the verification code was not confirmed.'**
   String get phoneNotUpdatedCodeNotConfirmed;
+
+  /// No description provided for @paymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Methods'**
+  String get paymentMethods;
+
+  /// No description provided for @paymentMethodsHeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods offered to retailers'**
+  String get paymentMethodsHeaderTitle;
+
+  /// No description provided for @paymentMethodsHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the methods retailers can choose at checkout. Cash is fully ready; Stripe requires credentials setup first.'**
+  String get paymentMethodsHeaderSubtitle;
+
+  /// No description provided for @paymentMethodEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get paymentMethodEnabled;
+
+  /// No description provided for @paymentMethodDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get paymentMethodDisabled;
+
+  /// No description provided for @paymentMethodComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get paymentMethodComingSoon;
+
+  /// No description provided for @paymentMethodCredentialsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials required'**
+  String get paymentMethodCredentialsRequired;
+
+  /// No description provided for @paymentMethodsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment methods are available yet.'**
+  String get paymentMethodsEmpty;
+
+  /// No description provided for @paymentMethodConfigureStripe.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Stripe'**
+  String get paymentMethodConfigureStripe;
+
+  /// No description provided for @paymentMethodEditStripe.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Stripe Settings'**
+  String get paymentMethodEditStripe;
+
+  /// No description provided for @stripeConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Stripe'**
+  String get stripeConfigTitle;
+
+  /// No description provided for @stripeInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys are stored securely on the server and never exposed to retailers. Use test keys now and switch to live keys before going live.'**
+  String get stripeInfoBanner;
+
+  /// No description provided for @stripeEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Stripe for retailers'**
+  String get stripeEnableLabel;
+
+  /// No description provided for @stripeEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailers will be able to choose card payment via Stripe at checkout.'**
+  String get stripeEnableSubtitle;
+
+  /// No description provided for @stripeCredentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials'**
+  String get stripeCredentialsTitle;
+
+  /// No description provided for @stripeSecretKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret Key'**
+  String get stripeSecretKeyLabel;
+
+  /// No description provided for @stripeSecretKeyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-side key — never share this with anyone.'**
+  String get stripeSecretKeyHelper;
+
+  /// No description provided for @stripeSecretKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret key is required.'**
+  String get stripeSecretKeyRequired;
+
+  /// No description provided for @stripeSecretKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Must start with sk_'**
+  String get stripeSecretKeyInvalid;
+
+  /// No description provided for @stripePublishableKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishable Key'**
+  String get stripePublishableKeyLabel;
+
+  /// No description provided for @stripePublishableKeyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the app to complete the payment flow.'**
+  String get stripePublishableKeyHelper;
+
+  /// No description provided for @stripePublishableKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishable key is required.'**
+  String get stripePublishableKeyRequired;
+
+  /// No description provided for @stripePublishableKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Must start with pk_'**
+  String get stripePublishableKeyInvalid;
+
+  /// No description provided for @stripeWebhookSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook Secret (optional)'**
+  String get stripeWebhookSecretLabel;
+
+  /// No description provided for @stripeWebhookSecretHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Required later to receive payment confirmations from Stripe.'**
+  String get stripeWebhookSecretHelper;
+
+  /// No description provided for @stripeTestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get stripeTestButton;
+
+  /// No description provided for @stripeTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get stripeTesting;
+
+  /// No description provided for @stripeSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get stripeSaveButton;
+
+  /// No description provided for @stripeSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get stripeSaving;
+
+  /// No description provided for @stripeConfigSavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe configuration saved successfully.'**
+  String get stripeConfigSavedSuccessfully;
 }
 
 class _AppLocalizationsDelegate

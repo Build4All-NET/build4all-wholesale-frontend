@@ -3416,4 +3416,102 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get phoneNotUpdatedCodeNotConfirmed =>
       'Le numéro de téléphone n’a pas été mis à jour car le code de vérification n’a pas été confirmé.';
+
+  @override
+  String get paymentMethods => 'Méthodes de paiement';
+
+  @override
+  String get paymentMethodsHeaderTitle =>
+      'Méthodes disponibles pour les détaillants';
+
+  @override
+  String get paymentMethodsHeaderSubtitle =>
+      'Activez les méthodes que le détaillant peut choisir. Le cash est prêt; Stripe nécessite d\'abord la configuration des identifiants.';
+
+  @override
+  String get paymentMethodEnabled => 'Activé';
+
+  @override
+  String get paymentMethodDisabled => 'Désactivé';
+
+  @override
+  String get paymentMethodComingSoon => 'Plus tard';
+
+  @override
+  String get paymentMethodCredentialsRequired => 'Identifiants requis';
+
+  @override
+  String get paymentMethodsEmpty => 'Aucune méthode de paiement disponible.';
+
+  @override
+  String get paymentMethodConfigureStripe => 'Configurer Stripe';
+
+  @override
+  String get paymentMethodEditStripe => 'Modifier les paramètres Stripe';
+
+  @override
+  String get stripeConfigTitle => 'Configurer Stripe';
+
+  @override
+  String get stripeInfoBanner =>
+      'Les clés sont stockées en toute sécurité sur le serveur. Utilisez des clés de test maintenant et remplacez-les par des clés de production au lancement.';
+
+  @override
+  String get stripeEnableLabel => 'Activer Stripe pour les détaillants';
+
+  @override
+  String get stripeEnableSubtitle =>
+      'Les détaillants pourront choisir le paiement par carte via Stripe.';
+
+  @override
+  String get stripeCredentialsTitle => 'Identifiants';
+
+  @override
+  String get stripeSecretKeyLabel => 'Clé secrète';
+
+  @override
+  String get stripeSecretKeyHelper =>
+      'Clé côté serveur — ne la partagez jamais.';
+
+  @override
+  String get stripeSecretKeyRequired => 'La clé secrète est requise.';
+
+  @override
+  String get stripeSecretKeyInvalid => 'Doit commencer par sk_';
+
+  @override
+  String get stripePublishableKeyLabel => 'Clé publiable';
+
+  @override
+  String get stripePublishableKeyHelper =>
+      'Envoyée à l\'application pour finaliser le paiement.';
+
+  @override
+  String get stripePublishableKeyRequired => 'La clé publiable est requise.';
+
+  @override
+  String get stripePublishableKeyInvalid => 'Doit commencer par pk_';
+
+  @override
+  String get stripeWebhookSecretLabel => 'Secret webhook (optionnel)';
+
+  @override
+  String get stripeWebhookSecretHelper =>
+      'Requis ultérieurement pour recevoir les confirmations de paiement.';
+
+  @override
+  String get stripeTestButton => 'Tester';
+
+  @override
+  String get stripeTesting => 'Test en cours...';
+
+  @override
+  String get stripeSaveButton => 'Enregistrer';
+
+  @override
+  String get stripeSaving => 'Enregistrement...';
+
+  @override
+  String get stripeConfigSavedSuccessfully =>
+      'Configuration Stripe enregistrée avec succès.';
 }

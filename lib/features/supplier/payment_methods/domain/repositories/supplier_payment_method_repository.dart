@@ -1,4 +1,5 @@
 import '../entities/supplier_payment_method_entity.dart';
+import '../entities/supplier_payment_method_test_result_entity.dart';
 
 abstract class SupplierPaymentMethodRepository {
   Future<List<SupplierPaymentMethodEntity>> getPaymentMethods();
@@ -9,5 +10,7 @@ abstract class SupplierPaymentMethodRepository {
     Map<String, dynamic> configValues,
   });
 
-  Future<SupplierPaymentMethodEntity> testPaymentMethod(String methodCode);
+  Future<SupplierPaymentMethodTestResultEntity> testPaymentMethod({
+    required String methodCode,
+  });
 }

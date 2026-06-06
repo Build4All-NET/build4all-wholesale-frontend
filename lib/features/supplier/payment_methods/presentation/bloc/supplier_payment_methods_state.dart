@@ -3,7 +3,19 @@ import '../../domain/entities/supplier_payment_method_entity.dart';
 class SupplierPaymentMethodsState {
   final bool isLoading;
   final List<SupplierPaymentMethodEntity> methods;
+
+  /// Code of the method currently being saved/toggled.
   final String? savingMethodCode;
+
+  /// Code of the method currently being tested.
+  final String? testingMethodCode;
+
+  /// Last test result message (success or failure).
+  final String? testResultMessage;
+
+  /// Whether the last test passed.
+  final bool? testResultSuccess;
+
   final String? errorMessage;
   final String? successMessage;
 
@@ -11,6 +23,9 @@ class SupplierPaymentMethodsState {
     required this.isLoading,
     required this.methods,
     required this.savingMethodCode,
+    required this.testingMethodCode,
+    required this.testResultMessage,
+    required this.testResultSuccess,
     required this.errorMessage,
     required this.successMessage,
   });
@@ -20,6 +35,9 @@ class SupplierPaymentMethodsState {
       isLoading: false,
       methods: [],
       savingMethodCode: null,
+      testingMethodCode: null,
+      testResultMessage: null,
+      testResultSuccess: null,
       errorMessage: null,
       successMessage: null,
     );
@@ -30,6 +48,11 @@ class SupplierPaymentMethodsState {
     List<SupplierPaymentMethodEntity>? methods,
     String? savingMethodCode,
     bool clearSavingMethodCode = false,
+    String? testingMethodCode,
+    bool clearTestingMethodCode = false,
+    String? testResultMessage,
+    bool clearTestResult = false,
+    bool? testResultSuccess,
     String? errorMessage,
     bool clearErrorMessage = false,
     String? successMessage,
@@ -41,10 +64,19 @@ class SupplierPaymentMethodsState {
       savingMethodCode: clearSavingMethodCode
           ? null
           : savingMethodCode ?? this.savingMethodCode,
-      errorMessage: clearErrorMessage ? null : errorMessage ?? this.errorMessage,
-      successMessage: clearSuccessMessage
+      testingMethodCode: clearTestingMethodCode
           ? null
-          : successMessage ?? this.successMessage,
+          : testingMethodCode ?? this.testingMethodCode,
+      testResultMessage: clearTestResult
+          ? null
+          : testResultMessage ?? this.testResultMessage,
+      testResultSuccess: clearTestResult
+          ? null
+          : testResultSuccess ?? this.testResultSuccess,
+      errorMessage:
+          clearErrorMessage ? null : errorMessage ?? this.errorMessage,
+      successMessage:
+          clearSuccessMessage ? null : successMessage ?? this.successMessage,
     );
   }
 }

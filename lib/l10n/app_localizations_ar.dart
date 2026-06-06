@@ -3327,4 +3327,98 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get phoneNotUpdatedCodeNotConfirmed =>
       'لم يتم تحديث رقم الهاتف لأن رمز التحقق لم يتم تأكيده.';
+
+  @override
+  String get paymentMethods => 'طرق الدفع';
+
+  @override
+  String get paymentMethodsHeaderTitle => 'طرق الدفع المعروضة للمتاجر';
+
+  @override
+  String get paymentMethodsHeaderSubtitle =>
+      'فعّلي طرق الدفع التي يمكن للمتجر اختيارها عند الطلب. الكاش جاهز بالكامل، و Stripe يحتاج إعداد بيانات الاعتماد أولاً.';
+
+  @override
+  String get paymentMethodEnabled => 'مفعّل';
+
+  @override
+  String get paymentMethodDisabled => 'غير مفعّل';
+
+  @override
+  String get paymentMethodComingSoon => 'لاحقًا';
+
+  @override
+  String get paymentMethodCredentialsRequired => 'تحتاج بيانات';
+
+  @override
+  String get paymentMethodsEmpty => 'لا توجد طرق دفع متاحة حاليًا.';
+
+  @override
+  String get paymentMethodConfigureStripe => 'إعداد Stripe';
+
+  @override
+  String get paymentMethodEditStripe => 'تعديل إعدادات Stripe';
+
+  @override
+  String get stripeConfigTitle => 'إعداد Stripe';
+
+  @override
+  String get stripeInfoBanner =>
+      'المفاتيح تُحفظ بشكل آمن في الخادم ولا تُشاركها مع أحد. استخدمي مفاتيح الاختبار (test) الآن وبدّليها بمفاتيح الإنتاج عند الإطلاق الفعلي.';
+
+  @override
+  String get stripeEnableLabel => 'تفعيل Stripe للمتاجر';
+
+  @override
+  String get stripeEnableSubtitle =>
+      'عند التفعيل يمكن للمتاجر اختيار الدفع بالبطاقة عبر Stripe عند الطلب.';
+
+  @override
+  String get stripeCredentialsTitle => 'بيانات الاعتماد';
+
+  @override
+  String get stripeSecretKeyLabel => 'المفتاح السري';
+
+  @override
+  String get stripeSecretKeyHelper => 'مفتاح الخادم — لا تشاركيه مع أحد.';
+
+  @override
+  String get stripeSecretKeyRequired => 'المفتاح السري مطلوب.';
+
+  @override
+  String get stripeSecretKeyInvalid => 'يجب أن يبدأ بـ sk_';
+
+  @override
+  String get stripePublishableKeyLabel => 'المفتاح العام';
+
+  @override
+  String get stripePublishableKeyHelper => 'يُرسل للتطبيق لإتمام عملية الدفع.';
+
+  @override
+  String get stripePublishableKeyRequired => 'المفتاح العام مطلوب.';
+
+  @override
+  String get stripePublishableKeyInvalid => 'يجب أن يبدأ بـ pk_';
+
+  @override
+  String get stripeWebhookSecretLabel => 'Webhook Secret (اختياري)';
+
+  @override
+  String get stripeWebhookSecretHelper =>
+      'مطلوب لاحقًا لاستقبال تأكيدات الدفع من Stripe.';
+
+  @override
+  String get stripeTestButton => 'اختبار';
+
+  @override
+  String get stripeTesting => 'جاري الاختبار...';
+
+  @override
+  String get stripeSaveButton => 'حفظ الإعدادات';
+
+  @override
+  String get stripeSaving => 'جاري الحفظ...';
+
+  @override
+  String get stripeConfigSavedSuccessfully => 'تم حفظ إعدادات Stripe بنجاح.';
 }
