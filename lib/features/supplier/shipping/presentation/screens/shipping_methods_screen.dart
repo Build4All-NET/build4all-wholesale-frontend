@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -115,13 +116,16 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
 
     return BlocListener<ShippingMethodsBloc, ShippingMethodsState>(
       listener: (context, state) {
-        final message = state.successMessage ?? state.errorMessage;
+        if (state.errorMessage != null) {
+          AppToast.error(context, state.errorMessage!);
+          context.read<ShippingMethodsBloc>().add(
+                const ClearShippingMethodMessageRequested(),
+              );
+          return;
+        }
 
-        if (message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-
+        if (state.successMessage != null) {
+          AppToast.success(context, state.successMessage!);
           context.read<ShippingMethodsBloc>().add(
                 const ClearShippingMethodMessageRequested(),
               );

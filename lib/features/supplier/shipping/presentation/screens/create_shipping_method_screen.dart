@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -394,17 +395,13 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
   bool _validateLocation(BuildContext context) {
     if (_selectedCountryId == null || _selectedCountryId!.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectACountry)),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectACountry);
       return false;
     }
 
     if (_selectedCountryIsLebanon &&
         (_selectedRegionId == null || _selectedRegionId!.trim().isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectARegionForLebanon)),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectARegionForLebanon);
       return false;
     }
 
@@ -418,9 +415,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
 
     if (_branchScope == ShippingBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch)),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectAtLeastOneBranch);
       return;
     }
 
@@ -500,19 +495,16 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     return BlocListener<ShippingMethodsBloc, ShippingMethodsState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
 
           context.read<ShippingMethodsBloc>().add(
                 const ClearShippingMethodMessageRequested(),
               );
+          return;
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
+          AppToast.success(context, state.successMessage!);
 
           context.read<ShippingMethodsBloc>().add(
                 const ClearShippingMethodMessageRequested(),
@@ -909,8 +901,9 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                               ),
                               Switch(
                                 value: _active,
-                                thumbColor: WidgetStateProperty.all(Colors.white),
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
+                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1083,7 +1076,7 @@ class _MethodTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingMethodType>(
-      value: value,
+      initialValue: value,
       items: ShippingMethodType.values
           .map(
             (type) => DropdownMenuItem<ShippingMethodType>(
@@ -1115,7 +1108,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<ShippingBranchScope>(
-      value: value,
+      initialValue: value,
       items: ShippingBranchScope.values
           .map(
             (scope) => DropdownMenuItem<ShippingBranchScope>(

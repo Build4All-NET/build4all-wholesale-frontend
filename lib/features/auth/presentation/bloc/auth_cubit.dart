@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/app_error_mapper.dart';
 import '../../domain/entities/login_account_type.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
@@ -54,7 +55,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
           loginSuccess: false,
         ),
       );
@@ -107,7 +108,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
           signupSuccess: false,
         ),
       );
@@ -140,7 +141,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
           forgotPasswordSuccess: false,
         ),
       );
@@ -181,7 +182,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
           resetPasswordSuccess: false,
         ),
       );
