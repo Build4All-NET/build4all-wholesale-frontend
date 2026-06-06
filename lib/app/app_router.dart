@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
+
 import '../features/auth/presentation/screens/reset_password_screen.dart';
 import '../features/auth/presentation/screens/retailer_signup_screen.dart';
 import '../features/auth/presentation/screens/retailer_verify_code_screen.dart';
@@ -154,6 +155,13 @@ class AppRouter {
       GoRoute(
         path: '/supplier-profile',
         builder: (context, state) => SupplierProfileDisplayScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-notifications',
+        builder: (context, state) => SupplierComingSoonScreen(
+          title: AppLocalizations.of(context)!.notifications,
+          icon: Icons.notifications_none_rounded,
+        ),
       ),
       GoRoute(
         path: '/supplier-products',

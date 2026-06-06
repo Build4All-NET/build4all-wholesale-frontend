@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 import 'package:flutter/material.dart';
+
 import '../../../../../core/config/app_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/product_entity.dart';
@@ -21,124 +22,149 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final totalStock = product.totalStock;
 
     return Container(
-      margin: EdgeInsets.only(bottom: 18),
-      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppThemeTokens.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 14,
-            offset: Offset(0, 6),
+            color: Colors.black.withOpacity(0.035),
+            blurRadius: 12,
+            offset: Offset(0, 5),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _ProductImagePlaceholder(
-            primaryColor: primaryColor,
-            imagePath: product.imagePath,
-          ),
-          SizedBox(height: 16),
-          Text(
-            product.name,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: AppThemeTokens.textPrimary,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ProductImage(
+              primaryColor: primaryColor,
+              imagePath: product.imagePath,
+              status: product.status,
             ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            product.subCategoryName == null ||
-                    product.subCategoryName!.trim().isEmpty
-                ? product.categoryName
-                : '${product.categoryName} • ${product.subCategoryName}',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: AppThemeTokens.textSecondary,
-            ),
-          ),
-          SizedBox(height: 14),
-          Row(
-            children: [
-              Text(
-                '\$${product.price.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: primaryColor,
-                ),
-              ),
-              Spacer(),
-              _StatusBadge(status: product.status),
-            ],
-          ),
-          SizedBox(height: 10),
-          _InventoryStockBadge(totalStock: totalStock),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: onEdit,
-                  icon: Icon(Icons.edit_outlined, size: 20),
-                  label: Text(
-                    context.l10n.editButton,
-                    style: TextStyle(fontWeight: FontWeight.w800),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppThemeTokens.textPrimary,
-                    side: BorderSide(color: AppThemeTokens.border),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppThemeTokens.radiusSmall,
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(9, 7, 9, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.05,
+                        fontWeight: FontWeight.w900,
+                        color: AppThemeTokens.textPrimary,
                       ),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 13),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              OutlinedButton(
-                onPressed: onDelete,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppThemeTokens.error,
-                  side: BorderSide(color: AppThemeTokens.border),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppThemeTokens.radiusSmall,
+                    SizedBox(height: 4),
+                    Text(
+                      _categoryText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        height: 1.05,
+                        fontWeight: FontWeight.w700,
+                        color: AppThemeTokens.textSecondary,
+                      ),
                     ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 13,
-                    horizontal: 14,
-                  ),
+                    SizedBox(height: 6),
+                    Text(
+                      '\$${product.price.toStringAsFixed(2)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                        height: 1.05,
+                        fontWeight: FontWeight.w900,
+                        color: primaryColor,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    _InventoryStockBadge(totalStock: product.totalStock),
+                    Spacer(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 31,
+                            child: OutlinedButton.icon(
+                              onPressed: onEdit,
+                              icon: Icon(Icons.edit_outlined, size: 14),
+                              label: Text(
+                                context.l10n.editButton,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppThemeTokens.textPrimary,
+                                side: BorderSide(color: AppThemeTokens.border),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 6),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        SizedBox(
+                          width: 34,
+                          height: 31,
+                          child: OutlinedButton(
+                            onPressed: onDelete,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppThemeTokens.error,
+                              side: BorderSide(color: AppThemeTokens.border),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(11),
+                              ),
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Icon(Icons.delete_outline, size: 17),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                child: Icon(Icons.delete_outline, size: 22),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  String get _categoryText {
+    final subCategory = product.subCategoryName?.trim();
+    if (subCategory == null || subCategory.isEmpty) {
+      return product.categoryName;
+    }
+    return '${product.categoryName} • $subCategory';
+  }
 }
 
-class _ProductImagePlaceholder extends StatelessWidget {
+class _ProductImage extends StatelessWidget {
   final Color primaryColor;
   final String? imagePath;
+  final ProductStatus status;
 
-  _ProductImagePlaceholder({
+  _ProductImage({
     required this.primaryColor,
     required this.imagePath,
+    required this.status,
   });
 
   @override
@@ -146,50 +172,49 @@ class _ProductImagePlaceholder extends StatelessWidget {
     final resolvedImageUrl = _resolveImageUrl(imagePath);
     final localFile = _resolveLocalFile(imagePath);
 
-    return Container(
-      height: 245,
+    return SizedBox(
+      height: 108,
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppThemeTokens.inputFill,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusMedium),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
-      child: localFile != null
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(
-                AppThemeTokens.radiusMedium,
-              ),
-              child: Image.file(
-                localFile,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            )
-          : resolvedImageUrl != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                    AppThemeTokens.radiusMedium,
-                  ),
-                  child: Image.network(
-                    resolvedImageUrl,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(color: AppThemeTokens.inputFill),
+            child: localFile != null
+                ? Image.file(
+                    localFile,
                     width: double.infinity,
+                    height: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _ImageFallbackIcon(primaryColor: primaryColor);
-                    },
-                  ),
-                )
-              : _ImageFallbackIcon(primaryColor: primaryColor),
+                    alignment: Alignment.center,
+                  )
+                : resolvedImageUrl != null
+                    ? Image.network(
+                        resolvedImageUrl,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.center,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _ImageFallbackIcon(primaryColor: primaryColor);
+                        },
+                      )
+                    : _ImageFallbackIcon(primaryColor: primaryColor),
+          ),
+          PositionedDirectional(
+            top: 7,
+            end: 7,
+            child: _StatusBadge(status: status),
+          ),
+        ],
+      ),
     );
   }
 
   File? _resolveLocalFile(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return null;
-    }
+    if (value == null || value.trim().isEmpty) return null;
 
     final normalized = value.trim();
-
     if (normalized.startsWith('/uploadsPublic/') ||
         normalized.startsWith('http://') ||
         normalized.startsWith('https://')) {
@@ -197,17 +222,13 @@ class _ProductImagePlaceholder extends StatelessWidget {
     }
 
     final file = File(normalized);
-
     return file.existsSync() ? file : null;
   }
 
   String? _resolveImageUrl(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return null;
-    }
+    if (value == null || value.trim().isEmpty) return null;
 
     final normalized = value.trim();
-
     if (normalized.startsWith('http://') ||
         normalized.startsWith('https://')) {
       return normalized;
@@ -222,11 +243,9 @@ class _ProductImagePlaceholder extends StatelessWidget {
 
   String _projectHostWithoutApi() {
     final baseUrl = AppConfig.projectApiBaseUrl;
-
     if (baseUrl.endsWith('/api')) {
       return baseUrl.substring(0, baseUrl.length - 4);
     }
-
     return baseUrl;
   }
 }
@@ -234,27 +253,24 @@ class _ProductImagePlaceholder extends StatelessWidget {
 class _ImageFallbackIcon extends StatelessWidget {
   final Color primaryColor;
 
-  _ImageFallbackIcon({
-    required this.primaryColor,
-  });
+  _ImageFallbackIcon({required this.primaryColor});
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
-      Icons.inventory_2_outlined,
-      size: 72,
-      color: primaryColor.withOpacity(0.75),
+    return Center(
+      child: Icon(
+        Icons.inventory_2_outlined,
+        size: 38,
+        color: primaryColor.withOpacity(0.68),
+      ),
     );
   }
 }
 
-
 class _InventoryStockBadge extends StatelessWidget {
   final int totalStock;
 
-  _InventoryStockBadge({
-    required this.totalStock,
-  });
+  _InventoryStockBadge({required this.totalStock});
 
   @override
   Widget build(BuildContext context) {
@@ -264,20 +280,23 @@ class _InventoryStockBadge extends StatelessWidget {
         : Theme.of(context).colorScheme.primary;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: color.withOpacity(0.16),
-        ),
+        border: Border.all(color: color.withOpacity(0.16)),
       ),
       child: Text(
         isOutOfStock
             ? context.l10n.noBranchStockAssigned
             : context.l10n.totalBranchStockLabel(totalStock),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: 9.3,
+          height: 1.0,
           fontWeight: FontWeight.w900,
           color: color,
         ),
@@ -289,9 +308,7 @@ class _InventoryStockBadge extends StatelessWidget {
 class _StatusBadge extends StatelessWidget {
   final ProductStatus status;
 
-  _StatusBadge({
-    required this.status,
-  });
+  _StatusBadge({required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -302,15 +319,19 @@ class _StatusBadge extends StatelessWidget {
         : AppThemeTokens.error;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.10),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withOpacity(0.28)),
       ),
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: 9.5,
+          height: 1,
           fontWeight: FontWeight.w900,
           color: color,
         ),

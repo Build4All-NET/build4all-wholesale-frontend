@@ -28,6 +28,12 @@
   "companyAddress": "Company Address",
   "description": "Description",
   "logoUrl": "Logo URL",
+  "supplierLogo": "Supplier Logo",
+  "uploadSupplierLogo": "Upload supplier logo",
+  "tapToUploadLogoImage": "Tap to choose JPG, PNG, or WEBP image",
+  "changeLogo": "Change logo",
+  "removeLogo": "Remove logo",
+  "supplierLogoRequiredError": "Please upload your supplier logo",
   "saveAndContinue": "Save and Continue",
   "supplierDashboard": "Supplier Dashboard",
   "retailerDashboard": "Retailer Dashboard",
@@ -189,6 +195,7 @@
   "supplierDashboardSettingsTooltip": "Settings",
   "supplierDashboardLowStockAlerts": "Low Stock Alerts",
   "supplierDashboardQuickActions": "Quick Actions",
+  "supplierDashboardOverviewSubtitle": "Here’s an overview of your business",
   "supplierPendingOrders": "Pending Orders",
   "supplierActiveOrders": "Active Orders",
   "supplierShippedOrders": "Shipped Orders",
@@ -1301,17 +1308,15 @@
   "paymentCard": "Card payment",
   "paymentBankTransfer": "Bank transfer",
   "verifyPhoneChange": "Verify phone number change",
-"enterStaticPhoneCode": "Enter the verification code for {phoneNumber}. Demo code: 123456",
-"@enterStaticPhoneCode": {
-  "placeholders": {
-    "phoneNumber": {
-      "type": "String"
+  "enterStaticPhoneCode": "Enter the verification code sent to {phoneNumber}",
+  "@enterStaticPhoneCode": {
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
     }
-  }
-},
-"staticPhoneCodeSent": "Phone verification code sent. Demo code: 123456",
-"invalidPhoneVerificationCode": "Invalid phone verification code.",
-"phoneNotUpdatedCodeNotConfirmed": "Phone number was not updated because the verification code was not confirmed.",
-"enterStaticPhoneCode": "Enter the verification code sent to {phoneNumber}",
-"staticPhoneCodeSent": "Phone verification code sent"
+  },
+  "staticPhoneCodeSent": "Phone verification code sent",
+  "invalidPhoneVerificationCode": "Invalid phone verification code.",
+  "phoneNotUpdatedCodeNotConfirmed": "Phone number was not updated because the verification code was not confirmed."
 }

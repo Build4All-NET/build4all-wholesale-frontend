@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../core/theme/app_theme_tokens.dart';
 
@@ -22,40 +21,53 @@ class SupplierDashboardStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(18),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
         border: Border.all(color: AppThemeTokens.border),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF0F172A).withOpacity(0.04),
+            blurRadius: 18,
+            offset: Offset(0, 8),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: iconBackgroundColor,
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: iconColor, size: 24),
+            child: Icon(icon, color: iconColor, size: 21),
           ),
-          Spacer(),
+          SizedBox(width: 5),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11.5,
+                height: 1.12,
+                fontWeight: FontWeight.w800,
+                color: AppThemeTokens.textPrimary,
+              ),
+            ),
+          ),
+          SizedBox(width: 5),
           Text(
             value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 18,
               fontWeight: FontWeight.w900,
-              color: AppThemeTokens.textPrimary,
-            ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppThemeTokens.textPrimary,
+              color: iconColor,
             ),
           ),
         ],
