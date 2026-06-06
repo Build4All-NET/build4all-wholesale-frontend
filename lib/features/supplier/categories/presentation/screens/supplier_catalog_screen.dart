@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -150,9 +151,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         categories.where((category) => category.isActive).toList();
 
     if (activeCategories.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.createActiveCategoryFirst)),
-      );
+      AppToast.error(context, context.l10n.createActiveCategoryFirst);
       return;
     }
 
@@ -178,7 +177,7 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      value: selectedCategoryId,
+                      initialValue: selectedCategoryId,
                       items: activeCategories.map((category) {
                         return DropdownMenuItem<String>(
                           value: category.id,
@@ -438,15 +437,14 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         },
         listener: (context, state) {
           if (state.error != null && state.error!.trim().isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error!)),
-            );
+            AppToast.error(context, state.error!);
           }
 
           if (state.successMessage != null &&
               state.successMessage!.trim().isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(_localizedSuccessMessage(context, state.successMessage!))),
+            AppToast.success(
+              context,
+              _localizedSuccessMessage(context, state.successMessage!),
             );
           }
         },
