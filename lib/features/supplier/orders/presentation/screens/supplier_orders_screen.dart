@@ -11,6 +11,7 @@ import '../bloc/supplier_orders/supplier_orders_bloc.dart';
 import '../bloc/supplier_orders/supplier_orders_event.dart';
 import '../bloc/supplier_orders/supplier_orders_state.dart';
 import '../widgets/supplier_order_card.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 class SupplierOrdersScreen extends StatelessWidget {
   SupplierOrdersScreen({super.key});
@@ -75,9 +76,7 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
             current.errorMessage != null;
       },
       listener: (context, state) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.errorMessage!)),
-        );
+        AppToast.error(context, state.errorMessage!);
       },
       child: Scaffold(
         backgroundColor: AppThemeTokens.background,

@@ -7,6 +7,7 @@ import '../../../../payment/domain/usecases/get_supplier_order_payment_usecase.d
 import '../../../../payment/domain/usecases/mark_supplier_cash_payment_paid_usecase.dart';
 import 'supplier_order_details_event.dart';
 import 'supplier_order_details_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierOrderDetailsBloc
     extends Bloc<SupplierOrderDetailsEvent, SupplierOrderDetailsState> {
@@ -61,7 +62,7 @@ class SupplierOrderDetailsBloc
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
           clearSuccess: true,
         ),
       );
@@ -104,7 +105,7 @@ class SupplierOrderDetailsBloc
       emit(
         state.copyWith(
           isUpdating: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
           clearSuccess: true,
         ),
       );
@@ -152,7 +153,7 @@ class SupplierOrderDetailsBloc
       emit(
         state.copyWith(
           isPaymentUpdating: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
           clearSuccess: true,
         ),
       );
@@ -188,7 +189,7 @@ class SupplierOrderDetailsBloc
         state.copyWith(
           isPaymentLoading: false,
           errorMessage: showErrors
-              ? e.toString().replaceFirst('Exception: ', '')
+              ? AppErrorMapper.toMessage(e)
               : null,
           clearError: !showErrors,
           clearSuccess: true,
