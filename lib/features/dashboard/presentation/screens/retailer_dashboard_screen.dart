@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
@@ -100,19 +101,13 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     return BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          AppToast.error(context, state.errorMessage!);
           context.read<RetailerHomeCubit>().clearMessages();
           return;
         }
 
         if (state.successMessage == 'PRODUCT_ADDED_TO_CART') {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.productAddedToCart)),
-          );
+          AppToast.success(context, context.l10n.productAddedToCart);
           context.read<RetailerHomeCubit>().clearMessages();
         }
       },

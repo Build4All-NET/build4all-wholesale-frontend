@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -132,19 +133,14 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
           },
           listener: (context, state) {
             if (state.error != null && state.error!.trim().isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error!)),
-              );
+              AppToast.error(context, state.error!);
             }
 
             if (state.successMessage != null &&
                 state.successMessage!.trim().isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _localizedSuccessMessage(context, state.successMessage!),
-                  ),
-                ),
+              AppToast.success(
+                context,
+                _localizedSuccessMessage(context, state.successMessage!),
               );
             }
           },

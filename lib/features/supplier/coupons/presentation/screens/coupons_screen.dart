@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -111,13 +112,16 @@ class _CouponsViewState extends State<_CouponsView> {
 
     return BlocListener<CouponsBloc, CouponsState>(
       listener: (context, state) {
-        final message = state.successMessage ?? state.errorMessage;
+        if (state.errorMessage != null) {
+          AppToast.error(context, state.errorMessage!);
+          context.read<CouponsBloc>().add(
+                const ClearCouponMessageRequested(),
+              );
+          return;
+        }
 
-        if (message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-
+        if (state.successMessage != null) {
+          AppToast.success(context, state.successMessage!);
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );

@@ -1,6 +1,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/app_error_mapper.dart';
 import '../../domain/usecases/create_shipping_method_usecase.dart';
 import '../../domain/usecases/delete_shipping_method_usecase.dart';
 import '../../domain/usecases/get_shipping_methods_usecase.dart';
@@ -56,7 +57,7 @@ class ShippingMethodsBloc
       emit(
         state.copyWith(
           loading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -87,7 +88,7 @@ class ShippingMethodsBloc
       emit(
         state.copyWith(
           saving: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -118,7 +119,7 @@ class ShippingMethodsBloc
       emit(
         state.copyWith(
           saving: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -154,7 +155,7 @@ class ShippingMethodsBloc
       emit(
         state.copyWith(
           deleting: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

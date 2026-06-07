@@ -12,6 +12,7 @@ import '../bloc/supplier_order_details/supplier_order_details_event.dart';
 import '../bloc/supplier_order_details/supplier_order_details_state.dart';
 import '../widgets/order_status_badge.dart';
 import '../../../payment/presentation/widgets/order_payment_section.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 
 String _localizedSuccessMessage(
@@ -104,18 +105,13 @@ class _SupplierOrderDetailsView extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _localizedSuccessMessage(context, state.successMessage!, state),
-              ),
-            ),
+          AppToast.success(
+            context,
+            _localizedSuccessMessage(context, state.successMessage!, state),
           );
         }
       },

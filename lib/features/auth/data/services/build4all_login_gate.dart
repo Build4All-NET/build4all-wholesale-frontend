@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../core/config/app_config.dart';
+import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_config.dart';
+import '../../../../core/utils/app_error_mapper.dart';
 import '../../domain/entities/login_account_type.dart';
 
 class Build4AllLoginGateResult {
@@ -28,15 +30,15 @@ class Build4AllLoginGateResult {
 
 class Build4AllLoginGate {
   Build4AllLoginGate()
-    : _dio = Dio(
-        BaseOptions(
-          baseUrl: AppConfig.apiBaseUrl,
-          connectTimeout: const Duration(seconds: 15),
-          receiveTimeout: const Duration(seconds: 20),
-          sendTimeout: const Duration(seconds: 15),
-          headers: const {'Content-Type': 'application/json'},
-        ),
-      );
+      : _dio = Dio(
+          BaseOptions(
+            baseUrl: AppConfig.apiBaseUrl,
+            connectTimeout: const Duration(seconds: 15),
+            receiveTimeout: const Duration(seconds: 20),
+            sendTimeout: const Duration(seconds: 15),
+            headers: const {'Content-Type': 'application/json'},
+          ),
+        );
 
   final Dio _dio;
 
@@ -114,7 +116,15 @@ class Build4AllLoginGate {
     required Map<String, dynamic> data,
   }) async {
     try {
-      debugPrint('LOGIN GATE TRY $label endpoint=$endpoint data=$data');
+      final safeData = Map<String, dynamic>.from(data);
+      if (safeData.containsKey('password')) {
+        safeData['password'] = '***';
+      }
+
+      debugPrint(
+        'LOGIN GATE TRY $label url=${AppConfig.apiBaseUrl}$endpoint '
+        'data=$safeData',
+      );
 
       final response = await _dio.post(endpoint, data: data);
 
@@ -165,15 +175,59 @@ class Build4AllLoginGate {
       return true;
     } on DioException catch (e) {
       debugPrint(
-        'LOGIN GATE FAILED $label endpoint=$endpoint '
+        'LOGIN GATE FAILED $label url=${AppConfig.apiBaseUrl}$endpoint '
+        'type=${e.type} '
         'status=${e.response?.statusCode} '
         'data=${e.response?.data}',
       );
 
-      return false;
+      if (_isCredentialFailure(e)) {
+        return false;
+      }
+
+      throw AppException(
+        AppErrorMapper.toMessage(e),
+        original: e,
+      );
     } catch (e) {
-      debugPrint('LOGIN GATE ERROR $label endpoint=$endpoint error=$e');
-      return false;
+      debugPrint(
+        'LOGIN GATE ERROR $label url=${AppConfig.apiBaseUrl}$endpoint '
+        'error=$e',
+      );
+
+      throw AppException(
+        AppErrorMapper.toMessage(e),
+        original: e,
+      );
     }
   }
+
+  bool _isCredentialFailure(DioException error) {
+  final statusCode = error.response?.statusCode;
+
+  // These are account-specific login failures.
+  // They should not be treated like server/network errors.
+  // Example: if supplier login works but retailer login is locked,
+  // we should still allow supplier login to continue.
+  if (statusCode == 400 ||
+      statusCode == 401 ||
+      statusCode == 403 ||
+      statusCode == 423) {
+    return true;
+  }
+
+  final data = error.response?.data;
+  final dataText = data?.toString().toLowerCase() ?? '';
+
+  return dataText.contains('invalid credentials') ||
+      dataText.contains('bad credentials') ||
+      dataText.contains('wrong password') ||
+      dataText.contains('invalid email') ||
+      dataText.contains('user not found') ||
+      dataText.contains('admin not found') ||
+      dataText.contains('account not found') ||
+      dataText.contains('login_locked') ||
+      dataText.contains('too many failed login attempts') ||
+      dataText.contains('too many attempts');
+}
 }

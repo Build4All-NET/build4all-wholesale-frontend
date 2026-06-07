@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -401,9 +402,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
 
   bool _validateLocation(BuildContext context) {
     if (_selectedCountryId == null || _selectedCountryId!.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectACountry)),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectACountry);
       return false;
     }
 
@@ -464,19 +463,16 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
     return BlocListener<TaxRulesBloc, TaxRulesState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
 
           context.read<TaxRulesBloc>().add(
                 const ClearTaxRuleMessageRequested(),
               );
+          return;
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
+          AppToast.success(context, state.successMessage!);
 
           context.read<TaxRulesBloc>().add(
                 const ClearTaxRuleMessageRequested(),

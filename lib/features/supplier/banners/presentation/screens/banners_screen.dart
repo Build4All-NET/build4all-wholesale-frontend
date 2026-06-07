@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -112,13 +113,16 @@ class _BannersViewState extends State<_BannersView> {
 
     return BlocListener<BannersBloc, BannersState>(
       listener: (context, state) {
-        final message = state.successMessage ?? state.errorMessage;
+        if (state.errorMessage != null) {
+          AppToast.error(context, state.errorMessage!);
+          context.read<BannersBloc>().add(
+                const ClearBannerMessageRequested(),
+              );
+          return;
+        }
 
-        if (message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-
+        if (state.successMessage != null) {
+          AppToast.success(context, state.successMessage!);
           context.read<BannersBloc>().add(
                 const ClearBannerMessageRequested(),
               );

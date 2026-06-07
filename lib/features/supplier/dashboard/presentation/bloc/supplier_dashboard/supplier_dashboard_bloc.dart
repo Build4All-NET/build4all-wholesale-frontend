@@ -5,6 +5,7 @@ import '../../../../orders/domain/usecases/get_supplier_orders_usecase.dart';
 import '../../../../profile/domain/usecases/get_supplier_profile_display_usecase.dart';
 import 'supplier_dashboard_event.dart';
 import 'supplier_dashboard_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierDashboardBloc
     extends Bloc<SupplierDashboardEvent, SupplierDashboardState> {
@@ -74,7 +75,7 @@ class SupplierDashboardBloc
         state.copyWith(
           isLoading: false,
           isRefreshing: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

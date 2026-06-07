@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../core/config/app_config.dart';
-import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../categories/domain/entities/supplier_category_entity.dart';
@@ -275,23 +276,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final quantity = int.tryParse(value);
 
     if (_initialStockBranches.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.createBranchFirst)),
-      );
+      AppToast.error(context, context.l10n.createBranchFirst);
       return;
     }
 
     if (quantity == null || quantity < 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a valid stock quantity.')),
-      );
+      AppToast.error(context, 'Please enter a valid stock quantity.');
       return;
     }
 
     if (quantity > 1000000) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Stock quantity is too high.')),
-      );
+      AppToast.error(context, 'Stock quantity is too high.');
       return;
     }
 
@@ -323,19 +318,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
       final quantity = int.tryParse(value);
 
       if (quantity == null || quantity < 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Please enter a valid stock quantity for ${branch.name}.'),
-          ),
+        AppToast.error(
+          context,
+          'Please enter a valid stock quantity for ${branch.name}.',
         );
         return null;
       }
 
       if (quantity > 1000000) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Stock quantity is too high for ${branch.name}.'),
-          ),
+        AppToast.error(
+          context,
+          'Stock quantity is too high for ${branch.name}.',
         );
         return null;
       }
@@ -471,9 +464,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isCreatingCategory = false;
       });
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.categoryAddedMessage(category.name))));
+      AppToast.success(context, context.l10n.categoryAddedMessage(category.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -489,9 +480,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isCreatingSubCategory) return;
 
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
+      AppToast.error(context, context.l10n.selectCategoryFirstMessage);
       return;
     }
 
@@ -547,9 +536,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isCreatingSubCategory = false;
       });
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.subCategoryAddedMessage(subCategory.name))));
+      AppToast.success(context, context.l10n.subCategoryAddedMessage(subCategory.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -565,9 +552,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isDeletingCategory) return;
 
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
+      AppToast.error(context, context.l10n.selectCategoryFirstMessage);
       return;
     }
 
@@ -577,9 +562,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((category) => category != null, orElse: () => null);
 
     if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
-      );
+      AppToast.error(context, context.l10n.selectedCategoryNotFound);
       return;
     }
 
@@ -631,9 +614,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isDeletingCategory = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.categoryDeletedMessage(selectedCategory.name))),
-      );
+      AppToast.success(context, context.l10n.categoryDeletedMessage(selectedCategory.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -649,9 +630,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isDeletingSubCategory) return;
 
     if (_selectedSubCategoryId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectSubCategoryFirstMessage)),
-      );
+      AppToast.error(context, context.l10n.selectSubCategoryFirstMessage);
       return;
     }
 
@@ -661,9 +640,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((subCategory) => subCategory != null, orElse: () => null);
 
     if (selectedSubCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedSubCategoryNotFound)),
-      );
+      AppToast.error(context, context.l10n.selectedSubCategoryNotFound);
       return;
     }
 
@@ -715,9 +692,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isDeletingSubCategory = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.subCategoryDeletedMessage(selectedSubCategory.name))),
-      );
+      AppToast.success(context, context.l10n.subCategoryDeletedMessage(selectedSubCategory.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -745,9 +720,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((category) => category != null, orElse: () => null);
 
     if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
-      );
+      AppToast.error(context, context.l10n.selectedCategoryNotFound);
       return;
     }
 
@@ -816,12 +789,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
               _isSavingProduct = false;
             });
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Product was saved, but initial branch stock was not fully saved. Please open Product Branch Stock to complete it.',
-                ),
-              ),
+            AppToast.warning(
+              context,
+              'Product was saved, but initial branch stock was not fully saved. Please open Product Branch Stock to complete it.',
             );
 
             context.pop(product);
@@ -848,13 +818,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
   void _showError(Object error) {
-    final message = error is AppException
-        ? error.message
-        : error.toString().replaceFirst('Exception: ', '');
+    final message = AppErrorMapper.toMessage(error);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AppToast.error(context, message);
   }
 
   @override
@@ -1193,12 +1159,7 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
   void _applyStock() {
     final quantity = _typedQuantity();
     if (quantity == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter stock greater than 0'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      AppToast.error(context, 'Please enter stock greater than 0');
       return;
     }
 

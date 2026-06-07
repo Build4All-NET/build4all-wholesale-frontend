@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -45,18 +46,12 @@ class _RetailerOrdersView extends StatelessWidget {
       body: BlocConsumer<RetailerOrdersCubit, RetailerOrdersState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            AppToast.error(context, state.errorMessage!);
             context.read<RetailerOrdersCubit>().clearMessages();
           }
 
           if (state.successMessage == 'ORDER_CANCELLED') {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(i18n.orderCancelled)),
-            );
+            AppToast.success(context, i18n.orderCancelled);
             context.read<RetailerOrdersCubit>().clearMessages();
           }
         },

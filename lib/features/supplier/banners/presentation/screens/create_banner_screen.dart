@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -160,10 +161,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.supplierBannerImageUploadedSuccessfully),
-        ),
+      AppToast.success(
+        context,
+        context.l10n.supplierBannerImageUploadedSuccessfully,
       );
     } catch (e) {
       if (!mounted) return;
@@ -172,11 +172,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      AppToast.error(context, e);
     }
   }
 
@@ -474,19 +470,16 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     return BlocListener<BannersBloc, BannersState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
 
           context.read<BannersBloc>().add(
                 const ClearBannerMessageRequested(),
               );
+          return;
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
+          AppToast.success(context, state.successMessage!);
 
           context.read<BannersBloc>().add(
                 const ClearBannerMessageRequested(),

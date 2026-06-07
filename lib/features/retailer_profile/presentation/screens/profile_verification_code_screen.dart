@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../core/extensions/l10n_extension.dart';
@@ -138,11 +139,7 @@ class _ProfileVerificationCodeViewState
 
   void _showMessage(String message) {
     if (!mounted || message.trim().isEmpty) return;
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AppToast.info(context, message);
   }
 
   @override

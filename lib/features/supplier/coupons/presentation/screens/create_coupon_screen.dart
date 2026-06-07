@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -381,9 +382,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
 
     if (_branchScope == CouponBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch)),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectAtLeastOneBranch);
       return;
     }
 
@@ -443,27 +442,20 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     return BlocListener<CouponsBloc, CouponsState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
-
+          AppToast.error(context, state.errorMessage!);
 
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
+          return;
         }
 
-
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
-
+          AppToast.success(context, state.successMessage!);
 
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
-
 
           if (_isEditMode) {
             context.go('/supplier-coupons');

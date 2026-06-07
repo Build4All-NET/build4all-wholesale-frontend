@@ -11,6 +11,7 @@ import '../../../../core/branding/branding_state.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../injection_container.dart';
 import '../../data/services/build4all_login_gate.dart';
 import '../../domain/entities/login_account_type.dart';
@@ -51,74 +52,78 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submit(AuthCubit cubit) async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+  final email = _emailController.text.trim();
+  final password = _passwordController.text.trim();
 
-    setState(() {
-      _isCheckingAccounts = true;
-    });
+  setState(() {
+    _isCheckingAccounts = true;
+  });
 
-    try {
-      final gateResult = await _loginGate.checkAvailableAccounts(
-        email: email,
-        password: password,
+  try {
+    final gateResult = await _loginGate.checkAvailableAccounts(
+      email: email,
+      password: password,
+    );
+
+    if (!mounted) return;
+
+    if (gateResult.hasBoth) {
+      final selectedType = await showModalBottomSheet<LoginAccountType>(
+        context: context,
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.black.withValues(alpha: 0.55),
+        isScrollControlled: true,
+        builder: (_) => const LoginAccountChoiceDialog(),
       );
 
-      if (!mounted) return;
-
-      if (gateResult.hasBoth) {
-        final selectedType = await showModalBottomSheet<LoginAccountType>(
-          context: context,
-          backgroundColor: Colors.transparent,
-          barrierColor: Colors.black.withValues(alpha: 0.55),
-          isScrollControlled: true,
-          builder: (_) => const LoginAccountChoiceDialog(),
-        );
-
-        if (selectedType == null) {
-          return;
-        }
-
-        await cubit.login(
-          email: email,
-          password: password,
-          preferredAccountType: selectedType,
-        );
-
+      if (selectedType == null) {
         return;
       }
 
-      if (gateResult.hasOnlySupplier) {
-        await cubit.login(
-          email: email,
-          password: password,
-          preferredAccountType: LoginAccountType.supplier,
-        );
+      await cubit.login(
+        email: email,
+        password: password,
+        preferredAccountType: selectedType,
+      );
 
-        return;
-      }
+      return;
+    }
 
-      if (gateResult.hasOnlyRetailer) {
-        await cubit.login(
-          email: email,
-          password: password,
-          preferredAccountType: LoginAccountType.retailer,
-        );
+    if (gateResult.hasOnlySupplier) {
+      await cubit.login(
+        email: email,
+        password: password,
+        preferredAccountType: LoginAccountType.supplier,
+      );
 
-        return;
-      }
+      return;
+    }
 
-      await cubit.login(email: email, password: password);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isCheckingAccounts = false;
-        });
-      }
+    if (gateResult.hasOnlyRetailer) {
+      await cubit.login(
+        email: email,
+        password: password,
+        preferredAccountType: LoginAccountType.retailer,
+      );
+
+      return;
+    }
+
+    await cubit.login(email: email, password: password);
+  } catch (e) {
+    if (!mounted) return;
+
+    AppToast.error(context, e);
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isCheckingAccounts = false;
+      });
     }
   }
+}
 
   Widget _buildBrandingHeader(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -162,10 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLoginNavigation(BuildContext context, AuthState state) {
     if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-
+      AppToast.error(context, state.errorMessage!);
       context.read<AuthCubit>().clearMessages();
     }
 
@@ -190,11 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unknown user role returned from backend'),
-        ),
-      );
+      AppToast.error(context, 'Unknown user role returned from backend.');
     }
   }
 

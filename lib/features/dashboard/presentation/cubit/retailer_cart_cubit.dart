@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../data/services/retailer_cart_service.dart';
 import 'retailer_cart_state.dart';
@@ -20,7 +21,7 @@ class RetailerCartCubit extends Cubit<RetailerCartState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -72,7 +73,7 @@ class RetailerCartCubit extends Cubit<RetailerCartState> {
       emit(
         state.copyWith(
           clearUpdatingItemId: true,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -89,7 +90,7 @@ class RetailerCartCubit extends Cubit<RetailerCartState> {
       emit(
         state.copyWith(
           clearUpdatingItemId: true,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

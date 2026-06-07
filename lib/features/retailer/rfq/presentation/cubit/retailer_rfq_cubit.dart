@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../domain/entities/rfq_request_entity.dart';
 import '../../domain/repositories/retailer_rfq_repository.dart';
@@ -41,7 +42,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
 
       emit(state.copyWith(isLoading: false, rfqs: rfqs));
     } catch (error) {
-      emit(state.copyWith(isLoading: false, errorMessage: error.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 
@@ -53,7 +54,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
 
       emit(state.copyWith(isLoading: false, selectedRfq: rfq));
     } catch (error) {
-      emit(state.copyWith(isLoading: false, errorMessage: error.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 
@@ -76,7 +77,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
 
       return created;
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
 
       return null;
     }
@@ -102,7 +103,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
 
       return updated;
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
 
       return null;
     }
@@ -132,7 +133,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
 
       return requirements;
     } catch (error) {
-      emit(state.copyWith(isAiWriting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isAiWriting: false, errorMessage: AppErrorMapper.toMessage(error)));
 
       return null;
     }
@@ -153,7 +154,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
         ),
       );
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 
@@ -172,7 +173,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
         ),
       );
     } catch (error) {
-      emit(state.copyWith(isDeleting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isDeleting: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 
@@ -197,7 +198,7 @@ class RetailerRfqCubit extends Cubit<RetailerRfqState> {
         ),
       );
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 

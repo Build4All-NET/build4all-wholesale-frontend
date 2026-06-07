@@ -6,6 +6,7 @@ import '../../domain/usecases/save_supplier_payment_method_usecase.dart';
 import '../../domain/usecases/test_supplier_payment_method_usecase.dart';
 import 'supplier_payment_methods_event.dart';
 import 'supplier_payment_methods_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierPaymentMethodsBloc
     extends Bloc<SupplierPaymentMethodsEvent, SupplierPaymentMethodsState> {
@@ -42,7 +43,7 @@ class SupplierPaymentMethodsBloc
       final methods = await getPaymentMethods();
       emit(state.copyWith(isLoading: false, methods: methods));
     } catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: AppErrorMapper.toMessage(e)));
     }
   }
 
@@ -97,7 +98,7 @@ class SupplierPaymentMethodsBloc
     } catch (e) {
       emit(state.copyWith(
         clearSavingMethodCode: true,
-        errorMessage: e.toString(),
+        errorMessage: AppErrorMapper.toMessage(e),
       ));
     }
   }

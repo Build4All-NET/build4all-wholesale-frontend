@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../data/models/retailer_home_model.dart';
 import '../../domain/repositories/retailer_home_repository.dart';
@@ -21,7 +22,7 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -55,7 +56,7 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
       emit(
         state.copyWith(
           isCategoryProductsLoading: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -84,7 +85,7 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
       emit(
         state.copyWith(
           isPromotionsLoading: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -118,7 +119,7 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
       emit(
         state.copyWith(
           clearAddingProductId: true,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

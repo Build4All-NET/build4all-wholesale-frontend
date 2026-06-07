@@ -18,6 +18,7 @@ import '../../domain/usecases/pick_supplier_excel_file_usecase.dart';
 import '../../domain/usecases/validate_supplier_excel_rows_usecase.dart';
 import 'supplier_excel_import_event.dart';
 import 'supplier_excel_import_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierExcelImportBloc
     extends Bloc<SupplierExcelImportEvent, SupplierExcelImportState> {
@@ -317,6 +318,6 @@ class SupplierExcelImportBloc
   }
 
   String _message(Object error) {
-    return error.toString().replaceFirst('Exception: ', '').trim();
+    return AppErrorMapper.toMessage(error);
   }
 }

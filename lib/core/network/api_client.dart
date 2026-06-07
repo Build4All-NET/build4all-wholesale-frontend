@@ -21,8 +21,6 @@ class ApiClient {
         onRequest: (options, handler) async {
           final path = options.path;
 
-          // These endpoints are public and should not require a token.
-
           final isPublicCentralAuth =
               path == '/auth/admin/login/front' ||
               path == '/auth/user/login' ||
@@ -41,19 +39,17 @@ class ApiClient {
               options.headers['Authorization'] = 'Bearer $token';
             }
           }
-          // DEBUG LOGS
+
           print(
             'API REQUEST: ${options.method} ${options.baseUrl}${options.path}',
           );
-          print('API HEADERS: ${options.headers}');
+          print('API HEADERS: ${_safeHeaders(options.headers)}');
           print('API QUERY: ${options.queryParameters}');
-          print('API BODY: ${options.data}');
+          print('API BODY SAFE: ${_safeData(options.data)}');
 
           handler.next(options);
         },
-
         onResponse: (response, handler) {
-          // DEBUG LOGS
           print(
             'API RESPONSE: ${response.requestOptions.method} '
             '${response.requestOptions.baseUrl}${response.requestOptions.path}',
@@ -63,9 +59,7 @@ class ApiClient {
 
           handler.next(response);
         },
-
         onError: (error, handler) {
-          // DEBUG LOGS
           print(
             'API ERROR: ${error.requestOptions.method} '
             '${error.requestOptions.baseUrl}${error.requestOptions.path}',
@@ -81,7 +75,6 @@ class ApiClient {
     );
   }
 
-  /// Prevents sending "Bearer Bearer token" if token was already saved with Bearer.
   String? _cleanToken(String? token) {
     if (token == null) return null;
 
@@ -92,5 +85,88 @@ class ApiClient {
     }
 
     return trimmed;
+  }
+
+  Map<String, dynamic> _safeHeaders(Map<String, dynamic> headers) {
+    final safe = Map<String, dynamic>.from(headers);
+
+    if (safe.containsKey('Authorization')) {
+      safe['Authorization'] = 'Bearer ***';
+    }
+
+    if (safe.containsKey('authorization')) {
+      safe['authorization'] = 'Bearer ***';
+    }
+
+    return safe;
+  }
+
+  Object? _safeData(Object? data) {
+    if (data == null) return null;
+
+    if (data is FormData) {
+      final fields = <String, dynamic>{};
+
+      for (final field in data.fields) {
+        fields[field.key] = _maskIfSensitive(field.key, field.value);
+      }
+
+      if (data.files.isNotEmpty) {
+        fields['files'] = data.files
+            .map((file) => {
+                  'key': file.key,
+                  'filename': file.value.filename,
+                })
+            .toList();
+      }
+
+      return fields;
+    }
+
+    if (data is Map) {
+      return _safeMap(data);
+    }
+
+    if (data is List) {
+      return data.map((item) {
+        if (item is Map) return _safeMap(item);
+        return item;
+      }).toList();
+    }
+
+    return data;
+  }
+
+  Map<String, dynamic> _safeMap(Map data) {
+    final safe = <String, dynamic>{};
+
+    data.forEach((key, value) {
+      final keyText = key.toString();
+
+      if (value is Map) {
+        safe[keyText] = _safeMap(value);
+      } else if (value is List) {
+        safe[keyText] = value.map((item) {
+          if (item is Map) return _safeMap(item);
+          return item;
+        }).toList();
+      } else {
+        safe[keyText] = _maskIfSensitive(keyText, value);
+      }
+    });
+
+    return safe;
+  }
+
+  Object? _maskIfSensitive(String key, Object? value) {
+    final lowerKey = key.toLowerCase();
+
+    if (lowerKey.contains('password') ||
+        lowerKey.contains('token') ||
+        lowerKey.contains('authorization')) {
+      return '***';
+    }
+
+    return value;
   }
 }

@@ -4,6 +4,7 @@ import '../../../domain/entities/supplier_order_entity.dart';
 import '../../../domain/usecases/get_supplier_orders_usecase.dart';
 import 'supplier_orders_event.dart';
 import 'supplier_orders_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierOrdersBloc
     extends Bloc<SupplierOrdersEvent, SupplierOrdersState> {
@@ -138,7 +139,7 @@ class SupplierOrdersBloc
         state.copyWith(
           isLoading: false,
           isRefreshing: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

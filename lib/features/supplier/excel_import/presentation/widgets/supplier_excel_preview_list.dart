@@ -9,6 +9,7 @@ import '../../domain/entities/supplier_excel_section.dart';
 import '../bloc/supplier_excel_import_bloc.dart';
 import '../bloc/supplier_excel_import_event.dart';
 import '../utils/supplier_excel_import_i18n.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 class SupplierExcelPreviewList extends StatelessWidget {
   final SupplierExcelParsedFileEntity parsedFile;
@@ -400,9 +401,7 @@ class _IssueRowTile extends StatelessWidget {
                           await Clipboard.setData(ClipboardData(text: copyText));
                           if (sheetContext.mounted) {
                             Navigator.of(sheetContext).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l.locationCopied)),
-                            );
+                            AppToast.info(context, l.locationCopied);
                           }
                         },
                         icon: const Icon(Icons.copy_rounded),
@@ -447,7 +446,6 @@ class _IssueRowTile extends StatelessWidget {
   }) {
     final l = SupplierExcelImportI18n(context);
     final bloc = context.read<SupplierExcelImportBloc>();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final orderedKeys = _orderedRowKeys(issue.row);
     final controllers = <String, TextEditingController>{
       for (final key in orderedKeys)
@@ -628,9 +626,7 @@ class _IssueRowTile extends StatelessWidget {
                                 ),
                               );
 
-                              scaffoldMessenger.showSnackBar(
-                                SnackBar(content: Text(l.rowUpdated)),
-                              );
+                              AppToast.success(context, l.rowUpdated);
                             });
                           },
                           icon: const Icon(Icons.check_rounded),

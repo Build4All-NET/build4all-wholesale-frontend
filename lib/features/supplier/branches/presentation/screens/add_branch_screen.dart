@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 
-import '../../../../../core/exceptions/app_exception.dart';
+import '../../../../../core/utils/app_error_mapper.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/location/data/models/country_model.dart';
 import '../../../../../core/location/data/models/region_model.dart';
@@ -310,14 +311,11 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   }
 
   String _messageFromError(Object error) {
-    if (error is AppException) return error.message;
-    return error.toString().replaceFirst('Exception: ', '');
+    return AppErrorMapper.toMessage(error);
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    AppToast.error(context, message);
   }
 
   @override

@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+
 import '../../../../core/config/app_config.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
+import '../../../../core/utils/app_error_mapper.dart';
 import '../models/admin_login_request_model.dart';
 import '../models/admin_login_response_model.dart';
 import '../models/api_response_model.dart';
@@ -24,11 +26,12 @@ class AuthService {
         ApiConfig.adminLoginFront,
         data: request.toJson(),
       );
+
       return AdminLoginResponseModel.fromJson(
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -50,7 +53,7 @@ class AuthService {
 
       return Map<String, dynamic>.from(response.data as Map);
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -68,7 +71,7 @@ class AuthService {
         },
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -87,9 +90,10 @@ class AuthService {
       final id = user['id'];
 
       if (id is int) return id;
+
       return int.parse(id.toString());
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -122,7 +126,7 @@ class AuthService {
 
       return Map<String, dynamic>.from(response.data as Map);
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -131,6 +135,7 @@ class AuthService {
   }) async {
     try {
       final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+
       if (ownerProjectLinkId == null) {
         throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
       }
@@ -142,9 +147,10 @@ class AuthService {
       );
 
       final data = Map<String, dynamic>.from(response.data as Map);
+
       return ForgotPasswordResponseModel.fromJson(data);
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -154,6 +160,7 @@ class AuthService {
   }) async {
     try {
       final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+
       if (ownerProjectLinkId == null) {
         throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
       }
@@ -168,7 +175,7 @@ class AuthService {
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -179,6 +186,7 @@ class AuthService {
   }) async {
     try {
       final ownerProjectLinkId = int.tryParse(AppConfig.ownerProjectLinkId);
+
       if (ownerProjectLinkId == null) {
         throw AppException('OWNER_PROJECT_LINK_ID is missing or invalid.');
       }
@@ -197,7 +205,7 @@ class AuthService {
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -226,7 +234,7 @@ class AuthService {
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -243,18 +251,19 @@ class AuthService {
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
   Future<AuthResponseModel> getWholesaleMe() async {
     try {
       final response = await projectApiClient.dio.get(ApiConfig.currentUser);
+
       return AuthResponseModel.fromJson(
         Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
@@ -287,18 +296,14 @@ class AuthService {
         },
       );
     } on DioException catch (e) {
-      throw AppException(_extractMessage(e));
+      throw _toAppException(e);
     }
   }
 
-  String _extractMessage(DioException e) {
-    final data = e.response?.data;
-
-    if (data is Map<String, dynamic>) {
-      if (data['message'] != null) return data['message'].toString();
-      if (data['error'] != null) return data['error'].toString();
-    }
-
-    return e.message ?? 'Something went wrong';
+  AppException _toAppException(DioException error) {
+    return AppException(
+      AppErrorMapper.toMessage(error),
+      original: error,
+    );
   }
 }

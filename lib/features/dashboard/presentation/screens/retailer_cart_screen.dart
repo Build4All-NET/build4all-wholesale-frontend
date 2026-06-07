@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
@@ -31,10 +32,7 @@ class _RetailerCartView extends StatelessWidget {
     return BlocConsumer<RetailerCartCubit, RetailerCartState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          AppToast.error(context, state.errorMessage!);
           context.read<RetailerCartCubit>().clearError();
         }
       },
@@ -184,9 +182,7 @@ class _CartContent extends StatelessWidget {
           const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(l10n.checkoutComingSoon)));
+              AppToast.info(context, l10n.checkoutComingSoon);
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 54),

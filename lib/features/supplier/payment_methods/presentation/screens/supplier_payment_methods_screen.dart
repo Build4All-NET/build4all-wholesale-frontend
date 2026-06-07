@@ -14,6 +14,7 @@ import '../bloc/supplier_payment_methods_bloc.dart';
 import '../bloc/supplier_payment_methods_event.dart';
 import '../bloc/supplier_payment_methods_state.dart';
 import '../widgets/supplier_payment_method_card.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 class SupplierPaymentMethodsScreen extends StatelessWidget {
   const SupplierPaymentMethodsScreen({super.key});
@@ -88,17 +89,10 @@ class _SupplierPaymentMethodsView extends StatelessWidget {
             prev.successMessage != cur.successMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            AppToast.error(context, state.errorMessage!);
           }
           if (state.successMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.successMessage!),
-                backgroundColor: theme.colorScheme.primary,
-              ),
-            );
+            AppToast.success(context, state.successMessage!);
           }
         },
         builder: (context, state) {

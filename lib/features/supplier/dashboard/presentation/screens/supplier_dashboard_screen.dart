@@ -12,6 +12,7 @@ import '../bloc/supplier_dashboard/supplier_dashboard_state.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 String _paymentMethodsDashboardLabel(BuildContext context) {
   final languageCode = Localizations.localeOf(context).languageCode;
@@ -46,9 +47,7 @@ class _SupplierDashboardView extends StatelessWidget {
             current.errorMessage != null;
       },
       listener: (context, state) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.errorMessage!)),
-        );
+        AppToast.error(context, state.errorMessage!);
       },
       child: MediaQuery(
         data: MediaQuery.of(context).copyWith(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/get_supplier_profile_display_usecase.dart';
 import 'supplier_profile_display_event.dart';
 import 'supplier_profile_display_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierProfileDisplayBloc
     extends Bloc<SupplierProfileDisplayEvent, SupplierProfileDisplayState> {
@@ -40,7 +41,7 @@ class SupplierProfileDisplayBloc
       emit(
         state.copyWith(
           loading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -71,7 +72,7 @@ class SupplierProfileDisplayBloc
       emit(
         state.copyWith(
           refreshing: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
