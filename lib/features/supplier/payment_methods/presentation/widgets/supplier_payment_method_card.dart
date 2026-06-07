@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../domain/entities/supplier_payment_method_entity.dart';
 import '../bloc/supplier_payment_methods_bloc.dart';
+import '../screens/paypal_config_screen.dart';
 import '../screens/stripe_config_screen.dart';
 
 class SupplierPaymentMethodCard extends StatelessWidget {
@@ -28,9 +29,14 @@ class SupplierPaymentMethodCard extends StatelessWidget {
     final onSurfaceVariant = theme.colorScheme.onSurfaceVariant;
     final outline = theme.colorScheme.outline;
 
-    final isStripe = method.code.toUpperCase() == 'STRIPE';
-    final canToggle =
-        method.supportedNow && !method.requiresCredentials && !isSaving;
+    final code = method.code.toUpperCase();
+    final isStripe = code == 'STRIPE';
+    final isPayPal = code == 'PAYPAL';
+    final hasConfigScreen = (isStripe || isPayPal) && method.supportedNow;
+    final canToggle = method.supportedNow &&
+        !method.requiresCredentials &&
+        !isSaving &&
+        !hasConfigScreen;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -49,7 +55,6 @@ class SupplierPaymentMethodCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Icon + title + toggle row ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -96,7 +101,9 @@ class SupplierPaymentMethodCard extends StatelessWidget {
                   width: 26,
                   height: 26,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2.5, color: primary),
+                    strokeWidth: 2.5,
+                    color: primary,
+                  ),
                 )
               else if (!method.requiresCredentials && method.supportedNow)
                 Switch(
@@ -106,10 +113,7 @@ class SupplierPaymentMethodCard extends StatelessWidget {
                 ),
             ],
           ),
-
           const SizedBox(height: 16),
-
-          // ── Status chips ──
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -133,24 +137,21 @@ class SupplierPaymentMethodCard extends StatelessWidget {
                 ),
             ],
           ),
-
-          // ── Configure button (Stripe only) ──
-          if (isStripe && method.supportedNow) ...[
+          if (hasConfigScreen) ...[
             const SizedBox(height: 14),
-            Divider(
-                height: 1, color: outline.withOpacity(0.3)),
+            Divider(height: 1, color: outline.withOpacity(0.3)),
             const SizedBox(height: 14),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => _openStripeConfig(context),
+                onPressed: () => _openConfig(context),
                 icon: Icon(Icons.settings_rounded, size: 18, color: primary),
                 label: Text(
-                  _hasCredentials()
-                      ? l10n.paymentMethodEditStripe
-                      : l10n.paymentMethodConfigureStripe,
+                  _configureLabel(context),
                   style: TextStyle(
-                      color: primary, fontWeight: FontWeight.w800),
+                    color: primary,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: primary,
@@ -168,22 +169,66 @@ class SupplierPaymentMethodCard extends StatelessWidget {
     );
   }
 
-  bool _hasCredentials() {
-    final sk = method.configValues['secretKey']?.toString() ?? '';
-    return sk.isNotEmpty && sk != 'null';
+  String _configureLabel(BuildContext context) {
+    final l10n = context.l10n;
+    switch (method.code.toUpperCase()) {
+      case 'STRIPE':
+        return _hasCredentials()
+            ? l10n.paymentMethodEditStripe
+            : l10n.paymentMethodConfigureStripe;
+      case 'PAYPAL':
+        return _hasCredentials()
+            ? l10n.paymentMethodEditPayPal
+            : l10n.paymentMethodConfigurePayPal;
+      default:
+        return l10n.paymentMethodCredentialsRequired;
+    }
   }
 
-  void _openStripeConfig(BuildContext context) {
+  bool _hasCredentials() {
+    final values = method.configValues;
+
+    switch (method.code.toUpperCase()) {
+      case 'STRIPE':
+        final secretKeyConfigured = values['secretKeyConfigured'] == true;
+        final publishableKey = _safe(values['publishableKey']);
+        final secretKey = _safe(values['secretKey']);
+        return secretKeyConfigured || secretKey.isNotEmpty || publishableKey.isNotEmpty;
+      case 'PAYPAL':
+        final clientIdConfigured = values['clientIdConfigured'] == true;
+        final clientSecretConfigured = values['clientSecretConfigured'] == true;
+        final clientId = _safe(values['clientId']);
+        return clientIdConfigured || clientSecretConfigured || clientId.isNotEmpty;
+      default:
+        return false;
+    }
+  }
+
+  static String _safe(dynamic value) {
+    final text = value?.toString().trim() ?? '';
+    return text == 'null' ? '' : text;
+  }
+
+  void _openConfig(BuildContext context) {
     final bloc = context.read<SupplierPaymentMethodsBloc>();
+    final code = method.code.toUpperCase();
+
+    Widget screen;
+    if (code == 'PAYPAL') {
+      screen = PayPalConfigScreen(
+        currentConfigValues: method.configValues,
+        currentlyEnabled: method.projectEnabled,
+      );
+    } else {
+      screen = StripeConfigScreen(
+        currentConfigValues: method.configValues,
+        currentlyEnabled: method.projectEnabled,
+      );
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: bloc,
-          child: StripeConfigScreen(
-            currentConfigValues: method.configValues,
-            currentlyEnabled: method.projectEnabled,
-          ),
-        ),
+        builder: (_) => BlocProvider.value(value: bloc, child: screen),
       ),
     );
   }
@@ -195,24 +240,30 @@ class SupplierPaymentMethodCard extends StatelessWidget {
 
   IconData _icon() {
     switch (method.code.toUpperCase()) {
-      case 'CASH':   return Icons.payments_outlined;
-      case 'STRIPE': return Icons.credit_card_rounded;
-      case 'PAYPAL': return Icons.account_balance_wallet_outlined;
-      case 'MPGS':   return Icons.payment_rounded;
-      default:       return Icons.account_balance_wallet_outlined;
+      case 'CASH':
+        return Icons.payments_outlined;
+      case 'STRIPE':
+        return Icons.credit_card_rounded;
+      case 'PAYPAL':
+        return Icons.account_balance_wallet_outlined;
+      case 'MPGS':
+        return Icons.payment_rounded;
+      default:
+        return Icons.account_balance_wallet_outlined;
     }
   }
 
   Color _iconColor(Color primary) {
     switch (method.code.toUpperCase()) {
-      case 'CASH':   return const Color(0xFF16A34A);
-      case 'PAYPAL': return const Color(0xFF2563EB);
-      default:       return primary;
+      case 'CASH':
+        return const Color(0xFF16A34A);
+      case 'PAYPAL':
+        return const Color(0xFF2563EB);
+      default:
+        return primary;
     }
   }
 }
-
-// ─────────────────────────────────────────────────── sub-widgets ──
 
 class _StatusChip extends StatelessWidget {
   final bool enabled;
@@ -242,7 +293,10 @@ class _StatusChip extends StatelessWidget {
       child: Text(
         enabled ? enabledText : disabledText,
         style: TextStyle(
-            color: color, fontWeight: FontWeight.w800, fontSize: 12),
+          color: color,
+          fontWeight: FontWeight.w800,
+          fontSize: 12,
+        ),
       ),
     );
   }
@@ -256,22 +310,27 @@ class _InfoPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const amber = Color(0xFFF59E0B);
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: amber.withOpacity(0.10),
+        color: primary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: amber.withOpacity(0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: amber),
+          Icon(icon, size: 14, color: primary),
           const SizedBox(width: 5),
-          Text(text,
-              style: const TextStyle(
-                  color: amber, fontWeight: FontWeight.w800, fontSize: 12)),
+          Text(
+            text,
+            style: TextStyle(
+              color: primary,
+              fontWeight: FontWeight.w800,
+              fontSize: 12,
+            ),
+          ),
         ],
       ),
     );

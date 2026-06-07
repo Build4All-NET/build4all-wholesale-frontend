@@ -6407,6 +6407,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stripe configuration saved successfully.'**
   String get stripeConfigSavedSuccessfully;
+
+  /// No description provided for @paymentMethodConfigurePayPal.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure PayPal'**
+  String get paymentMethodConfigurePayPal;
+
+  /// No description provided for @paymentMethodEditPayPal.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit PayPal Settings'**
+  String get paymentMethodEditPayPal;
+
+  /// No description provided for @payPalConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure PayPal'**
+  String get payPalConfigTitle;
+
+  /// No description provided for @payPalInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal is prepared for checkout, but real sandbox testing requires PayPal Developer credentials. If PayPal is not available in your country, keep it disabled or use credentials provided by the doctor.'**
+  String get payPalInfoBanner;
+
+  /// No description provided for @payPalEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable PayPal for retailers'**
+  String get payPalEnableLabel;
+
+  /// No description provided for @payPalEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailers will be able to choose PayPal at checkout once credentials are valid.'**
+  String get payPalEnableSubtitle;
+
+  /// No description provided for @payPalCredentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials'**
+  String get payPalCredentialsTitle;
+
+  /// No description provided for @payPalModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get payPalModeLabel;
+
+  /// No description provided for @payPalModeSandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Sandbox'**
+  String get payPalModeSandbox;
+
+  /// No description provided for @payPalModeLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get payPalModeLive;
+
+  /// No description provided for @payPalModeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Sandbox for testing and Live only before production.'**
+  String get payPalModeHelper;
+
+  /// No description provided for @payPalClientIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID'**
+  String get payPalClientIdLabel;
+
+  /// No description provided for @payPalClientIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal sandbox client ID'**
+  String get payPalClientIdHint;
+
+  /// No description provided for @payPalClientIdHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Create it from PayPal Developer Dashboard > Apps & Credentials.'**
+  String get payPalClientIdHelper;
+
+  /// No description provided for @payPalClientIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID is required.'**
+  String get payPalClientIdRequired;
+
+  /// No description provided for @payPalClientSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Secret'**
+  String get payPalClientSecretLabel;
+
+  /// No description provided for @payPalClientSecretHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal sandbox client secret'**
+  String get payPalClientSecretHint;
+
+  /// No description provided for @payPalClientSecretHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-side secret. Do not share it or commit it.'**
+  String get payPalClientSecretHelper;
+
+  /// No description provided for @payPalClientSecretRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret is required.'**
+  String get payPalClientSecretRequired;
+
+  /// No description provided for @payPalReturnUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Return URL'**
+  String get payPalReturnUrlLabel;
+
+  /// No description provided for @payPalReturnUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'For testing you can keep https://example.com/paypal/return.'**
+  String get payPalReturnUrlHelper;
+
+  /// No description provided for @payPalCancelUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel URL'**
+  String get payPalCancelUrlLabel;
+
+  /// No description provided for @payPalCancelUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'For testing you can keep https://example.com/paypal/cancel.'**
+  String get payPalCancelUrlHelper;
+
+  /// No description provided for @payPalBrandNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand Name'**
+  String get payPalBrandNameLabel;
+
+  /// No description provided for @payPalBrandNameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional name shown during PayPal checkout.'**
+  String get payPalBrandNameHelper;
+
+  /// No description provided for @payPalUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'URL is required.'**
+  String get payPalUrlRequired;
+
+  /// No description provided for @payPalUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid URL.'**
+  String get payPalUrlInvalid;
+
+  /// No description provided for @payPalTestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get payPalTestButton;
+
+  /// No description provided for @payPalTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get payPalTesting;
+
+  /// No description provided for @payPalSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get payPalSaveButton;
+
+  /// No description provided for @payPalSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get payPalSaving;
 }
 
 class _AppLocalizationsDelegate

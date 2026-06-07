@@ -3421,4 +3421,104 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stripeConfigSavedSuccessfully => 'تم حفظ إعدادات Stripe بنجاح.';
+
+  @override
+  String get paymentMethodConfigurePayPal => 'إعداد PayPal';
+
+  @override
+  String get paymentMethodEditPayPal => 'تعديل إعدادات PayPal';
+
+  @override
+  String get payPalConfigTitle => 'إعداد PayPal';
+
+  @override
+  String get payPalInfoBanner =>
+      'تم تجهيز PayPal للـ checkout، لكن الاختبار الحقيقي يحتاج بيانات PayPal Developer. إذا لم يكن PayPal متاحًا في بلدك، اتركيه غير مفعّل أو استخدمي بيانات اختبار من الدكتور.';
+
+  @override
+  String get payPalEnableLabel => 'تفعيل PayPal للمتاجر';
+
+  @override
+  String get payPalEnableSubtitle =>
+      'عند تفعيل بيانات صحيحة، يمكن للمتاجر اختيار PayPal عند checkout.';
+
+  @override
+  String get payPalCredentialsTitle => 'بيانات الاعتماد';
+
+  @override
+  String get payPalModeLabel => 'الوضع';
+
+  @override
+  String get payPalModeSandbox => 'Sandbox';
+
+  @override
+  String get payPalModeLive => 'Live';
+
+  @override
+  String get payPalModeHelper =>
+      'استخدمي Sandbox للاختبار وLive فقط عند الإطلاق الفعلي.';
+
+  @override
+  String get payPalClientIdLabel => 'Client ID';
+
+  @override
+  String get payPalClientIdHint => 'PayPal sandbox client ID';
+
+  @override
+  String get payPalClientIdHelper =>
+      'يتم إنشاؤه من PayPal Developer Dashboard ثم Apps & Credentials.';
+
+  @override
+  String get payPalClientIdRequired => 'Client ID مطلوب.';
+
+  @override
+  String get payPalClientSecretLabel => 'Client Secret';
+
+  @override
+  String get payPalClientSecretHint => 'PayPal sandbox client secret';
+
+  @override
+  String get payPalClientSecretHelper =>
+      'سر خاص بالخادم. لا تشاركيه ولا تحفظيه في Git.';
+
+  @override
+  String get payPalClientSecretRequired => 'Client secret مطلوب.';
+
+  @override
+  String get payPalReturnUrlLabel => 'Return URL';
+
+  @override
+  String get payPalReturnUrlHelper =>
+      'للاختبار يمكن إبقاء https://example.com/paypal/return.';
+
+  @override
+  String get payPalCancelUrlLabel => 'Cancel URL';
+
+  @override
+  String get payPalCancelUrlHelper =>
+      'للاختبار يمكن إبقاء https://example.com/paypal/cancel.';
+
+  @override
+  String get payPalBrandNameLabel => 'اسم العلامة';
+
+  @override
+  String get payPalBrandNameHelper => 'اسم اختياري يظهر أثناء دفع PayPal.';
+
+  @override
+  String get payPalUrlRequired => 'الرابط مطلوب.';
+
+  @override
+  String get payPalUrlInvalid => 'أدخلي رابطًا صحيحًا.';
+
+  @override
+  String get payPalTestButton => 'اختبار';
+
+  @override
+  String get payPalTesting => 'جارِ الاختبار...';
+
+  @override
+  String get payPalSaveButton => 'حفظ الإعدادات';
+
+  @override
+  String get payPalSaving => 'جارِ الحفظ...';
 }

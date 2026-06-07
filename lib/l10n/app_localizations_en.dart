@@ -3452,4 +3452,105 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get stripeConfigSavedSuccessfully =>
       'Stripe configuration saved successfully.';
+
+  @override
+  String get paymentMethodConfigurePayPal => 'Configure PayPal';
+
+  @override
+  String get paymentMethodEditPayPal => 'Edit PayPal Settings';
+
+  @override
+  String get payPalConfigTitle => 'Configure PayPal';
+
+  @override
+  String get payPalInfoBanner =>
+      'PayPal is prepared for checkout, but real sandbox testing requires PayPal Developer credentials. If PayPal is not available in your country, keep it disabled or use credentials provided by the doctor.';
+
+  @override
+  String get payPalEnableLabel => 'Enable PayPal for retailers';
+
+  @override
+  String get payPalEnableSubtitle =>
+      'Retailers will be able to choose PayPal at checkout once credentials are valid.';
+
+  @override
+  String get payPalCredentialsTitle => 'Credentials';
+
+  @override
+  String get payPalModeLabel => 'Mode';
+
+  @override
+  String get payPalModeSandbox => 'Sandbox';
+
+  @override
+  String get payPalModeLive => 'Live';
+
+  @override
+  String get payPalModeHelper =>
+      'Use Sandbox for testing and Live only before production.';
+
+  @override
+  String get payPalClientIdLabel => 'Client ID';
+
+  @override
+  String get payPalClientIdHint => 'PayPal sandbox client ID';
+
+  @override
+  String get payPalClientIdHelper =>
+      'Create it from PayPal Developer Dashboard > Apps & Credentials.';
+
+  @override
+  String get payPalClientIdRequired => 'Client ID is required.';
+
+  @override
+  String get payPalClientSecretLabel => 'Client Secret';
+
+  @override
+  String get payPalClientSecretHint => 'PayPal sandbox client secret';
+
+  @override
+  String get payPalClientSecretHelper =>
+      'Server-side secret. Do not share it or commit it.';
+
+  @override
+  String get payPalClientSecretRequired => 'Client secret is required.';
+
+  @override
+  String get payPalReturnUrlLabel => 'Return URL';
+
+  @override
+  String get payPalReturnUrlHelper =>
+      'For testing you can keep https://example.com/paypal/return.';
+
+  @override
+  String get payPalCancelUrlLabel => 'Cancel URL';
+
+  @override
+  String get payPalCancelUrlHelper =>
+      'For testing you can keep https://example.com/paypal/cancel.';
+
+  @override
+  String get payPalBrandNameLabel => 'Brand Name';
+
+  @override
+  String get payPalBrandNameHelper =>
+      'Optional name shown during PayPal checkout.';
+
+  @override
+  String get payPalUrlRequired => 'URL is required.';
+
+  @override
+  String get payPalUrlInvalid => 'Enter a valid URL.';
+
+  @override
+  String get payPalTestButton => 'Test';
+
+  @override
+  String get payPalTesting => 'Testing...';
+
+  @override
+  String get payPalSaveButton => 'Save Settings';
+
+  @override
+  String get payPalSaving => 'Saving...';
 }
