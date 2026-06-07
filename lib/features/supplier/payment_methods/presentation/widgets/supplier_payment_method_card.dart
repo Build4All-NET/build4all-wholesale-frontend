@@ -5,6 +5,7 @@ import '../../../../../core/extensions/l10n_extension.dart';
 import '../../domain/entities/supplier_payment_method_entity.dart';
 import '../bloc/supplier_payment_methods_bloc.dart';
 import '../screens/paypal_config_screen.dart';
+import '../screens/mpgs_config_screen.dart';
 import '../screens/stripe_config_screen.dart';
 
 class SupplierPaymentMethodCard extends StatelessWidget {
@@ -32,7 +33,8 @@ class SupplierPaymentMethodCard extends StatelessWidget {
     final code = method.code.toUpperCase();
     final isStripe = code == 'STRIPE';
     final isPayPal = code == 'PAYPAL';
-    final hasConfigScreen = (isStripe || isPayPal) && method.supportedNow;
+    final isMpgs = code == 'MPGS';
+    final hasConfigScreen = (isStripe || isPayPal || isMpgs) && method.supportedNow;
     final canToggle = method.supportedNow &&
         !method.requiresCredentials &&
         !isSaving &&
@@ -73,7 +75,7 @@ class SupplierPaymentMethodCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _displayTitle(),
+                      _displayTitle(context),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -180,6 +182,10 @@ class SupplierPaymentMethodCard extends StatelessWidget {
         return _hasCredentials()
             ? l10n.paymentMethodEditPayPal
             : l10n.paymentMethodConfigurePayPal;
+      case 'MPGS':
+        return _hasCredentials()
+            ? l10n.paymentMethodEditCard
+            : l10n.paymentMethodConfigureCard;
       default:
         return l10n.paymentMethodCredentialsRequired;
     }
@@ -199,6 +205,12 @@ class SupplierPaymentMethodCard extends StatelessWidget {
         final clientSecretConfigured = values['clientSecretConfigured'] == true;
         final clientId = _safe(values['clientId']);
         return clientIdConfigured || clientSecretConfigured || clientId.isNotEmpty;
+      case 'MPGS':
+        final merchantIdConfigured = values['merchantIdConfigured'] == true;
+        final apiPasswordConfigured = values['apiPasswordConfigured'] == true;
+        final merchantId = _safe(values['merchantId']);
+        final apiPassword = _safe(values['apiPassword']);
+        return merchantIdConfigured || apiPasswordConfigured || merchantId.isNotEmpty || apiPassword.isNotEmpty;
       default:
         return false;
     }
@@ -219,6 +231,11 @@ class SupplierPaymentMethodCard extends StatelessWidget {
         currentConfigValues: method.configValues,
         currentlyEnabled: method.projectEnabled,
       );
+    } else if (code == 'MPGS') {
+      screen = MpgsConfigScreen(
+        currentConfigValues: method.configValues,
+        currentlyEnabled: method.projectEnabled,
+      );
     } else {
       screen = StripeConfigScreen(
         currentConfigValues: method.configValues,
@@ -233,8 +250,10 @@ class SupplierPaymentMethodCard extends StatelessWidget {
     );
   }
 
-  String _displayTitle() {
-    if (method.code.toUpperCase() == 'MPGS') return 'Credit / Debit Card';
+  String _displayTitle(BuildContext context) {
+    if (method.code.toUpperCase() == 'MPGS') {
+      return context.l10n.paymentMethodCreditDebitCardTitle;
+    }
     return method.displayName;
   }
 
@@ -247,7 +266,7 @@ class SupplierPaymentMethodCard extends StatelessWidget {
       case 'PAYPAL':
         return Icons.account_balance_wallet_outlined;
       case 'MPGS':
-        return Icons.payment_rounded;
+        return Icons.credit_card_rounded;
       default:
         return Icons.account_balance_wallet_outlined;
     }
@@ -259,6 +278,8 @@ class SupplierPaymentMethodCard extends StatelessWidget {
         return const Color(0xFF16A34A);
       case 'PAYPAL':
         return const Color(0xFF2563EB);
+      case 'MPGS':
+        return const Color(0xFFE76F51);
       default:
         return primary;
     }
