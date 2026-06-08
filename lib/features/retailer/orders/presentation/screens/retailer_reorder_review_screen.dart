@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -53,10 +54,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
       body: BlocConsumer<RetailerOrdersCubit, RetailerOrdersState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            AppToast.error(context, state.errorMessage!);
             context.read<RetailerOrdersCubit>().clearMessages();
           }
         },
@@ -109,10 +107,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
                 height: 52,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(i18n.reorderCheckoutPending)),
-                    );
+                    AppToast.info(context, i18n.reorderCheckoutPending);
                   },
                   icon: const Icon(Icons.payment_rounded),
                   label: Text(

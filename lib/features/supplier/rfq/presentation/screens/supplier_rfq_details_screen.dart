@@ -14,6 +14,7 @@ import '../utils/supplier_rfq_image_url_helper.dart';
 import '../widgets/supplier_quotation_form_dialog.dart';
 import '../widgets/supplier_rfq_quotation_card.dart';
 import '../widgets/supplier_rfq_status_chip.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 class SupplierRfqDetailsScreen extends StatelessWidget {
   final int rfqId;
@@ -39,14 +40,15 @@ class _SupplierRfqDetailsView extends StatelessWidget {
     return BlocConsumer<SupplierRfqCubit, SupplierRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          AppToast.error(context, state.errorMessage!);
           context.read<SupplierRfqCubit>().clearMessages();
         }
 
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(SupplierRfqI18n(context).t(state.successMessage!))));
+          AppToast.success(
+            context,
+            SupplierRfqI18n(context).t(state.successMessage!),
+          );
           context.read<SupplierRfqCubit>().clearMessages();
         }
       },

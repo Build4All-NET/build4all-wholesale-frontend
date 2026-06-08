@@ -8,6 +8,7 @@ class SupplierDashboardState extends Equatable {
   final bool isRefreshing;
   final List<SupplierOrderEntity> orders;
   final List<LowStockAlertEntity> lowStockAlerts;
+  final String supplierDisplayName;
   final String? errorMessage;
 
   SupplierDashboardState({
@@ -15,6 +16,7 @@ class SupplierDashboardState extends Equatable {
     required this.isRefreshing,
     required this.orders,
     required this.lowStockAlerts,
+    required this.supplierDisplayName,
     this.errorMessage,
   });
 
@@ -24,6 +26,7 @@ class SupplierDashboardState extends Equatable {
       isRefreshing: false,
       orders: [],
       lowStockAlerts: [],
+      supplierDisplayName: 'Supplier',
       errorMessage: null,
     );
   }
@@ -174,6 +177,7 @@ class SupplierDashboardState extends Equatable {
     bool? isRefreshing,
     List<SupplierOrderEntity>? orders,
     List<LowStockAlertEntity>? lowStockAlerts,
+    String? supplierDisplayName,
     String? errorMessage,
     bool clearError = false,
   }) {
@@ -182,6 +186,7 @@ class SupplierDashboardState extends Equatable {
       isRefreshing: isRefreshing ?? this.isRefreshing,
       orders: orders ?? this.orders,
       lowStockAlerts: lowStockAlerts ?? this.lowStockAlerts,
+      supplierDisplayName: supplierDisplayName ?? this.supplierDisplayName,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
     );
   }
@@ -192,6 +197,7 @@ class SupplierDashboardState extends Equatable {
         isRefreshing,
         orders,
         lowStockAlerts,
+        supplierDisplayName,
         errorMessage,
       ];
 }

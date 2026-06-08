@@ -93,6 +93,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logoUrl => 'رابط الشعار';
 
   @override
+  String get supplierLogo => 'شعار المورد';
+
+  @override
+  String get uploadSupplierLogo => 'رفع شعار المورد';
+
+  @override
+  String get tapToUploadLogoImage => 'اضغط لاختيار صورة JPG أو PNG أو WEBP';
+
+  @override
+  String get changeLogo => 'تغيير الشعار';
+
+  @override
+  String get removeLogo => 'إزالة الشعار';
+
+  @override
+  String get supplierLogoRequiredError => 'يرجى رفع شعار المورد';
+
+  @override
   String get saveAndContinue => 'حفظ ومتابعة';
 
   @override
@@ -583,6 +601,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supplierDashboardQuickActions => 'إجراءات سريعة';
+
+  @override
+  String get supplierDashboardOverviewSubtitle =>
+      'هذه نظرة عامة على نشاطك التجاري';
 
   @override
   String get supplierPendingOrders => 'طلبات قيد الانتظار';
@@ -3305,4 +3327,311 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get phoneNotUpdatedCodeNotConfirmed =>
       'لم يتم تحديث رقم الهاتف لأن رمز التحقق لم يتم تأكيده.';
+
+  @override
+  String get paymentMethods => 'طرق الدفع';
+
+  @override
+  String get paymentMethodsHeaderTitle => 'طرق الدفع المعروضة للمتاجر';
+
+  @override
+  String get paymentMethodsHeaderSubtitle =>
+      'فعّلي طرق الدفع التي يمكن للمتجر اختيارها عند الطلب. الكاش جاهز بالكامل، و Stripe يحتاج إعداد بيانات الاعتماد أولاً.';
+
+  @override
+  String get paymentMethodEnabled => 'مفعّل';
+
+  @override
+  String get paymentMethodDisabled => 'غير مفعّل';
+
+  @override
+  String get paymentMethodComingSoon => 'لاحقًا';
+
+  @override
+  String get paymentMethodCredentialsRequired => 'تحتاج بيانات';
+
+  @override
+  String get paymentMethodsEmpty => 'لا توجد طرق دفع متاحة حاليًا.';
+
+  @override
+  String get paymentMethodConfigureStripe => 'إعداد Stripe';
+
+  @override
+  String get paymentMethodEditStripe => 'تعديل إعدادات Stripe';
+
+  @override
+  String get stripeConfigTitle => 'إعداد Stripe';
+
+  @override
+  String get stripeInfoBanner =>
+      'المفاتيح تُحفظ بشكل آمن في الخادم ولا تُشاركها مع أحد. استخدمي مفاتيح الاختبار (test) الآن وبدّليها بمفاتيح الإنتاج عند الإطلاق الفعلي.';
+
+  @override
+  String get stripeEnableLabel => 'تفعيل Stripe للمتاجر';
+
+  @override
+  String get stripeEnableSubtitle =>
+      'عند التفعيل يمكن للمتاجر اختيار الدفع بالبطاقة عبر Stripe عند الطلب.';
+
+  @override
+  String get stripeCredentialsTitle => 'بيانات الاعتماد';
+
+  @override
+  String get stripeSecretKeyLabel => 'المفتاح السري';
+
+  @override
+  String get stripeSecretKeyHelper => 'مفتاح الخادم — لا تشاركيه مع أحد.';
+
+  @override
+  String get stripeSecretKeyRequired => 'المفتاح السري مطلوب.';
+
+  @override
+  String get stripeSecretKeyInvalid => 'يجب أن يبدأ بـ sk_';
+
+  @override
+  String get stripePublishableKeyLabel => 'المفتاح العام';
+
+  @override
+  String get stripePublishableKeyHelper => 'يُرسل للتطبيق لإتمام عملية الدفع.';
+
+  @override
+  String get stripePublishableKeyRequired => 'المفتاح العام مطلوب.';
+
+  @override
+  String get stripePublishableKeyInvalid => 'يجب أن يبدأ بـ pk_';
+
+  @override
+  String get stripeWebhookSecretLabel => 'Webhook Secret (اختياري)';
+
+  @override
+  String get stripeWebhookSecretHelper =>
+      'مطلوب لاحقًا لاستقبال تأكيدات الدفع من Stripe.';
+
+  @override
+  String get stripeTestButton => 'اختبار';
+
+  @override
+  String get stripeTesting => 'جاري الاختبار...';
+
+  @override
+  String get stripeSaveButton => 'حفظ الإعدادات';
+
+  @override
+  String get stripeSaving => 'جاري الحفظ...';
+
+  @override
+  String get stripeConfigSavedSuccessfully => 'تم حفظ إعدادات Stripe بنجاح.';
+
+  @override
+  String get paymentMethodConfigurePayPal => 'إعداد PayPal';
+
+  @override
+  String get paymentMethodEditPayPal => 'تعديل إعدادات PayPal';
+
+  @override
+  String get payPalConfigTitle => 'إعداد PayPal';
+
+  @override
+  String get payPalInfoBanner =>
+      'تم تجهيز PayPal للـ checkout، لكن الاختبار الحقيقي يحتاج بيانات PayPal Developer. إذا لم يكن PayPal متاحًا في بلدك، اتركيه غير مفعّل أو استخدمي بيانات اختبار من الدكتور.';
+
+  @override
+  String get payPalEnableLabel => 'تفعيل PayPal للمتاجر';
+
+  @override
+  String get payPalEnableSubtitle =>
+      'عند تفعيل بيانات صحيحة، يمكن للمتاجر اختيار PayPal عند checkout.';
+
+  @override
+  String get payPalCredentialsTitle => 'بيانات الاعتماد';
+
+  @override
+  String get payPalModeLabel => 'الوضع';
+
+  @override
+  String get payPalModeSandbox => 'Sandbox';
+
+  @override
+  String get payPalModeLive => 'Live';
+
+  @override
+  String get payPalModeHelper =>
+      'استخدمي Sandbox للاختبار وLive فقط عند الإطلاق الفعلي.';
+
+  @override
+  String get payPalClientIdLabel => 'Client ID';
+
+  @override
+  String get payPalClientIdHint => 'PayPal sandbox client ID';
+
+  @override
+  String get payPalClientIdHelper =>
+      'يتم إنشاؤه من PayPal Developer Dashboard ثم Apps & Credentials.';
+
+  @override
+  String get payPalClientIdRequired => 'Client ID مطلوب.';
+
+  @override
+  String get payPalClientSecretLabel => 'Client Secret';
+
+  @override
+  String get payPalClientSecretHint => 'PayPal sandbox client secret';
+
+  @override
+  String get payPalClientSecretHelper =>
+      'سر خاص بالخادم. لا تشاركيه ولا تحفظيه في Git.';
+
+  @override
+  String get payPalClientSecretRequired => 'Client secret مطلوب.';
+
+  @override
+  String get payPalReturnUrlLabel => 'Return URL';
+
+  @override
+  String get payPalReturnUrlHelper =>
+      'للاختبار يمكن إبقاء https://example.com/paypal/return.';
+
+  @override
+  String get payPalCancelUrlLabel => 'Cancel URL';
+
+  @override
+  String get payPalCancelUrlHelper =>
+      'للاختبار يمكن إبقاء https://example.com/paypal/cancel.';
+
+  @override
+  String get payPalBrandNameLabel => 'اسم العلامة';
+
+  @override
+  String get payPalBrandNameHelper => 'اسم اختياري يظهر أثناء دفع PayPal.';
+
+  @override
+  String get payPalUrlRequired => 'الرابط مطلوب.';
+
+  @override
+  String get payPalUrlInvalid => 'أدخلي رابطًا صحيحًا.';
+
+  @override
+  String get payPalTestButton => 'اختبار';
+
+  @override
+  String get payPalTesting => 'جارِ الاختبار...';
+
+  @override
+  String get payPalSaveButton => 'حفظ الإعدادات';
+
+  @override
+  String get payPalSaving => 'جارِ الحفظ...';
+
+  @override
+  String get paymentMethodConfigureCard => 'إعداد بطاقة ائتمان / خصم';
+
+  @override
+  String get paymentMethodEditCard => 'تعديل إعدادات البطاقة';
+
+  @override
+  String get paymentMethodCreditDebitCardTitle =>
+      'بطاقة ائتمان / خصم (Visa / Mastercard)';
+
+  @override
+  String get mpgsConfigTitle => 'إعداد بطاقة ائتمان / خصم';
+
+  @override
+  String get mpgsInfoBanner =>
+      'اضبطي إعدادات MPGS hosted checkout لدفع Visa وMastercard. سيستخدمها المتجر عند اختيار Credit / Debit Card في checkout.';
+
+  @override
+  String get mpgsEnableLabel => 'تفعيل الدفع بالبطاقة للمتاجر';
+
+  @override
+  String get mpgsEnableSubtitle =>
+      'يمكن للمتاجر الدفع بواسطة Visa أو Mastercard من خلال صفحة دفع آمنة.';
+
+  @override
+  String get mpgsCredentialsTitle => 'بيانات بوابة الدفع';
+
+  @override
+  String get mpgsModeLabel => 'الوضع';
+
+  @override
+  String get mpgsModeTest => 'Test';
+
+  @override
+  String get mpgsModeLive => 'Live';
+
+  @override
+  String get mpgsModeHelper =>
+      'استخدمي Test لبيانات الاختبار وLive فقط عند الإطلاق الفعلي.';
+
+  @override
+  String get mpgsMerchantIdLabel => 'Merchant ID';
+
+  @override
+  String get mpgsMerchantIdHint => 'MPGS merchant ID';
+
+  @override
+  String get mpgsMerchantIdHelper =>
+      'استخدمي Merchant ID الذي أعطاه الدكتور أو البنك.';
+
+  @override
+  String get mpgsMerchantIdRequired => 'Merchant ID مطلوب.';
+
+  @override
+  String get mpgsApiPasswordLabel => 'API Password';
+
+  @override
+  String get mpgsApiPasswordHint => 'MPGS API password';
+
+  @override
+  String get mpgsApiPasswordHelper =>
+      'كلمة مرور خاصة بالخادم. لا تشاركيها ولا تحفظيها في Git.';
+
+  @override
+  String get mpgsApiPasswordRequired => 'API password مطلوب.';
+
+  @override
+  String get mpgsApiBaseUrlLabel => 'API Base URL';
+
+  @override
+  String get mpgsApiBaseUrlHelper =>
+      'للاختبار استخدمي https://test-bobsal.gateway.mastercard.com.';
+
+  @override
+  String get mpgsCurrencyLabel => 'العملة';
+
+  @override
+  String get mpgsCurrencyHelper => 'استخدمي كود ISO من 3 أحرف مثل USD.';
+
+  @override
+  String get mpgsCurrencyRequired => 'أدخلي كود عملة صحيح من 3 أحرف.';
+
+  @override
+  String get mpgsReturnUrlLabel => 'Return URL';
+
+  @override
+  String get mpgsReturnUrlHelper =>
+      'للاختبار المحلي أبقي http://localhost:8083/api/public/mpgs/return.';
+
+  @override
+  String get mpgsBrandNameLabel => 'اسم العلامة';
+
+  @override
+  String get mpgsBrandNameHelper => 'اسم اختياري يظهر على صفحة الدفع الآمنة.';
+
+  @override
+  String get mpgsUrlRequired => 'الرابط مطلوب.';
+
+  @override
+  String get mpgsUrlInvalid => 'أدخلي رابطًا صحيحًا.';
+
+  @override
+  String get mpgsTestButton => 'اختبار';
+
+  @override
+  String get mpgsTesting => 'جارِ الاختبار...';
+
+  @override
+  String get mpgsSaveButton => 'حفظ الإعدادات';
+
+  @override
+  String get mpgsSaving => 'جارِ الحفظ...';
 }

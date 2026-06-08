@@ -24,6 +24,7 @@ class ApiConfig {
   // =========================
   static const String supplierProfile = '/supplier-profile';
   static const String supplierProfileMe = '/supplier-profile/me';
+  static const String supplierProfileLogoUpload = '/supplier-profile/logo';
   static const String retailerProfileMe = '/retailer-profile/me';
 
   // =========================

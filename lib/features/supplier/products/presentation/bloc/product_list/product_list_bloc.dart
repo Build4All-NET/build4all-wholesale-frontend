@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
+
 import '../../../domain/usecases/delete_product_usecase.dart';
 import '../../../domain/usecases/get_products_usecase.dart';
 import '../../../domain/usecases/search_products_usecase.dart';
@@ -41,7 +43,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       emit(
         state.copyWith(
           isLoading: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -65,7 +67,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
     } catch (e) {
       emit(
         state.copyWith(
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -95,7 +97,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       emit(
         state.copyWith(
           isDeleting: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }

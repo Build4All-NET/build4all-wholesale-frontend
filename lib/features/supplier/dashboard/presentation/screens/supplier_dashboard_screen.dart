@@ -12,7 +12,7 @@ import '../bloc/supplier_dashboard/supplier_dashboard_state.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../../shared/widgets/supplier_dashboard_stat_card.dart';
 import '../../../shared/widgets/supplier_quick_action_card.dart';
-
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 String _paymentMethodsDashboardLabel(BuildContext context) {
   final languageCode = Localizations.localeOf(context).languageCode;
@@ -47,25 +47,29 @@ class _SupplierDashboardView extends StatelessWidget {
             current.errorMessage != null;
       },
       listener: (context, state) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.errorMessage!)),
-        );
+        AppToast.error(context, state.errorMessage!);
       },
-      child: Scaffold(
+      child: MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: const TextScaler.linear(1.0),
+        ),
+        child: Scaffold(
         backgroundColor: AppThemeTokens.background,
         drawer: SupplierAppDrawer(),
         appBar: AppBar(
           backgroundColor: AppThemeTokens.background,
+          surfaceTintColor: AppThemeTokens.background,
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: true,
           leading: Builder(
             builder: (context) {
               return IconButton(
                 tooltip: context.l10n.supplierDashboardMenuTooltip,
                 icon: Icon(
-                  Icons.menu,
-                  size: 32,
-                  color: primary,
+                  Icons.menu_rounded,
+                  size: 31,
+                  color: AppThemeTokens.textPrimary,
                 ),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               );
@@ -77,31 +81,45 @@ class _SupplierDashboardView extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: primary,
-              fontSize: 22,
+              fontSize: 19,
               fontWeight: FontWeight.w900,
             ),
           ),
           actions: [
             IconButton(
-              tooltip: context.l10n.supplierProfileTitle,
-              onPressed: () => context.go('/supplier-profile'),
-              icon: Icon(
-                Icons.person_outline,
-                color: primary,
-                size: 27,
-              ),
-            ),
-            IconButton(
-              tooltip: context.l10n.supplierProfileRefreshTooltip,
-              onPressed: () {
-                context.read<SupplierDashboardBloc>().add(
-                      SupplierDashboardRefreshed(),
-                    );
-              },
-              icon: Icon(
-                Icons.refresh_outlined,
-                color: primary,
-                size: 27,
+              tooltip: context.l10n.notifications,
+              onPressed: () => context.go('/supplier-notifications'),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    Icons.notifications_none_rounded,
+                    color: AppThemeTokens.textPrimary,
+                    size: 29,
+                  ),
+                  Positioned(
+                    right: -4,
+                    top: -5,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '3',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(width: 8),
@@ -118,40 +136,39 @@ class _SupplierDashboardView extends StatelessWidget {
                 },
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.all(
+                  padding: EdgeInsets.fromLTRB(
                     AppThemeTokens.screenHorizontalPadding,
+                    12,
+                    AppThemeTokens.screenHorizontalPadding,
+                    24,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _WelcomeHeaderCard(
+                        supplierName: state.supplierDisplayName,
+                      ),
+                      SizedBox(height: 18),
                       if (state.isLoading)
                         _DashboardLoadingCard()
                       else
                         _buildStatsGrid(context, state),
-                      SizedBox(height: 24),
+                      SizedBox(height: 18),
                       _buildFinancialSummary(context, state),
                       SizedBox(height: 24),
-                      Text(
-                        context.l10n.supplierDashboardLowStockAlerts,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          color: AppThemeTokens.textPrimary,
-                        ),
+                      _SectionTitle(
+                        title: context.l10n.supplierDashboardQuickActions,
+                      ),
+                      SizedBox(height: 12),
+                      _buildQuickActions(context),
+                      SizedBox(height: 24),
+                      _SectionTitle(
+                        title: context.l10n.supplierDashboardLowStockAlerts,
+                        trailingText: context.l10n.viewAll,
+                        onTrailingTap: () => context.go('/supplier-products'),
                       ),
                       SizedBox(height: 12),
                       _buildLowStockAlerts(context, state),
-                      SizedBox(height: 28),
-                      Text(
-                        context.l10n.supplierDashboardQuickActions,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          color: AppThemeTokens.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      _buildQuickActions(context),
                     ],
                   ),
                 ),
@@ -159,6 +176,7 @@ class _SupplierDashboardView extends StatelessWidget {
             );
           },
         ),
+      ),
       ),
     );
   }
@@ -201,9 +219,9 @@ class _SupplierDashboardView extends StatelessWidget {
       itemCount: cards.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 14,
-        crossAxisSpacing: 14,
-        childAspectRatio: 0.95,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 2.05,
       ),
       itemBuilder: (context, index) => cards[index],
     );
@@ -217,24 +235,33 @@ class _SupplierDashboardView extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
+      padding: EdgeInsets.fromLTRB(15, 15, 15, 14),
+      decoration: _dashboardCardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            context.l10n.supplierFinancialSummary,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-              color: AppThemeTokens.textPrimary,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  context.l10n.supplierFinancialSummary,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    color: AppThemeTokens.textPrimary,
+                  ),
+                ),
+              ),
+              _SoftIconBadge(
+                icon: Icons.trending_up_rounded,
+                iconColor: primary,
+                backgroundColor: primary.withOpacity(0.10),
+                size: 36,
+                iconSize: 19,
+              ),
+            ],
           ),
-          SizedBox(height: 22),
+          SizedBox(height: 18),
           Row(
             children: [
               Expanded(
@@ -244,6 +271,7 @@ class _SupplierDashboardView extends StatelessWidget {
                   valueColor: primary,
                 ),
               ),
+              _VerticalDivider(),
               Expanded(
                 child: _FinancialItem(
                   value: formatSupplierCurrency(context, state.monthlyRevenue),
@@ -251,6 +279,7 @@ class _SupplierDashboardView extends StatelessWidget {
                   valueColor: primary,
                 ),
               ),
+              _VerticalDivider(),
               Expanded(
                 child: _FinancialItem(
                   value: state.totalOrdersToday.toString(),
@@ -270,18 +299,14 @@ class _SupplierDashboardView extends StatelessWidget {
       return Container(
         width: double.infinity,
         padding: EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: AppThemeTokens.surface,
-          borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-          border: Border.all(color: AppThemeTokens.border),
-        ),
+        decoration: _dashboardCardDecoration(),
         child: Center(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 18),
             child: Text(
               context.l10n.supplierNoLowStockAlerts,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 color: AppThemeTokens.textSecondary,
                 fontWeight: FontWeight.w700,
               ),
@@ -302,47 +327,56 @@ class _SupplierDashboardView extends StatelessWidget {
     final actions = [
       SupplierQuickActionCard(
         title: context.l10n.supplierAddProduct,
-        icon: Icons.add,
+        icon: Icons.add_rounded,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.push('/supplier-products/add'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierCreatePromotion,
         icon: Icons.local_offer_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-promotions/create'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierManageBranches,
         icon: Icons.location_on_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-branches'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerShippingMethods,
         icon: Icons.local_shipping_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-shipping/create'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierConfigureTaxes,
-        icon: Icons.percent_outlined,
+        icon: Icons.attach_money_rounded,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-tax-rules/create'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierImportExcel,
         icon: Icons.upload_file_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-excel-import'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerHomeBanners,
         icon: Icons.image_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-banners/create'),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerCoupons,
-        icon: Icons.sell_outlined,
+        icon: Icons.confirmation_number_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-coupons/create'),
       ),
       SupplierQuickActionCard(
         title: _paymentMethodsDashboardLabel(context),
         icon: Icons.account_balance_wallet_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
         onTap: () => context.go('/supplier-payment-methods'),
       ),
     ];
@@ -353,14 +387,132 @@ class _SupplierDashboardView extends StatelessWidget {
       itemCount: actions.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 14,
-        crossAxisSpacing: 14,
-        childAspectRatio: 1.05,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 2.75,
       ),
       itemBuilder: (context, index) => actions[index],
     );
   }
+}
 
+class _WelcomeHeaderCard extends StatelessWidget {
+  final String supplierName;
+
+  _WelcomeHeaderCard({required this.supplierName});
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final name = supplierName.trim().isEmpty ? 'Supplier' : supplierName.trim();
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Color(0xFFF4D7E5)),
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            primary.withOpacity(0.11),
+            Colors.white,
+            primary.withOpacity(0.06),
+          ],
+        ),
+      ),
+      child: Row(
+        children: [
+          _SoftIconBadge(
+            icon: Icons.storefront_rounded,
+            iconColor: primary,
+            backgroundColor: primary.withOpacity(0.14),
+            size: 46,
+            iconSize: 25,
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${context.l10n.welcomeBack}, $name!',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  context.l10n.supplierDashboardOverviewSubtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontSize: 11.5,
+                    height: 1.25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  final String? trailingText;
+  final VoidCallback? onTrailingTap;
+
+  _SectionTitle({
+    required this.title,
+    this.trailingText,
+    this.onTrailingTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+        ),
+        if (trailingText != null)
+          InkWell(
+            onTap: onTrailingTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Text(
+                trailingText!,
+                style: TextStyle(
+                  color: primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }
 
 class _DashboardLoadingCard extends StatelessWidget {
@@ -371,11 +523,7 @@ class _DashboardLoadingCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
+      decoration: _dashboardCardDecoration(),
       child: Center(
         child: Column(
           children: [
@@ -413,9 +561,11 @@ class _FinancialItem extends StatelessWidget {
         Text(
           value,
           textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: valueColor,
-            fontSize: 22,
+            fontSize: 18,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -423,10 +573,12 @@ class _FinancialItem extends StatelessWidget {
         Text(
           label,
           textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: AppThemeTokens.textSecondary,
-            fontSize: 13,
-            height: 1.25,
+            fontSize: 12.5,
+            height: 1.22,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -452,27 +604,16 @@ class _LowStockAlertCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
-        border: Border.all(color: AppThemeTokens.border),
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      decoration: _dashboardCardDecoration(),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Color(0xFFFFEDD5),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.warning_amber_rounded,
-              color: Color(0xFFF97316),
-              size: 24,
-            ),
+          _SoftIconBadge(
+            icon: Icons.warning_amber_rounded,
+            iconColor: Color(0xFFF97316),
+            backgroundColor: Color(0xFFFFEDD5),
+            size: 50,
+            iconSize: 27,
           ),
           SizedBox(width: 14),
           Expanded(
@@ -481,29 +622,47 @@ class _LowStockAlertCard extends StatelessWidget {
               children: [
                 Text(
                   productName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: AppThemeTokens.textPrimary,
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 5),
                 Text(
-                  branchName.isEmpty ? context.l10n.supplierLowStockItem : branchName,
+                  branchName.isEmpty
+                      ? context.l10n.supplierLowStockItem
+                      : branchName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: AppThemeTokens.textSecondary,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
-                  context.l10n.supplierCurrentMinimumStock(currentStock, minimumStock),
-                  style: TextStyle(
-                    color: AppThemeTokens.error,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
               ],
+            ),
+          ),
+          SizedBox(width: 12),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 118),
+            child: Text(
+              context.l10n.supplierCurrentMinimumStock(
+                currentStock,
+                minimumStock,
+              ),
+              textAlign: TextAlign.end,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppThemeTokens.error,
+                fontSize: 10.5,
+                height: 1.2,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
         ],
@@ -584,4 +743,63 @@ class _LowStockAlertCard extends StatelessWidget {
 
     return '0';
   }
+}
+
+class _SoftIconBadge extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final Color backgroundColor;
+  final double size;
+  final double iconSize;
+
+  _SoftIconBadge({
+    required this.icon,
+    required this.iconColor,
+    required this.backgroundColor,
+    required this.size,
+    required this.iconSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(size / 2.6),
+      ),
+      child: Icon(
+        icon,
+        color: iconColor,
+        size: iconSize,
+      ),
+    );
+  }
+}
+
+class _VerticalDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      height: 44,
+      color: AppThemeTokens.border,
+    );
+  }
+}
+
+BoxDecoration _dashboardCardDecoration() {
+  return BoxDecoration(
+    color: AppThemeTokens.surface,
+    borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+    border: Border.all(color: AppThemeTokens.border),
+    boxShadow: [
+      BoxShadow(
+        color: Color(0xFF0F172A).withOpacity(0.04),
+        blurRadius: 18,
+        offset: Offset(0, 8),
+      ),
+    ],
+  );
 }

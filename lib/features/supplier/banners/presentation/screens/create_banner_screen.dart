@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -160,10 +161,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.supplierBannerImageUploadedSuccessfully),
-        ),
+      AppToast.success(
+        context,
+        context.l10n.supplierBannerImageUploadedSuccessfully,
       );
     } catch (e) {
       if (!mounted) return;
@@ -172,11 +172,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
         _uploadingImage = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      AppToast.error(context, e);
     }
   }
 
@@ -474,19 +470,16 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     return BlocListener<BannersBloc, BannersState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
 
           context.read<BannersBloc>().add(
                 const ClearBannerMessageRequested(),
               );
+          return;
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
+          AppToast.success(context, state.successMessage!);
 
           context.read<BannersBloc>().add(
                 const ClearBannerMessageRequested(),
@@ -816,8 +809,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                               ),
                               Switch(
                                 value: _active,
-                                thumbColor: WidgetStateProperty.all(Colors.white),
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
+                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1136,7 +1130,7 @@ class _TargetTypeDropdown extends StatelessWidget {
         : BannerTargetType.none;
 
     return DropdownButtonFormField<BannerTargetType>(
-      value: safeValue,
+      initialValue: safeValue,
       items: visibleTypes
           .map(
             (type) => DropdownMenuItem<BannerTargetType>(
@@ -1178,7 +1172,7 @@ class _TargetOptionDropdown extends StatelessWidget {
         : null;
 
     return DropdownButtonFormField<String>(
-      value: safeValue,
+      initialValue: safeValue,
       items: options
           .map(
             (option) => DropdownMenuItem<String>(

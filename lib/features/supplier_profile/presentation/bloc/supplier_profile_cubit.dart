@@ -20,7 +20,7 @@ class SupplierProfileCubit extends Cubit<SupplierProfileState> {
     required String city,
     required String businessType,
     required String description,
-    required String logoUrl,
+    required String logoImagePath,
   }) async {
     emit(
       state.copyWith(
@@ -42,7 +42,7 @@ class SupplierProfileCubit extends Cubit<SupplierProfileState> {
         city: city,
         businessType: businessType,
         description: description,
-        logoUrl: logoUrl,
+        logoImagePath: logoImagePath,
       );
 
       emit(

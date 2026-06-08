@@ -1,8 +1,10 @@
 import '../../domain/entities/supplier_payment_method_entity.dart';
+import '../../domain/entities/supplier_payment_method_test_result_entity.dart';
 import '../../domain/repositories/supplier_payment_method_repository.dart';
 import '../services/supplier_payment_method_api_service.dart';
 
-class SupplierPaymentMethodRepositoryImpl implements SupplierPaymentMethodRepository {
+class SupplierPaymentMethodRepositoryImpl
+    implements SupplierPaymentMethodRepository {
   final SupplierPaymentMethodApiService apiService;
 
   SupplierPaymentMethodRepositoryImpl({required this.apiService});
@@ -26,7 +28,9 @@ class SupplierPaymentMethodRepositoryImpl implements SupplierPaymentMethodReposi
   }
 
   @override
-  Future<SupplierPaymentMethodEntity> testPaymentMethod(String methodCode) {
+  Future<SupplierPaymentMethodTestResultEntity> testPaymentMethod({
+    required String methodCode,
+  }) {
     return apiService.testPaymentMethod(methodCode);
   }
 }

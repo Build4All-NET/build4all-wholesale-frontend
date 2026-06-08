@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -335,21 +336,16 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
           ? context.l10n.productLabel
           : context.l10n.categoryLabel;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectTarget(targetName))),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectTarget(targetName));
       return false;
     }
 
     if (_selectedTargetAvailability == null ||
         _selectedTargetAvailability!.totalStock <= 0 ||
         _selectedTargetAvailability!.branches.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'This target has no in-stock items in active branches. Please refresh and choose another target.',
-          ),
-        ),
+      AppToast.error(
+        context,
+        'This target has no in-stock items in active branches. Please refresh and choose another target.',
       );
       return false;
     }
@@ -423,19 +419,16 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     return BlocListener<PromotionsBloc, PromotionsState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
 
           context.read<PromotionsBloc>().add(
                 const ClearPromotionMessageRequested(),
               );
+          return;
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
+          AppToast.success(context, state.successMessage!);
 
           context.read<PromotionsBloc>().add(
                 const ClearPromotionMessageRequested(),
@@ -764,8 +757,9 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               ),
                               Switch(
                                 value: _active,
-                                thumbColor: WidgetStateProperty.all(Colors.white),
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
+                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1394,7 +1388,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionDiscountType>(
-      value: value,
+      initialValue: value,
       items: PromotionDiscountType.values
           .map(
             (type) => DropdownMenuItem<PromotionDiscountType>(
@@ -1431,7 +1425,7 @@ class _TargetTypeDropdown extends StatelessWidget {
     ];
 
     return DropdownButtonFormField<PromotionTargetType>(
-      value: value,
+      initialValue: value,
       items: allowedTargetTypes
           .map(
             (type) => DropdownMenuItem<PromotionTargetType>(

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../data/models/retailer_profile_model.dart';
 import '../../domain/repositories/retailer_profile_repository.dart';
@@ -21,7 +22,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -44,7 +45,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -75,7 +76,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -127,7 +128,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -156,7 +157,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -182,7 +183,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -208,7 +209,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -240,7 +241,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -274,7 +275,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isSaving: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -303,7 +304,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isDeletingAccount: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
 
@@ -324,7 +325,7 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
       emit(
         state.copyWith(
           isLoggingOut: false,
-          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

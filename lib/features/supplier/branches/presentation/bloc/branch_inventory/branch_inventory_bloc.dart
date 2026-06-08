@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
+
 import '../../../../products/domain/usecases/get_products_usecase.dart';
 import '../../../domain/usecases/assign_product_to_branch_usecase.dart';
 import '../../../domain/usecases/delete_inventory_item_usecase.dart';
@@ -58,7 +60,7 @@ class BranchInventoryBloc
       emit(
         state.copyWith(
           isLoading: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -95,7 +97,7 @@ class BranchInventoryBloc
       emit(
         state.copyWith(
           isAssigning: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -128,7 +130,7 @@ class BranchInventoryBloc
       emit(
         state.copyWith(
           isUpdating: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -160,7 +162,7 @@ class BranchInventoryBloc
       emit(
         state.copyWith(
           isDeleting: false,
-          error: e.toString().replaceFirst('Exception: ', ''),
+          error: AppErrorMapper.toMessage(e),
         ),
       );
     }

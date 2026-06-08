@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/app_error_mapper.dart';
 import '../../domain/usecases/create_banner_usecase.dart';
 import '../../domain/usecases/delete_banner_usecase.dart';
 import '../../domain/usecases/get_banners_usecase.dart';
@@ -52,7 +53,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
       emit(
         state.copyWith(
           loading: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -83,7 +84,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
       emit(
         state.copyWith(
           saving: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -114,7 +115,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
       emit(
         state.copyWith(
           saving: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }
@@ -150,7 +151,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
       emit(
         state.copyWith(
           deleting: false,
-          errorMessage: e.toString(),
+          errorMessage: AppErrorMapper.toMessage(e),
         ),
       );
     }

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
@@ -71,9 +73,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
 
   Future<void> _verifyCode() async {
     if (_codeController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the verification code')),
-      );
+      AppToast.error(context, 'Please enter the verification code');
       return;
     }
 
@@ -99,11 +99,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
-        ),
-      );
+      AppToast.error(context, e);
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -124,19 +120,13 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Verification code resent successfully')),
-      );
+      AppToast.success(context, 'Verification code resent successfully');
 
       _startTimer();
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
-        ),
-      );
+      AppToast.error(context, e);
     } finally {
       if (mounted) {
         setState(() => _isResending = false);

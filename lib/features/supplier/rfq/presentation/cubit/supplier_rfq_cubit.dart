@@ -8,6 +8,7 @@ import '../../domain/usecases/submit_supplier_rfq_quotation_usecase.dart';
 import '../../domain/usecases/update_supplier_rfq_quotation_usecase.dart';
 import '../../domain/usecases/withdraw_supplier_rfq_quotation_usecase.dart';
 import 'supplier_rfq_state.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 class SupplierRfqCubit extends Cubit<SupplierRfqState> {
   final GetOpenSupplierRfqsUseCase getOpenSupplierRfqsUseCase;
@@ -31,7 +32,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
       final rfqs = await getOpenSupplierRfqsUseCase();
       emit(state.copyWith(isLoading: false, rfqs: rfqs));
     } catch (error) {
-      emit(state.copyWith(isLoading: false, errorMessage: error.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 
@@ -42,7 +43,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
       final rfq = await getSupplierRfqDetailsUseCase(rfqId);
       emit(state.copyWith(isLoading: false, selectedRfq: rfq));
     } catch (error) {
-      emit(state.copyWith(isLoading: false, errorMessage: error.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 
@@ -67,7 +68,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
 
       return updated;
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
       return null;
     }
   }
@@ -96,7 +97,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
 
       return updated;
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
       return null;
     }
   }
@@ -120,7 +121,7 @@ class SupplierRfqCubit extends Cubit<SupplierRfqState> {
         ),
       );
     } catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: error.toString()));
+      emit(state.copyWith(isSubmitting: false, errorMessage: AppErrorMapper.toMessage(error)));
     }
   }
 

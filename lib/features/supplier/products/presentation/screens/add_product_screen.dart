@@ -1,16 +1,21 @@
 import 'dart:io';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../core/config/app_config.dart';
-import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../categories/domain/entities/supplier_category_entity.dart';
 import '../../../categories/domain/entities/supplier_sub_category_entity.dart';
 import '../../../categories/domain/repositories/supplier_category_repository.dart';
+import '../../../branches/domain/entities/branch_entity.dart';
+import '../../../branches/domain/repositories/branch_inventory_repository.dart';
+import '../../../branches/domain/repositories/branch_repository.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/product_repository.dart';
 
@@ -32,11 +37,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
       sl<SupplierCategoryRepository>();
 
   final ProductRepository _productRepository = sl<ProductRepository>();
+  final BranchRepository _branchRepository = sl<BranchRepository>();
+  final BranchInventoryRepository _branchInventoryRepository =
+      sl<BranchInventoryRepository>();
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _minimumOrderQuantityController = TextEditingController(text: '10');
+  final _quickInitialStockController = TextEditingController();
+  final _branchStockSearchController = TextEditingController();
 
   String? _selectedCategoryId;
   String? _selectedSubCategoryId;
@@ -50,13 +60,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   bool _isCreatingSubCategory = false;
   bool _isDeletingCategory = false;
   bool _isDeletingSubCategory = false;
+  bool _isLoadingInitialStockBranches = false;
+  bool _isAdvancedInitialStockMode = false;
 
   List<SupplierCategoryEntity> _categories = [];
   List<SupplierSubCategoryEntity> _subCategories = [];
+  List<BranchEntity> _initialStockBranches = [];
+  final Map<String, TextEditingController> _initialStockControllers = {};
+  final Set<String> _selectedInitialStockBranchIds = {};
 
   @override
   void initState() {
     super.initState();
+    _branchStockSearchController.addListener(_refreshInitialStockUi);
 
     final product = widget.productToEdit;
 
@@ -74,6 +90,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
 
     _loadCategories();
+
+    if (!widget.isEditMode) {
+      _loadInitialStockBranches();
+    }
   }
 
   @override
@@ -82,6 +102,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _descriptionController.dispose();
     _priceController.dispose();
     _minimumOrderQuantityController.dispose();
+    _quickInitialStockController.dispose();
+    _branchStockSearchController.dispose();
+    for (final controller in _initialStockControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -124,6 +149,214 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       _showError(e);
     }
+  }
+
+  Future<void> _loadInitialStockBranches() async {
+    setState(() {
+      _isLoadingInitialStockBranches = true;
+    });
+
+    try {
+      final branches = await _branchRepository.getBranches();
+
+      if (!mounted) return;
+
+      for (final controller in _initialStockControllers.values) {
+        controller.dispose();
+      }
+      _initialStockControllers.clear();
+      _selectedInitialStockBranchIds.clear();
+
+      for (final branch in branches) {
+        final controller = TextEditingController();
+        controller.addListener(_refreshInitialStockUi);
+        _initialStockControllers[branch.id] = controller;
+      }
+
+      setState(() {
+        _initialStockBranches = branches;
+        _isLoadingInitialStockBranches = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _initialStockBranches = [];
+        _isLoadingInitialStockBranches = false;
+      });
+
+      _showError(e);
+    }
+  }
+
+  void _refreshInitialStockUi() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  int _initialStockTotal() {
+    var total = 0;
+
+    for (final branchId in _selectedInitialStockBranchIds) {
+      final value = _initialStockControllers[branchId]?.text.trim() ?? '';
+      final quantity = int.tryParse(value) ?? 0;
+
+      if (quantity > 0) {
+        total += quantity;
+      }
+    }
+
+    return total;
+  }
+
+  List<BranchEntity> _visibleInitialStockBranches() {
+    final query = _branchStockSearchController.text.trim().toLowerCase();
+
+    if (query.isNotEmpty) {
+      return _initialStockBranches
+          .where((branch) {
+            final name = branch.name.toLowerCase();
+            final city = branch.city.toLowerCase();
+            final location = branch.locationLabel.toLowerCase();
+
+            return name.contains(query) ||
+                city.contains(query) ||
+                location.contains(query);
+          })
+          .take(20)
+          .toList();
+    }
+
+    final selected = _initialStockBranches
+        .where((branch) => _selectedInitialStockBranchIds.contains(branch.id))
+        .toList();
+
+    final remainingLimit = 8 - selected.length;
+    final remaining = remainingLimit <= 0
+        ? <BranchEntity>[]
+        : _initialStockBranches
+            .where((branch) => !_selectedInitialStockBranchIds.contains(branch.id))
+            .take(remainingLimit)
+            .toList();
+
+    return [...selected, ...remaining];
+  }
+
+  void _setInitialStockMode(bool advanced) {
+    setState(() {
+      _isAdvancedInitialStockMode = advanced;
+    });
+  }
+
+  void _toggleInitialStockBranch(String branchId, bool selected) {
+    setState(() {
+      if (selected) {
+        _selectedInitialStockBranchIds.add(branchId);
+      } else {
+        _selectedInitialStockBranchIds.remove(branchId);
+        _initialStockControllers[branchId]?.clear();
+      }
+    });
+  }
+
+  void _clearInitialStockSelection() {
+    setState(() {
+      _selectedInitialStockBranchIds.clear();
+      _quickInitialStockController.clear();
+      _branchStockSearchController.clear();
+
+      for (final controller in _initialStockControllers.values) {
+        controller.clear();
+      }
+    });
+  }
+
+  void _applyQuickInitialStockToAllBranches() {
+    final value = _quickInitialStockController.text.trim();
+    final quantity = int.tryParse(value);
+
+    if (_initialStockBranches.isEmpty) {
+      AppToast.error(context, context.l10n.createBranchFirst);
+      return;
+    }
+
+    if (quantity == null || quantity < 0) {
+      AppToast.error(context, 'Please enter a valid stock quantity.');
+      return;
+    }
+
+    if (quantity > 1000000) {
+      AppToast.error(context, 'Stock quantity is too high.');
+      return;
+    }
+
+    setState(() {
+      _selectedInitialStockBranchIds.clear();
+
+      for (final branch in _initialStockBranches) {
+        _selectedInitialStockBranchIds.add(branch.id);
+        _initialStockControllers[branch.id]?.text = quantity.toString();
+      }
+    });
+  }
+
+  Map<String, int>? _readInitialStockAssignments() {
+    final assignments = <String, int>{};
+
+    for (final branchId in _selectedInitialStockBranchIds) {
+      final branch = _initialStockBranches
+          .where((item) => item.id == branchId)
+          .cast<BranchEntity?>()
+          .firstWhere((item) => item != null, orElse: () => null);
+
+      if (branch == null) continue;
+
+      final value = _initialStockControllers[branchId]?.text.trim() ?? '';
+
+      if (value.isEmpty) continue;
+
+      final quantity = int.tryParse(value);
+
+      if (quantity == null || quantity < 0) {
+        AppToast.error(
+          context,
+          'Please enter a valid stock quantity for ${branch.name}.',
+        );
+        return null;
+      }
+
+      if (quantity > 1000000) {
+        AppToast.error(
+          context,
+          'Stock quantity is too high for ${branch.name}.',
+        );
+        return null;
+      }
+
+      if (quantity > 0) {
+        assignments[branchId] = quantity;
+      }
+    }
+
+    return assignments;
+  }
+
+  Future<int> _assignInitialStockToBranches({
+    required String productId,
+    required Map<String, int> assignments,
+  }) async {
+    var assignedCount = 0;
+
+    for (final entry in assignments.entries) {
+      await _branchInventoryRepository.assignProductToBranch(
+        branchId: entry.key,
+        productId: productId,
+        stockQuantity: entry.value,
+      );
+      assignedCount++;
+    }
+
+    return assignedCount;
   }
 
   Future<void> _loadSubCategoriesByCategory(String categoryId) async {
@@ -231,9 +464,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isCreatingCategory = false;
       });
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.categoryAddedMessage(category.name))));
+      AppToast.success(context, context.l10n.categoryAddedMessage(category.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -249,9 +480,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isCreatingSubCategory) return;
 
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
+      AppToast.error(context, context.l10n.selectCategoryFirstMessage);
       return;
     }
 
@@ -307,9 +536,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isCreatingSubCategory = false;
       });
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.subCategoryAddedMessage(subCategory.name))));
+      AppToast.success(context, context.l10n.subCategoryAddedMessage(subCategory.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -325,9 +552,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isDeletingCategory) return;
 
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
+      AppToast.error(context, context.l10n.selectCategoryFirstMessage);
       return;
     }
 
@@ -337,9 +562,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((category) => category != null, orElse: () => null);
 
     if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
-      );
+      AppToast.error(context, context.l10n.selectedCategoryNotFound);
       return;
     }
 
@@ -391,9 +614,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isDeletingCategory = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.categoryDeletedMessage(selectedCategory.name))),
-      );
+      AppToast.success(context, context.l10n.categoryDeletedMessage(selectedCategory.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -409,9 +630,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isDeletingSubCategory) return;
 
     if (_selectedSubCategoryId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectSubCategoryFirstMessage)),
-      );
+      AppToast.error(context, context.l10n.selectSubCategoryFirstMessage);
       return;
     }
 
@@ -421,9 +640,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((subCategory) => subCategory != null, orElse: () => null);
 
     if (selectedSubCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectedSubCategoryNotFound)),
-      );
+      AppToast.error(context, context.l10n.selectedSubCategoryNotFound);
       return;
     }
 
@@ -475,9 +692,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isDeletingSubCategory = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.subCategoryDeletedMessage(selectedSubCategory.name))),
-      );
+      AppToast.success(context, context.l10n.subCategoryDeletedMessage(selectedSubCategory.name));
     } catch (e) {
       if (!mounted) return;
 
@@ -490,99 +705,122 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _saveProduct() async {
-  if (_isSavingProduct) return;
-  if (!_formKey.currentState!.validate()) return;
+    if (_isSavingProduct) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  final selectedCategory = _categories
-      .where((category) => category.id == _selectedCategoryId)
-      .cast<SupplierCategoryEntity?>()
-      .firstWhere((category) => category != null, orElse: () => null);
+    final initialStockAssignments = widget.isEditMode
+        ? <String, int>{}
+        : _readInitialStockAssignments();
 
-  if (selectedCategory == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
-    );
-    return;
-  }
+    if (initialStockAssignments == null) return;
 
-  final selectedSubCategory = _selectedSubCategoryId == null
-      ? null
-      : _subCategories
-            .where((subCategory) => subCategory.id == _selectedSubCategoryId)
-            .cast<SupplierSubCategoryEntity?>()
-            .firstWhere(
-              (subCategory) => subCategory != null,
-              orElse: () => null,
-            );
+    final selectedCategory = _categories
+        .where((category) => category.id == _selectedCategoryId)
+        .cast<SupplierCategoryEntity?>()
+        .firstWhere((category) => category != null, orElse: () => null);
 
-  setState(() {
-    _isSavingProduct = true;
-  });
-
-  try {
-    final ProductEntity product;
-
-    if (widget.isEditMode) {
-      product = await _productRepository.updateProduct(
-        productId: widget.productToEdit!.id,
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim(),
-        categoryId: selectedCategory.id,
-        subCategoryId: selectedSubCategory?.id,
-        price: double.parse(_priceController.text.trim()),
-        minimumOrderQuantity: int.parse(
-          _minimumOrderQuantityController.text.trim(),
-        ),
-        status: _selectedStatus,
-
-        // If supplier selected a new local image, this path will be uploaded.
-        // If not, this remains the old backend image path from productToEdit.
-        imagePath: _selectedImagePath,
-
-        // Important:
-        // Keep old product image when editing without selecting a new image.
-        existingImageUrl: widget.productToEdit?.imagePath,
-      );
-    } else {
-      product = await _productRepository.createProduct(
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim(),
-        categoryId: selectedCategory.id,
-        subCategoryId: selectedSubCategory?.id,
-        price: double.parse(_priceController.text.trim()),
-        minimumOrderQuantity: int.parse(
-          _minimumOrderQuantityController.text.trim(),
-        ),
-        status: _selectedStatus,
-        imagePath: _selectedImagePath,
-      );
+    if (selectedCategory == null) {
+      AppToast.error(context, context.l10n.selectedCategoryNotFound);
+      return;
     }
 
-    if (!mounted) return;
+    final selectedSubCategory = _selectedSubCategoryId == null
+        ? null
+        : _subCategories
+              .where((subCategory) => subCategory.id == _selectedSubCategoryId)
+              .cast<SupplierSubCategoryEntity?>()
+              .firstWhere(
+                (subCategory) => subCategory != null,
+                orElse: () => null,
+              );
 
     setState(() {
-      _isSavingProduct = false;
+      _isSavingProduct = true;
     });
 
-    context.pop(product);
-  } catch (e) {
-    if (!mounted) return;
+    try {
+      final ProductEntity product;
 
-    setState(() {
-      _isSavingProduct = false;
-    });
+      if (widget.isEditMode) {
+        product = await _productRepository.updateProduct(
+          productId: widget.productToEdit!.id,
+          name: _nameController.text.trim(),
+          description: _descriptionController.text.trim(),
+          categoryId: selectedCategory.id,
+          subCategoryId: selectedSubCategory?.id,
+          price: double.parse(_priceController.text.trim()),
+          minimumOrderQuantity: int.parse(
+            _minimumOrderQuantityController.text.trim(),
+          ),
+          status: _selectedStatus,
 
-    _showError(e);
+          // If supplier selected a new local image, this path will be uploaded.
+          // If not, this remains the old backend image path from productToEdit.
+          imagePath: _selectedImagePath,
+
+          // Important:
+          // Keep old product image when editing without selecting a new image.
+          existingImageUrl: widget.productToEdit?.imagePath,
+        );
+      } else {
+        product = await _productRepository.createProduct(
+          name: _nameController.text.trim(),
+          description: _descriptionController.text.trim(),
+          categoryId: selectedCategory.id,
+          subCategoryId: selectedSubCategory?.id,
+          price: double.parse(_priceController.text.trim()),
+          minimumOrderQuantity: int.parse(
+            _minimumOrderQuantityController.text.trim(),
+          ),
+          status: _selectedStatus,
+          imagePath: _selectedImagePath,
+        );
+
+        if (initialStockAssignments.isNotEmpty) {
+          try {
+            await _assignInitialStockToBranches(
+              productId: product.id,
+              assignments: initialStockAssignments,
+            );
+          } catch (stockError) {
+            if (!mounted) return;
+
+            setState(() {
+              _isSavingProduct = false;
+            });
+
+            AppToast.warning(
+              context,
+              'Product was saved, but initial branch stock was not fully saved. Please open Product Branch Stock to complete it.',
+            );
+
+            context.pop(product);
+            return;
+          }
+        }
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _isSavingProduct = false;
+      });
+
+      context.pop(product);
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isSavingProduct = false;
+      });
+
+      _showError(e);
+    }
   }
-}
   void _showError(Object error) {
-    final message = error is AppException
-        ? error.message
-        : error.toString().replaceFirst('Exception: ', '');
+    final message = AppErrorMapper.toMessage(error);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AppToast.error(context, message);
   }
 
   @override
@@ -591,7 +829,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final title = widget.isEditMode ? context.l10n.editProductTitle : context.l10n.addProductTitle;
     final buttonText = widget.isEditMode ? context.l10n.updateProductButton : context.l10n.saveProductButton;
 
-    return Scaffold(
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaler: const TextScaler.linear(1.0),
+      ),
+      child: Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
         backgroundColor: AppThemeTokens.background,
@@ -800,13 +1042,470 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ],
                   ),
                   SizedBox(height: 18),
-                  _InventoryManagedInfoCard(
-                    isEditMode: widget.isEditMode,
-                    product: widget.productToEdit,
-                  ),
+                  if (widget.isEditMode)
+                    _InventoryManagedInfoCard(
+                      isEditMode: widget.isEditMode,
+                      product: widget.productToEdit,
+                    )
+                  else
+                    _InitialBranchStockSection(
+                      branches: _initialStockBranches,
+                      visibleBranches: _visibleInitialStockBranches(),
+                      controllers: _initialStockControllers,
+                      quickStockController: _quickInitialStockController,
+                      searchController: _branchStockSearchController,
+                      selectedBranchIds: _selectedInitialStockBranchIds,
+                      totalStock: _initialStockTotal(),
+                      isAdvancedMode: _isAdvancedInitialStockMode,
+                      isLoading: _isLoadingInitialStockBranches,
+                      onReload: _loadInitialStockBranches,
+                      onModeChanged: _setInitialStockMode,
+                      onApplyQuickStock: _applyQuickInitialStockToAllBranches,
+                      onClear: _clearInitialStockSelection,
+                      onBranchSelected: _toggleInitialStockBranch,
+                    ),
                 ],
               ),
             ),
+      ),
+    );
+  }
+}
+
+
+
+class _InitialBranchStockSection extends StatefulWidget {
+  final List<BranchEntity> branches;
+  final List<BranchEntity> visibleBranches;
+  final Map<String, TextEditingController> controllers;
+  final TextEditingController quickStockController;
+  final TextEditingController searchController;
+  final Set<String> selectedBranchIds;
+  final int totalStock;
+  final bool isAdvancedMode;
+  final bool isLoading;
+  final VoidCallback onReload;
+  final ValueChanged<bool> onModeChanged;
+  final VoidCallback onApplyQuickStock;
+  final VoidCallback onClear;
+  final void Function(String branchId, bool selected) onBranchSelected;
+
+  _InitialBranchStockSection({
+    required this.branches,
+    required this.visibleBranches,
+    required this.controllers,
+    required this.quickStockController,
+    required this.searchController,
+    required this.selectedBranchIds,
+    required this.totalStock,
+    required this.isAdvancedMode,
+    required this.isLoading,
+    required this.onReload,
+    required this.onModeChanged,
+    required this.onApplyQuickStock,
+    required this.onClear,
+    required this.onBranchSelected,
+  });
+
+  @override
+  State<_InitialBranchStockSection> createState() =>
+      _InitialBranchStockSectionState();
+}
+
+class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> {
+  static const String _allBranchesValue = '__all_branches__';
+
+  bool _isOpen = false;
+  String _selectedTarget = _allBranchesValue;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.quickStockController.addListener(_safeRefresh);
+  }
+
+  @override
+  void didUpdateWidget(covariant _InitialBranchStockSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.quickStockController != widget.quickStockController) {
+      oldWidget.quickStockController.removeListener(_safeRefresh);
+      widget.quickStockController.addListener(_safeRefresh);
+    }
+    if (_selectedTarget != _allBranchesValue &&
+        !widget.branches.any((branch) => branch.id == _selectedTarget)) {
+      _selectedTarget = _allBranchesValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.quickStockController.removeListener(_safeRefresh);
+    super.dispose();
+  }
+
+  void _safeRefresh() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  int? _typedQuantity() {
+    final value = widget.quickStockController.text.trim();
+    if (value.isEmpty) return null;
+    final parsed = int.tryParse(value);
+    if (parsed == null || parsed <= 0) return null;
+    return parsed;
+  }
+
+  void _applyStock() {
+    final quantity = _typedQuantity();
+    if (quantity == null) {
+      AppToast.error(context, 'Please enter stock greater than 0');
+      return;
+    }
+
+    if (widget.branches.isEmpty) {
+      widget.onReload();
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+
+    if (_selectedTarget == _allBranchesValue) {
+      widget.onApplyQuickStock();
+    } else {
+      // When the supplier changes from "All branches" to one branch,
+      // the previous all-branch stock must be replaced, not kept.
+      // Clear every previous assignment first, then prepare stock only
+      // for the selected branch.
+      widget.onClear();
+      widget.quickStockController.text = quantity.toString();
+      widget.onBranchSelected(_selectedTarget, true);
+      widget.controllers[_selectedTarget]?.text = quantity.toString();
+    }
+
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _clearStock() {
+    FocusScope.of(context).unfocus();
+    widget.onClear();
+    setState(() {
+      _selectedTarget = _allBranchesValue;
+    });
+  }
+
+  String _targetLabel(String value) {
+    if (value == _allBranchesValue) return 'All branches';
+    BranchEntity? branch;
+    for (final item in widget.branches) {
+      if (item.id == value) {
+        branch = item;
+        break;
+      }
+    }
+    if (branch == null) return 'Selected branch';
+    final location = branch.locationLabel.trim();
+    if (location.isEmpty) return branch.name;
+    return '${branch.name} • $location';
+  }
+
+  List<DropdownMenuItem<String>> _branchItems() {
+    final items = <DropdownMenuItem<String>>[
+      DropdownMenuItem<String>(
+        value: _allBranchesValue,
+        child: Text(
+          'All branches',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ];
+
+    for (final branch in widget.branches) {
+      items.add(
+        DropdownMenuItem<String>(
+          value: branch.id,
+          child: Text(
+            _targetLabel(branch.id),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+
+  List<BranchEntity> _selectedBranchesPreview() {
+    return widget.branches
+        .where((branch) => widget.selectedBranchIds.contains(branch.id))
+        .take(3)
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final hasStock = widget.selectedBranchIds.isNotEmpty && widget.totalStock > 0;
+    final quantity = _typedQuantity();
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 38,
+                width: 38,
+                decoration: BoxDecoration(
+                  color: primaryColor.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.inventory_2_outlined,
+                  size: 20,
+                  color: primaryColor,
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      hasStock
+                          ? 'Initial stock: ${widget.totalStock}'
+                          : 'Initial stock is optional',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w900,
+                        color: AppThemeTokens.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      hasStock
+                          ? '${widget.selectedBranchIds.length} branch${widget.selectedBranchIds.length == 1 ? '' : 'es'} selected'
+                          : 'Add stock now or update it later from Product Branch Stock.',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppThemeTokens.textSecondary,
+                        height: 1.25,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8),
+              TextButton(
+                onPressed: widget.isLoading
+                    ? null
+                    : () {
+                        FocusScope.of(context).unfocus();
+                        if (widget.branches.isEmpty) {
+                          widget.onReload();
+                          return;
+                        }
+                        setState(() => _isOpen = !_isOpen);
+                      },
+                style: TextButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  widget.isLoading
+                      ? 'Loading'
+                      : widget.branches.isEmpty
+                          ? 'Reload'
+                          : _isOpen
+                              ? 'Hide'
+                              : 'Set',
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (widget.isLoading) ...[
+            SizedBox(height: 12),
+            LinearProgressIndicator(minHeight: 3),
+          ],
+          if (_isOpen && !widget.isLoading && widget.branches.isNotEmpty) ...[
+            SizedBox(height: 14),
+            Text(
+              'Choose where this initial stock should be saved. Stock will still be stored in Branch Inventory, not inside Product.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: AppThemeTokens.textSecondary,
+                height: 1.35,
+              ),
+            ),
+            SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: _selectedTarget,
+              isExpanded: true,
+              items: _branchItems(),
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => _selectedTarget = value);
+              },
+              decoration: InputDecoration(
+                labelText: 'Stock target',
+                filled: true,
+                fillColor: AppThemeTokens.inputFill,
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: widget.quickStockController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: 'Stock quantity',
+                hintText: 'Example: 50',
+                prefixIcon: Icon(Icons.inventory_rounded, size: 20),
+                filled: true,
+                fillColor: AppThemeTokens.inputFill,
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+              ),
+            ),
+            SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: quantity == null ? null : _applyStock,
+                icon: Icon(Icons.check_rounded, size: 18),
+                label: Text(
+                  _selectedTarget == _allBranchesValue
+                      ? 'Apply to all branches'
+                      : 'Apply to selected branch',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: EdgeInsets.symmetric(vertical: 13),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+            ),
+          ],
+          if (hasStock) ...[
+            SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppThemeTokens.inputFill,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppThemeTokens.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.check_circle_rounded, size: 18, color: Colors.green),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '${widget.totalStock} total stock prepared',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w900,
+                            color: AppThemeTokens.textPrimary,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: _clearStock,
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Clear',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_selectedBranchesPreview().isNotEmpty) ...[
+                    SizedBox(height: 6),
+                    Text(
+                      _selectedBranchesPreview()
+                          .map((branch) => branch.name)
+                          .join(', '),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppThemeTokens.textSecondary,
+                        height: 1.25,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -962,13 +1661,35 @@ class _CategorySelector extends StatelessWidget {
     return _DropdownSection(
       label: context.l10n.categoryLabel,
       dropdown: DropdownButtonFormField<String>(
+        isExpanded: true,
         value: safeSelectedCategoryId,
         items: categories.map((category) {
           return DropdownMenuItem<String>(
             value: category.id,
-            child: Text(category.name),
+            child: Text(
+              category.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           );
         }).toList(),
+        selectedItemBuilder: (context) {
+          return categories.map((category) {
+            return Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                category.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: AppThemeTokens.textPrimary,
+                ),
+              ),
+            );
+          }).toList();
+        },
         onChanged: onChanged,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -1023,13 +1744,35 @@ class _SubCategorySelector extends StatelessWidget {
     return _DropdownSection(
       label: context.l10n.subCategoryLabel,
       dropdown: DropdownButtonFormField<String>(
+        isExpanded: true,
         value: safeSelectedSubCategoryId,
         items: subCategories.map((subCategory) {
           return DropdownMenuItem<String>(
             value: subCategory.id,
-            child: Text(subCategory.name),
+            child: Text(
+              subCategory.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           );
         }).toList(),
+        selectedItemBuilder: (context) {
+          return subCategories.map((subCategory) {
+            return Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                subCategory.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: AppThemeTokens.textPrimary,
+                ),
+              ),
+            );
+          }).toList();
+        },
         onChanged: isEnabled ? onChanged : null,
         decoration: _dropdownDecoration(
           isLoading
@@ -1163,7 +1906,9 @@ class _DropdownSection extends StatelessWidget {
                 icon: Icon(Icons.add, size: 18),
                 label: Text(
                   addButtonText,
-                  style: TextStyle(fontWeight: FontWeight.w800),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
                 ),
                 style: TextButton.styleFrom(
                   foregroundColor: onAddPressed == null
@@ -1176,7 +1921,9 @@ class _DropdownSection extends StatelessWidget {
                 icon: Icon(Icons.delete_outline, size: 18),
                 label: Text(
                   deleteButtonText,
-                  style: TextStyle(fontWeight: FontWeight.w800),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
                 ),
                 style: TextButton.styleFrom(
                   foregroundColor: onDeletePressed == null
@@ -1223,7 +1970,7 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
         borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
@@ -1235,7 +1982,7 @@ class _SectionCard extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 21,
+              fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppThemeTokens.textPrimary,
             ),

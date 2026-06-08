@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -92,7 +93,7 @@ class RetailerProductAiCubit extends Cubit<RetailerProductAiState> {
         ),
       );
     } catch (e) {
-      final message = e.toString().replaceFirst('Exception: ', '').trim();
+      final message = AppErrorMapper.toMessage(e).trim();
       final visibleMessage = message.isEmpty ? unavailableMessage : message;
 
       emit(

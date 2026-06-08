@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
@@ -1367,12 +1368,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-
-      final messenger = ScaffoldMessenger.maybeOf(context);
-      if (messenger == null) return;
-
-      messenger.clearSnackBars();
-      messenger.showSnackBar(SnackBar(content: Text(message)));
+      AppToast.info(context, message);
     });
   }
 

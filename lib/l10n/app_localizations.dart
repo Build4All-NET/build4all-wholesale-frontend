@@ -268,6 +268,42 @@ abstract class AppLocalizations {
   /// **'Logo URL'**
   String get logoUrl;
 
+  /// No description provided for @supplierLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Logo'**
+  String get supplierLogo;
+
+  /// No description provided for @uploadSupplierLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload supplier logo'**
+  String get uploadSupplierLogo;
+
+  /// No description provided for @tapToUploadLogoImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose JPG, PNG, or WEBP image'**
+  String get tapToUploadLogoImage;
+
+  /// No description provided for @changeLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Change logo'**
+  String get changeLogo;
+
+  /// No description provided for @removeLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove logo'**
+  String get removeLogo;
+
+  /// No description provided for @supplierLogoRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload your supplier logo'**
+  String get supplierLogoRequiredError;
+
   /// No description provided for @saveAndContinue.
   ///
   /// In en, this message translates to:
@@ -1233,6 +1269,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quick Actions'**
   String get supplierDashboardQuickActions;
+
+  /// No description provided for @supplierDashboardOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Here’s an overview of your business'**
+  String get supplierDashboardOverviewSubtitle;
 
   /// No description provided for @supplierPendingOrders.
   ///
@@ -6185,6 +6227,582 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone number was not updated because the verification code was not confirmed.'**
   String get phoneNotUpdatedCodeNotConfirmed;
+
+  /// No description provided for @paymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Methods'**
+  String get paymentMethods;
+
+  /// No description provided for @paymentMethodsHeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods offered to retailers'**
+  String get paymentMethodsHeaderTitle;
+
+  /// No description provided for @paymentMethodsHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the methods retailers can choose at checkout. Cash is fully ready; Stripe requires credentials setup first.'**
+  String get paymentMethodsHeaderSubtitle;
+
+  /// No description provided for @paymentMethodEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get paymentMethodEnabled;
+
+  /// No description provided for @paymentMethodDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get paymentMethodDisabled;
+
+  /// No description provided for @paymentMethodComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get paymentMethodComingSoon;
+
+  /// No description provided for @paymentMethodCredentialsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials required'**
+  String get paymentMethodCredentialsRequired;
+
+  /// No description provided for @paymentMethodsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment methods are available yet.'**
+  String get paymentMethodsEmpty;
+
+  /// No description provided for @paymentMethodConfigureStripe.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Stripe'**
+  String get paymentMethodConfigureStripe;
+
+  /// No description provided for @paymentMethodEditStripe.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Stripe Settings'**
+  String get paymentMethodEditStripe;
+
+  /// No description provided for @stripeConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Stripe'**
+  String get stripeConfigTitle;
+
+  /// No description provided for @stripeInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys are stored securely on the server and never exposed to retailers. Use test keys now and switch to live keys before going live.'**
+  String get stripeInfoBanner;
+
+  /// No description provided for @stripeEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Stripe for retailers'**
+  String get stripeEnableLabel;
+
+  /// No description provided for @stripeEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailers will be able to choose card payment via Stripe at checkout.'**
+  String get stripeEnableSubtitle;
+
+  /// No description provided for @stripeCredentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials'**
+  String get stripeCredentialsTitle;
+
+  /// No description provided for @stripeSecretKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret Key'**
+  String get stripeSecretKeyLabel;
+
+  /// No description provided for @stripeSecretKeyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-side key — never share this with anyone.'**
+  String get stripeSecretKeyHelper;
+
+  /// No description provided for @stripeSecretKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret key is required.'**
+  String get stripeSecretKeyRequired;
+
+  /// No description provided for @stripeSecretKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Must start with sk_'**
+  String get stripeSecretKeyInvalid;
+
+  /// No description provided for @stripePublishableKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishable Key'**
+  String get stripePublishableKeyLabel;
+
+  /// No description provided for @stripePublishableKeyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the app to complete the payment flow.'**
+  String get stripePublishableKeyHelper;
+
+  /// No description provided for @stripePublishableKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishable key is required.'**
+  String get stripePublishableKeyRequired;
+
+  /// No description provided for @stripePublishableKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Must start with pk_'**
+  String get stripePublishableKeyInvalid;
+
+  /// No description provided for @stripeWebhookSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook Secret (optional)'**
+  String get stripeWebhookSecretLabel;
+
+  /// No description provided for @stripeWebhookSecretHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Required later to receive payment confirmations from Stripe.'**
+  String get stripeWebhookSecretHelper;
+
+  /// No description provided for @stripeTestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get stripeTestButton;
+
+  /// No description provided for @stripeTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get stripeTesting;
+
+  /// No description provided for @stripeSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get stripeSaveButton;
+
+  /// No description provided for @stripeSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get stripeSaving;
+
+  /// No description provided for @stripeConfigSavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe configuration saved successfully.'**
+  String get stripeConfigSavedSuccessfully;
+
+  /// No description provided for @paymentMethodConfigurePayPal.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure PayPal'**
+  String get paymentMethodConfigurePayPal;
+
+  /// No description provided for @paymentMethodEditPayPal.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit PayPal Settings'**
+  String get paymentMethodEditPayPal;
+
+  /// No description provided for @payPalConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure PayPal'**
+  String get payPalConfigTitle;
+
+  /// No description provided for @payPalInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal is prepared for checkout, but real sandbox testing requires PayPal Developer credentials. If PayPal is not available in your country, keep it disabled or use credentials provided by the doctor.'**
+  String get payPalInfoBanner;
+
+  /// No description provided for @payPalEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable PayPal for retailers'**
+  String get payPalEnableLabel;
+
+  /// No description provided for @payPalEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailers will be able to choose PayPal at checkout once credentials are valid.'**
+  String get payPalEnableSubtitle;
+
+  /// No description provided for @payPalCredentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials'**
+  String get payPalCredentialsTitle;
+
+  /// No description provided for @payPalModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get payPalModeLabel;
+
+  /// No description provided for @payPalModeSandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Sandbox'**
+  String get payPalModeSandbox;
+
+  /// No description provided for @payPalModeLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get payPalModeLive;
+
+  /// No description provided for @payPalModeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Sandbox for testing and Live only before production.'**
+  String get payPalModeHelper;
+
+  /// No description provided for @payPalClientIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID'**
+  String get payPalClientIdLabel;
+
+  /// No description provided for @payPalClientIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal sandbox client ID'**
+  String get payPalClientIdHint;
+
+  /// No description provided for @payPalClientIdHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Create it from PayPal Developer Dashboard > Apps & Credentials.'**
+  String get payPalClientIdHelper;
+
+  /// No description provided for @payPalClientIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID is required.'**
+  String get payPalClientIdRequired;
+
+  /// No description provided for @payPalClientSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Secret'**
+  String get payPalClientSecretLabel;
+
+  /// No description provided for @payPalClientSecretHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal sandbox client secret'**
+  String get payPalClientSecretHint;
+
+  /// No description provided for @payPalClientSecretHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-side secret. Do not share it or commit it.'**
+  String get payPalClientSecretHelper;
+
+  /// No description provided for @payPalClientSecretRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret is required.'**
+  String get payPalClientSecretRequired;
+
+  /// No description provided for @payPalReturnUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Return URL'**
+  String get payPalReturnUrlLabel;
+
+  /// No description provided for @payPalReturnUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'For testing you can keep https://example.com/paypal/return.'**
+  String get payPalReturnUrlHelper;
+
+  /// No description provided for @payPalCancelUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel URL'**
+  String get payPalCancelUrlLabel;
+
+  /// No description provided for @payPalCancelUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'For testing you can keep https://example.com/paypal/cancel.'**
+  String get payPalCancelUrlHelper;
+
+  /// No description provided for @payPalBrandNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand Name'**
+  String get payPalBrandNameLabel;
+
+  /// No description provided for @payPalBrandNameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional name shown during PayPal checkout.'**
+  String get payPalBrandNameHelper;
+
+  /// No description provided for @payPalUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'URL is required.'**
+  String get payPalUrlRequired;
+
+  /// No description provided for @payPalUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid URL.'**
+  String get payPalUrlInvalid;
+
+  /// No description provided for @payPalTestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get payPalTestButton;
+
+  /// No description provided for @payPalTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get payPalTesting;
+
+  /// No description provided for @payPalSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get payPalSaveButton;
+
+  /// No description provided for @payPalSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get payPalSaving;
+
+  /// No description provided for @paymentMethodConfigureCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Credit / Debit Card'**
+  String get paymentMethodConfigureCard;
+
+  /// No description provided for @paymentMethodEditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Card Settings'**
+  String get paymentMethodEditCard;
+
+  /// No description provided for @paymentMethodCreditDebitCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit / Debit Card (Visa / Mastercard)'**
+  String get paymentMethodCreditDebitCardTitle;
+
+  /// No description provided for @mpgsConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Credit / Debit Card'**
+  String get mpgsConfigTitle;
+
+  /// No description provided for @mpgsInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure MPGS hosted checkout for Visa and Mastercard payments. Retailers will use this through checkout when they select Credit / Debit Card.'**
+  String get mpgsInfoBanner;
+
+  /// No description provided for @mpgsEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Credit / Debit Card for retailers'**
+  String get mpgsEnableLabel;
+
+  /// No description provided for @mpgsEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailers will be able to pay by Visa or Mastercard through hosted checkout.'**
+  String get mpgsEnableSubtitle;
+
+  /// No description provided for @mpgsCredentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway Credentials'**
+  String get mpgsCredentialsTitle;
+
+  /// No description provided for @mpgsModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get mpgsModeLabel;
+
+  /// No description provided for @mpgsModeTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get mpgsModeTest;
+
+  /// No description provided for @mpgsModeLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get mpgsModeLive;
+
+  /// No description provided for @mpgsModeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Test for sandbox credentials and Live only before production.'**
+  String get mpgsModeHelper;
+
+  /// No description provided for @mpgsMerchantIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant ID'**
+  String get mpgsMerchantIdLabel;
+
+  /// No description provided for @mpgsMerchantIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'MPGS merchant ID'**
+  String get mpgsMerchantIdHint;
+
+  /// No description provided for @mpgsMerchantIdHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the merchant ID provided by the doctor or acquiring bank.'**
+  String get mpgsMerchantIdHelper;
+
+  /// No description provided for @mpgsMerchantIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant ID is required.'**
+  String get mpgsMerchantIdRequired;
+
+  /// No description provided for @mpgsApiPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'API Password'**
+  String get mpgsApiPasswordLabel;
+
+  /// No description provided for @mpgsApiPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'MPGS API password'**
+  String get mpgsApiPasswordHint;
+
+  /// No description provided for @mpgsApiPasswordHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-side gateway password. Do not share it or commit it.'**
+  String get mpgsApiPasswordHelper;
+
+  /// No description provided for @mpgsApiPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API password is required.'**
+  String get mpgsApiPasswordRequired;
+
+  /// No description provided for @mpgsApiBaseUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'API Base URL'**
+  String get mpgsApiBaseUrlLabel;
+
+  /// No description provided for @mpgsApiBaseUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'For testing, use https://test-bobsal.gateway.mastercard.com.'**
+  String get mpgsApiBaseUrlHelper;
+
+  /// No description provided for @mpgsCurrencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get mpgsCurrencyLabel;
+
+  /// No description provided for @mpgsCurrencyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a 3-letter ISO code such as USD.'**
+  String get mpgsCurrencyHelper;
+
+  /// No description provided for @mpgsCurrencyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 3-letter currency code.'**
+  String get mpgsCurrencyRequired;
+
+  /// No description provided for @mpgsReturnUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Return URL'**
+  String get mpgsReturnUrlLabel;
+
+  /// No description provided for @mpgsReturnUrlHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'For local testing, keep http://localhost:8083/api/public/mpgs/return.'**
+  String get mpgsReturnUrlHelper;
+
+  /// No description provided for @mpgsBrandNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand Name'**
+  String get mpgsBrandNameLabel;
+
+  /// No description provided for @mpgsBrandNameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional name shown on the hosted checkout page.'**
+  String get mpgsBrandNameHelper;
+
+  /// No description provided for @mpgsUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'URL is required.'**
+  String get mpgsUrlRequired;
+
+  /// No description provided for @mpgsUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid URL.'**
+  String get mpgsUrlInvalid;
+
+  /// No description provided for @mpgsTestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get mpgsTestButton;
+
+  /// No description provided for @mpgsTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get mpgsTesting;
+
+  /// No description provided for @mpgsSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get mpgsSaveButton;
+
+  /// No description provided for @mpgsSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get mpgsSaving;
 }
 
 class _AppLocalizationsDelegate

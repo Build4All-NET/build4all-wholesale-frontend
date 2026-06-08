@@ -16,7 +16,7 @@ class CreateSupplierProfileUseCase {
     required String city,
     required String businessType,
     required String description,
-    required String logoUrl,
+    required String logoImagePath,
   }) {
     return repository.createSupplierProfile(
       userId: userId,
@@ -28,7 +28,7 @@ class CreateSupplierProfileUseCase {
       city: city,
       businessType: businessType,
       description: description,
-      logoUrl: logoUrl,
+      logoImagePath: logoImagePath,
     );
   }
 }

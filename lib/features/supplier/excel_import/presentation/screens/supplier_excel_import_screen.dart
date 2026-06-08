@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../domain/entities/supplier_excel_section.dart';
@@ -12,8 +13,8 @@ import '../utils/supplier_excel_import_i18n.dart';
 import '../widgets/supplier_excel_expected_columns_card.dart';
 import '../widgets/supplier_excel_import_result_card.dart';
 import '../widgets/supplier_excel_instruction_card.dart';
-import '../widgets/supplier_excel_template_card.dart';
 import '../widgets/supplier_excel_preview_list.dart';
+import '../widgets/supplier_excel_template_card.dart';
 import '../widgets/supplier_excel_upload_card.dart';
 import '../widgets/supplier_excel_validation_summary_card.dart';
 
@@ -35,32 +36,22 @@ class _SupplierExcelImportView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = SupplierExcelImportI18n(context);
-    final primary = Theme.of(context).colorScheme.primary;
 
     return BlocConsumer<SupplierExcelImportBloc, SupplierExcelImportState>(
       listener: (context, state) {
         if (state.error != null && state.error!.trim().isNotEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!),
-              backgroundColor: AppThemeTokens.error,
-            ),
-          );
+          AppToast.error(context, state.error!);
         }
 
-        if (state.successMessage != null) {
+        if (state.successMessage != null &&
+            state.successMessage!.trim().isNotEmpty) {
           final message = state.successMessage == 'supplierExcelTemplateDownloaded'
               ? l.templateDownloaded
               : state.successMessage == 'supplierExcelImportPartial'
                   ? l.importPartial
                   : l.importSuccess;
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: primary,
-            ),
-          );
+          AppToast.success(context, message);
         }
       },
       builder: (context, state) {
@@ -144,7 +135,6 @@ class _ImportBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = SupplierExcelImportI18n(context);
-    final primary = Theme.of(context).colorScheme.primary;
 
     return SafeArea(
       child: Container(
@@ -208,9 +198,10 @@ class _ImportBottomBar extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: AppThemeTokens.textSecondary.withOpacity(0.25),
+                  disabledBackgroundColor:
+                      AppThemeTokens.textSecondary.withOpacity(0.25),
                   disabledForegroundColor: Colors.white,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 14),

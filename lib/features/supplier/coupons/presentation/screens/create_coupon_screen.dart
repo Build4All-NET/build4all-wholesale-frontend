@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -381,9 +382,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
 
     if (_branchScope == CouponBranchScope.selectedBranches &&
         _selectedBranchIds.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierPleaseSelectAtLeastOneBranch)),
-      );
+      AppToast.error(context, context.l10n.supplierPleaseSelectAtLeastOneBranch);
       return;
     }
 
@@ -443,27 +442,20 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     return BlocListener<CouponsBloc, CouponsState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
-
+          AppToast.error(context, state.errorMessage!);
 
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
+          return;
         }
 
-
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.successMessage!)),
-          );
-
+          AppToast.success(context, state.successMessage!);
 
           context.read<CouponsBloc>().add(
                 const ClearCouponMessageRequested(),
               );
-
 
           if (_isEditMode) {
             context.go('/supplier-coupons');
@@ -867,8 +859,9 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                               ),
                               Switch(
                                 value: _active,
-                                thumbColor: WidgetStateProperty.all(Colors.white),
+                                activeThumbColor: Colors.white,
                                 activeTrackColor: primary,
+                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1049,7 +1042,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<CouponDiscountType>(
-      value: value,
+      initialValue: value,
       items: CouponDiscountType.values
           .map(
             (type) => DropdownMenuItem<CouponDiscountType>(
@@ -1084,7 +1077,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<CouponBranchScope>(
-      value: value,
+      initialValue: value,
       items: CouponBranchScope.values
           .map(
             (scope) => DropdownMenuItem<CouponBranchScope>(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,9 +85,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
     final product = _productNameController.text.trim();
 
     if (product.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.rfqAiProductNameRequired)));
+      AppToast.error(context, l10n.rfqAiProductNameRequired);
       return;
     }
 
@@ -171,10 +170,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_deadlineDate == null) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.rfqDeadlineRequired)));
+      AppToast.error(context, l10n.rfqDeadlineRequired);
       return;
     }
 
@@ -299,10 +295,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
     return BlocConsumer<RetailerRfqCubit, RetailerRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          AppToast.error(context, state.errorMessage!);
           context.read<RetailerRfqCubit>().clearMessages();
         }
       },

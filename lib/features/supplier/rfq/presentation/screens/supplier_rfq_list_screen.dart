@@ -10,6 +10,7 @@ import '../cubit/supplier_rfq_cubit.dart';
 import '../cubit/supplier_rfq_state.dart';
 import '../utils/supplier_rfq_i18n.dart';
 import '../widgets/supplier_rfq_card.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 class SupplierRfqListScreen extends StatelessWidget {
   const SupplierRfqListScreen({super.key});
@@ -48,17 +49,14 @@ class _SupplierRfqListViewState extends State<_SupplierRfqListView> {
     return BlocConsumer<SupplierRfqCubit, SupplierRfqState>(
       listener: (context, state) {
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.error(context, state.errorMessage!);
           context.read<SupplierRfqCubit>().clearMessages();
         }
 
         if (state.successMessage != null && state.successMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(SupplierRfqI18n(context).t(state.successMessage!))),
+          AppToast.success(
+            context,
+            SupplierRfqI18n(context).t(state.successMessage!),
           );
           context.read<SupplierRfqCubit>().clearMessages();
         }

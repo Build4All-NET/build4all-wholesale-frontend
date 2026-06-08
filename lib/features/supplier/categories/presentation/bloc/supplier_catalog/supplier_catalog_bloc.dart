@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
+
 import '../../../domain/usecases/create_category_usecase.dart';
 import '../../../domain/usecases/create_subcategory_usecase.dart';
 import '../../../domain/usecases/delete_category_usecase.dart';
@@ -247,6 +249,6 @@ class SupplierCatalogBloc
   }
 
   String _cleanError(Object error) {
-    return error.toString().replaceFirst('Exception: ', '');
+    return AppErrorMapper.toMessage(error);
   }
 }

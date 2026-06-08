@@ -94,6 +94,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logoUrl => 'Logo URL';
 
   @override
+  String get supplierLogo => 'Supplier Logo';
+
+  @override
+  String get uploadSupplierLogo => 'Upload supplier logo';
+
+  @override
+  String get tapToUploadLogoImage => 'Tap to choose JPG, PNG, or WEBP image';
+
+  @override
+  String get changeLogo => 'Change logo';
+
+  @override
+  String get removeLogo => 'Remove logo';
+
+  @override
+  String get supplierLogoRequiredError => 'Please upload your supplier logo';
+
+  @override
   String get saveAndContinue => 'Save and Continue';
 
   @override
@@ -591,6 +609,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supplierDashboardQuickActions => 'Quick Actions';
+
+  @override
+  String get supplierDashboardOverviewSubtitle =>
+      'Here’s an overview of your business';
 
   @override
   String get supplierPendingOrders => 'Pending Orders';
@@ -3332,4 +3354,317 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get phoneNotUpdatedCodeNotConfirmed =>
       'Phone number was not updated because the verification code was not confirmed.';
+
+  @override
+  String get paymentMethods => 'Payment Methods';
+
+  @override
+  String get paymentMethodsHeaderTitle =>
+      'Payment methods offered to retailers';
+
+  @override
+  String get paymentMethodsHeaderSubtitle =>
+      'Enable the methods retailers can choose at checkout. Cash is fully ready; Stripe requires credentials setup first.';
+
+  @override
+  String get paymentMethodEnabled => 'Enabled';
+
+  @override
+  String get paymentMethodDisabled => 'Disabled';
+
+  @override
+  String get paymentMethodComingSoon => 'Coming soon';
+
+  @override
+  String get paymentMethodCredentialsRequired => 'Credentials required';
+
+  @override
+  String get paymentMethodsEmpty => 'No payment methods are available yet.';
+
+  @override
+  String get paymentMethodConfigureStripe => 'Configure Stripe';
+
+  @override
+  String get paymentMethodEditStripe => 'Edit Stripe Settings';
+
+  @override
+  String get stripeConfigTitle => 'Configure Stripe';
+
+  @override
+  String get stripeInfoBanner =>
+      'Keys are stored securely on the server and never exposed to retailers. Use test keys now and switch to live keys before going live.';
+
+  @override
+  String get stripeEnableLabel => 'Enable Stripe for retailers';
+
+  @override
+  String get stripeEnableSubtitle =>
+      'Retailers will be able to choose card payment via Stripe at checkout.';
+
+  @override
+  String get stripeCredentialsTitle => 'Credentials';
+
+  @override
+  String get stripeSecretKeyLabel => 'Secret Key';
+
+  @override
+  String get stripeSecretKeyHelper =>
+      'Server-side key — never share this with anyone.';
+
+  @override
+  String get stripeSecretKeyRequired => 'Secret key is required.';
+
+  @override
+  String get stripeSecretKeyInvalid => 'Must start with sk_';
+
+  @override
+  String get stripePublishableKeyLabel => 'Publishable Key';
+
+  @override
+  String get stripePublishableKeyHelper =>
+      'Sent to the app to complete the payment flow.';
+
+  @override
+  String get stripePublishableKeyRequired => 'Publishable key is required.';
+
+  @override
+  String get stripePublishableKeyInvalid => 'Must start with pk_';
+
+  @override
+  String get stripeWebhookSecretLabel => 'Webhook Secret (optional)';
+
+  @override
+  String get stripeWebhookSecretHelper =>
+      'Required later to receive payment confirmations from Stripe.';
+
+  @override
+  String get stripeTestButton => 'Test';
+
+  @override
+  String get stripeTesting => 'Testing...';
+
+  @override
+  String get stripeSaveButton => 'Save Settings';
+
+  @override
+  String get stripeSaving => 'Saving...';
+
+  @override
+  String get stripeConfigSavedSuccessfully =>
+      'Stripe configuration saved successfully.';
+
+  @override
+  String get paymentMethodConfigurePayPal => 'Configure PayPal';
+
+  @override
+  String get paymentMethodEditPayPal => 'Edit PayPal Settings';
+
+  @override
+  String get payPalConfigTitle => 'Configure PayPal';
+
+  @override
+  String get payPalInfoBanner =>
+      'PayPal is prepared for checkout, but real sandbox testing requires PayPal Developer credentials. If PayPal is not available in your country, keep it disabled or use credentials provided by the doctor.';
+
+  @override
+  String get payPalEnableLabel => 'Enable PayPal for retailers';
+
+  @override
+  String get payPalEnableSubtitle =>
+      'Retailers will be able to choose PayPal at checkout once credentials are valid.';
+
+  @override
+  String get payPalCredentialsTitle => 'Credentials';
+
+  @override
+  String get payPalModeLabel => 'Mode';
+
+  @override
+  String get payPalModeSandbox => 'Sandbox';
+
+  @override
+  String get payPalModeLive => 'Live';
+
+  @override
+  String get payPalModeHelper =>
+      'Use Sandbox for testing and Live only before production.';
+
+  @override
+  String get payPalClientIdLabel => 'Client ID';
+
+  @override
+  String get payPalClientIdHint => 'PayPal sandbox client ID';
+
+  @override
+  String get payPalClientIdHelper =>
+      'Create it from PayPal Developer Dashboard > Apps & Credentials.';
+
+  @override
+  String get payPalClientIdRequired => 'Client ID is required.';
+
+  @override
+  String get payPalClientSecretLabel => 'Client Secret';
+
+  @override
+  String get payPalClientSecretHint => 'PayPal sandbox client secret';
+
+  @override
+  String get payPalClientSecretHelper =>
+      'Server-side secret. Do not share it or commit it.';
+
+  @override
+  String get payPalClientSecretRequired => 'Client secret is required.';
+
+  @override
+  String get payPalReturnUrlLabel => 'Return URL';
+
+  @override
+  String get payPalReturnUrlHelper =>
+      'For testing you can keep https://example.com/paypal/return.';
+
+  @override
+  String get payPalCancelUrlLabel => 'Cancel URL';
+
+  @override
+  String get payPalCancelUrlHelper =>
+      'For testing you can keep https://example.com/paypal/cancel.';
+
+  @override
+  String get payPalBrandNameLabel => 'Brand Name';
+
+  @override
+  String get payPalBrandNameHelper =>
+      'Optional name shown during PayPal checkout.';
+
+  @override
+  String get payPalUrlRequired => 'URL is required.';
+
+  @override
+  String get payPalUrlInvalid => 'Enter a valid URL.';
+
+  @override
+  String get payPalTestButton => 'Test';
+
+  @override
+  String get payPalTesting => 'Testing...';
+
+  @override
+  String get payPalSaveButton => 'Save Settings';
+
+  @override
+  String get payPalSaving => 'Saving...';
+
+  @override
+  String get paymentMethodConfigureCard => 'Configure Credit / Debit Card';
+
+  @override
+  String get paymentMethodEditCard => 'Edit Card Settings';
+
+  @override
+  String get paymentMethodCreditDebitCardTitle =>
+      'Credit / Debit Card (Visa / Mastercard)';
+
+  @override
+  String get mpgsConfigTitle => 'Configure Credit / Debit Card';
+
+  @override
+  String get mpgsInfoBanner =>
+      'Configure MPGS hosted checkout for Visa and Mastercard payments. Retailers will use this through checkout when they select Credit / Debit Card.';
+
+  @override
+  String get mpgsEnableLabel => 'Enable Credit / Debit Card for retailers';
+
+  @override
+  String get mpgsEnableSubtitle =>
+      'Retailers will be able to pay by Visa or Mastercard through hosted checkout.';
+
+  @override
+  String get mpgsCredentialsTitle => 'Gateway Credentials';
+
+  @override
+  String get mpgsModeLabel => 'Mode';
+
+  @override
+  String get mpgsModeTest => 'Test';
+
+  @override
+  String get mpgsModeLive => 'Live';
+
+  @override
+  String get mpgsModeHelper =>
+      'Use Test for sandbox credentials and Live only before production.';
+
+  @override
+  String get mpgsMerchantIdLabel => 'Merchant ID';
+
+  @override
+  String get mpgsMerchantIdHint => 'MPGS merchant ID';
+
+  @override
+  String get mpgsMerchantIdHelper =>
+      'Use the merchant ID provided by the doctor or acquiring bank.';
+
+  @override
+  String get mpgsMerchantIdRequired => 'Merchant ID is required.';
+
+  @override
+  String get mpgsApiPasswordLabel => 'API Password';
+
+  @override
+  String get mpgsApiPasswordHint => 'MPGS API password';
+
+  @override
+  String get mpgsApiPasswordHelper =>
+      'Server-side gateway password. Do not share it or commit it.';
+
+  @override
+  String get mpgsApiPasswordRequired => 'API password is required.';
+
+  @override
+  String get mpgsApiBaseUrlLabel => 'API Base URL';
+
+  @override
+  String get mpgsApiBaseUrlHelper =>
+      'For testing, use https://test-bobsal.gateway.mastercard.com.';
+
+  @override
+  String get mpgsCurrencyLabel => 'Currency';
+
+  @override
+  String get mpgsCurrencyHelper => 'Use a 3-letter ISO code such as USD.';
+
+  @override
+  String get mpgsCurrencyRequired => 'Enter a valid 3-letter currency code.';
+
+  @override
+  String get mpgsReturnUrlLabel => 'Return URL';
+
+  @override
+  String get mpgsReturnUrlHelper =>
+      'For local testing, keep http://localhost:8083/api/public/mpgs/return.';
+
+  @override
+  String get mpgsBrandNameLabel => 'Brand Name';
+
+  @override
+  String get mpgsBrandNameHelper =>
+      'Optional name shown on the hosted checkout page.';
+
+  @override
+  String get mpgsUrlRequired => 'URL is required.';
+
+  @override
+  String get mpgsUrlInvalid => 'Enter a valid URL.';
+
+  @override
+  String get mpgsTestButton => 'Test';
+
+  @override
+  String get mpgsTesting => 'Testing...';
+
+  @override
+  String get mpgsSaveButton => 'Save Settings';
+
+  @override
+  String get mpgsSaving => 'Saving...';
 }
