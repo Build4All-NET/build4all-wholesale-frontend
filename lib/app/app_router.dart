@@ -9,11 +9,11 @@ import '../features/auth/presentation/screens/retailer_signup_screen.dart';
 import '../features/auth/presentation/screens/retailer_verify_code_screen.dart';
 import '../features/auth/presentation/screens/retailer_complete_profile_screen.dart';
 import '../features/auth/presentation/screens/complete_retailer_profile_screen.dart';
-
+import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/data/models/retailer_home_model.dart';
 import '../features/dashboard/presentation/screens/retailer_all_categories_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_banner_target_screen.dart';
-import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
+
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';

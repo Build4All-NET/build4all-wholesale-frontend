@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
-import '../../../../core/extensions/l10n_extension.dart';
-import '../../../../core/theme/app_theme_tokens.dart';
-import '../../../../injection_container.dart';
+import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
+import 'package:build4all_wholesale_frontend/core/theme/app_theme_tokens.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/features/dashboard/presentation/widgets/retailer_product_image.dart';
+import 'package:build4all_wholesale_frontend/injection_container.dart';
+
 import '../../data/models/retailer_cart_model.dart';
 import '../cubit/retailer_cart_cubit.dart';
 import '../cubit/retailer_cart_state.dart';
-import '../widgets/retailer_product_image.dart';
 
 class RetailerCartScreen extends StatelessWidget {
   const RetailerCartScreen({super.key});
