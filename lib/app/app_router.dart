@@ -9,11 +9,11 @@ import '../features/auth/presentation/screens/retailer_signup_screen.dart';
 import '../features/auth/presentation/screens/retailer_verify_code_screen.dart';
 import '../features/auth/presentation/screens/retailer_complete_profile_screen.dart';
 import '../features/auth/presentation/screens/complete_retailer_profile_screen.dart';
-
+import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart';
 import '../features/dashboard/data/models/retailer_home_model.dart';
 import '../features/dashboard/presentation/screens/retailer_all_categories_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_banner_target_screen.dart';
-import '../features/dashboard/presentation/screens/retailer_cart_screen.dart';
+
 import '../features/dashboard/presentation/screens/retailer_category_products_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
@@ -78,6 +78,8 @@ import '../features/retailer/rfq/presentation/screens/edit_retailer_rfq_screen.d
 import '../features/retailer/orders/presentation/screens/retailer_order_tracking_screen.dart';
 import '../features/retailer/orders/presentation/screens/retailer_reorder_review_screen.dart';
 import '../features/retailer/orders/presentation/screens/retailer_orders_screen.dart';
+import '../features/retailer/checkout/presentation/screens/retailer_checkout_screen.dart';
+import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -144,7 +146,10 @@ class AppRouter {
         path: '/complete-retailer-profile',
         builder: (context, state) => const CompleteRetailerProfileScreen(),
       ),
-
+      GoRoute(
+        path: '/retailer-checkout',
+        builder: (context, state) => const RetailerCheckoutScreen(),
+      ),
       // =========================
       // SUPPLIER ROUTES
       // =========================

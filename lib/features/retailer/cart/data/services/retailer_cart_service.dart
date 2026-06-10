@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 
-import '../../../../core/exceptions/app_exception.dart';
-import '../../../../core/network/api_client.dart';
-import '../../../../core/network/api_config.dart';
+import 'package:build4all_wholesale_frontend/core/exceptions/app_exception.dart';
+import 'package:build4all_wholesale_frontend/core/network/api_client.dart';
+import 'package:build4all_wholesale_frontend/core/network/api_config.dart';
+import 'package:build4all_wholesale_frontend/features/dashboard/data/models/retailer_home_model.dart';
+
 import '../models/retailer_cart_model.dart';
-import '../models/retailer_home_model.dart';
 
 class RetailerCartService {
   final ApiClient projectApiClient;

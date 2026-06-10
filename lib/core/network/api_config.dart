@@ -78,8 +78,6 @@ class ApiConfig {
     return '/retailer/orders/$orderId/reorder';
   }
 
-
-
   // =========================
   // Supplier Payment Methods
   // =========================
@@ -352,4 +350,35 @@ class ApiConfig {
   // =========================
   static const String retailerRfqAiRequirements =
       '/retailer-ai/rfq/requirements';
+
+  // =========================
+  // Retailer Checkout
+  // =========================
+  static const String retailerCheckoutPreview = '/retailer/checkout/preview';
+
+  static String retailerOrderPaymentStart(int orderId) {
+    return '/retailer/orders/$orderId/payment/start';
+  }
+
+  static String retailerOrderPaymentStatus(int orderId) {
+    return '/retailer/orders/$orderId/payment';
+  }
+
+  static String retailerOrderStripeConfirm(int orderId) {
+    return '/retailer/orders/$orderId/payment/stripe-confirm';
+  }
+
+  static String retailerOrderMpgsConfirm(int orderId) {
+    return '/retailer/orders/$orderId/payment/mpgs-confirm';
+  }
+
+  static String retailerOrderPaypalConfirm(int orderId) {
+    return '/retailer/orders/$orderId/payment/paypal-confirm';
+  }
+
+  // =========================
+  // Retailer Checkout
+  // =========================
+  static const String retailerCheckoutEligibleBranches =
+      '/retailer/checkout/eligible-branches';
 }
