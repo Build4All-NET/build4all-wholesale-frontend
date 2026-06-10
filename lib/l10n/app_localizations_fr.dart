@@ -3429,13 +3429,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Activez les méthodes que le détaillant peut choisir. Le cash est prêt; Stripe nécessite d\'abord la configuration des identifiants.';
 
   @override
-  String get paymentMethodEnabled => 'Activé';
+  String get paymentMethodEnabled => 'Disponible';
 
   @override
-  String get paymentMethodDisabled => 'Désactivé';
+  String get paymentMethodDisabled => 'Indisponible';
 
   @override
-  String get paymentMethodComingSoon => 'Plus tard';
+  String get paymentMethodComingSoon => 'Bientôt disponible';
 
   @override
   String get paymentMethodCredentialsRequired => 'Identifiants requis';
@@ -3623,8 +3623,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paymentMethodEditCard => 'Modifier les paramètres carte';
 
   @override
-  String get paymentMethodCreditDebitCardTitle =>
-      'Carte crédit / débit (Visa / Mastercard)';
+  String get paymentMethodCreditDebitCardTitle => 'Carte de crédit / débit';
 
   @override
   String get mpgsConfigTitle => 'Configurer carte crédit / débit';
@@ -3732,4 +3731,103 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mpgsSaving => 'Enregistrement...';
+
+  @override
+  String get checkoutTitle => 'Paiement';
+
+  @override
+  String get checkoutBranchId => 'ID de la branche *';
+
+  @override
+  String get checkoutBranchIdHint => 'Saisir l’ID de la branche de préparation';
+
+  @override
+  String get checkoutBranchRequired => 'L’ID de la branche est requis';
+
+  @override
+  String get checkoutBranchIdTemporaryNote =>
+      'Champ temporaire : la sélection de branche sera remplacée par un vrai sélecteur lorsque l’endpoint retailer des branches sera ajouté.';
+
+  @override
+  String get checkoutNotes => 'Notes de commande';
+
+  @override
+  String get checkoutNotesHint => 'Notes optionnelles pour le fournisseur';
+
+  @override
+  String get checkoutPreviewOrder => 'Prévisualiser la commande';
+
+  @override
+  String get checkoutLoadingPreview => 'Chargement de l’aperçu...';
+
+  @override
+  String get checkoutPreviewRequired => 'Prévisualisez d’abord votre commande';
+
+  @override
+  String get checkoutPreviewPlaceholderTitle => 'Prévisualiser le paiement';
+
+  @override
+  String get checkoutPreviewPlaceholderMessage =>
+      'Saisissez les informations de livraison, puis prévisualisez pour calculer la livraison, la taxe, les promotions et le total final.';
+
+  @override
+  String get checkoutItems => 'Articles du paiement';
+
+  @override
+  String get checkoutShippingMethod => 'Méthode de livraison';
+
+  @override
+  String get checkoutNoShippingMethods =>
+      'Aucune méthode de livraison n’est disponible pour cette adresse et cette branche.';
+
+  @override
+  String get checkoutMinimumOrder => 'Commande minimale';
+
+  @override
+  String get checkoutPromotionDiscount => 'Remise promotionnelle';
+
+  @override
+  String get checkoutTax => 'Taxe';
+
+  @override
+  String get checkoutPlaceOrder => 'Passer la commande';
+
+  @override
+  String get checkoutSelectPaymentMethod =>
+      'Veuillez sélectionner un moyen de paiement';
+
+  @override
+  String get checkoutOrderCreated => 'Commande créée';
+
+  @override
+  String get checkoutCashPendingMessage =>
+      'Votre commande a été passée avec succès. Le paiement en espèces attend la confirmation du fournisseur.';
+
+  @override
+  String get checkoutStripeReadyMessage =>
+      'Votre commande a été créée. Le paiement Stripe est prêt. L’intégration Payment Sheet sera connectée ensuite.';
+
+  @override
+  String get checkoutMpgsReadyMessage =>
+      'Votre commande a été créée. Le paiement par carte via la page hébergée est préparé et encore en test.';
+
+  @override
+  String get checkoutPaymentPreparedMessage =>
+      'Votre commande a été créée et le paiement a été préparé.';
+
+  @override
+  String get checkoutPaymentPrepared => 'Paiement préparé';
+
+  @override
+  String get checkoutFulfillmentBranch => 'Branche de préparation *';
+
+  @override
+  String get checkoutSelectBranch => 'Sélectionner la branche de préparation';
+
+  @override
+  String get checkoutSearchBranch => 'Rechercher une branche';
+
+  @override
+  String get checkoutNoEligibleBranches =>
+      'Aucune branche ne peut préparer tous les articles du panier.';
 }
