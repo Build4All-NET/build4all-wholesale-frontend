@@ -3329,7 +3329,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get paymentCashOnDelivery => 'Cash on delivery';
+  String get paymentCashOnDelivery => 'Cash on Delivery';
 
   @override
   String get paymentCard => 'Card payment';
@@ -3367,10 +3367,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enable the methods retailers can choose at checkout. Cash is fully ready; Stripe requires credentials setup first.';
 
   @override
-  String get paymentMethodEnabled => 'Enabled';
+  String get paymentMethodEnabled => 'Available';
 
   @override
-  String get paymentMethodDisabled => 'Disabled';
+  String get paymentMethodDisabled => 'Unavailable';
 
   @override
   String get paymentMethodComingSoon => 'Coming soon';
@@ -3561,8 +3561,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentMethodEditCard => 'Edit Card Settings';
 
   @override
-  String get paymentMethodCreditDebitCardTitle =>
-      'Credit / Debit Card (Visa / Mastercard)';
+  String get paymentMethodCreditDebitCardTitle => 'Credit / Debit Card';
 
   @override
   String get mpgsConfigTitle => 'Configure Credit / Debit Card';
@@ -3667,4 +3666,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mpgsSaving => 'Saving...';
+
+  @override
+  String get checkoutTitle => 'Checkout';
+
+  @override
+  String get checkoutBranchId => 'Branch ID *';
+
+  @override
+  String get checkoutBranchIdHint => 'Enter fulfillment branch ID';
+
+  @override
+  String get checkoutBranchRequired => 'Branch ID is required';
+
+  @override
+  String get checkoutBranchIdTemporaryNote =>
+      'Temporary field: branch selection will be replaced by a proper branch picker when the retailer branch endpoint is added.';
+
+  @override
+  String get checkoutNotes => 'Order Notes';
+
+  @override
+  String get checkoutNotesHint => 'Optional notes for the supplier';
+
+  @override
+  String get checkoutPreviewOrder => 'Preview Order';
+
+  @override
+  String get checkoutLoadingPreview => 'Loading preview...';
+
+  @override
+  String get checkoutPreviewRequired => 'Preview your order first';
+
+  @override
+  String get checkoutPreviewPlaceholderTitle => 'Preview your checkout';
+
+  @override
+  String get checkoutPreviewPlaceholderMessage =>
+      'Enter delivery details, then preview to calculate shipping, tax, promotions, and final total.';
+
+  @override
+  String get checkoutItems => 'Checkout Items';
+
+  @override
+  String get checkoutShippingMethod => 'Shipping Method';
+
+  @override
+  String get checkoutNoShippingMethods =>
+      'No shipping methods are available for this delivery address and branch.';
+
+  @override
+  String get checkoutMinimumOrder => 'Minimum order';
+
+  @override
+  String get checkoutPromotionDiscount => 'Promotion discount';
+
+  @override
+  String get checkoutTax => 'Tax';
+
+  @override
+  String get checkoutPlaceOrder => 'Place Order';
+
+  @override
+  String get checkoutSelectPaymentMethod => 'Please select a payment method';
+
+  @override
+  String get checkoutOrderCreated => 'Order Created';
+
+  @override
+  String get checkoutCashPendingMessage =>
+      'Your order was placed successfully. Cash payment is pending supplier confirmation.';
+
+  @override
+  String get checkoutStripeReadyMessage =>
+      'Your order was created. Stripe payment is ready. Payment Sheet integration will be connected next.';
+
+  @override
+  String get checkoutMpgsReadyMessage =>
+      'Your order was created. Credit / Debit Card hosted checkout is prepared and still under testing.';
+
+  @override
+  String get checkoutPaymentPreparedMessage =>
+      'Your order was created and payment was prepared.';
+
+  @override
+  String get checkoutPaymentPrepared => 'Payment Prepared';
+
+  @override
+  String get checkoutFulfillmentBranch => 'Fulfillment Branch *';
+
+  @override
+  String get checkoutSelectBranch => 'Select fulfillment branch';
+
+  @override
+  String get checkoutSearchBranch => 'Search branch';
+
+  @override
+  String get checkoutNoEligibleBranches =>
+      'No branch can fulfill all items in your cart.';
 }

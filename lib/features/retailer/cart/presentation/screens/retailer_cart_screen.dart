@@ -10,6 +10,7 @@ import 'package:build4all_wholesale_frontend/injection_container.dart';
 import '../../data/models/retailer_cart_model.dart';
 import '../cubit/retailer_cart_cubit.dart';
 import '../cubit/retailer_cart_state.dart';
+import 'package:go_router/go_router.dart';
 
 class RetailerCartScreen extends StatelessWidget {
   const RetailerCartScreen({super.key});
@@ -183,7 +184,7 @@ class _CartContent extends StatelessWidget {
           const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
-              AppToast.info(context, l10n.checkoutComingSoon);
+              context.push('/retailer-checkout');
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 54),

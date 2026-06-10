@@ -63,6 +63,8 @@ import 'features/retailer_profile/presentation/cubit/retailer_profile_cubit.dart
 
 import 'features/retailer/cart/data/services/retailer_cart_service.dart';
 import 'features/retailer/cart/presentation/cubit/retailer_cart_cubit.dart';
+import 'features/retailer/checkout/data/services/retailer_checkout_api_service.dart';
+import 'features/retailer/checkout/presentation/cubit/retailer_checkout_cubit.dart';
 
 // =========================
 // RETAILER ORDERS
@@ -431,6 +433,12 @@ Future<void> init() async {
   sl.registerLazySingleton<RetailerProductAiService>(
     () => RetailerProductAiService(
       projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<RetailerCheckoutApiService>(
+    () => RetailerCheckoutApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
 
@@ -972,6 +980,9 @@ Future<void> init() async {
     () => SupplierProfileDisplayBloc(
       getSupplierProfileDisplayUseCase: sl<GetSupplierProfileDisplayUseCase>(),
     ),
+  );
+  sl.registerFactory<RetailerCheckoutCubit>(
+    () => RetailerCheckoutCubit(apiService: sl<RetailerCheckoutApiService>()),
   );
 
   // =========================

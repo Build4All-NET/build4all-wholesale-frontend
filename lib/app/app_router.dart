@@ -78,6 +78,8 @@ import '../features/retailer/rfq/presentation/screens/edit_retailer_rfq_screen.d
 import '../features/retailer/orders/presentation/screens/retailer_order_tracking_screen.dart';
 import '../features/retailer/orders/presentation/screens/retailer_reorder_review_screen.dart';
 import '../features/retailer/orders/presentation/screens/retailer_orders_screen.dart';
+import '../features/retailer/checkout/presentation/screens/retailer_checkout_screen.dart';
+import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -144,7 +146,10 @@ class AppRouter {
         path: '/complete-retailer-profile',
         builder: (context, state) => const CompleteRetailerProfileScreen(),
       ),
-
+      GoRoute(
+        path: '/retailer-checkout',
+        builder: (context, state) => const RetailerCheckoutScreen(),
+      ),
       // =========================
       // SUPPLIER ROUTES
       // =========================
