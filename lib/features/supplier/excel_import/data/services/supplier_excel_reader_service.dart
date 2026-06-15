@@ -85,6 +85,30 @@ class SupplierExcelReaderService {
       'Branch Names',
       'Active',
     ],
+    SupplierExcelSection.promotions: [
+      'Title',
+      'Description',
+      'Discount Type',
+      'Discount Value',
+      'Target Type',
+      'Target Name',
+      'Min Order Amount',
+      'Max Discount Amount',
+      'Start Date',
+      'End Date',
+      'Active',
+    ],
+    SupplierExcelSection.banners: [
+      'Title',
+      'Subtitle',
+      'Image URL',
+      'Target Type',
+      'Target Value',
+      'Sort Order',
+      'Start Date',
+      'End Date',
+      'Active',
+    ],
   };
 
   static List<String> headersFor(SupplierExcelSection section) {
@@ -259,7 +283,7 @@ class SupplierExcelReaderService {
 
       if (rowsBySection.isEmpty) {
         throw Exception(
-          'No supported supplier sheets were found. Use the supplier template sheets: Categories, SubCategories, Branches, Products, BranchInventory, TaxRules, ShippingMethods, and Coupons.',
+          'No supported supplier sheets were found. Use the supplier template sheets: Categories, SubCategories, Branches, Products, BranchInventory, TaxRules, ShippingMethods, Coupons, Promotions, and Banners.',
         );
       }
 
@@ -470,6 +494,20 @@ class SupplierExcelReaderService {
         break;
       case SupplierExcelSection.coupons:
         requiredHeaders.addAll(['Code', 'Discount Type', 'Discount Value']);
+        break;
+      case SupplierExcelSection.promotions:
+        requiredHeaders.addAll([
+          'Title',
+          'Discount Type',
+          'Discount Value',
+          'Target Type',
+          'Target Name',
+          'Start Date',
+          'End Date',
+        ]);
+        break;
+      case SupplierExcelSection.banners:
+        requiredHeaders.addAll(['Title', 'Image URL', 'Target Type']);
         break;
     }
 

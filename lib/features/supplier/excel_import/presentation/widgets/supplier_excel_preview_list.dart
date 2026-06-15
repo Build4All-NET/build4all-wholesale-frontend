@@ -686,6 +686,10 @@ class _IssueRowTile extends StatelessWidget {
         return const ['Name', 'Type', 'Country ID', 'Country Name', 'Region ID', 'Region Name', 'Cost', 'Estimated Delivery Time', 'Minimum Order Amount', 'Free Shipping Threshold', 'Branch Scope', 'Branch Names', 'Active', 'Notes'];
       case SupplierExcelSection.coupons:
         return const ['Code', 'Description', 'Discount Type', 'Discount Value', 'Max Uses', 'Min Order Amount', 'Max Discount Amount', 'Starts At', 'Expires At', 'Branch Scope', 'Branch Names', 'Active'];
+      case SupplierExcelSection.promotions:
+        return const ['Title', 'Description', 'Discount Type', 'Discount Value', 'Target Type', 'Target Name', 'Min Order Amount', 'Max Discount Amount', 'Start Date', 'End Date', 'Active'];
+      case SupplierExcelSection.banners:
+        return const ['Title', 'Subtitle', 'Image URL', 'Target Type', 'Target Value', 'Sort Order', 'Start Date', 'End Date', 'Active'];
     }
   }
 

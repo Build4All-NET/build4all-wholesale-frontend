@@ -12,14 +12,26 @@ import '../../../categories/domain/usecases/create_subcategory_usecase.dart';
 import '../../../categories/domain/usecases/get_categories_usecase.dart';
 import '../../../categories/domain/usecases/get_subcategories_by_category_usecase.dart';
 import '../../../coupons/domain/entities/coupon_entity.dart';
+import '../../../promotions/domain/entities/promotion_entity.dart';
+import '../../../promotions/domain/usecases/create_promotion_usecase.dart';
+import '../../../promotions/domain/usecases/get_promotions_usecase.dart';
+import '../../../banners/domain/entities/banner_entity.dart';
+import '../../../banners/domain/usecases/create_banner_usecase.dart';
+import '../../../banners/domain/usecases/get_banners_usecase.dart';
 import '../../../coupons/domain/usecases/create_coupon_usecase.dart';
+import '../../../coupons/domain/usecases/get_coupons_usecase.dart';
 import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/domain/usecases/create_product_usecase.dart';
 import '../../../products/domain/usecases/get_products_usecase.dart';
+import '../../../shipping/data/models/shipping_location_model.dart';
+import '../../../shipping/data/services/shipping_location_api_service.dart';
 import '../../../shipping/domain/entities/shipping_method_entity.dart';
 import '../../../shipping/domain/usecases/create_shipping_method_usecase.dart';
+import '../../../shipping/domain/usecases/get_shipping_methods_usecase.dart';
 import '../../../tax/domain/entities/tax_rule_entity.dart';
 import '../../../tax/domain/usecases/create_tax_rule_usecase.dart';
+import '../../../tax/domain/usecases/get_tax_rules_usecase.dart';
+import '../../../tax/domain/usecases/update_tax_rule_usecase.dart';
 import '../entities/supplier_excel_import_result_entity.dart';
 import '../entities/supplier_excel_parsed_file_entity.dart';
 import '../entities/supplier_excel_row_entity.dart';
@@ -38,8 +50,17 @@ class ImportSupplierExcelProductsUseCase {
   final GetInventoryByBranchUseCase getInventoryByBranchUseCase;
   final UpdateBranchStockUseCase updateBranchStockUseCase;
   final CreateShippingMethodUseCase createShippingMethodUseCase;
+  final GetShippingMethodsUseCase getShippingMethodsUseCase;
   final CreateTaxRuleUseCase createTaxRuleUseCase;
+  final GetTaxRulesUseCase getTaxRulesUseCase;
+  final UpdateTaxRuleUseCase updateTaxRuleUseCase;
   final CreateCouponUseCase createCouponUseCase;
+  final GetCouponsUseCase getCouponsUseCase;
+  final ShippingLocationApiService shippingLocationApiService;
+  final CreatePromotionUseCase createPromotionUseCase;
+  final GetPromotionsUseCase getPromotionsUseCase;
+  final CreateBannerUseCase createBannerUseCase;
+  final GetBannersUseCase getBannersUseCase;
 
   ImportSupplierExcelProductsUseCase({
     required this.createCategoryUseCase,
@@ -54,8 +75,17 @@ class ImportSupplierExcelProductsUseCase {
     required this.getInventoryByBranchUseCase,
     required this.updateBranchStockUseCase,
     required this.createShippingMethodUseCase,
+    required this.getShippingMethodsUseCase,
     required this.createTaxRuleUseCase,
+    required this.getTaxRulesUseCase,
+    required this.updateTaxRuleUseCase,
     required this.createCouponUseCase,
+    required this.getCouponsUseCase,
+    required this.shippingLocationApiService,
+    required this.createPromotionUseCase,
+    required this.getPromotionsUseCase,
+    required this.createBannerUseCase,
+    required this.getBannersUseCase,
   });
 
   Future<SupplierExcelImportResultEntity> call({
@@ -69,6 +99,12 @@ class ImportSupplierExcelProductsUseCase {
     final subCategoriesByCategory = await _loadSubCategories(categoriesByName.values);
     var branchesByName = await _loadBranchesByName();
     var productsByName = await _loadProductsByName();
+    var promotionsByTitle = await _loadPromotionsByTitle();
+    var bannersByTitle = await _loadBannersByTitle();
+    final locations = await _loadLocations();
+    var shippingByName = await _loadShippingMethodsByName();
+    var taxByScope = await _loadTaxRulesByScope();
+    var couponsByCode = await _loadCouponsByCode();
 
     Future<void> runRow(
       SupplierExcelRowEntity row,
@@ -242,69 +278,116 @@ class ImportSupplierExcelProductsUseCase {
 
     for (final row in parsedFile.rowsFor(SupplierExcelSection.taxRules)) {
       await runRow(row, () async {
-        final now = DateTime.now();
+        final ruleName = row.value('Rule Name').trim();
+        final country = _resolveCountry(row, locations);
+        final region = await _resolveRegion(row, country, locations);
+        final active = _bool(row.value('Active'), defaultValue: true);
+        final scopeKey = _taxScopeKey(country.id, region?.id);
+        final existingRule = taxByScope[scopeKey];
 
-        await createTaxRuleUseCase(
-          TaxRuleEntity(
-            id: '',
-            ruleName: row.value('Rule Name').trim(),
-            rate: _double(row.value('Rate')) ?? 0,
-            countryId: row.value('Country ID').trim(),
-            countryName: row.value('Country Name').trim(),
-            regionId: _clean(row.value('Region ID')),
-            regionName: _clean(row.value('Region Name')),
-            appliesToShipping: _bool(row.value('Applies To Shipping'), defaultValue: false),
-            active: _bool(row.value('Active'), defaultValue: true),
-            status: _bool(row.value('Active'), defaultValue: true) ? 'ACTIVE' : 'INACTIVE',
-            notes: _clean(row.value('Notes')),
-            createdAt: now,
-            updatedAt: now,
+        final now = DateTime.now();
+        final taxRuleFromExcel = TaxRuleEntity(
+          id: existingRule?.id ?? '',
+          ruleName: ruleName,
+          rate: _double(row.value('Rate')) ?? 0,
+          countryId: country.id,
+          countryName: country.name,
+          countryIso2Code: country.iso2Code,
+          countryIso3Code: country.iso3Code,
+          regionId: region?.id,
+          regionName: region?.name,
+          regionCode: region?.code,
+          appliesToShipping: _bool(
+            row.value('Applies To Shipping'),
+            defaultValue: false,
           ),
+          active: active,
+          status: active ? 'ACTIVE' : 'INACTIVE',
+          notes: _clean(row.value('Notes')),
+          createdAt: existingRule?.createdAt ?? now,
+          updatedAt: now,
         );
 
-        messages.add('Tax rule "${row.value('Rule Name')}" imported.');
+        if (existingRule != null) {
+          final updated = await updateTaxRuleUseCase(taxRuleFromExcel);
+          taxByScope[_taxScopeKey(updated.countryId, updated.regionId)] =
+              updated;
+          messages.add(
+            'Tax rule "$ruleName" updated for ${country.name}${region == null ? '' : ' / ${region.name}'}.',
+          );
+          return;
+        }
+
+        final created = await createTaxRuleUseCase(taxRuleFromExcel);
+        taxByScope[_taxScopeKey(created.countryId, created.regionId)] = created;
+        messages.add('Tax rule "$ruleName" imported.');
       });
     }
 
     for (final row in parsedFile.rowsFor(SupplierExcelSection.shippingMethods)) {
       await runRow(row, () async {
+        final name = row.value('Name').trim();
+        final key = _n(name);
+
+        if (shippingByName.containsKey(key)) {
+          messages.add('Shipping method "$name" already exists. Skipped.');
+          return;
+        }
+
+        final methodType = _shippingType(row.value('Type'));
+        final isPickup = methodType == ShippingMethodType.pickup;
+        final country = _resolveCountry(row, locations);
+        final region = await _resolveRegion(row, country, locations);
+        final active = _bool(row.value('Active'), defaultValue: true);
         final now = DateTime.now();
 
-        await createShippingMethodUseCase(
+        final created = await createShippingMethodUseCase(
           ShippingMethodEntity(
             id: '',
-            name: row.value('Name').trim(),
-            methodType: _shippingType(row.value('Type')),
-            countryId: _clean(row.value('Country ID')),
-            countryName: _clean(row.value('Country Name')),
-            regionId: _clean(row.value('Region ID')),
-            regionName: _clean(row.value('Region Name')),
-            cost: _double(row.value('Cost')) ?? 0,
-            estimatedDeliveryTime: row.value('Estimated Delivery Time').trim(),
+            name: name,
+            methodType: methodType,
+            countryId: country.id,
+            countryName: country.name,
+            countryIso2Code: country.iso2Code,
+            countryIso3Code: country.iso3Code,
+            regionId: region?.id,
+            regionName: region?.name,
+            regionCode: region?.code,
+            cost: isPickup ? 0 : (_double(row.value('Cost')) ?? 0),
+            estimatedDeliveryTime: isPickup
+                ? 'Pickup from branch'
+                : row.value('Estimated Delivery Time').trim(),
             minimumOrderAmount: _double(row.value('Minimum Order Amount')),
-            freeShippingThreshold: _double(row.value('Free Shipping Threshold')),
+            freeShippingThreshold: isPickup ? null : _double(row.value('Free Shipping Threshold')),
             branchScope: _shippingBranchScope(row.value('Branch Scope')),
             selectedBranchIds: _branchIdsFromNames(row.value('Branch Names'), branchesByName),
             selectedBranchNames: _branchNamesFromNames(row.value('Branch Names'), branchesByName),
-            active: _bool(row.value('Active'), defaultValue: true),
-            status: _bool(row.value('Active'), defaultValue: true) ? 'ACTIVE' : 'INACTIVE',
+            active: active,
+            status: active ? 'ACTIVE' : 'INACTIVE',
             notes: _clean(row.value('Notes')),
             createdAt: now,
             updatedAt: now,
           ),
         );
 
-        messages.add('Shipping method "${row.value('Name')}" imported.');
+        shippingByName[_n(created.name)] = created;
+        messages.add('Shipping method "$name" imported.');
       });
     }
 
     for (final row in parsedFile.rowsFor(SupplierExcelSection.coupons)) {
       await runRow(row, () async {
-        await createCouponUseCase(
+        final code = row.value('Code').trim().toUpperCase();
+        if (couponsByCode.containsKey(_n(code))) {
+          messages.add('Coupon "$code" already exists. Skipped.');
+          return;
+        }
+
+        final created = await createCouponUseCase(
           CouponEntity(
             id: '',
             ownerProjectId: 0,
-            code: row.value('Code').trim().toUpperCase(),
+            code: code,
             description: _clean(row.value('Description')),
             discountType: _couponDiscountType(row.value('Discount Type')),
             discountValue: _double(row.value('Discount Value')) ?? 0,
@@ -320,7 +403,130 @@ class ImportSupplierExcelProductsUseCase {
           ),
         );
 
-        messages.add('Coupon "${row.value('Code')}" imported.');
+        couponsByCode[_n(created.code)] = created;
+        messages.add('Coupon "$code" imported.');
+      });
+    }
+
+    productsByName = await _loadProductsByName();
+    categoriesByName = await _loadCategoriesByName();
+    final allSubCategories = subCategoriesByCategory.values.expand((items) => items).toList();
+
+    for (final row in parsedFile.rowsFor(SupplierExcelSection.promotions)) {
+      await runRow(row, () async {
+        final title = row.value('Title').trim();
+        final key = _n(title);
+
+        if (promotionsByTitle.containsKey(key)) {
+          messages.add('Promotion "$title" already exists. Skipped.');
+          return;
+        }
+
+        final targetType = _promotionTargetType(row.value('Target Type'));
+        final targetName = row.value('Target Name').trim();
+        String? targetId;
+        String? resolvedTargetName;
+
+        if (targetType == PromotionTargetType.product) {
+          final product = productsByName[_n(targetName)];
+          if (product == null) throw Exception('Promotion target product "$targetName" was not found.');
+          targetId = product.id;
+          resolvedTargetName = product.name;
+        } else if (targetType == PromotionTargetType.category) {
+          final category = categoriesByName[_n(targetName)];
+          if (category == null) throw Exception('Promotion target category "$targetName" was not found.');
+          targetId = category.id;
+          resolvedTargetName = category.name;
+        }
+
+        final now = DateTime.now();
+        final created = await createPromotionUseCase(
+          PromotionEntity(
+            id: '',
+            title: title,
+            description: _clean(row.value('Description')),
+            discountType: _promotionDiscountType(row.value('Discount Type')),
+            discountValue: _double(row.value('Discount Value')) ?? 0,
+            targetType: targetType,
+            targetId: targetId,
+            targetName: resolvedTargetName,
+            minOrderAmount: _double(row.value('Min Order Amount')),
+            maxDiscountAmount: _double(row.value('Max Discount Amount')),
+            startDate: _date(row.value('Start Date')),
+            endDate: _date(row.value('End Date')),
+            active: _bool(row.value('Active'), defaultValue: true),
+            branchScope: PromotionBranchScope.allBranches,
+            selectedBranchIds: const [],
+            selectedBranchNames: const [],
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+
+        promotionsByTitle[_n(created.title)] = created;
+        messages.add('Promotion "$title" imported.');
+      });
+    }
+
+    for (final row in parsedFile.rowsFor(SupplierExcelSection.banners)) {
+      await runRow(row, () async {
+        final title = row.value('Title').trim();
+        final key = _n(title);
+
+        if (bannersByTitle.containsKey(key)) {
+          messages.add('Banner "$title" already exists. Skipped.');
+          return;
+        }
+
+        final targetType = _bannerTargetType(row.value('Target Type'));
+        final targetValueText = row.value('Target Value').trim();
+        String? targetValue;
+        String? targetLabel;
+
+        if (targetType == BannerTargetType.product) {
+          final product = productsByName[_n(targetValueText)];
+          if (product == null) throw Exception('Banner target product "$targetValueText" was not found.');
+          targetValue = product.id;
+          targetLabel = product.name;
+        } else if (targetType == BannerTargetType.category) {
+          final category = categoriesByName[_n(targetValueText)];
+          if (category == null) throw Exception('Banner target category "$targetValueText" was not found.');
+          targetValue = category.id;
+          targetLabel = category.name;
+        } else if (targetType == BannerTargetType.subcategory) {
+          final subCategory = allSubCategories
+              .where((item) => _n(item.name) == _n(targetValueText))
+              .cast<SupplierSubCategoryEntity?>()
+              .firstWhere((item) => item != null, orElse: () => null);
+          if (subCategory == null) throw Exception('Banner target subcategory "$targetValueText" was not found.');
+          targetValue = subCategory.id;
+          targetLabel = subCategory.name;
+        } else if (targetType == BannerTargetType.url) {
+          targetValue = _clean(targetValueText);
+          targetLabel = targetValue;
+        }
+
+        final now = DateTime.now();
+        final created = await createBannerUseCase(
+          BannerEntity(
+            id: '',
+            title: title,
+            subtitle: _clean(row.value('Subtitle')),
+            imageUrl: row.value('Image URL').trim(),
+            targetType: targetType,
+            targetValue: targetValue,
+            targetLabel: targetLabel,
+            sortOrder: _int(row.value('Sort Order')) ?? 0,
+            startsAt: _date(row.value('Start Date')),
+            expiresAt: _date(row.value('End Date')),
+            active: _bool(row.value('Active'), defaultValue: true),
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+
+        bannersByTitle[_n(created.title)] = created;
+        messages.add('Banner "$title" imported.');
       });
     }
 
@@ -366,6 +572,48 @@ class ImportSupplierExcelProductsUseCase {
     };
   }
 
+
+  Future<_LocationCache> _loadLocations() async {
+    final countries = await shippingLocationApiService.getCountries();
+    return _LocationCache(countries: countries);
+  }
+
+  Future<Map<String, ShippingMethodEntity>> _loadShippingMethodsByName() async {
+    final methods = await getShippingMethodsUseCase();
+    return {
+      for (final method in methods) _n(method.name): method,
+    };
+  }
+
+  Future<Map<String, TaxRuleEntity>> _loadTaxRulesByScope() async {
+    final rules = await getTaxRulesUseCase();
+    return {
+      for (final rule in rules)
+        if (rule.active) _taxScopeKey(rule.countryId, rule.regionId): rule,
+    };
+  }
+
+  Future<Map<String, CouponEntity>> _loadCouponsByCode() async {
+    final coupons = await getCouponsUseCase();
+    return {
+      for (final coupon in coupons) _n(coupon.code): coupon,
+    };
+  }
+
+  Future<Map<String, PromotionEntity>> _loadPromotionsByTitle() async {
+    final promotions = await getPromotionsUseCase();
+    return {
+      for (final promotion in promotions) _n(promotion.title): promotion,
+    };
+  }
+
+  Future<Map<String, BannerEntity>> _loadBannersByTitle() async {
+    final banners = await getBannersUseCase();
+    return {
+      for (final banner in banners) _n(banner.title): banner,
+    };
+  }
+
   Future<BranchInventoryItemEntity?> _findInventory({
     required String branchId,
     required String productId,
@@ -406,6 +654,89 @@ class ImportSupplierExcelProductsUseCase {
         .toList();
   }
 
+
+  ShippingCountryModel _resolveCountry(
+    SupplierExcelRowEntity row,
+    _LocationCache locations,
+  ) {
+    final countryId = row.value('Country ID').trim();
+    final countryName = row.value('Country Name').trim();
+    final countryCode = row.value('Country Code').trim();
+
+    ShippingCountryModel? country;
+
+    if (countryId.isNotEmpty) {
+      country = locations.countries
+          .where((item) => item.id == countryId)
+          .cast<ShippingCountryModel?>()
+          .firstWhere((item) => item != null, orElse: () => null);
+    }
+
+    country ??= locations.countries
+        .where((item) =>
+            _n(item.name) == _n(countryName) ||
+            _n(item.iso2Code) == _n(countryName) ||
+            _n(item.iso3Code) == _n(countryName) ||
+            _n(item.iso2Code) == _n(countryCode) ||
+            _n(item.iso3Code) == _n(countryCode))
+        .cast<ShippingCountryModel?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+
+    if (country == null) {
+      final label = countryName.isNotEmpty
+          ? countryName
+          : countryCode.isNotEmpty
+              ? countryCode
+              : countryId;
+      throw Exception('Country "$label" was not found. Use a valid country name/code from the app location list.');
+    }
+
+    return country;
+  }
+
+  Future<ShippingRegionModel?> _resolveRegion(
+    SupplierExcelRowEntity row,
+    ShippingCountryModel country,
+    _LocationCache locations,
+  ) async {
+    final regions = await locations.regionsFor(
+      country.id,
+      shippingLocationApiService,
+    );
+
+    if (regions.isEmpty) return null;
+
+    final regionId = row.value('Region ID').trim();
+    final regionName = row.value('Region Name').trim();
+
+    ShippingRegionModel? region;
+
+    if (regionId.isNotEmpty) {
+      region = regions
+          .where((item) => item.id == regionId)
+          .cast<ShippingRegionModel?>()
+          .firstWhere((item) => item != null, orElse: () => null);
+    }
+
+    region ??= regions
+        .where((item) =>
+            _n(item.name) == _n(regionName) ||
+            _n(item.code) == _n(regionName))
+        .cast<ShippingRegionModel?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+
+    if (country.isLebanon && region == null) {
+      final label = regionName.isNotEmpty ? regionName : regionId;
+      throw Exception('Region "$label" was not found for Lebanon. Use a valid Region Name from the app.');
+    }
+
+    return region;
+  }
+
+  String _taxScopeKey(String countryId, String? regionId) {
+    return '${countryId.trim()}|${(regionId ?? '').trim()}';
+  }
+
   BranchStatus _branchStatus(String value) {
     return _n(value) == 'inactive' ? BranchStatus.inactive : BranchStatus.active;
   }
@@ -419,7 +750,9 @@ class ImportSupplierExcelProductsUseCase {
     if (normalized == 'express' || normalized == 'expressdelivery') {
       return ShippingMethodType.expressDelivery;
     }
-    if (normalized == 'pickup') return ShippingMethodType.pickup;
+    if (normalized == 'pickup' || normalized == 'pickupfrombranch') {
+      return ShippingMethodType.pickup;
+    }
     return ShippingMethodType.standardDelivery;
   }
 
@@ -432,7 +765,9 @@ class ImportSupplierExcelProductsUseCase {
   CouponDiscountType _couponDiscountType(String value) {
     final normalized = _n(value);
     if (normalized == 'fixed') return CouponDiscountType.fixed;
-    if (normalized == 'freeshipping') return CouponDiscountType.freeShipping;
+    if (normalized == 'freeshipping' || normalized == 'free_shipping') {
+      return CouponDiscountType.freeShipping;
+    }
     return CouponDiscountType.percent;
   }
 
@@ -440,6 +775,29 @@ class ImportSupplierExcelProductsUseCase {
     return _n(value).contains('selected')
         ? CouponBranchScope.selectedBranches
         : CouponBranchScope.allBranches;
+  }
+
+  PromotionDiscountType _promotionDiscountType(String value) {
+    final normalized = _n(value);
+    if (normalized == 'fixed' || normalized == 'fixedamount') {
+      return PromotionDiscountType.fixed;
+    }
+    return PromotionDiscountType.percent;
+  }
+
+  PromotionTargetType _promotionTargetType(String value) {
+    final normalized = _n(value);
+    if (normalized == 'category') return PromotionTargetType.category;
+    return PromotionTargetType.product;
+  }
+
+  BannerTargetType _bannerTargetType(String value) {
+    final normalized = _n(value);
+    if (normalized == 'product') return BannerTargetType.product;
+    if (normalized == 'category') return BannerTargetType.category;
+    if (normalized == 'subcategory') return BannerTargetType.subcategory;
+    if (normalized == 'url') return BannerTargetType.url;
+    return BannerTargetType.none;
   }
 
   bool _bool(String value, {required bool defaultValue}) {
@@ -462,23 +820,29 @@ class ImportSupplierExcelProductsUseCase {
     final text = value.trim();
     if (text.isEmpty) return null;
 
-    final parsed = DateTime.tryParse(text);
+    final normalizedIso = text.contains(' ') ? text.replaceFirst(' ', 'T') : text;
+    final parsed = DateTime.tryParse(normalizedIso);
     if (parsed != null) return parsed;
 
     final excelNumber = double.tryParse(text);
     if (excelNumber != null && excelNumber > 0) {
-      return DateTime(1899, 12, 30).add(Duration(days: excelNumber.round()));
+      final wholeDays = excelNumber.floor();
+      final fraction = excelNumber - wholeDays;
+      final seconds = (fraction * 86400).round();
+      return DateTime(1899, 12, 30)
+          .add(Duration(days: wholeDays, seconds: seconds));
     }
 
     final parts = text.split(RegExp(r'[\/\-]'));
     if (parts.length == 3) {
       final first = int.tryParse(parts[0]);
       final second = int.tryParse(parts[1]);
-      final third = int.tryParse(parts[2]);
+      final thirdText = parts[2].split(RegExp(r'\s+')).first;
+      final third = int.tryParse(thirdText);
 
       if (first != null && second != null && third != null) {
         if (parts[0].length == 4) return DateTime(first, second, third);
-        if (parts[2].length == 4) return DateTime(third, second, first);
+        if (thirdText.length == 4) return DateTime(third, second, first);
       }
     }
 
@@ -496,5 +860,26 @@ class ImportSupplierExcelProductsUseCase {
 
   String _message(Object error) {
     return error.toString().replaceFirst('Exception: ', '').trim();
+  }
+}
+
+
+class _LocationCache {
+  final List<ShippingCountryModel> countries;
+  final Map<String, List<ShippingRegionModel>> _regionsByCountryId = {};
+
+  _LocationCache({required this.countries});
+
+  Future<List<ShippingRegionModel>> regionsFor(
+    String countryId,
+    ShippingLocationApiService service,
+  ) async {
+    if (_regionsByCountryId.containsKey(countryId)) {
+      return _regionsByCountryId[countryId]!;
+    }
+
+    final regions = await service.getRegionsByCountry(countryId);
+    _regionsByCountryId[countryId] = regions;
+    return regions;
   }
 }
