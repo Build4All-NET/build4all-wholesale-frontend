@@ -78,7 +78,8 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
       listenWhen: (p, c) =>
           p.errorMessage   != c.errorMessage   ||
           p.successMessage != c.successMessage ||
-          p.testResultMessage != c.testResultMessage,
+          p.testResultMessage != c.testResultMessage ||
+          p.testResultMethodCode != c.testResultMethodCode,
       listener: (ctx, state) {
         if (state.successMessage != null) {
           ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
@@ -285,7 +286,8 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                   const SizedBox(height: 24),
 
                   // ── Test result banner ──
-                  if (state.testResultMessage != null) ...[
+                  if (state.testResultMethodCode == 'STRIPE' &&
+                      state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
                       message: state.testResultMessage!,

@@ -94,7 +94,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
       listenWhen: (previous, current) =>
           previous.errorMessage != current.errorMessage ||
           previous.successMessage != current.successMessage ||
-          previous.testResultMessage != current.testResultMessage,
+          previous.testResultMessage != current.testResultMessage ||
+          previous.testResultMethodCode != current.testResultMethodCode,
       listener: (ctx, state) {
         if (state.successMessage != null) {
           ScaffoldMessenger.of(ctx).showSnackBar(
@@ -301,7 +302,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (state.testResultMessage != null) ...[
+                  if (state.testResultMethodCode == 'MPGS' &&
+                      state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
                       message: state.testResultMessage!,

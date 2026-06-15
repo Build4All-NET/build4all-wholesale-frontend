@@ -159,12 +159,14 @@ class SupplierPaymentMethodsBloc
 
       emit(state.copyWith(
         clearTestingMethodCode: true,
+        testResultMethodCode: code,
         testResultSuccess: result.success,
         testResultMessage: result.message,
       ));
     } catch (e) {
       emit(state.copyWith(
         clearTestingMethodCode: true,
+        testResultMethodCode: code,
         testResultSuccess: false,
         testResultMessage: e.toString(),
       ));
