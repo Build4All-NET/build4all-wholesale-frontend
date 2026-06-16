@@ -30,6 +30,8 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
   late final TextEditingController _brandNameCtrl;
   late bool _enabled;
   late String _mode;
+  late final bool _clientIdAlreadyConfigured;
+  late final bool _clientSecretAlreadyConfigured;
 
   bool _clientSecretObscured = true;
 
@@ -37,8 +39,14 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
   void initState() {
     super.initState();
     final cfg = widget.currentConfigValues;
-    _clientIdCtrl = TextEditingController(text: _safe(cfg['clientId']));
-    _clientSecretCtrl = TextEditingController(text: _safe(cfg['clientSecret']));
+    _clientIdAlreadyConfigured = cfg['clientIdConfigured'] == true;
+    _clientSecretAlreadyConfigured = cfg['clientSecretConfigured'] == true;
+    _clientIdCtrl = TextEditingController(
+      text: _clientIdAlreadyConfigured ? '' : _safe(cfg['clientId']),
+    );
+    _clientSecretCtrl = TextEditingController(
+      text: _clientSecretAlreadyConfigured ? '' : _safe(cfg['clientSecret']),
+    );
     _returnUrlCtrl = TextEditingController(
       text: _safe(cfg['returnUrl']).isEmpty
           ? 'https://example.com/paypal/return'
@@ -216,15 +224,20 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
                         TextFormField(
                           controller: _clientIdCtrl,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return l10n.payPalClientIdRequired;
+                            final text = value?.trim() ?? '';
+                            if (text.isEmpty) {
+                              return _clientIdAlreadyConfigured
+                                  ? null
+                                  : l10n.payPalClientIdRequired;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
                             labelText: l10n.payPalClientIdLabel,
                             hintText: l10n.payPalClientIdHint,
-                            helperText: l10n.payPalClientIdHelper,
+                            helperText: _clientIdAlreadyConfigured
+                                ? l10n.paymentCredentialAlreadyConfiguredHelper
+                                : l10n.payPalClientIdHelper,
                             helperMaxLines: 2,
                           ),
                         ),
@@ -233,15 +246,20 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
                           controller: _clientSecretCtrl,
                           obscureText: _clientSecretObscured,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return l10n.payPalClientSecretRequired;
+                            final text = value?.trim() ?? '';
+                            if (text.isEmpty) {
+                              return _clientSecretAlreadyConfigured
+                                  ? null
+                                  : l10n.payPalClientSecretRequired;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
                             labelText: l10n.payPalClientSecretLabel,
                             hintText: l10n.payPalClientSecretHint,
-                            helperText: l10n.payPalClientSecretHelper,
+                            helperText: _clientSecretAlreadyConfigured
+                                ? l10n.paymentCredentialAlreadyConfiguredHelper
+                                : l10n.payPalClientSecretHelper,
                             helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
