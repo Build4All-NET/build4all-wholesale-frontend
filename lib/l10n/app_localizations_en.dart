@@ -3764,4 +3764,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get checkoutNoEligibleBranches =>
       'No branch can fulfill all items in your cart.';
+
+  @override
+  String get paymentCredentialAlreadyConfiguredHelper =>
+      'Already configured. Leave this field empty to keep the saved value, or enter a new value to replace it.';
 }

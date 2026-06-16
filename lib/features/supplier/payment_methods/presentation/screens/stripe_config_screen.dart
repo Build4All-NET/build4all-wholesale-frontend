@@ -33,6 +33,8 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   late final TextEditingController _publishableKeyCtrl;
   late final TextEditingController _webhookSecretCtrl;
   late bool _enabled;
+  late final bool _secretKeyAlreadyConfigured;
+  late final bool _webhookSecretAlreadyConfigured;
 
   bool _secretObscured    = true;
   bool _webhookObscured   = true;
@@ -41,9 +43,15 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   void initState() {
     super.initState();
     final cfg = widget.currentConfigValues;
-    _secretKeyCtrl      = TextEditingController(text: _safe(cfg['secretKey']));
+    _secretKeyAlreadyConfigured = cfg['secretKeyConfigured'] == true;
+    _webhookSecretAlreadyConfigured = cfg['webhookSecretConfigured'] == true;
+    _secretKeyCtrl = TextEditingController(
+      text: _secretKeyAlreadyConfigured ? '' : _safe(cfg['secretKey']),
+    );
     _publishableKeyCtrl = TextEditingController(text: _safe(cfg['publishableKey']));
-    _webhookSecretCtrl  = TextEditingController(text: _safe(cfg['webhookSecret']));
+    _webhookSecretCtrl = TextEditingController(
+      text: _webhookSecretAlreadyConfigured ? '' : _safe(cfg['webhookSecret']),
+    );
     _enabled = widget.currentlyEnabled;
   }
 
@@ -213,16 +221,23 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                           controller: _secretKeyCtrl,
                           obscureText: _secretObscured,
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty)
-                              return l10n.stripeSecretKeyRequired;
-                            if (!v.trim().startsWith('sk_'))
+                            final text = v?.trim() ?? '';
+                            if (text.isEmpty) {
+                              return _secretKeyAlreadyConfigured
+                                  ? null
+                                  : l10n.stripeSecretKeyRequired;
+                            }
+                            if (!text.startsWith('sk_')) {
                               return l10n.stripeSecretKeyInvalid;
+                            }
                             return null;
                           },
                           decoration: InputDecoration(
                             labelText: l10n.stripeSecretKeyLabel,
                             hintText: 'sk_test_... or sk_live_...',
-                            helperText: l10n.stripeSecretKeyHelper,
+                            helperText: _secretKeyAlreadyConfigured
+                                ? l10n.paymentCredentialAlreadyConfiguredHelper
+                                : l10n.stripeSecretKeyHelper,
                             helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -265,7 +280,9 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                           decoration: InputDecoration(
                             labelText: l10n.stripeWebhookSecretLabel,
                             hintText: 'whsec_...',
-                            helperText: l10n.stripeWebhookSecretHelper,
+                            helperText: _webhookSecretAlreadyConfigured
+                                ? l10n.paymentCredentialAlreadyConfiguredHelper
+                                : l10n.stripeWebhookSecretHelper,
                             helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -366,9 +383,13 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final configValues = <String, dynamic>{
-      'secretKey': _secretKeyCtrl.text.trim(),
       'publishableKey': _publishableKeyCtrl.text.trim(),
     };
+
+    final secretKey = _secretKeyCtrl.text.trim();
+    if (secretKey.isNotEmpty) {
+      configValues['secretKey'] = secretKey;
+    }
 
     final webhook = _webhookSecretCtrl.text.trim();
     if (webhook.isNotEmpty) configValues['webhookSecret'] = webhook;
