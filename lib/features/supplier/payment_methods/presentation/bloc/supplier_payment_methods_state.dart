@@ -10,6 +10,10 @@ class SupplierPaymentMethodsState {
   /// Code of the method currently being tested.
   final String? testingMethodCode;
 
+  /// Code of the method that produced the last test result.
+  /// This prevents showing a Stripe test message inside PayPal/MPGS screens.
+  final String? testResultMethodCode;
+
   /// Last test result message (success or failure).
   final String? testResultMessage;
 
@@ -24,6 +28,7 @@ class SupplierPaymentMethodsState {
     required this.methods,
     required this.savingMethodCode,
     required this.testingMethodCode,
+    required this.testResultMethodCode,
     required this.testResultMessage,
     required this.testResultSuccess,
     required this.errorMessage,
@@ -36,6 +41,7 @@ class SupplierPaymentMethodsState {
       methods: [],
       savingMethodCode: null,
       testingMethodCode: null,
+      testResultMethodCode: null,
       testResultMessage: null,
       testResultSuccess: null,
       errorMessage: null,
@@ -50,6 +56,7 @@ class SupplierPaymentMethodsState {
     bool clearSavingMethodCode = false,
     String? testingMethodCode,
     bool clearTestingMethodCode = false,
+    String? testResultMethodCode,
     String? testResultMessage,
     bool clearTestResult = false,
     bool? testResultSuccess,
@@ -67,6 +74,9 @@ class SupplierPaymentMethodsState {
       testingMethodCode: clearTestingMethodCode
           ? null
           : testingMethodCode ?? this.testingMethodCode,
+      testResultMethodCode: clearTestResult
+          ? null
+          : testResultMethodCode ?? this.testResultMethodCode,
       testResultMessage: clearTestResult
           ? null
           : testResultMessage ?? this.testResultMessage,

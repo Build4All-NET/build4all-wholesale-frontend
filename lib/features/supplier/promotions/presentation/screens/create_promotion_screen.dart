@@ -757,9 +757,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1388,7 +1387,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<PromotionDiscountType>(
-      initialValue: value,
+      value: value,
       items: PromotionDiscountType.values
           .map(
             (type) => DropdownMenuItem<PromotionDiscountType>(
@@ -1425,7 +1424,7 @@ class _TargetTypeDropdown extends StatelessWidget {
     ];
 
     return DropdownButtonFormField<PromotionTargetType>(
-      initialValue: value,
+      value: value,
       items: allowedTargetTypes
           .map(
             (type) => DropdownMenuItem<PromotionTargetType>(

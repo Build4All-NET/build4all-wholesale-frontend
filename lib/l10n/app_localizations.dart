@@ -6983,6 +6983,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No branch can fulfill all items in your cart.'**
   String get checkoutNoEligibleBranches;
+
+  /// No description provided for @paymentCredentialAlreadyConfiguredHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Already configured. Leave this field empty to keep the saved value, or enter a new value to replace it.'**
+  String get paymentCredentialAlreadyConfiguredHelper;
 }
 
 class _AppLocalizationsDelegate

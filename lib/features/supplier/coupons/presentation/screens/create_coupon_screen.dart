@@ -859,9 +859,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1042,7 +1041,7 @@ class _DiscountTypeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<CouponDiscountType>(
-      initialValue: value,
+      value: value,
       items: CouponDiscountType.values
           .map(
             (type) => DropdownMenuItem<CouponDiscountType>(
@@ -1077,7 +1076,7 @@ class _BranchScopeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<CouponBranchScope>(
-      initialValue: value,
+      value: value,
       items: CouponBranchScope.values
           .map(
             (scope) => DropdownMenuItem<CouponBranchScope>(
