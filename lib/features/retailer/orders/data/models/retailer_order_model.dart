@@ -79,6 +79,9 @@ class RetailerOrderModel extends RetailerOrderEntity {
   static RetailerOrderStatus _statusFromJson(dynamic value) {
     final status = value?.toString().trim().toUpperCase();
     switch (status) {
+      case 'PENDING_PAYMENT':
+      case 'AWAITING_PAYMENT':
+        return RetailerOrderStatus.pendingPayment;
       case 'ACCEPTED':
       case 'CONFIRMED':
         return RetailerOrderStatus.accepted;

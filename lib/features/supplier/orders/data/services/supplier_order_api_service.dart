@@ -97,6 +97,8 @@ class SupplierOrderApiService {
 
   String _statusToJson(SupplierOrderStatus status) {
     switch (status) {
+      case SupplierOrderStatus.pendingPayment:
+        return 'PENDING_PAYMENT';
       case SupplierOrderStatus.pending:
         return 'PENDING';
       case SupplierOrderStatus.accepted:

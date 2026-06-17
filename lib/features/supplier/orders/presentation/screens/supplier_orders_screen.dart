@@ -55,7 +55,7 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
     SupplierOrderEntity order,
   ) async {
     final result = await context.push<bool>(
-      '/supplier-orders/details',
+      '/supplier-orders/details/${order.id}',
       extra: order,
     );
 
@@ -201,6 +201,8 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
 
   String _statusLabel(SupplierOrderStatus status) {
     switch (status) {
+      case SupplierOrderStatus.pendingPayment:
+        return _supplierAwaitingPaymentLabel(context);
       case SupplierOrderStatus.pending:
         return context.l10n.orderStatusPending;
       case SupplierOrderStatus.accepted:
@@ -214,6 +216,13 @@ class _SupplierOrdersViewState extends State<_SupplierOrdersView> {
       case SupplierOrderStatus.cancelled:
         return context.l10n.orderStatusCancelled;
     }
+  }
+
+  String _supplierAwaitingPaymentLabel(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') return 'بانتظار الدفع';
+    if (languageCode == 'fr') return 'En attente de paiement';
+    return 'Awaiting payment';
   }
 }
 

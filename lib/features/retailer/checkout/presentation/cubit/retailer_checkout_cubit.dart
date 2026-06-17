@@ -193,7 +193,87 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
           isPlacingOrder: false,
           createdOrder: order,
           paymentResult: payment,
-          successMessage: _successMessageForPayment(payment),
+          // Cash can navigate immediately. Online payment must wait for Azzam's sheet/hosted checkout
+          // and confirm endpoint before showing final success.
+          successMessage: _shouldWaitForOnlinePayment(payment)
+              ? null
+              : _successMessageForPayment(payment),
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
+
+  Future<void> confirmStripePayment({required int orderId}) async {
+    emit(state.copyWith(isPlacingOrder: true, clearError: true, clearSuccess: true));
+
+    try {
+      final payment = await apiService.confirmStripePayment(orderId: orderId);
+
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          paymentResult: payment,
+          successMessage: payment.fullyPaid
+              ? 'Payment completed. Order sent to supplier.'
+              : 'Payment is not completed yet.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
+  Future<void> confirmMpgsPayment({required int orderId}) async {
+    emit(state.copyWith(isPlacingOrder: true, clearError: true, clearSuccess: true));
+
+    try {
+      final payment = await apiService.confirmMpgsPayment(orderId: orderId);
+
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          paymentResult: payment,
+          successMessage: payment.fullyPaid
+              ? 'Payment completed. Order sent to supplier.'
+              : 'Payment is not completed yet.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
+  Future<void> confirmPaypalPayment({required int orderId}) async {
+    emit(state.copyWith(isPlacingOrder: true, clearError: true, clearSuccess: true));
+
+    try {
+      final payment = await apiService.confirmPaypalPayment(orderId: orderId);
+
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          paymentResult: payment,
+          successMessage: payment.fullyPaid
+              ? 'Payment completed. Order sent to supplier.'
+              : 'Payment is not completed yet.',
         ),
       );
     } catch (e) {
@@ -210,6 +290,11 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
     emit(state.copyWith(clearError: true, clearSuccess: true));
   }
 
+  bool _shouldWaitForOnlinePayment(RetailerCheckoutPaymentStartModel payment) {
+    final method = payment.paymentMethod.toUpperCase();
+    return method != 'CASH' && payment.onlinePaymentActionRequired;
+  }
+
   String _successMessageForPayment(RetailerCheckoutPaymentStartModel payment) {
     final method = payment.paymentMethod.toUpperCase();
 
@@ -218,11 +303,11 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
     }
 
     if (method == 'STRIPE') {
-      return 'Order created. Stripe payment is ready to continue.';
+      return 'Stripe payment is ready. Complete payment to send the order to supplier.';
     }
 
     if (method == 'MPGS') {
-      return 'Order created. Card hosted checkout is ready to continue.';
+      return 'Card checkout is ready. Complete payment to send the order to supplier.';
     }
 
     return 'Order created successfully.';

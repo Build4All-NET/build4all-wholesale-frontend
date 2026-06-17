@@ -1,6 +1,7 @@
 import 'supplier_order_item_entity.dart';
 
 enum SupplierOrderStatus {
+  pendingPayment,
   pending,
   accepted,
   preparing,
@@ -12,6 +13,8 @@ enum SupplierOrderStatus {
 extension SupplierOrderStatusExtension on SupplierOrderStatus {
   String get label {
     switch (this) {
+      case SupplierOrderStatus.pendingPayment:
+        return 'Awaiting Payment';
       case SupplierOrderStatus.pending:
         return 'Pending';
       case SupplierOrderStatus.accepted:
@@ -49,6 +52,7 @@ class SupplierOrderEntity {
   final DateTime? deliveredAt;
 
   final String paymentMethod;
+  final double? backendTotalAmount;
   final SupplierOrderStatus status;
   final List<SupplierOrderItemEntity> items;
   final String? notes;
@@ -62,6 +66,7 @@ class SupplierOrderEntity {
     required this.branchName,
     required this.orderDate,
     required this.paymentMethod,
+    this.backendTotalAmount,
     required this.status,
     required this.items,
     this.statusUpdatedAt,
@@ -74,6 +79,7 @@ class SupplierOrderEntity {
   }
 
   double get totalAmount {
+    if (backendTotalAmount != null) return backendTotalAmount!;
     return items.fold<double>(0, (sum, item) => sum + item.totalPrice);
   }
 
@@ -88,6 +94,7 @@ class SupplierOrderEntity {
     DateTime? statusUpdatedAt,
     DateTime? deliveredAt,
     String? paymentMethod,
+    double? backendTotalAmount,
     SupplierOrderStatus? status,
     List<SupplierOrderItemEntity>? items,
     String? notes,
@@ -103,6 +110,7 @@ class SupplierOrderEntity {
       statusUpdatedAt: statusUpdatedAt ?? this.statusUpdatedAt,
       deliveredAt: deliveredAt ?? this.deliveredAt,
       paymentMethod: paymentMethod ?? this.paymentMethod,
+      backendTotalAmount: backendTotalAmount ?? this.backendTotalAmount,
       status: status ?? this.status,
       items: items ?? this.items,
       notes: notes ?? this.notes,
