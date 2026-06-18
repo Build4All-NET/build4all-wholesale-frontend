@@ -61,6 +61,12 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     HomeBannerModel banner,
     List<HomeProductModel> products,
   ) {
+    final targetType = banner.targetType.trim().toUpperCase();
+
+    if (targetType.isEmpty || targetType == 'NONE') {
+      return;
+    }
+
     context.push(
       '/retailer-banner-target',
       extra: {'banner': banner, 'products': products},

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/config/app_config.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/payments/hosted_checkout_flow.dart';
+import '../../../../../core/payments/wholesale_stripe_payment_sheet.dart';
 import '../../../../../core/location/data/models/country_model.dart';
 import '../../../../../core/location/data/models/region_model.dart';
 import '../../../../../core/location/data/services/location_api_service.dart';
@@ -52,6 +55,7 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
   bool _isLoadingCountries = false;
   bool _isLoadingRegions = false;
   bool _navigatedAfterSuccess = false;
+  int? _handledOnlinePaymentOrderId;
 
   @override
   void initState() {
@@ -193,12 +197,106 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
     });
   }
 
+
+  Future<void> _handleOnlinePaymentIfNeeded(
+    RetailerCheckoutState state,
+  ) async {
+    final payment = state.paymentResult;
+    final orderId = payment?.orderId ?? state.createdOrder?.id;
+
+    if (payment == null || orderId == null) return;
+    if (!payment.onlinePaymentActionRequired) return;
+    if (_handledOnlinePaymentOrderId == orderId) return;
+
+    final method = payment.paymentMethod.toUpperCase();
+    if (method != 'STRIPE' && method != 'MPGS') return;
+
+    _handledOnlinePaymentOrderId = orderId;
+
+    if (method == 'STRIPE') {
+      await _runStripePayment(orderId, payment);
+      return;
+    }
+
+    if (method == 'MPGS') {
+      await _runMpgsPayment(orderId, payment);
+    }
+  }
+
+  Future<void> _runStripePayment(
+    int orderId,
+    RetailerCheckoutPaymentStartModel payment,
+  ) async {
+    final result = await WholesaleStripePaymentSheet.present(
+      publishableKey: payment.publishableKey ?? '',
+      clientSecret: payment.clientSecret ?? '',
+      merchantDisplayName: AppConfig.appName,
+    );
+
+    if (!mounted) return;
+
+    if (result.cancelled) {
+      AppToast.info(
+        context,
+        result.message ?? 'Payment was cancelled. Your cart is still available.',
+      );
+      return;
+    }
+
+    if (!result.completed) {
+      AppToast.error(context, result.message ?? 'Stripe payment failed.');
+      return;
+    }
+
+    await context.read<RetailerCheckoutCubit>().confirmStripePayment(
+          orderId: orderId,
+        );
+  }
+
+  Future<void> _runMpgsPayment(
+    int orderId,
+    RetailerCheckoutPaymentStartModel payment,
+  ) async {
+    final redirectUrl = payment.redirectUrl;
+
+    if (redirectUrl == null || redirectUrl.trim().isEmpty) {
+      AppToast.error(context, 'Card checkout URL is missing. Please try again.');
+      return;
+    }
+
+    final completed = await HostedCheckoutFlow.openAndAskForCompletion(
+      context: context,
+      redirectUrl: redirectUrl,
+      title: 'Complete card payment',
+      message:
+          'The secure Visa / Mastercard checkout opened in your browser. Return here after payment and tap “I’ve paid”.',
+      paidButtonLabel: 'I’ve paid',
+      cancelButtonLabel: 'Cancel',
+    );
+
+    if (!mounted) return;
+
+    if (!completed) {
+      AppToast.info(
+        context,
+        'Payment was cancelled. Your cart is still available.',
+      );
+      return;
+    }
+
+    await context.read<RetailerCheckoutCubit>().confirmMpgsPayment(
+          orderId: orderId,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
     return BlocConsumer<RetailerCheckoutCubit, RetailerCheckoutState>(
       listener: (context, state) {
+        _handleOnlinePaymentIfNeeded(state);
+
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
           AppToast.error(context, state.errorMessage!);
           context.read<RetailerCheckoutCubit>().clearMessages();
