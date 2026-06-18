@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 class WholesaleStripePaymentSheetResult {
@@ -12,13 +13,13 @@ class WholesaleStripePaymentSheetResult {
   });
 
   const WholesaleStripePaymentSheetResult.completed()
-      : this._(completed: true, cancelled: false);
+    : this._(completed: true, cancelled: false);
 
   const WholesaleStripePaymentSheetResult.cancelled([String? message])
-      : this._(completed: false, cancelled: true, message: message);
+    : this._(completed: false, cancelled: true, message: message);
 
   const WholesaleStripePaymentSheetResult.failed(String message)
-      : this._(completed: false, cancelled: false, message: message);
+    : this._(completed: false, cancelled: false, message: message);
 }
 
 class WholesaleStripePaymentSheet {
@@ -46,9 +47,11 @@ class WholesaleStripePaymentSheet {
       );
 
       await Stripe.instance.presentPaymentSheet();
+
       return const WholesaleStripePaymentSheetResult.completed();
     } on StripeException catch (e) {
       final code = e.error.code.toString().toLowerCase();
+
       if (code.contains('canceled') || code.contains('cancelled')) {
         return const WholesaleStripePaymentSheetResult.cancelled(
           'Payment was cancelled. Your cart is still available.',
