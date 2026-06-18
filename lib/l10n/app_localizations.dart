@@ -6183,7 +6183,7 @@ abstract class AppLocalizations {
   /// No description provided for @paymentCashOnDelivery.
   ///
   /// In en, this message translates to:
-  /// **'Cash on delivery'**
+  /// **'Cash on Delivery'**
   String get paymentCashOnDelivery;
 
   /// No description provided for @paymentCard.
@@ -6249,13 +6249,13 @@ abstract class AppLocalizations {
   /// No description provided for @paymentMethodEnabled.
   ///
   /// In en, this message translates to:
-  /// **'Enabled'**
+  /// **'Available'**
   String get paymentMethodEnabled;
 
   /// No description provided for @paymentMethodDisabled.
   ///
   /// In en, this message translates to:
-  /// **'Disabled'**
+  /// **'Unavailable'**
   String get paymentMethodDisabled;
 
   /// No description provided for @paymentMethodComingSoon.
@@ -6609,7 +6609,7 @@ abstract class AppLocalizations {
   /// No description provided for @paymentMethodCreditDebitCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Credit / Debit Card (Visa / Mastercard)'**
+  /// **'Credit / Debit Card'**
   String get paymentMethodCreditDebitCardTitle;
 
   /// No description provided for @mpgsConfigTitle.
@@ -6803,6 +6803,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saving...'**
   String get mpgsSaving;
+
+  /// No description provided for @checkoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout'**
+  String get checkoutTitle;
+
+  /// No description provided for @checkoutBranchId.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch ID *'**
+  String get checkoutBranchId;
+
+  /// No description provided for @checkoutBranchIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter fulfillment branch ID'**
+  String get checkoutBranchIdHint;
+
+  /// No description provided for @checkoutBranchRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch ID is required'**
+  String get checkoutBranchRequired;
+
+  /// No description provided for @checkoutBranchIdTemporaryNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary field: branch selection will be replaced by a proper branch picker when the retailer branch endpoint is added.'**
+  String get checkoutBranchIdTemporaryNote;
+
+  /// No description provided for @checkoutNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Notes'**
+  String get checkoutNotes;
+
+  /// No description provided for @checkoutNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional notes for the supplier'**
+  String get checkoutNotesHint;
+
+  /// No description provided for @checkoutPreviewOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Order'**
+  String get checkoutPreviewOrder;
+
+  /// No description provided for @checkoutLoadingPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading preview...'**
+  String get checkoutLoadingPreview;
+
+  /// No description provided for @checkoutPreviewRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview your order first'**
+  String get checkoutPreviewRequired;
+
+  /// No description provided for @checkoutPreviewPlaceholderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview your checkout'**
+  String get checkoutPreviewPlaceholderTitle;
+
+  /// No description provided for @checkoutPreviewPlaceholderMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter delivery details, then preview to calculate shipping, tax, promotions, and final total.'**
+  String get checkoutPreviewPlaceholderMessage;
+
+  /// No description provided for @checkoutItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout Items'**
+  String get checkoutItems;
+
+  /// No description provided for @checkoutShippingMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Method'**
+  String get checkoutShippingMethod;
+
+  /// No description provided for @checkoutNoShippingMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'No shipping methods are available for this delivery address and branch.'**
+  String get checkoutNoShippingMethods;
+
+  /// No description provided for @checkoutMinimumOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum order'**
+  String get checkoutMinimumOrder;
+
+  /// No description provided for @checkoutPromotionDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion discount'**
+  String get checkoutPromotionDiscount;
+
+  /// No description provided for @checkoutTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get checkoutTax;
+
+  /// No description provided for @checkoutPlaceOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Order'**
+  String get checkoutPlaceOrder;
+
+  /// No description provided for @checkoutSelectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a payment method'**
+  String get checkoutSelectPaymentMethod;
+
+  /// No description provided for @checkoutOrderCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Created'**
+  String get checkoutOrderCreated;
+
+  /// No description provided for @checkoutCashPendingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order was placed successfully. Cash payment is pending supplier confirmation.'**
+  String get checkoutCashPendingMessage;
+
+  /// No description provided for @checkoutStripeReadyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order was created. Stripe payment is ready. Payment Sheet integration will be connected next.'**
+  String get checkoutStripeReadyMessage;
+
+  /// No description provided for @checkoutMpgsReadyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order was created. Credit / Debit Card hosted checkout is prepared and still under testing.'**
+  String get checkoutMpgsReadyMessage;
+
+  /// No description provided for @checkoutPaymentPreparedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order was created and payment was prepared.'**
+  String get checkoutPaymentPreparedMessage;
+
+  /// No description provided for @checkoutPaymentPrepared.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Prepared'**
+  String get checkoutPaymentPrepared;
+
+  /// No description provided for @checkoutFulfillmentBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Fulfillment Branch *'**
+  String get checkoutFulfillmentBranch;
+
+  /// No description provided for @checkoutSelectBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Select fulfillment branch'**
+  String get checkoutSelectBranch;
+
+  /// No description provided for @checkoutSearchBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search branch'**
+  String get checkoutSearchBranch;
+
+  /// No description provided for @checkoutNoEligibleBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'No branch can fulfill all items in your cart.'**
+  String get checkoutNoEligibleBranches;
 }
 
 class _AppLocalizationsDelegate

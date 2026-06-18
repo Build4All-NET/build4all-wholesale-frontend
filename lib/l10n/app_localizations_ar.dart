@@ -3339,13 +3339,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'فعّلي طرق الدفع التي يمكن للمتجر اختيارها عند الطلب. الكاش جاهز بالكامل، و Stripe يحتاج إعداد بيانات الاعتماد أولاً.';
 
   @override
-  String get paymentMethodEnabled => 'مفعّل';
+  String get paymentMethodEnabled => 'متاح';
 
   @override
-  String get paymentMethodDisabled => 'غير مفعّل';
+  String get paymentMethodDisabled => 'غير متاح';
 
   @override
-  String get paymentMethodComingSoon => 'لاحقًا';
+  String get paymentMethodComingSoon => 'قريباً';
 
   @override
   String get paymentMethodCredentialsRequired => 'تحتاج بيانات';
@@ -3529,8 +3529,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentMethodEditCard => 'تعديل إعدادات البطاقة';
 
   @override
-  String get paymentMethodCreditDebitCardTitle =>
-      'بطاقة ائتمان / خصم (Visa / Mastercard)';
+  String get paymentMethodCreditDebitCardTitle => 'بطاقة ائتمان / بطاقة مصرفية';
 
   @override
   String get mpgsConfigTitle => 'إعداد بطاقة ائتمان / خصم';
@@ -3634,4 +3633,101 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mpgsSaving => 'جارِ الحفظ...';
+
+  @override
+  String get checkoutTitle => 'إتمام الطلب';
+
+  @override
+  String get checkoutBranchId => 'رقم الفرع *';
+
+  @override
+  String get checkoutBranchIdHint => 'أدخل رقم فرع التجهيز';
+
+  @override
+  String get checkoutBranchRequired => 'رقم الفرع مطلوب';
+
+  @override
+  String get checkoutBranchIdTemporaryNote =>
+      'حقل مؤقت: سيتم استبدال اختيار الفرع بقائمة فروع مناسبة عند إضافة واجهة فروع خاصة بالتاجر.';
+
+  @override
+  String get checkoutNotes => 'ملاحظات الطلب';
+
+  @override
+  String get checkoutNotesHint => 'ملاحظات اختيارية للمورّد';
+
+  @override
+  String get checkoutPreviewOrder => 'معاينة الطلب';
+
+  @override
+  String get checkoutLoadingPreview => 'جاري تحميل المعاينة...';
+
+  @override
+  String get checkoutPreviewRequired => 'قم بمعاينة الطلب أولاً';
+
+  @override
+  String get checkoutPreviewPlaceholderTitle => 'معاينة إتمام الطلب';
+
+  @override
+  String get checkoutPreviewPlaceholderMessage =>
+      'أدخل معلومات التوصيل، ثم اعرض المعاينة لحساب الشحن والضريبة والعروض والمجموع النهائي.';
+
+  @override
+  String get checkoutItems => 'منتجات الطلب';
+
+  @override
+  String get checkoutShippingMethod => 'طريقة الشحن';
+
+  @override
+  String get checkoutNoShippingMethods =>
+      'لا توجد طرق شحن متاحة لهذا العنوان والفرع.';
+
+  @override
+  String get checkoutMinimumOrder => 'الحد الأدنى للطلب';
+
+  @override
+  String get checkoutPromotionDiscount => 'خصم العرض';
+
+  @override
+  String get checkoutTax => 'الضريبة';
+
+  @override
+  String get checkoutPlaceOrder => 'تأكيد الطلب';
+
+  @override
+  String get checkoutSelectPaymentMethod => 'يرجى اختيار طريقة الدفع';
+
+  @override
+  String get checkoutOrderCreated => 'تم إنشاء الطلب';
+
+  @override
+  String get checkoutCashPendingMessage =>
+      'تم إنشاء طلبك بنجاح. الدفع النقدي بانتظار تأكيد المورّد.';
+
+  @override
+  String get checkoutStripeReadyMessage =>
+      'تم إنشاء الطلب. دفع Stripe جاهز وسيتم ربط واجهة الدفع لاحقاً.';
+
+  @override
+  String get checkoutMpgsReadyMessage =>
+      'تم إنشاء الطلب. دفع البطاقة عبر صفحة الدفع المستضافة جاهز لكنه ما زال قيد الاختبار.';
+
+  @override
+  String get checkoutPaymentPreparedMessage => 'تم إنشاء الطلب وتجهيز الدفع.';
+
+  @override
+  String get checkoutPaymentPrepared => 'تم تجهيز الدفع';
+
+  @override
+  String get checkoutFulfillmentBranch => 'فرع تجهيز الطلب *';
+
+  @override
+  String get checkoutSelectBranch => 'اختر فرع تجهيز الطلب';
+
+  @override
+  String get checkoutSearchBranch => 'ابحث عن فرع';
+
+  @override
+  String get checkoutNoEligibleBranches =>
+      'لا يوجد فرع قادر على تجهيز كل منتجات السلة.';
 }
