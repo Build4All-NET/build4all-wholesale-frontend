@@ -381,4 +381,30 @@ class ApiConfig {
   // =========================
   static const String retailerCheckoutEligibleBranches =
       '/retailer/checkout/eligible-branches';
+
+  // =========================
+  // Retailer Split Checkout
+  // =========================
+  static const String retailerSplitCheckoutPreview =
+      '/retailer/checkout/split-preview';
+
+  static const String retailerSplitCheckoutPlace =
+      '/retailer/checkout/split-place';
+
+  static String retailerSplitCheckoutSessionPaymentStart(int sessionId) {
+    return '/retailer/checkout/sessions/$sessionId/payment/start';
+  }
+
+  static String retailerSplitCheckoutSessionPaymentStatus(int sessionId) {
+    return '/retailer/checkout/sessions/$sessionId/payment';
+  }
+
+  static String retailerSplitCheckoutSessionStripeConfirm(int sessionId) {
+    return '/retailer/checkout/sessions/$sessionId/payment/stripe-confirm';
+  }
+
+  static String retailerSplitCheckoutSessionMpgsConfirm(int sessionId) {
+    return '/retailer/checkout/sessions/$sessionId/payment/mpgs-confirm';
+  }
+
 }
