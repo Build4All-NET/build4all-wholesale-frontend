@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../bloc/supplier_payment_methods_bloc.dart';
 import '../bloc/supplier_payment_methods_event.dart';
 import '../bloc/supplier_payment_methods_state.dart';
@@ -104,21 +106,7 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
           previous.successMessage != current.successMessage ||
           previous.testResultMessage != current.testResultMessage ||
           previous.testResultMethodCode != current.testResultMethodCode,
-      listener: (ctx, state) {
-        if (state.successMessage != null) {
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(
-              content: Text(state.successMessage!),
-              backgroundColor: const Color(0xFF16A34A),
-            ),
-          );
-        }
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!), backgroundColor: error),
-          );
-        }
-      },
+      listener: (_, __) {},
       builder: (context, state) {
         final isSaving = state.savingMethodCode == 'MPGS';
         final isTesting = state.testingMethodCode == 'MPGS';
@@ -324,7 +312,10 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                       state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
-                      message: state.testResultMessage!,
+                      message: localizeSupplierPaymentMessage(
+                        context,
+                        state.testResultMessage!,
+                      ),
                       errorColor: error,
                     ),
                     const SizedBox(height: 16),
@@ -442,6 +433,11 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   }
 
   void _onTest() {
+    if (!_enabled) {
+      AppToast.warning(context, context.l10n.paymentMethodTestEnableFirst);
+      return;
+    }
+
     context.read<SupplierPaymentMethodsBloc>().add(
           const SupplierPaymentMethodTested(methodCode: 'MPGS'),
         );

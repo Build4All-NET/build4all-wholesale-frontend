@@ -3716,6 +3716,92 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taxRuleDeletedSuccessfully => 'Tax rule deleted successfully';
 
   @override
+  String get supplierShippingPickupDescription =>
+      'Retailer picks up the order from an available supplier branch.';
+
+  @override
+  String get supplierShippingExpressDescription =>
+      'Faster delivery option, usually more expensive.';
+
+  @override
+  String get supplierShippingStandardDescription =>
+      'Normal delivery option, usually cheaper and slower.';
+
+  @override
+  String get promotionTargetStockHelp =>
+      'Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.';
+
+  @override
+  String get promotionAutomaticStockDetection => 'Automatic stock detection';
+
+  @override
+  String get promotionAutomaticStockDetectionDescription =>
+      'Choose a product or category to see where it has available stock. You do not select branches manually anymore.';
+
+  @override
+  String get promotionSearchChooseInStockProduct =>
+      'Search and choose an in-stock product';
+
+  @override
+  String get promotionSearchChooseInStockCategory =>
+      'Search and choose an in-stock category';
+
+  @override
+  String paymentMethodConfigurationSavedSuccessfully(String methodName) {
+    return '$methodName configuration saved successfully.';
+  }
+
+  @override
+  String paymentMethodEnabledSuccessfully(String methodName) {
+    return '$methodName enabled successfully.';
+  }
+
+  @override
+  String paymentMethodDisabledSuccessfully(String methodName) {
+    return '$methodName disabled successfully.';
+  }
+
+  @override
+  String paymentMethodRequiresCredentialsMessage(String methodName) {
+    return '$methodName requires credentials. Use the Configure button to set it up first.';
+  }
+
+  @override
+  String get paymentMethodNotFoundMessage => 'Payment method not found.';
+
+  @override
+  String get paymentMethodTestEnableFirst =>
+      'Enable this payment method before testing the configuration.';
+
+  @override
+  String get paymentTestStripeReadySandbox =>
+      'Stripe configuration is valid and ready for sandbox payment start.';
+
+  @override
+  String get paymentTestPayPalReadySandbox =>
+      'PayPal configuration is valid and ready for sandbox payment start.';
+
+  @override
+  String get paymentTestMpgsReady =>
+      'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.';
+
+  @override
+  String get paymentTestMpgsConnectionCouldNotComplete =>
+      'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.';
+
+  @override
+  String get paymentTestMpgsNotEnabled =>
+      'Credit / Debit Card is not enabled for this supplier.';
+
+  @override
+  String get paymentTestStripeNotEnabled =>
+      'Stripe is not enabled for this supplier.';
+
+  @override
+  String get paymentTestPayPalNotEnabled =>
+      'PayPal is not enabled for this supplier.';
+
+  @override
   String get checkoutTitle => 'Checkout';
 
   @override

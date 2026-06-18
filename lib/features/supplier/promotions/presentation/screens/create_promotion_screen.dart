@@ -626,9 +626,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                             onChanged: _handleTargetTypeChanged,
                           ),
                           const SizedBox(height: 8),
-                          const _HelpText(
-                            text:
-                                'Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.',
+                          _HelpText(
+                            text: context.l10n.promotionTargetStockHelp,
                           ),
                           const _DividerSpace(),
                           if (_loadingTargets)
@@ -651,12 +650,13 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       ),
                       const SizedBox(height: 18),
                       _SectionCard(
-                        title: 'Automatic stock detection',
+                        title: context.l10n.promotionAutomaticStockDetection,
                         children: [
                           if (_selectedTargetAvailability == null)
-                            const _HelpText(
-                              text:
-                                  'Choose a product or category to see where it has available stock. You do not select branches manually anymore.',
+                            _HelpText(
+                              text: context
+                                  .l10n
+                                  .promotionAutomaticStockDetectionDescription,
                             )
                           else
                             _AvailabilityDetails(
@@ -856,8 +856,8 @@ class _TargetSelectionSection extends StatelessWidget {
         else
           _SearchableTargetField(
             hintText: isProduct
-                ? 'Search and choose an in-stock product'
-                : 'Search and choose an in-stock category',
+                ? context.l10n.promotionSearchChooseInStockProduct
+                : context.l10n.promotionSearchChooseInStockCategory,
             selectedText: selectedTarget?.name ?? selectedFallbackName,
             options: options,
             targetType: targetType,

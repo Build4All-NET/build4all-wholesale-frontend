@@ -650,7 +650,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             onChanged: _handleMethodTypeChanged,
                           ),
                           const SizedBox(height: 8),
-                          _HelpText(text: _methodType.description),
+                          _HelpText(text: _localizedMethodTypeDescription(context, _methodType)),
                         ],
                       ),
                       const SizedBox(height: 18),
@@ -936,6 +936,21 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
       ),
     );
   }
+
+  String _localizedMethodTypeDescription(
+    BuildContext context,
+    ShippingMethodType type,
+  ) {
+    switch (type) {
+      case ShippingMethodType.pickup:
+        return context.l10n.supplierShippingPickupDescription;
+      case ShippingMethodType.expressDelivery:
+        return context.l10n.supplierShippingExpressDescription;
+      case ShippingMethodType.standardDelivery:
+        return context.l10n.supplierShippingStandardDescription;
+    }
+  }
+
 }
 
 class _SectionCard extends StatelessWidget {

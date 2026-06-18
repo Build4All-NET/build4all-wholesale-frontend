@@ -3680,6 +3680,90 @@ class AppLocalizationsAr extends AppLocalizations {
   String get taxRuleDeletedSuccessfully => 'تم حذف قاعدة الضريبة بنجاح';
 
   @override
+  String get supplierShippingPickupDescription =>
+      'يستلم التاجر الطلب من فرع متاح لدى المورد.';
+
+  @override
+  String get supplierShippingExpressDescription =>
+      'خيار توصيل أسرع، وعادةً يكون أعلى تكلفة.';
+
+  @override
+  String get supplierShippingStandardDescription =>
+      'خيار توصيل عادي، وعادةً يكون أرخص وأبطأ.';
+
+  @override
+  String get promotionTargetStockHelp =>
+      'يمكن أن يستهدف العرض منتجًا متوفرًا بالمخزون أو فئة فيها منتجات متوفرة. يتم اكتشاف الفروع تلقائيًا من المخزون.';
+
+  @override
+  String get promotionAutomaticStockDetection => 'اكتشاف المخزون تلقائيًا';
+
+  @override
+  String get promotionAutomaticStockDetectionDescription =>
+      'اختاري منتجًا أو فئة لمعرفة أماكن توفر المخزون. لم يعد اختيار الفروع يدويًا مطلوبًا.';
+
+  @override
+  String get promotionSearchChooseInStockProduct =>
+      'ابحثي واختاري منتجًا متوفرًا بالمخزون';
+
+  @override
+  String get promotionSearchChooseInStockCategory =>
+      'ابحثي واختاري فئة تحتوي على مخزون';
+
+  @override
+  String paymentMethodConfigurationSavedSuccessfully(String methodName) {
+    return 'تم حفظ إعدادات $methodName بنجاح.';
+  }
+
+  @override
+  String paymentMethodEnabledSuccessfully(String methodName) {
+    return 'تم تفعيل $methodName بنجاح.';
+  }
+
+  @override
+  String paymentMethodDisabledSuccessfully(String methodName) {
+    return 'تم تعطيل $methodName بنجاح.';
+  }
+
+  @override
+  String paymentMethodRequiresCredentialsMessage(String methodName) {
+    return 'تتطلب $methodName بيانات اعتماد. استخدمي زر الإعداد أولًا.';
+  }
+
+  @override
+  String get paymentMethodNotFoundMessage => 'لم يتم العثور على طريقة الدفع.';
+
+  @override
+  String get paymentMethodTestEnableFirst =>
+      'فعّلي طريقة الدفع هذه قبل اختبار الإعدادات.';
+
+  @override
+  String get paymentTestStripeReadySandbox =>
+      'إعدادات Stripe صالحة وجاهزة لبدء الدفع التجريبي.';
+
+  @override
+  String get paymentTestPayPalReadySandbox =>
+      'إعدادات PayPal صالحة وجاهزة لبدء الدفع التجريبي.';
+
+  @override
+  String get paymentTestMpgsReady =>
+      'إعدادات بطاقة الائتمان / الخصم صالحة وجاهزة للدفع المستضاف عبر MPGS.';
+
+  @override
+  String get paymentTestMpgsConnectionCouldNotComplete =>
+      'تعذر إكمال اختبار اتصال بطاقة الائتمان / الخصم. يمكن استخدام بيانات الاعتماد المحفوظة لتحضير الدفع عند checkout.';
+
+  @override
+  String get paymentTestMpgsNotEnabled =>
+      'بطاقة الائتمان / الخصم غير مفعّلة لهذا المورد.';
+
+  @override
+  String get paymentTestStripeNotEnabled => 'Stripe غير مفعّل لهذا المورد.';
+
+  @override
+  String get paymentTestPayPalNotEnabled => 'PayPal غير مفعّل لهذا المورد.';
+
+  @override
   String get checkoutTitle => 'إتمام الطلب';
 
   @override

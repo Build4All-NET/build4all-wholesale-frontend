@@ -1430,6 +1430,55 @@
   "taxRuleCreatedSuccessfully": "Tax rule created successfully",
   "taxRuleUpdatedSuccessfully": "Tax rule updated successfully",
   "taxRuleDeletedSuccessfully": "Tax rule deleted successfully",
+  "supplierShippingPickupDescription": "Retailer picks up the order from an available supplier branch.",
+  "supplierShippingExpressDescription": "Faster delivery option, usually more expensive.",
+  "supplierShippingStandardDescription": "Normal delivery option, usually cheaper and slower.",
+  "promotionTargetStockHelp": "Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.",
+  "promotionAutomaticStockDetection": "Automatic stock detection",
+  "promotionAutomaticStockDetectionDescription": "Choose a product or category to see where it has available stock. You do not select branches manually anymore.",
+  "promotionSearchChooseInStockProduct": "Search and choose an in-stock product",
+  "promotionSearchChooseInStockCategory": "Search and choose an in-stock category",
+  "paymentMethodConfigurationSavedSuccessfully": "{methodName} configuration saved successfully.",
+  "@paymentMethodConfigurationSavedSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodEnabledSuccessfully": "{methodName} enabled successfully.",
+  "@paymentMethodEnabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodDisabledSuccessfully": "{methodName} disabled successfully.",
+  "@paymentMethodDisabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodRequiresCredentialsMessage": "{methodName} requires credentials. Use the Configure button to set it up first.",
+  "@paymentMethodRequiresCredentialsMessage": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodNotFoundMessage": "Payment method not found.",
+  "paymentMethodTestEnableFirst": "Enable this payment method before testing the configuration.",
+  "paymentTestStripeReadySandbox": "Stripe configuration is valid and ready for sandbox payment start.",
+  "paymentTestPayPalReadySandbox": "PayPal configuration is valid and ready for sandbox payment start.",
+  "paymentTestMpgsReady": "Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.",
+  "paymentTestMpgsConnectionCouldNotComplete": "Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.",
+  "paymentTestMpgsNotEnabled": "Credit / Debit Card is not enabled for this supplier.",
+  "paymentTestStripeNotEnabled": "Stripe is not enabled for this supplier.",
+  "paymentTestPayPalNotEnabled": "PayPal is not enabled for this supplier.",
   "checkoutTitle": "Checkout",
   "checkoutBranchId": "Branch ID *",
   "checkoutBranchIdHint": "Enter fulfillment branch ID",
