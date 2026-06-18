@@ -47,7 +47,7 @@ class RetailerOrderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  order.orderNumber,
+                  formatRetailerOrderReference(order.orderNumber, order.id),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -147,9 +147,11 @@ class RetailerOrderCard extends StatelessWidget {
                   height: 44,
                   child: ElevatedButton.icon(
                     onPressed: onTrack,
-                    icon: const Icon(Icons.local_shipping_outlined, size: 19),
+                    icon: const Icon(Icons.local_shipping_outlined, size: 18),
                     label: Text(
                       i18n.trackOrder,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -172,10 +174,12 @@ class RetailerOrderCard extends StatelessWidget {
                       onPressed: onReorder,
                       icon: const Icon(
                         Icons.shopping_cart_checkout_outlined,
-                        size: 19,
+                        size: 18,
                       ),
                       label: Text(
                         i18n.reorder,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
                       style: OutlinedButton.styleFrom(
@@ -188,32 +192,35 @@ class RetailerOrderCard extends StatelessWidget {
                     ),
                   ),
                 ),
+              ] else if (order.canCancel && onCancel != null) ...[
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 44,
+                    child: OutlinedButton.icon(
+                      onPressed: onCancel,
+                      icon: const Icon(Icons.close_rounded, size: 18),
+                      label: Text(
+                        i18n.cancelOrder,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppThemeTokens.error,
+                        side: BorderSide(
+                          color: AppThemeTokens.error.withValues(alpha: 0.35),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ],
           ),
-          if (order.canCancel && onCancel != null) ...[
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 44,
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: onCancel,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppThemeTokens.error,
-                  side: BorderSide(
-                    color: AppThemeTokens.error.withValues(alpha: 0.35),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: Text(
-                  i18n.cancelOrder,
-                  style: const TextStyle(fontWeight: FontWeight.w900),
-                ),
-              ),
-            ),
-          ],
         ],
       ),
     );
@@ -221,6 +228,8 @@ class RetailerOrderCard extends StatelessWidget {
 
   IconData _statusIcon() {
     switch (order.status) {
+      case RetailerOrderStatus.pendingPayment:
+        return Icons.payments_rounded;
       case RetailerOrderStatus.delivered:
         return Icons.check_circle_rounded;
       case RetailerOrderStatus.cancelled:
@@ -238,6 +247,8 @@ class RetailerOrderCard extends StatelessWidget {
 
   Color _statusColor(BuildContext context) {
     switch (order.status) {
+      case RetailerOrderStatus.pendingPayment:
+        return const Color(0xFFF97316);
       case RetailerOrderStatus.delivered:
         return const Color(0xFF16A34A);
       case RetailerOrderStatus.cancelled:

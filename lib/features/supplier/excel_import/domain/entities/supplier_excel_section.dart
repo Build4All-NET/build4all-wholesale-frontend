@@ -7,11 +7,12 @@ enum SupplierExcelSection {
   taxRules,
   shippingMethods,
   coupons,
+  promotions,
+  banners,
 }
 
 extension SupplierExcelSectionX on SupplierExcelSection {
-  /// This follows the Build4All e-commerce Excel Import idea:
-  /// one official workbook template, validation first, then import.
+  /// One official workbook template, validation first, then import.
   /// Wholesale adds Branches and BranchInventory because stock is branch-based.
   static const List<SupplierExcelSection> importSections = [
     SupplierExcelSection.categories,
@@ -22,6 +23,8 @@ extension SupplierExcelSectionX on SupplierExcelSection {
     SupplierExcelSection.taxRules,
     SupplierExcelSection.shippingMethods,
     SupplierExcelSection.coupons,
+    SupplierExcelSection.promotions,
+    SupplierExcelSection.banners,
   ];
 
   String get sheetName {
@@ -42,6 +45,10 @@ extension SupplierExcelSectionX on SupplierExcelSection {
         return 'ShippingMethods';
       case SupplierExcelSection.coupons:
         return 'Coupons';
+      case SupplierExcelSection.promotions:
+        return 'Promotions';
+      case SupplierExcelSection.banners:
+        return 'Banners';
     }
   }
 
@@ -63,6 +70,10 @@ extension SupplierExcelSectionX on SupplierExcelSection {
         return 'Shipping Methods';
       case SupplierExcelSection.coupons:
         return 'Coupons';
+      case SupplierExcelSection.promotions:
+        return 'Promotions';
+      case SupplierExcelSection.banners:
+        return 'Banners';
     }
   }
 
@@ -101,6 +112,14 @@ extension SupplierExcelSectionX on SupplierExcelSection {
       case 'coupon':
       case 'coupons':
         return SupplierExcelSection.coupons;
+      case 'promotion':
+      case 'promotions':
+        return SupplierExcelSection.promotions;
+      case 'banner':
+      case 'banners':
+      case 'homebanner':
+      case 'homebanners':
+        return SupplierExcelSection.banners;
     }
 
     return null;

@@ -6,6 +6,7 @@ import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../cubit/retailer_orders_cubit.dart';
 import '../cubit/retailer_orders_state.dart';
+import '../utils/retailer_order_formatters.dart';
 import '../utils/retailer_order_i18n.dart';
 import '../widgets/retailer_order_items_section.dart';
 import '../widgets/retailer_order_status_chip.dart';
@@ -116,7 +117,7 @@ class _RetailerOrderTrackingView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            order.orderNumber,
+                            formatRetailerOrderReference(order.orderNumber, order.id),
                             style: const TextStyle(
                               color: AppThemeTokens.textPrimary,
                               fontSize: 20,

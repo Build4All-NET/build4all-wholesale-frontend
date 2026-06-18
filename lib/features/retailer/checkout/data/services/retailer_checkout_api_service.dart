@@ -88,6 +88,71 @@ class RetailerCheckoutApiService {
     }
   }
 
+
+  Future<RetailerCheckoutPaymentStartModel> confirmStripePayment({
+    required int orderId,
+  }) async {
+    try {
+      final response = await apiClient.dio.post(
+        ApiConfig.retailerOrderStripeConfirm(orderId),
+      );
+
+      return RetailerCheckoutPaymentStartModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<RetailerCheckoutPaymentStartModel> confirmMpgsPayment({
+    required int orderId,
+  }) async {
+    try {
+      final response = await apiClient.dio.post(
+        ApiConfig.retailerOrderMpgsConfirm(orderId),
+      );
+
+      return RetailerCheckoutPaymentStartModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<RetailerCheckoutPaymentStartModel> confirmPaypalPayment({
+    required int orderId,
+  }) async {
+    try {
+      final response = await apiClient.dio.post(
+        ApiConfig.retailerOrderPaypalConfirm(orderId),
+      );
+
+      return RetailerCheckoutPaymentStartModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<RetailerCheckoutPaymentStartModel> getPaymentStatus({
+    required int orderId,
+  }) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerOrderPaymentStatus(orderId),
+      );
+
+      return RetailerCheckoutPaymentStartModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   String _extractMessage(DioException e) {
     final data = e.response?.data;
 

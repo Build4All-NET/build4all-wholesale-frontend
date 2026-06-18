@@ -195,6 +195,8 @@ class OrderPaymentSection extends StatelessWidget {
       case 'CREDIT_CARD':
       case 'DEBIT_CARD':
         return _t(context, 'Card');
+      case 'STRIPE':
+        return _t(context, 'Card / Stripe');
       case 'BANK_TRANSFER':
         return _t(context, 'Bank Transfer');
       default:
@@ -225,6 +227,15 @@ class OrderPaymentSection extends StatelessWidget {
     switch (status) {
       case 'OFFLINE_PENDING':
         return _t(context, 'Pending cash collection');
+      case 'REQUIRES_PAYMENT_METHOD':
+        return _t(context, 'Requires payment method');
+      case 'REQUIRES_CONFIRMATION':
+        return _t(context, 'Requires confirmation');
+      case 'REQUIRES_ACTION':
+        return _t(context, 'Requires retailer action');
+      case 'PROCESSING':
+        return _t(context, 'Processing');
+      case 'SUCCEEDED':
       case 'PAID':
         return _t(context, 'Paid');
       case 'FAILED':
@@ -233,7 +244,9 @@ class OrderPaymentSection extends StatelessWidget {
       case 'CANCELED':
         return _t(context, 'Cancelled');
       default:
-        return status == null || status.isEmpty ? _t(context, 'No transaction') : status;
+        return status == null || status.isEmpty
+            ? _t(context, 'No transaction')
+            : _humanizeStatus(status);
     }
   }
 
@@ -248,9 +261,17 @@ class OrderPaymentSection extends StatelessWidget {
   Color _latestStatusColor(BuildContext context) {
     final status = payment?.latestPaymentStatus?.trim().toUpperCase();
 
-    if (status == 'PAID') return Colors.green.shade700;
-    if (status == 'FAILED') return AppThemeTokens.error;
-    if (status == 'OFFLINE_PENDING') return Colors.orange.shade800;
+    if (status == 'PAID' || status == 'SUCCEEDED') return Colors.green.shade700;
+    if (status == 'FAILED' || status == 'CANCELED' || status == 'CANCELLED') {
+      return AppThemeTokens.error;
+    }
+    if (status == 'OFFLINE_PENDING' ||
+        status == 'REQUIRES_PAYMENT_METHOD' ||
+        status == 'REQUIRES_CONFIRMATION' ||
+        status == 'REQUIRES_ACTION') {
+      return Colors.orange.shade800;
+    }
+    if (status == 'PROCESSING') return Colors.blueGrey.shade700;
     return AppThemeTokens.textPrimary;
   }
 }
@@ -262,29 +283,57 @@ class _PaymentStatusBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPaid = payment?.fullyPaid ?? false;
-    final isPending = payment?.isOfflinePending ?? false;
+    final latestStatus = payment?.latestPaymentStatus?.trim().toUpperCase();
+    final paymentState = payment?.paymentState?.trim().toUpperCase();
 
     final Color color;
     final IconData icon;
     final String title;
     final String subtitle;
 
-    if (isPaid) {
-      color = Colors.green.shade700;
-      icon = Icons.verified_outlined;
-      title = _t(context, 'Payment collected');
-      subtitle = _t(context, 'This order is fully paid.');
-    } else if (isPending) {
-      color = Colors.orange.shade800;
-      icon = Icons.pending_actions_outlined;
-      title = _t(context, 'Pending cash collection');
-      subtitle = _t(context, 'Collect cash from the retailer, then mark it as paid.');
-    } else {
+    if (payment == null) {
       color = AppThemeTokens.textSecondary;
       icon = Icons.info_outline;
       title = _t(context, 'No payment transaction yet');
       subtitle = _t(context, 'Payment will appear here after checkout starts it.');
+    } else if (payment!.fullyPaid ||
+        paymentState == 'PAID' ||
+        latestStatus == 'SUCCEEDED' ||
+        latestStatus == 'PAID') {
+      color = Colors.green.shade700;
+      icon = Icons.verified_outlined;
+      title = _t(context, 'Payment collected');
+      subtitle = _t(context, 'This order is fully paid.');
+    } else if (payment!.isOfflinePending) {
+      color = Colors.orange.shade800;
+      icon = Icons.pending_actions_outlined;
+      title = _t(context, 'Pending cash collection');
+      subtitle = _t(context, 'Collect cash from the retailer, then mark it as paid.');
+    } else if (latestStatus == 'REQUIRES_PAYMENT_METHOD' ||
+        latestStatus == 'REQUIRES_CONFIRMATION' ||
+        latestStatus == 'REQUIRES_ACTION') {
+      color = Colors.orange.shade800;
+      icon = Icons.credit_card_off_outlined;
+      title = _t(context, 'Payment not completed');
+      subtitle = _t(context, 'The retailer started card payment but did not complete it yet.');
+    } else if (latestStatus == 'PROCESSING') {
+      color = Colors.blueGrey.shade700;
+      icon = Icons.sync_outlined;
+      title = _t(context, 'Payment processing');
+      subtitle = _t(context, 'The payment provider is still processing this transaction.');
+    } else if (latestStatus == 'FAILED' ||
+        latestStatus == 'CANCELED' ||
+        latestStatus == 'CANCELLED' ||
+        paymentState == 'FAILED') {
+      color = AppThemeTokens.error;
+      icon = Icons.error_outline;
+      title = _t(context, 'Payment failed');
+      subtitle = _t(context, 'The payment was not completed. The order remains unpaid.');
+    } else {
+      color = AppThemeTokens.textSecondary;
+      icon = Icons.info_outline;
+      title = _t(context, 'Payment not completed');
+      subtitle = _t(context, 'This order has a payment record, but it is not fully paid yet.');
     }
 
     return Container(
@@ -359,15 +408,25 @@ class _PaymentInfoRow extends StatelessWidget {
           child: Text(
             value,
             textAlign: TextAlign.right,
+            softWrap: true,
+            overflow: TextOverflow.visible,
             style: TextStyle(
               color: valueColor ?? AppThemeTokens.textPrimary,
               fontWeight: FontWeight.w900,
+              height: 1.25,
             ),
           ),
         ),
       ],
     );
   }
+}
+
+
+String _humanizeStatus(String value) {
+  final normalized = value.trim().toLowerCase().replaceAll('_', ' ');
+  if (normalized.isEmpty) return value;
+  return normalized[0].toUpperCase() + normalized.substring(1);
 }
 
 String _t(BuildContext context, String key) {
@@ -389,6 +448,22 @@ String _t(BuildContext context, String key) {
     'Cash on Delivery': 'الدفع عند الاستلام',
     'Card': 'بطاقة',
     'Bank Transfer': 'تحويل بنكي',
+    'Card / Stripe': 'بطاقة / Stripe',
+    'Requires payment method': 'يتطلب طريقة دفع',
+    'Requires confirmation': 'يتطلب تأكيد الدفع',
+    'Requires retailer action': 'يتطلب إجراء من التاجر',
+    'Processing': 'قيد المعالجة',
+    'Payment not completed': 'الدفع غير مكتمل',
+    'The retailer started card payment but did not complete it yet.':
+        'بدأ التاجر الدفع بالبطاقة لكنه لم يكمله بعد.',
+    'Payment processing': 'الدفع قيد المعالجة',
+    'The payment provider is still processing this transaction.':
+        'مزود الدفع لا يزال يعالج هذه العملية.',
+    'Payment failed': 'فشل الدفع',
+    'The payment was not completed. The order remains unpaid.':
+        'لم تكتمل عملية الدفع. الطلب لا يزال غير مدفوع.',
+    'This order has a payment record, but it is not fully paid yet.':
+        'هذا الطلب لديه سجل دفع، لكنه غير مدفوع بالكامل بعد.',
     'Not provided': 'غير محدد',
     'Partially paid': 'مدفوع جزئياً',
     'Failed': 'فشل',
@@ -422,6 +497,22 @@ String _t(BuildContext context, String key) {
     'Cash on Delivery': 'Paiement à la livraison',
     'Card': 'Carte',
     'Bank Transfer': 'Virement bancaire',
+    'Card / Stripe': 'Carte / Stripe',
+    'Requires payment method': 'Méthode de paiement requise',
+    'Requires confirmation': 'Confirmation requise',
+    'Requires retailer action': 'Action du détaillant requise',
+    'Processing': 'En traitement',
+    'Payment not completed': 'Paiement non terminé',
+    'The retailer started card payment but did not complete it yet.':
+        'Le détaillant a commencé le paiement par carte mais ne l’a pas terminé.',
+    'Payment processing': 'Paiement en traitement',
+    'The payment provider is still processing this transaction.':
+        'Le prestataire de paiement traite encore cette transaction.',
+    'Payment failed': 'Paiement échoué',
+    'The payment was not completed. The order remains unpaid.':
+        'Le paiement n’a pas été terminé. La commande reste impayée.',
+    'This order has a payment record, but it is not fully paid yet.':
+        'Cette commande a un enregistrement de paiement, mais elle n’est pas encore entièrement payée.',
     'Not provided': 'Non fourni',
     'Partially paid': 'Partiellement payé',
     'Failed': 'Échoué',

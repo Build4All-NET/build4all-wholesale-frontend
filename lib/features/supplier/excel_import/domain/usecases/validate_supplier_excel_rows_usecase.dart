@@ -128,6 +128,28 @@ class ValidateSupplierExcelRowsUseCase {
           case SupplierExcelSection.coupons:
             _validateCoupon(row, errors, warnings);
             break;
+          case SupplierExcelSection.promotions:
+            _validatePromotion(
+              row,
+              errors,
+              warnings,
+              existingCategoryNames: existingCategoryNames.keys.toSet(),
+              excelCategoryNames: excelCategoryNames,
+              existingProductNames: existingProductNames.keys.toSet(),
+              excelProductNames: excelProductNames,
+            );
+            break;
+          case SupplierExcelSection.banners:
+            _validateBanner(
+              row,
+              errors,
+              warnings,
+              existingCategoryNames: existingCategoryNames.keys.toSet(),
+              excelCategoryNames: excelCategoryNames,
+              existingProductNames: existingProductNames.keys.toSet(),
+              excelProductNames: excelProductNames,
+            );
+            break;
         }
 
         return row.copyWith(errors: errors, warnings: warnings);
@@ -321,13 +343,48 @@ class ValidateSupplierExcelRowsUseCase {
     List<String> errors,
     List<String> warnings,
   ) {
-    if (row.value('Name').trim().isEmpty) errors.add('Shipping method name is required.');
-    if (!_isOneOf(row.value('Type'), ['standard', 'express', 'pickup'])) {
-      errors.add('Type must be STANDARD, EXPRESS, or PICKUP.');
+    if (row.value('Name').trim().isEmpty) {
+      errors.add('Shipping method name is required.');
+    }
+
+    final type = _n(row.value('Type'));
+    final isPickup = type == 'pickup' || type == 'pickupfrombranch';
+    final isDelivery = type == 'standard' ||
+        type == 'standarddelivery' ||
+        type == 'express' ||
+        type == 'expressdelivery';
+
+    if (!isPickup && !isDelivery) {
+      errors.add('Type must be STANDARD_DELIVERY, EXPRESS_DELIVERY, or PICKUP.');
+    }
+
+    final countryId = row.value('Country ID').trim();
+    final countryNameText = row.value('Country Name').trim();
+    final countryName = _n(countryNameText);
+
+    if (countryId.isEmpty && countryNameText.isEmpty) {
+      errors.add('Country ID or Country Name is required.');
+    }
+    if (countryId.isNotEmpty && _int(countryId) == null) {
+      errors.add('Country ID must be a valid number when provided.');
+    }
+
+    if ((countryName == 'lebanon' || countryName == 'lb') &&
+        row.value('Region ID').trim().isEmpty &&
+        row.value('Region Name').trim().isEmpty) {
+      errors.add('Region ID or Region Name is required for Lebanon shipping methods.');
     }
 
     final cost = _double(row.value('Cost'));
-    if (cost == null || cost < 0) errors.add('Cost must be zero or greater.');
+    if (!isPickup && cost == null) {
+      errors.add('Cost is required for delivery methods.');
+    }
+    if (cost != null && cost < 0) {
+      errors.add('Cost must be zero or greater.');
+    }
+    if (isPickup && cost != null && cost != 0) {
+      errors.add('Pickup shipping cost must be 0.');
+    }
 
     final minOrder = _double(row.value('Minimum Order Amount'));
     if (row.value('Minimum Order Amount').trim().isNotEmpty &&
@@ -341,8 +398,15 @@ class ValidateSupplierExcelRowsUseCase {
       errors.add('Free Shipping Threshold must be zero or greater.');
     }
 
-    if (row.value('Estimated Delivery Time').trim().isEmpty) {
-      errors.add('Estimated delivery time is required.');
+    if (!isPickup &&
+        minOrder != null &&
+        freeThreshold != null &&
+        freeThreshold < minOrder) {
+      errors.add('Free Shipping Threshold must be greater than or equal to Minimum Order Amount.');
+    }
+
+    if (!isPickup && row.value('Estimated Delivery Time').trim().isEmpty) {
+      errors.add('Estimated delivery time is required for delivery methods.');
     }
 
     _validateBool(row.value('Active'), errors, fieldName: 'Active');
@@ -356,13 +420,18 @@ class ValidateSupplierExcelRowsUseCase {
     if (row.value('Rule Name').trim().isEmpty) errors.add('Rule name is required.');
 
     final rate = _double(row.value('Rate'));
-    if (rate == null || rate < 0 || rate > 100) {
-      errors.add('Rate must be between 0 and 100.');
+    if (rate == null || rate <= 0 || rate > 100) {
+      errors.add('Rate must be greater than 0 and not greater than 100.');
     }
 
-    if (row.value('Country ID').trim().isEmpty) errors.add('Country ID is required.');
-    if (_int(row.value('Country ID')) == null) errors.add('Country ID must be a valid number.');
-    if (row.value('Country Name').trim().isEmpty) errors.add('Country name is required.');
+    final countryId = row.value('Country ID').trim();
+    final countryNameText = row.value('Country Name').trim();
+    if (countryId.isEmpty && countryNameText.isEmpty) {
+      errors.add('Country ID or Country Name is required.');
+    }
+    if (countryId.isNotEmpty && _int(countryId) == null) {
+      errors.add('Country ID must be a valid number when provided.');
+    }
 
     _validateBool(row.value('Applies To Shipping'), errors, fieldName: 'Applies To Shipping');
     _validateBool(row.value('Active'), errors, fieldName: 'Active');
@@ -375,7 +444,7 @@ class ValidateSupplierExcelRowsUseCase {
   ) {
     if (row.value('Code').trim().isEmpty) errors.add('Coupon code is required.');
 
-    if (!_isOneOf(row.value('Discount Type'), ['percent', 'percentage', 'fixed', 'freeshipping'])) {
+    if (!_isOneOf(row.value('Discount Type'), ['percent', 'percentage', 'fixed', 'freeshipping', 'free_shipping'])) {
       errors.add('Discount Type must be PERCENT, FIXED, or FREE_SHIPPING.');
     }
 
@@ -390,12 +459,141 @@ class ValidateSupplierExcelRowsUseCase {
 
     _validatePositiveOptional(row.value('Min Order Amount'), errors, 'Min Order Amount');
     _validatePositiveOptional(row.value('Max Discount Amount'), errors, 'Max Discount Amount');
+
+    final startsAt = row.value('Starts At');
+    final expiresAt = row.value('Expires At');
+
+    if (startsAt.trim().isEmpty) {
+      errors.add('Starts At is required.');
+    }
+
+    if (expiresAt.trim().isEmpty) {
+      errors.add('Expires At is required.');
+    }
+
     _validateDateRange(
-      row.value('Starts At'),
-      row.value('Expires At'),
+      startsAt,
+      expiresAt,
       errors,
       startLabel: 'Starts At',
       endLabel: 'Expires At',
+    );
+
+    _validateBool(row.value('Active'), errors, fieldName: 'Active');
+  }
+
+
+  void _validatePromotion(
+    SupplierExcelRowEntity row,
+    List<String> errors,
+    List<String> warnings, {
+    required Set<String> existingCategoryNames,
+    required Set<String> excelCategoryNames,
+    required Set<String> existingProductNames,
+    required Set<String> excelProductNames,
+  }) {
+    if (row.value('Title').trim().isEmpty) errors.add('Promotion title is required.');
+
+    if (!_isOneOf(row.value('Discount Type'), ['percent', 'percentage', 'fixed'])) {
+      errors.add('Discount Type must be PERCENT or FIXED.');
+    }
+
+    final discount = _double(row.value('Discount Value'));
+    if (discount == null || discount <= 0) {
+      errors.add('Discount Value must be greater than zero.');
+    }
+
+    if (_isOneOf(row.value('Discount Type'), ['percent', 'percentage']) &&
+        discount != null &&
+        discount > 100) {
+      errors.add('Percent discount cannot be greater than 100.');
+    }
+
+    final targetType = _n(row.value('Target Type'));
+    final targetName = row.value('Target Name').trim();
+
+    if (!_isOneOf(row.value('Target Type'), ['product', 'category'])) {
+      errors.add('Target Type must be PRODUCT or CATEGORY.');
+    }
+
+    if (targetType == 'product') {
+      final key = _n(targetName);
+      if (key.isEmpty) {
+        errors.add('Target Name is required for PRODUCT promotions.');
+      } else if (!existingProductNames.contains(key) && !excelProductNames.contains(key)) {
+        errors.add('Promotion target product was not found. Add it in Products sheet or create it first.');
+      }
+    } else if (targetType == 'category') {
+      final key = _n(targetName);
+      if (key.isEmpty) {
+        errors.add('Target Name is required for CATEGORY promotions.');
+      } else if (!existingCategoryNames.contains(key) && !excelCategoryNames.contains(key)) {
+        errors.add('Promotion target category was not found. Add it in Categories sheet or create it first.');
+      }
+    }
+
+    _validatePositiveOptional(row.value('Min Order Amount'), errors, 'Min Order Amount');
+    _validatePositiveOptional(row.value('Max Discount Amount'), errors, 'Max Discount Amount');
+    _validateDateRange(
+      row.value('Start Date'),
+      row.value('End Date'),
+      errors,
+      startLabel: 'Start Date',
+      endLabel: 'End Date',
+    );
+    _validateBool(row.value('Active'), errors, fieldName: 'Active');
+  }
+
+  void _validateBanner(
+    SupplierExcelRowEntity row,
+    List<String> errors,
+    List<String> warnings, {
+    required Set<String> existingCategoryNames,
+    required Set<String> excelCategoryNames,
+    required Set<String> existingProductNames,
+    required Set<String> excelProductNames,
+  }) {
+    if (row.value('Title').trim().isEmpty) errors.add('Banner title is required.');
+    if (row.value('Image URL').trim().isEmpty) errors.add('Image URL is required for banners.');
+
+    final targetType = _n(row.value('Target Type'));
+    final targetValue = row.value('Target Value').trim();
+
+    if (!_isOneOf(row.value('Target Type'), ['none', 'product', 'category', 'subcategory', 'url'])) {
+      errors.add('Target Type must be NONE, PRODUCT, CATEGORY, SUBCATEGORY, or URL.');
+    }
+
+    if (targetType == 'product') {
+      final key = _n(targetValue);
+      if (key.isEmpty) {
+        errors.add('Target Value is required for PRODUCT banners.');
+      } else if (!existingProductNames.contains(key) && !excelProductNames.contains(key)) {
+        errors.add('Banner target product was not found. Add it in Products sheet or create it first.');
+      }
+    } else if (targetType == 'category') {
+      final key = _n(targetValue);
+      if (key.isEmpty) {
+        errors.add('Target Value is required for CATEGORY banners.');
+      } else if (!existingCategoryNames.contains(key) && !excelCategoryNames.contains(key)) {
+        errors.add('Banner target category was not found. Add it in Categories sheet or create it first.');
+      }
+    } else if (targetType == 'url' && targetValue.isEmpty) {
+      errors.add('Target Value must contain a URL when Target Type is URL.');
+    }
+
+    final sortOrder = _int(row.value('Sort Order'));
+    if (row.value('Sort Order').trim().isNotEmpty && sortOrder == null) {
+      errors.add('Sort Order must be a valid number.');
+    }
+
+    if (row.value('Start Date').trim().isEmpty) errors.add('Start Date is required.');
+    if (row.value('End Date').trim().isEmpty) errors.add('End Date is required.');
+    _validateDateRange(
+      row.value('Start Date'),
+      row.value('End Date'),
+      errors,
+      startLabel: 'Start Date',
+      endLabel: 'End Date',
     );
     _validateBool(row.value('Active'), errors, fieldName: 'Active');
   }

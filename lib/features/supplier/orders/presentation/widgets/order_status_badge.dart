@@ -36,6 +36,8 @@ class OrderStatusBadge extends StatelessWidget {
 
   String _statusLabel(BuildContext context) {
     switch (status) {
+      case SupplierOrderStatus.pendingPayment:
+        return _awaitingPaymentLabel(context);
       case SupplierOrderStatus.pending:
         return context.l10n.orderStatusPending;
       case SupplierOrderStatus.accepted:
@@ -51,8 +53,17 @@ class OrderStatusBadge extends StatelessWidget {
     }
   }
 
+  String _awaitingPaymentLabel(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') return 'بانتظار الدفع';
+    if (languageCode == 'fr') return 'En attente de paiement';
+    return 'Awaiting payment';
+  }
+
   Color _getColor(BuildContext context) {
     switch (status) {
+      case SupplierOrderStatus.pendingPayment:
+        return const Color(0xFF9333EA);
       case SupplierOrderStatus.pending:
         return Color(0xFFF97316);
       case SupplierOrderStatus.accepted:

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../domain/entities/supplier_payment_method_entity.dart';
 
 class SupplierPaymentMethodModel extends SupplierPaymentMethodEntity {
@@ -66,9 +68,16 @@ class SupplierPaymentMethodModel extends SupplierPaymentMethodEntity {
     final configJson = json['configJson'];
 
     if (configJson is String && configJson.trim().isNotEmpty) {
-      return <String, dynamic>{
-        'rawConfigJson': configJson,
-      };
+      try {
+        final decoded = jsonDecode(configJson);
+        if (decoded is Map) {
+          return Map<String, dynamic>.from(decoded);
+        }
+      } catch (_) {
+        return <String, dynamic>{
+          'rawConfigJson': configJson,
+        };
+      }
     }
 
     return <String, dynamic>{};

@@ -326,7 +326,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
     if (_startsAt != null &&
         _expiresAt != null &&
-        _startsAt!.isAfter(_expiresAt!)) {
+        !_startsAt!.isBefore(_expiresAt!)) {
       _dateError = context.l10n.supplierValidFromBeforeValidTo;
       return false;
     }
@@ -677,11 +677,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                 validator: _targetValueValidator,
                               ),
                             ] else ...[
-                              _FieldLabel(
-                                context.l10n.supplierSelectTargetLabel(
-                                  _localizedOptionLabel(context, _targetType.label),
-                                ),
-                              ),
+                              _FieldLabel('${context.l10n.supplierTarget} *'),
                               if (_loadingTargets)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -717,16 +713,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                     });
                                   },
                                 ),
-                              const SizedBox(height: 8),
-                              Text(
-                                context.l10n.supplierSelectedItemNameShownHere,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  height: 1.35,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppThemeTokens.textSecondary,
-                                ),
-                              ),
+                              const SizedBox(height: 4),
                             ],
                           ],
                         ],
@@ -809,9 +796,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                               ),
                               Switch(
                                 value: _active,
-                                activeThumbColor: Colors.white,
+                                thumbColor: WidgetStateProperty.all(Colors.white),
                                 activeTrackColor: primary,
-                                inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: const Color(0xFFD1D5DB),
                                 onChanged: (value) {
                                   setState(() {
@@ -1130,7 +1116,7 @@ class _TargetTypeDropdown extends StatelessWidget {
         : BannerTargetType.none;
 
     return DropdownButtonFormField<BannerTargetType>(
-      initialValue: safeValue,
+      value: safeValue,
       items: visibleTypes
           .map(
             (type) => DropdownMenuItem<BannerTargetType>(
@@ -1150,7 +1136,7 @@ class _TargetTypeDropdown extends StatelessWidget {
   }
 }
 
-class _TargetOptionDropdown extends StatelessWidget {
+class _TargetOptionDropdown extends StatefulWidget {
   final BannerTargetType targetType;
   final String? value;
   final List<_BannerTargetOption> options;
@@ -1166,36 +1152,251 @@ class _TargetOptionDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final safeValue = value != null && options.any((item) => item.id == value)
-        ? value
-        : null;
+  State<_TargetOptionDropdown> createState() => _TargetOptionDropdownState();
+}
 
-    return DropdownButtonFormField<String>(
-      initialValue: safeValue,
-      items: options
-          .map(
-            (option) => DropdownMenuItem<String>(
-              value: option.id,
-              child: Text(
-                option.label,
-                overflow: TextOverflow.ellipsis,
+class _TargetOptionDropdownState extends State<_TargetOptionDropdown> {
+  Future<void> _openSearchSheet(BuildContext context) async {
+    if (widget.options.isEmpty) return;
+
+    final selected = await showModalBottomSheet<_BannerTargetOption>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return _TargetOptionSearchSheet(
+          targetType: widget.targetType,
+          options: widget.options,
+          selectedValue: widget.value,
+        );
+      },
+    );
+
+    if (selected == null) return;
+
+    widget.onChanged(selected.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _BannerTargetOption? safeOption;
+
+    for (final option in widget.options) {
+      if (option.id == widget.value) {
+        safeOption = option;
+        break;
+      }
+    }
+
+    final hintText = context.l10n.supplierSelectTargetHint(
+      _localizedOptionLabel(context, widget.targetType.label).toLowerCase(),
+    );
+
+    return FormField<String>(
+      initialValue: safeOption?.id,
+      validator: widget.validator,
+      builder: (field) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () => _openSearchSheet(context),
+              child: InputDecorator(
+                isEmpty: safeOption == null,
+                decoration: _dropdownDecoration(context).copyWith(
+                  errorText: field.errorText,
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                ),
+                child: Text(
+                  safeOption?.label ?? hintText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: safeOption == null
+                        ? AppThemeTokens.textSecondary
+                        : AppThemeTokens.textPrimary,
+                  ),
+                ),
               ),
             ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      validator: validator,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: AppThemeTokens.textPrimary,
-      ),
-      decoration: _dropdownDecoration(context).copyWith(
-        hintText: context.l10n.supplierSelectTargetHint(
-          _localizedOptionLabel(context, targetType.label).toLowerCase(),
-        ),
-      ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _TargetOptionSearchSheet extends StatefulWidget {
+  final BannerTargetType targetType;
+  final List<_BannerTargetOption> options;
+  final String? selectedValue;
+
+  const _TargetOptionSearchSheet({
+    required this.targetType,
+    required this.options,
+    required this.selectedValue,
+  });
+
+  @override
+  State<_TargetOptionSearchSheet> createState() =>
+      _TargetOptionSearchSheetState();
+}
+
+class _TargetOptionSearchSheetState extends State<_TargetOptionSearchSheet> {
+  late final TextEditingController _searchController;
+  String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<_BannerTargetOption> get _filteredOptions {
+    final query = _query.trim().toLowerCase();
+
+    if (query.isEmpty) return widget.options;
+
+    return widget.options
+        .where((item) => item.label.toLowerCase().contains(query))
+        .toList();
+  }
+
+  String _searchHint(BuildContext context) {
+    return switch (widget.targetType) {
+      BannerTargetType.product => context.l10n.searchProductsHint,
+      BannerTargetType.category => context.l10n.searchCategoriesHint,
+      BannerTargetType.subcategory => context.l10n.searchSubCategoriesHint,
+      BannerTargetType.url => context.l10n.searchLabel,
+      BannerTargetType.none => context.l10n.searchLabel,
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final filteredOptions = _filteredOptions;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.72,
+      minChildSize: 0.45,
+      maxChildSize: 0.92,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: AppThemeTokens.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: EdgeInsets.fromLTRB(20, 14, 20, 14 + bottomPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppThemeTokens.border,
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                context.l10n.supplierSelectTargetLabel(
+                  _localizedOptionLabel(context, widget.targetType.label),
+                ),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: AppThemeTokens.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _searchController,
+                autofocus: true,
+                onChanged: (value) {
+                  setState(() {
+                    _query = value;
+                  });
+                },
+                decoration: _dropdownDecoration(context).copyWith(
+                  hintText: _searchHint(context),
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _query.isEmpty
+                      ? null
+                      : IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _query = '';
+                            });
+                          },
+                        ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: filteredOptions.isEmpty
+                    ? Center(
+                        child: Text(
+                          context.l10n.supplierNoResultsFound,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppThemeTokens.textSecondary,
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        itemCount: filteredOptions.length,
+                        separatorBuilder: (_, __) => const Divider(
+                          height: 1,
+                          color: AppThemeTokens.border,
+                        ),
+                        itemBuilder: (context, index) {
+                          final option = filteredOptions[index];
+                          final selected = option.id == widget.selectedValue;
+
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              option.label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                                color: AppThemeTokens.textPrimary,
+                              ),
+                            ),
+                            trailing: selected
+                                ? Icon(
+                                    Icons.check_circle,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  )
+                                : null,
+                            onTap: () => Navigator.of(context).pop(option),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

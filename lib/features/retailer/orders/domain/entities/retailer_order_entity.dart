@@ -1,6 +1,7 @@
 import 'retailer_order_item_entity.dart';
 
 enum RetailerOrderStatus {
+  pendingPayment,
   pending,
   accepted,
   preparing,
@@ -56,14 +57,16 @@ class RetailerOrderEntity {
   });
 
   bool get isPendingGroup {
-    return status == RetailerOrderStatus.pending ||
+    return status == RetailerOrderStatus.pendingPayment ||
+        status == RetailerOrderStatus.pending ||
         status == RetailerOrderStatus.accepted ||
         status == RetailerOrderStatus.preparing ||
         status == RetailerOrderStatus.shipped;
   }
 
   bool get canCancel {
-    return status == RetailerOrderStatus.pending ||
+    return status == RetailerOrderStatus.pendingPayment ||
+        status == RetailerOrderStatus.pending ||
         status == RetailerOrderStatus.accepted;
   }
 

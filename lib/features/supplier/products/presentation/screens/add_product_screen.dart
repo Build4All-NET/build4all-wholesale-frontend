@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
-import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
-import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../core/config/app_config.dart';
+import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../categories/domain/entities/supplier_category_entity.dart';
@@ -276,17 +275,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final quantity = int.tryParse(value);
 
     if (_initialStockBranches.isEmpty) {
-      AppToast.error(context, context.l10n.createBranchFirst);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.createBranchFirst)),
+      );
       return;
     }
 
     if (quantity == null || quantity < 0) {
-      AppToast.error(context, 'Please enter a valid stock quantity.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid stock quantity.')),
+      );
       return;
     }
 
     if (quantity > 1000000) {
-      AppToast.error(context, 'Stock quantity is too high.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Stock quantity is too high.')),
+      );
       return;
     }
 
@@ -318,17 +323,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
       final quantity = int.tryParse(value);
 
       if (quantity == null || quantity < 0) {
-        AppToast.error(
-          context,
-          'Please enter a valid stock quantity for ${branch.name}.',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please enter a valid stock quantity for ${branch.name}.'),
+          ),
         );
         return null;
       }
 
       if (quantity > 1000000) {
-        AppToast.error(
-          context,
-          'Stock quantity is too high for ${branch.name}.',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Stock quantity is too high for ${branch.name}.'),
+          ),
         );
         return null;
       }
@@ -464,7 +471,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isCreatingCategory = false;
       });
 
-      AppToast.success(context, context.l10n.categoryAddedMessage(category.name));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.categoryAddedMessage(category.name))));
     } catch (e) {
       if (!mounted) return;
 
@@ -480,7 +489,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isCreatingSubCategory) return;
 
     if (_selectedCategoryId == null) {
-      AppToast.error(context, context.l10n.selectCategoryFirstMessage);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
       return;
     }
 
@@ -536,7 +547,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isCreatingSubCategory = false;
       });
 
-      AppToast.success(context, context.l10n.subCategoryAddedMessage(subCategory.name));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.subCategoryAddedMessage(subCategory.name))));
     } catch (e) {
       if (!mounted) return;
 
@@ -552,7 +565,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isDeletingCategory) return;
 
     if (_selectedCategoryId == null) {
-      AppToast.error(context, context.l10n.selectCategoryFirstMessage);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.selectCategoryFirstMessage)));
       return;
     }
 
@@ -562,7 +577,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((category) => category != null, orElse: () => null);
 
     if (selectedCategory == null) {
-      AppToast.error(context, context.l10n.selectedCategoryNotFound);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
+      );
       return;
     }
 
@@ -614,7 +631,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isDeletingCategory = false;
       });
 
-      AppToast.success(context, context.l10n.categoryDeletedMessage(selectedCategory.name));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.categoryDeletedMessage(selectedCategory.name))),
+      );
     } catch (e) {
       if (!mounted) return;
 
@@ -630,7 +649,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (_isDeletingSubCategory) return;
 
     if (_selectedSubCategoryId == null) {
-      AppToast.error(context, context.l10n.selectSubCategoryFirstMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.selectSubCategoryFirstMessage)),
+      );
       return;
     }
 
@@ -640,7 +661,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((subCategory) => subCategory != null, orElse: () => null);
 
     if (selectedSubCategory == null) {
-      AppToast.error(context, context.l10n.selectedSubCategoryNotFound);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.selectedSubCategoryNotFound)),
+      );
       return;
     }
 
@@ -692,7 +715,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _isDeletingSubCategory = false;
       });
 
-      AppToast.success(context, context.l10n.subCategoryDeletedMessage(selectedSubCategory.name));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.subCategoryDeletedMessage(selectedSubCategory.name))),
+      );
     } catch (e) {
       if (!mounted) return;
 
@@ -720,7 +745,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .firstWhere((category) => category != null, orElse: () => null);
 
     if (selectedCategory == null) {
-      AppToast.error(context, context.l10n.selectedCategoryNotFound);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.selectedCategoryNotFound)),
+      );
       return;
     }
 
@@ -789,9 +816,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
               _isSavingProduct = false;
             });
 
-            AppToast.warning(
-              context,
-              'Product was saved, but initial branch stock was not fully saved. Please open Product Branch Stock to complete it.',
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Product was saved, but initial branch stock was not fully saved. Please open Product Branch Stock to complete it.',
+                ),
+              ),
             );
 
             context.pop(product);
@@ -818,9 +848,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
   void _showError(Object error) {
-    final message = AppErrorMapper.toMessage(error);
+    final message = error is AppException
+        ? error.message
+        : error.toString().replaceFirst('Exception: ', '');
 
-    AppToast.error(context, message);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -1074,6 +1108,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
 
 
+
 class _InitialBranchStockSection extends StatefulWidget {
   final List<BranchEntity> branches;
   final List<BranchEntity> visibleBranches;
@@ -1114,6 +1149,7 @@ class _InitialBranchStockSection extends StatefulWidget {
 
 class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> {
   static const String _allBranchesValue = '__all_branches__';
+  static const String _multipleBranchesValue = '__multiple_branches__';
 
   bool _isOpen = false;
   String _selectedTarget = _allBranchesValue;
@@ -1122,16 +1158,27 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
   void initState() {
     super.initState();
     widget.quickStockController.addListener(_safeRefresh);
+    widget.searchController.addListener(_safeRefresh);
   }
 
   @override
   void didUpdateWidget(covariant _InitialBranchStockSection oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     if (oldWidget.quickStockController != widget.quickStockController) {
       oldWidget.quickStockController.removeListener(_safeRefresh);
       widget.quickStockController.addListener(_safeRefresh);
     }
-    if (_selectedTarget != _allBranchesValue &&
+
+    if (oldWidget.searchController != widget.searchController) {
+      oldWidget.searchController.removeListener(_safeRefresh);
+      widget.searchController.addListener(_safeRefresh);
+    }
+
+    final isBuiltInTarget = _selectedTarget == _allBranchesValue ||
+        _selectedTarget == _multipleBranchesValue;
+
+    if (!isBuiltInTarget &&
         !widget.branches.any((branch) => branch.id == _selectedTarget)) {
       _selectedTarget = _allBranchesValue;
     }
@@ -1140,6 +1187,7 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
   @override
   void dispose() {
     widget.quickStockController.removeListener(_safeRefresh);
+    widget.searchController.removeListener(_safeRefresh);
     super.dispose();
   }
 
@@ -1156,10 +1204,27 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
     return parsed;
   }
 
+  void _changeTarget(String value) {
+    FocusScope.of(context).unfocus();
+
+    widget.onClear();
+    widget.searchController.clear();
+
+    setState(() {
+      _selectedTarget = value;
+    });
+  }
+
   void _applyStock() {
     final quantity = _typedQuantity();
+
     if (quantity == null) {
-      AppToast.error(context, 'Please enter stock greater than 0');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter stock greater than 0'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
       return;
     }
 
@@ -1172,18 +1237,25 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
 
     if (_selectedTarget == _allBranchesValue) {
       widget.onApplyQuickStock();
-    } else {
-      // When the supplier changes from "All branches" to one branch,
-      // the previous all-branch stock must be replaced, not kept.
-      // Clear every previous assignment first, then prepare stock only
-      // for the selected branch.
-      widget.onClear();
-      widget.quickStockController.text = quantity.toString();
-      widget.onBranchSelected(_selectedTarget, true);
-      widget.controllers[_selectedTarget]?.text = quantity.toString();
+      setState(() {});
+      return;
     }
 
-    if (!mounted) return;
+    if (_selectedTarget == _multipleBranchesValue) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Choose branches and set each stock quantity below.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    widget.onClear();
+    widget.quickStockController.text = quantity.toString();
+    widget.onBranchSelected(_selectedTarget, true);
+    widget.controllers[_selectedTarget]?.text = quantity.toString();
+
     setState(() {});
   }
 
@@ -1197,6 +1269,8 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
 
   String _targetLabel(String value) {
     if (value == _allBranchesValue) return 'All branches';
+    if (value == _multipleBranchesValue) return 'Multiple branches';
+
     BranchEntity? branch;
     for (final item in widget.branches) {
       if (item.id == value) {
@@ -1204,7 +1278,9 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
         break;
       }
     }
+
     if (branch == null) return 'Selected branch';
+
     final location = branch.locationLabel.trim();
     if (location.isEmpty) return branch.name;
     return '${branch.name} • $location';
@@ -1216,6 +1292,14 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
         value: _allBranchesValue,
         child: Text(
           'All branches',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      DropdownMenuItem<String>(
+        value: _multipleBranchesValue,
+        child: Text(
+          'Multiple branches',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -1241,15 +1325,254 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
   List<BranchEntity> _selectedBranchesPreview() {
     return widget.branches
         .where((branch) => widget.selectedBranchIds.contains(branch.id))
-        .take(3)
+        .take(4)
         .toList();
+  }
+
+  List<BranchEntity> _multipleBranchList() {
+    final query = widget.searchController.text.trim().toLowerCase();
+
+    if (query.isEmpty) {
+      final selected = widget.branches
+          .where((branch) => widget.selectedBranchIds.contains(branch.id))
+          .toList();
+
+      final remaining = widget.branches
+          .where((branch) => !widget.selectedBranchIds.contains(branch.id))
+          .take(8)
+          .toList();
+
+      return [...selected, ...remaining];
+    }
+
+    return widget.branches.where((branch) {
+      final name = branch.name.toLowerCase();
+      final city = branch.city.toLowerCase();
+      final location = branch.locationLabel.toLowerCase();
+
+      return name.contains(query) ||
+          city.contains(query) ||
+          location.contains(query);
+    }).take(12).toList();
+  }
+
+  Widget _outlinedFieldDecorationWrapper({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppThemeTokens.inputFill,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildTargetPicker(Color primaryColor) {
+    return DropdownButtonFormField<String>(
+      value: _selectedTarget,
+      isExpanded: true,
+      items: _branchItems(),
+      onChanged: (value) {
+        if (value == null || value == _selectedTarget) return;
+        _changeTarget(value);
+      },
+      decoration: InputDecoration(
+        labelText: 'Stock target',
+        filled: true,
+        fillColor: AppThemeTokens.inputFill,
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: AppThemeTokens.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: AppThemeTokens.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: primaryColor),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSingleStockInput(Color primaryColor) {
+    final quantity = _typedQuantity();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.quickStockController,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          decoration: InputDecoration(
+            labelText: 'Stock quantity',
+            hintText: 'Example: 50',
+            prefixIcon: Icon(Icons.inventory_rounded, size: 20),
+            filled: true,
+            fillColor: AppThemeTokens.inputFill,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: AppThemeTokens.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: AppThemeTokens.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: primaryColor),
+            ),
+          ),
+        ),
+        SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: quantity == null ? null : _applyStock,
+            icon: Icon(Icons.check_rounded, size: 18),
+            label: Text(
+              _selectedTarget == _allBranchesValue
+                  ? 'Apply to all branches'
+                  : 'Apply to selected branch',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMultipleBranchEditor(Color primaryColor) {
+    final branches = _multipleBranchList();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.searchController,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            hintText: 'Search branches',
+            prefixIcon: Icon(Icons.search_rounded, size: 20),
+            suffixIcon: widget.searchController.text.trim().isEmpty
+                ? null
+                : IconButton(
+                    onPressed: () => widget.searchController.clear(),
+                    icon: Icon(Icons.close_rounded, size: 18),
+                  ),
+            filled: true,
+            fillColor: AppThemeTokens.inputFill,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: AppThemeTokens.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: AppThemeTokens.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: primaryColor),
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                '${widget.selectedBranchIds.length} selected',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: AppThemeTokens.textPrimary,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: _clearStock,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Clear',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 6),
+        if (branches.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppThemeTokens.inputFill,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppThemeTokens.border),
+            ),
+            child: Text(
+              'No branches found.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: AppThemeTokens.textSecondary,
+              ),
+            ),
+          )
+        else
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: branches
+                .map((branch) => _MultipleInitialStockBranchRow(
+                      branch: branch,
+                      controller: widget.controllers[branch.id],
+                      isSelected:
+                          widget.selectedBranchIds.contains(branch.id),
+                      primaryColor: primaryColor,
+                      onSelectedChanged: (selected) {
+                        widget.onBranchSelected(branch.id, selected);
+                      },
+                    ))
+                .toList(),
+          ),
+        SizedBox(height: 8),
+        Text(
+          'Branches not selected or with stock 0 will stay without initial stock.',
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w700,
+            color: AppThemeTokens.textSecondary,
+            height: 1.3,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final hasStock = widget.selectedBranchIds.isNotEmpty && widget.totalStock > 0;
-    final quantity = _typedQuantity();
 
     return Container(
       width: double.infinity,
@@ -1363,82 +1686,12 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
               ),
             ),
             SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _selectedTarget,
-              isExpanded: true,
-              items: _branchItems(),
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _selectedTarget = value);
-              },
-              decoration: InputDecoration(
-                labelText: 'Stock target',
-                filled: true,
-                fillColor: AppThemeTokens.inputFill,
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppThemeTokens.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppThemeTokens.border),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: primaryColor),
-                ),
-              ),
-            ),
+            _buildTargetPicker(primaryColor),
             SizedBox(height: 10),
-            TextField(
-              controller: widget.quickStockController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                labelText: 'Stock quantity',
-                hintText: 'Example: 50',
-                prefixIcon: Icon(Icons.inventory_rounded, size: 20),
-                filled: true,
-                fillColor: AppThemeTokens.inputFill,
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppThemeTokens.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppThemeTokens.border),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: primaryColor),
-                ),
-              ),
-            ),
-            SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: quantity == null ? null : _applyStock,
-                icon: Icon(Icons.check_rounded, size: 18),
-                label: Text(
-                  _selectedTarget == _allBranchesValue
-                      ? 'Apply to all branches'
-                      : 'Apply to selected branch',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: EdgeInsets.symmetric(vertical: 13),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-              ),
-            ),
+            if (_selectedTarget == _multipleBranchesValue)
+              _buildMultipleBranchEditor(primaryColor)
+            else
+              _buildSingleStockInput(primaryColor),
           ],
           if (hasStock) ...[
             SizedBox(height: 12),
@@ -1504,6 +1757,116 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MultipleInitialStockBranchRow extends StatelessWidget {
+  final BranchEntity branch;
+  final TextEditingController? controller;
+  final bool isSelected;
+  final Color primaryColor;
+  final ValueChanged<bool> onSelectedChanged;
+
+  _MultipleInitialStockBranchRow({
+    required this.branch,
+    required this.controller,
+    required this.isSelected,
+    required this.primaryColor,
+    required this.onSelectedChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.inputFill,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isSelected ? primaryColor : AppThemeTokens.border,
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            height: 28,
+            width: 28,
+            child: Checkbox(
+              value: isSelected,
+              onChanged: (value) => onSelectedChanged(value ?? false),
+              activeColor: primaryColor,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  branch.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w900,
+                    color: AppThemeTokens.textPrimary,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  branch.locationLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: AppThemeTokens.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8),
+          SizedBox(
+            width: 82,
+            child: TextField(
+              controller: controller,
+              enabled: isSelected,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                hintText: '0',
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppThemeTokens.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -2211,5 +2574,4 @@ class _UploadImagePlaceholder extends StatelessWidget {
     );
   }
 }
-
 

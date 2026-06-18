@@ -3730,4 +3730,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get checkoutNoEligibleBranches =>
       'لا يوجد فرع قادر على تجهيز كل منتجات السلة.';
+
+  @override
+  String get paymentCredentialAlreadyConfiguredHelper =>
+      'تم حفظها سابقًا. اتركي الحقل فارغًا للإبقاء على القيمة الحالية، أو أدخلي قيمة جديدة لاستبدالها.';
 }

@@ -215,6 +215,7 @@ import 'features/supplier/banners/presentation/bloc/banners_bloc.dart';
 // =========================
 import 'features/supplier/shipping/data/repositories/shipping_method_repository_impl.dart';
 import 'features/supplier/shipping/data/services/shipping_method_api_service.dart';
+import 'features/supplier/shipping/data/services/shipping_location_api_service.dart';
 import 'features/supplier/shipping/domain/repositories/shipping_method_repository.dart';
 import 'features/supplier/shipping/domain/usecases/create_shipping_method_usecase.dart';
 import 'features/supplier/shipping/domain/usecases/delete_shipping_method_usecase.dart';
@@ -404,6 +405,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ShippingMethodApiService>(
     () => ShippingMethodApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<ShippingLocationApiService>(
+    () => ShippingLocationApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
     ),
   );
@@ -774,8 +781,17 @@ Future<void> init() async {
       getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
       updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
       createShippingMethodUseCase: sl<CreateShippingMethodUseCase>(),
+      getShippingMethodsUseCase: sl<GetShippingMethodsUseCase>(),
       createTaxRuleUseCase: sl<CreateTaxRuleUseCase>(),
+      updateTaxRuleUseCase: sl<UpdateTaxRuleUseCase>(),
+      getTaxRulesUseCase: sl<GetTaxRulesUseCase>(),
       createCouponUseCase: sl<CreateCouponUseCase>(),
+      getCouponsUseCase: sl<GetCouponsUseCase>(),
+      shippingLocationApiService: sl<ShippingLocationApiService>(),
+      createPromotionUseCase: sl<CreatePromotionUseCase>(),
+      getPromotionsUseCase: sl<GetPromotionsUseCase>(),
+      createBannerUseCase: sl<CreateBannerUseCase>(),
+      getBannersUseCase: sl<GetBannersUseCase>(),
     ),
   );
 

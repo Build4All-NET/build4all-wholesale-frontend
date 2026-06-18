@@ -35,7 +35,7 @@ class SupplierOrderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  order.orderNumber,
+                  formatSupplierOrderReference(order.orderNumber, order.id),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,

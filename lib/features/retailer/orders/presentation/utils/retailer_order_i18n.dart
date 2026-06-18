@@ -29,6 +29,11 @@ class RetailerOrderI18n {
 
   String get all => _select(en: 'All', ar: 'الكل', fr: 'Toutes');
   String get pending => _select(en: 'Pending', ar: 'قيد المعالجة', fr: 'En cours');
+  String get awaitingPayment => _select(
+        en: 'Awaiting payment',
+        ar: 'بانتظار الدفع',
+        fr: 'En attente de paiement',
+      );
   String get delivered => _select(en: 'Delivered', ar: 'تم التسليم', fr: 'Livrées');
   String get cancelled => _select(en: 'Cancelled', ar: 'ملغاة', fr: 'Annulées');
 
@@ -93,9 +98,9 @@ class RetailerOrderI18n {
       );
 
   String get cancelOrderMessage => _select(
-        en: 'You can cancel this order while it is still pending or accepted.',
-        ar: 'يمكنك إلغاء هذا الطلب طالما أنه ما زال قيد المعالجة أو مقبولًا.',
-        fr: 'Vous pouvez annuler cette commande tant qu’elle est en attente ou acceptée.',
+        en: 'You can cancel this order while it is awaiting payment, pending, or accepted.',
+        ar: 'يمكنك إلغاء هذا الطلب طالما أنه بانتظار الدفع أو قيد المعالجة أو مقبولًا.',
+        fr: 'Vous pouvez annuler cette commande tant qu’elle est en attente de paiement, en attente ou acceptée.',
       );
 
   String get keepOrder => _select(
@@ -151,6 +156,12 @@ class RetailerOrderI18n {
         fr: 'Commande passée',
       );
 
+  String get paymentPendingStep => _select(
+        en: 'Payment Pending',
+        ar: 'بانتظار الدفع',
+        fr: 'Paiement en attente',
+      );
+
   String get accepted => _select(en: 'Accepted', ar: 'تم القبول', fr: 'Acceptée');
   String get preparing => _select(en: 'Preparing', ar: 'قيد التحضير', fr: 'Préparation');
   String get shipped => _select(en: 'Shipped', ar: 'تم الشحن', fr: 'Expédiée');
@@ -202,9 +213,21 @@ class RetailerOrderI18n {
       );
 
   String get reorderCheckoutPending => _select(
-        en: 'Checkout will be connected to these re-order items once the final checkout flow is ready.',
-        ar: 'سيتم ربط الدفع بهذه العناصر عند تثبيت مسار الدفع النهائي.',
-        fr: 'Le paiement sera relié à ces articles lorsque le flux de paiement final sera prêt.',
+        en: 'Preparing your re-order cart...',
+        ar: 'يتم تجهيز سلة إعادة الطلب...',
+        fr: 'Préparation du panier de nouvelle commande...',
+      );
+
+  String get reorderReadyForCheckout => _select(
+        en: 'Re-order items were added to your cart.',
+        ar: 'تمت إضافة عناصر إعادة الطلب إلى السلة.',
+        fr: 'Les articles ont été ajoutés au panier.',
+      );
+
+  String get currentCartWillBeReplaced => _select(
+        en: 'Proceeding will replace your current cart with these re-order items.',
+        ar: 'المتابعة ستستبدل السلة الحالية بعناصر إعادة الطلب هذه.',
+        fr: 'Continuer remplacera votre panier actuel par ces articles.',
       );
 
   String get currentCartNotChanged => _select(
@@ -235,6 +258,8 @@ class RetailerOrderI18n {
 
   String statusLabel(RetailerOrderStatus status) {
     switch (status) {
+      case RetailerOrderStatus.pendingPayment:
+        return awaitingPayment;
       case RetailerOrderStatus.pending:
         return pending;
       case RetailerOrderStatus.accepted:
