@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/utils/app_error_mapper.dart';
 import '../../data/models/retailer_checkout_model.dart';
+import '../../data/models/retailer_split_checkout_model.dart';
 import '../../data/services/retailer_checkout_api_service.dart';
 import 'retailer_checkout_state.dart';
 
@@ -9,7 +10,7 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
   final RetailerCheckoutApiService apiService;
 
   RetailerCheckoutCubit({required this.apiService})
-    : super(const RetailerCheckoutState());
+      : super(const RetailerCheckoutState());
 
   Future<void> loadEligibleBranches() async {
     emit(
@@ -18,7 +19,9 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
         clearError: true,
         clearSuccess: true,
         clearPreview: true,
+        clearSplitPreview: true,
         clearSelectedShippingMethodId: true,
+        clearSplitCheckoutResult: true,
       ),
     );
 
@@ -34,7 +37,9 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
           selectedBranch: autoSelectedBranch,
           clearSelectedBranch: autoSelectedBranch == null,
           clearPreview: true,
+          clearSplitPreview: true,
           clearSelectedShippingMethodId: true,
+          clearSplitCheckoutResult: true,
         ),
       );
     } catch (e) {
@@ -52,7 +57,9 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
       state.copyWith(
         selectedBranch: branch,
         clearPreview: true,
+        clearSplitPreview: true,
         clearSelectedShippingMethodId: true,
+        clearSplitCheckoutResult: true,
       ),
     );
   }
@@ -84,23 +91,10 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
       final resolvedShippingMethodId =
           preview.selectedShippingMethod?.id ?? selectedShippingMethodId;
 
-      final enabledPaymentMethods =
-          preview.paymentMethods
-              .where((method) => method.enabled && !method.comingSoon)
-              .toList()
-            ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-
-      final currentSelectedPaymentMethod = state.selectedPaymentMethod;
-
-      final resolvedPaymentMethod =
-          currentSelectedPaymentMethod != null &&
-              enabledPaymentMethods.any(
-                (method) => method.methodName == currentSelectedPaymentMethod,
-              )
-          ? currentSelectedPaymentMethod
-          : enabledPaymentMethods.isEmpty
-          ? null
-          : enabledPaymentMethods.first.methodName;
+      final resolvedPaymentMethod = _resolvePaymentMethod(
+        paymentMethods: preview.paymentMethods,
+        currentSelectedPaymentMethod: state.selectedPaymentMethod,
+      );
 
       emit(
         state.copyWith(
@@ -140,6 +134,79 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
       countryId: countryId,
       regionId: regionId,
       selectedShippingMethodId: shippingMethodId,
+    );
+  }
+
+  Future<void> previewSplitCheckout({
+    required int deliveryCountryId,
+    required int? deliveryRegionId,
+  }) async {
+    emit(
+      state.copyWith(
+        isLoadingSplitPreview: true,
+        clearError: true,
+        clearSuccess: true,
+        clearSplitCheckoutResult: true,
+      ),
+    );
+
+    try {
+      final preview = await apiService.splitPreviewCheckout(
+        request: RetailerSplitCheckoutPreviewRequestModel(
+          deliveryCountryId: deliveryCountryId,
+          deliveryRegionId: deliveryRegionId,
+          shippingSelections: _shippingSelectionsFromState(),
+        ),
+      );
+
+      final resolvedShippingSelections = _shippingSelectionsFromPreview(preview);
+      final resolvedPaymentMethod = _resolvePaymentMethod(
+        paymentMethods: preview.paymentMethods,
+        currentSelectedPaymentMethod: state.selectedPaymentMethod,
+      );
+
+      emit(
+        state.copyWith(
+          isLoadingSplitPreview: false,
+          splitPreview: preview,
+          selectedSplitShippingMethodIds: resolvedShippingSelections,
+          selectedPaymentMethod: resolvedPaymentMethod,
+          clearSelectedPaymentMethod: resolvedPaymentMethod == null,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoadingSplitPreview: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
+  Future<void> selectSplitShippingMethod({
+    required int branchId,
+    required int? shippingMethodId,
+    required int deliveryCountryId,
+    required int? deliveryRegionId,
+  }) async {
+    final updatedSelections = Map<int, int?>.from(
+      state.selectedSplitShippingMethodIds,
+    );
+    updatedSelections[branchId] = shippingMethodId;
+
+    emit(
+      state.copyWith(
+        selectedSplitShippingMethodIds: updatedSelections,
+        clearError: true,
+        clearSuccess: true,
+        clearSplitCheckoutResult: true,
+      ),
+    );
+
+    await previewSplitCheckout(
+      deliveryCountryId: deliveryCountryId,
+      deliveryRegionId: deliveryRegionId,
     );
   }
 
@@ -193,8 +260,6 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
           isPlacingOrder: false,
           createdOrder: order,
           paymentResult: payment,
-          // Cash can navigate immediately. Online payment must wait for Azzam's sheet/hosted checkout
-          // and confirm endpoint before showing final success.
           successMessage: _shouldWaitForOnlinePayment(payment)
               ? null
               : _successMessageForPayment(payment),
@@ -210,9 +275,73 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
     }
   }
 
+  Future<void> placeSplitCheckout({
+    required String deliveryAddress,
+    required int deliveryCountryId,
+    required int? deliveryRegionId,
+    required String paymentMethod,
+    String? notes,
+  }) async {
+    emit(
+      state.copyWith(
+        isPlacingOrder: true,
+        clearError: true,
+        clearSuccess: true,
+        clearSplitCheckoutResult: true,
+      ),
+    );
+
+    try {
+      final placed = await apiService.splitPlaceCheckout(
+        request: RetailerSplitCheckoutPlaceRequestModel(
+          deliveryAddress: deliveryAddress,
+          deliveryCountryId: deliveryCountryId,
+          deliveryRegionId: deliveryRegionId,
+          paymentMethod: paymentMethod,
+          notes: notes,
+          shippingSelections: _shippingSelectionsFromState(),
+        ),
+      );
+
+      RetailerSplitCheckoutPlaceModel result = placed;
+
+      if (_isOnlinePaymentMethod(paymentMethod)) {
+        result = await apiService.startSplitSessionPayment(
+          sessionId: placed.sessionId,
+          request: RetailerStartPaymentRequestModel(paymentMethod: paymentMethod),
+        );
+      }
+
+      final paymentModel = result.toPaymentStartModel();
+
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          splitCheckoutResult: result,
+          paymentResult: paymentModel,
+          successMessage: _shouldWaitForOnlinePayment(paymentModel)
+              ? null
+              : _successMessageForSplitPayment(result),
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
 
   Future<void> confirmStripePayment({required int orderId}) async {
-    emit(state.copyWith(isPlacingOrder: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(
+        isPlacingOrder: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
 
     try {
       final payment = await apiService.confirmStripePayment(orderId: orderId);
@@ -237,7 +366,13 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
   }
 
   Future<void> confirmMpgsPayment({required int orderId}) async {
-    emit(state.copyWith(isPlacingOrder: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(
+        isPlacingOrder: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
 
     try {
       final payment = await apiService.confirmMpgsPayment(orderId: orderId);
@@ -262,7 +397,13 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
   }
 
   Future<void> confirmPaypalPayment({required int orderId}) async {
-    emit(state.copyWith(isPlacingOrder: true, clearError: true, clearSuccess: true));
+    emit(
+      state.copyWith(
+        isPlacingOrder: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
 
     try {
       final payment = await apiService.confirmPaypalPayment(orderId: orderId);
@@ -286,8 +427,122 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
     }
   }
 
+  Future<void> confirmSplitStripePayment({required int sessionId}) async {
+    emit(
+      state.copyWith(
+        isPlacingOrder: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    try {
+      final result = await apiService.confirmSplitStripePayment(
+        sessionId: sessionId,
+      );
+
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          splitCheckoutResult: result,
+          paymentResult: result.toPaymentStartModel(),
+          successMessage: result.fullyPaid
+              ? 'Payment completed. Orders sent to supplier.'
+              : 'Payment is not completed yet.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
+  Future<void> confirmSplitMpgsPayment({required int sessionId}) async {
+    emit(
+      state.copyWith(
+        isPlacingOrder: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    try {
+      final result = await apiService.confirmSplitMpgsPayment(
+        sessionId: sessionId,
+      );
+
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          splitCheckoutResult: result,
+          paymentResult: result.toPaymentStartModel(),
+          successMessage: result.fullyPaid
+              ? 'Payment completed. Orders sent to supplier.'
+              : 'Payment is not completed yet.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isPlacingOrder: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
   void clearMessages() {
     emit(state.copyWith(clearError: true, clearSuccess: true));
+  }
+
+  List<RetailerSplitCheckoutShippingSelectionRequestModel>
+      _shippingSelectionsFromState() {
+    return state.selectedSplitShippingMethodIds.entries
+        .map(
+          (entry) => RetailerSplitCheckoutShippingSelectionRequestModel(
+            branchId: entry.key,
+            shippingMethodId: entry.value,
+          ),
+        )
+        .toList();
+  }
+
+  Map<int, int?> _shippingSelectionsFromPreview(
+    RetailerSplitCheckoutPreviewModel preview,
+  ) {
+    return {
+      for (final group in preview.groups)
+        group.branchId: group.selectedShippingMethod?.id,
+    };
+  }
+
+  String? _resolvePaymentMethod({
+    required List<RetailerCheckoutPaymentMethodModel> paymentMethods,
+    required String? currentSelectedPaymentMethod,
+  }) {
+    final enabledPaymentMethods = paymentMethods
+        .where((method) => method.enabled && !method.comingSoon)
+        .toList()
+      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+
+    if (currentSelectedPaymentMethod != null &&
+        enabledPaymentMethods.any(
+          (method) => method.methodName == currentSelectedPaymentMethod,
+        )) {
+      return currentSelectedPaymentMethod;
+    }
+
+    if (enabledPaymentMethods.isEmpty) return null;
+    return enabledPaymentMethods.first.methodName;
+  }
+
+  bool _isOnlinePaymentMethod(String paymentMethod) {
+    final method = paymentMethod.toUpperCase();
+    return method == 'STRIPE' || method == 'MPGS' || method == 'PAYPAL';
   }
 
   bool _shouldWaitForOnlinePayment(RetailerCheckoutPaymentStartModel payment) {
@@ -311,5 +566,25 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
     }
 
     return 'Order created successfully.';
+  }
+
+  String _successMessageForSplitPayment(RetailerSplitCheckoutPlaceModel result) {
+    final method = result.paymentMethod.toUpperCase();
+
+    if (method == 'CASH') {
+      return result.orders.length <= 1
+          ? 'Order placed successfully. Cash payment is pending supplier confirmation.'
+          : '${result.orders.length} orders placed successfully. Cash payments are pending supplier confirmation.';
+    }
+
+    if (method == 'STRIPE') {
+      return 'Stripe payment is ready. Complete payment to send the orders to supplier.';
+    }
+
+    if (method == 'MPGS') {
+      return 'Card checkout is ready. Complete payment to send the orders to supplier.';
+    }
+
+    return 'Orders created successfully.';
   }
 }

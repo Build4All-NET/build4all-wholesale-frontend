@@ -4,17 +4,18 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/config/app_config.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
-import '../../../../../core/payments/hosted_checkout_flow.dart';
-import '../../../../../core/payments/wholesale_stripe_payment_sheet.dart';
 import '../../../../../core/location/data/models/country_model.dart';
 import '../../../../../core/location/data/models/region_model.dart';
 import '../../../../../core/location/data/services/location_api_service.dart';
+import '../../../../../core/payments/hosted_checkout_flow.dart';
+import '../../../../../core/payments/wholesale_stripe_payment_sheet.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../../features/dashboard/presentation/widgets/retailer_product_image.dart';
 import '../../../../../injection_container.dart';
 import '../../data/models/retailer_checkout_model.dart';
+import '../../data/models/retailer_split_checkout_model.dart';
 import '../cubit/retailer_checkout_cubit.dart';
 import '../cubit/retailer_checkout_state.dart';
 
@@ -25,19 +26,21 @@ class RetailerCheckoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<RetailerCheckoutCubit>(),
-      child: const _RetailerCheckoutView(),
+      child: const _RetailerSplitCheckoutView(),
     );
   }
 }
 
-class _RetailerCheckoutView extends StatefulWidget {
-  const _RetailerCheckoutView();
+class _RetailerSplitCheckoutView extends StatefulWidget {
+  const _RetailerSplitCheckoutView();
 
   @override
-  State<_RetailerCheckoutView> createState() => _RetailerCheckoutViewState();
+  State<_RetailerSplitCheckoutView> createState() =>
+      _RetailerSplitCheckoutViewState();
 }
 
-class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
+class _RetailerSplitCheckoutViewState
+    extends State<_RetailerSplitCheckoutView> {
   static const String _retailerOrdersRoute = '/retailer-orders';
 
   final _formKey = GlobalKey<FormState>();
@@ -55,21 +58,15 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
   bool _isLoadingCountries = false;
   bool _isLoadingRegions = false;
   bool _navigatedAfterSuccess = false;
-  int? _handledOnlinePaymentOrderId;
+  int? _handledOnlinePaymentSessionId;
 
   @override
   void initState() {
     super.initState();
-
     _locationApiService = LocationApiService(
       sl(instanceName: 'projectApiClient'),
     );
-
     _loadCountries();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<RetailerCheckoutCubit>().loadEligibleBranches();
-    });
   }
 
   @override
@@ -84,7 +81,6 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
 
     try {
       final countries = await _locationApiService.getCountries();
-
       if (!mounted) return;
 
       setState(() {
@@ -93,7 +89,6 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
       });
     } catch (_) {
       if (!mounted) return;
-
       setState(() => _isLoadingCountries = false);
       AppToast.error(context, context.l10n.couldNotLoadCountries);
     }
@@ -108,7 +103,6 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
 
     try {
       final regions = await _locationApiService.getRegionsByCountry(country.id);
-
       if (!mounted) return;
 
       setState(() {
@@ -117,53 +111,38 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
       });
     } catch (_) {
       if (!mounted) return;
-
       setState(() => _isLoadingRegions = false);
       AppToast.error(context, context.l10n.supplierCouldNotLoadTaxRules);
     }
   }
 
-  Future<void> _preview({int? shippingMethodId}) async {
+  Future<void> _previewSplitCheckout() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final branchId = context
-        .read<RetailerCheckoutCubit>()
-        .state
-        .selectedBranch
-        ?.id;
     final country = _selectedCountry;
-
-    if (branchId == null) {
-      AppToast.info(context, context.l10n.checkoutBranchRequired);
-      return;
-    }
-
     if (country == null) return;
 
-    await context.read<RetailerCheckoutCubit>().previewCheckout(
-      branchId: branchId,
-      countryId: country.id,
-      regionId: _selectedRegion?.id,
-      selectedShippingMethodId: shippingMethodId,
-    );
+    await context.read<RetailerCheckoutCubit>().previewSplitCheckout(
+          deliveryCountryId: country.id,
+          deliveryRegionId: _selectedRegion?.id,
+        );
   }
 
-  Future<void> _placeOrder(RetailerCheckoutState state) async {
+  Future<void> _placeSplitCheckout(RetailerCheckoutState state) async {
     if (!_formKey.currentState!.validate()) return;
 
-    final branchId = state.selectedBranch?.id;
     final country = _selectedCountry;
     final paymentMethod = state.selectedPaymentMethod;
 
-    if (branchId == null) {
-      AppToast.info(context, context.l10n.checkoutBranchRequired);
+    if (country == null) return;
+
+    if (state.splitPreview == null) {
+      AppToast.info(context, context.l10n.checkoutPreviewRequired);
       return;
     }
 
-    if (country == null) return;
-
-    if (state.preview == null) {
-      AppToast.info(context, context.l10n.checkoutPreviewRequired);
+    if (state.hasMissingSplitShippingMethod) {
+      AppToast.info(context, context.l10n.checkoutNoShippingMethods);
       return;
     }
 
@@ -172,59 +151,67 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
       return;
     }
 
-    await context.read<RetailerCheckoutCubit>().placeOrder(
-      branchId: branchId,
-      deliveryAddress: _addressController.text.trim(),
-      deliveryCountryId: country.id,
-      deliveryRegionId: _selectedRegion?.id,
-      shippingMethodId: state.selectedShippingMethodId,
-      paymentMethod: paymentMethod,
-      notes: _notesController.text.trim().isEmpty
-          ? null
-          : _notesController.text.trim(),
-    );
+    await context.read<RetailerCheckoutCubit>().placeSplitCheckout(
+          deliveryAddress: _addressController.text.trim(),
+          deliveryCountryId: country.id,
+          deliveryRegionId: _selectedRegion?.id,
+          paymentMethod: paymentMethod,
+          notes: _notesController.text.trim().isEmpty
+              ? null
+              : _notesController.text.trim(),
+        );
+  }
+
+  Future<void> _selectSplitShippingMethod({
+    required int branchId,
+    required int? shippingMethodId,
+  }) async {
+    final country = _selectedCountry;
+    if (country == null) return;
+
+    await context.read<RetailerCheckoutCubit>().selectSplitShippingMethod(
+          branchId: branchId,
+          shippingMethodId: shippingMethodId,
+          deliveryCountryId: country.id,
+          deliveryRegionId: _selectedRegion?.id,
+        );
   }
 
   void _navigateToOrdersAfterSuccess() {
     if (_navigatedAfterSuccess) return;
-
     _navigatedAfterSuccess = true;
 
     Future.microtask(() {
       if (!mounted) return;
-
       context.pushReplacement(_retailerOrdersRoute);
     });
   }
-
 
   Future<void> _handleOnlinePaymentIfNeeded(
     RetailerCheckoutState state,
   ) async {
     final payment = state.paymentResult;
-    final orderId = payment?.orderId ?? state.createdOrder?.id;
+    final sessionId = state.splitCheckoutResult?.sessionId ?? payment?.orderId;
 
-    if (payment == null || orderId == null) return;
+    if (payment == null || sessionId == null) return;
     if (!payment.onlinePaymentActionRequired) return;
-    if (_handledOnlinePaymentOrderId == orderId) return;
+    if (_handledOnlinePaymentSessionId == sessionId) return;
 
     final method = payment.paymentMethod.toUpperCase();
     if (method != 'STRIPE' && method != 'MPGS') return;
 
-    _handledOnlinePaymentOrderId = orderId;
+    _handledOnlinePaymentSessionId = sessionId;
 
     if (method == 'STRIPE') {
-      await _runStripePayment(orderId, payment);
+      await _runStripePayment(sessionId, payment);
       return;
     }
 
-    if (method == 'MPGS') {
-      await _runMpgsPayment(orderId, payment);
-    }
+    await _runMpgsPayment(sessionId, payment);
   }
 
   Future<void> _runStripePayment(
-    int orderId,
+    int sessionId,
     RetailerCheckoutPaymentStartModel payment,
   ) async {
     final result = await WholesaleStripePaymentSheet.present(
@@ -248,13 +235,13 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
       return;
     }
 
-    await context.read<RetailerCheckoutCubit>().confirmStripePayment(
-          orderId: orderId,
+    await context.read<RetailerCheckoutCubit>().confirmSplitStripePayment(
+          sessionId: sessionId,
         );
   }
 
   Future<void> _runMpgsPayment(
-    int orderId,
+    int sessionId,
     RetailerCheckoutPaymentStartModel payment,
   ) async {
     final redirectUrl = payment.redirectUrl;
@@ -284,8 +271,8 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
       return;
     }
 
-    await context.read<RetailerCheckoutCubit>().confirmMpgsPayment(
-          orderId: orderId,
+    await context.read<RetailerCheckoutCubit>().confirmSplitMpgsPayment(
+          sessionId: sessionId,
         );
   }
 
@@ -322,9 +309,9 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
               ),
             ),
           ),
-          bottomNavigationBar: _CheckoutBottomBar(
+          bottomNavigationBar: _SplitCheckoutBottomBar(
             state: state,
-            onPlaceOrder: () => _placeOrder(state),
+            onPlaceOrder: () => _placeSplitCheckout(state),
           ),
           body: SafeArea(
             child: Form(
@@ -340,14 +327,6 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
                   _DeliveryDetailsCard(
                     addressController: _addressController,
                     notesController: _notesController,
-                    eligibleBranches: state.eligibleBranches,
-                    selectedBranch: state.selectedBranch,
-                    isLoadingBranches: state.isLoadingBranches,
-                    onBranchSelected: (branch) {
-                      context.read<RetailerCheckoutCubit>().selectBranch(
-                        branch,
-                      );
-                    },
                     countries: _countries,
                     regions: _regions,
                     selectedCountry: _selectedCountry,
@@ -367,10 +346,10 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
                   ),
                   const SizedBox(height: 14),
                   ElevatedButton.icon(
-                    onPressed: state.isLoadingPreview || state.isLoadingBranches
+                    onPressed: state.isLoadingSplitPreview
                         ? null
-                        : () => _preview(),
-                    icon: state.isLoadingPreview
+                        : () => _previewSplitCheckout(),
+                    icon: state.isLoadingSplitPreview
                         ? const SizedBox(
                             width: 18,
                             height: 18,
@@ -381,7 +360,7 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
                           )
                         : const Icon(Icons.receipt_long_rounded),
                     label: Text(
-                      state.isLoadingPreview
+                      state.isLoadingSplitPreview
                           ? l10n.checkoutLoadingPreview
                           : l10n.checkoutPreviewOrder,
                       style: const TextStyle(fontWeight: FontWeight.w900),
@@ -397,35 +376,14 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  if (state.preview != null) ...[
-                    _CheckoutItemsCard(preview: state.preview!),
-                    const SizedBox(height: 14),
-                    _ShippingMethodsCard(
-                      preview: state.preview!,
-                      selectedShippingMethodId: state.selectedShippingMethodId,
-                      onSelected: (method) {
-                        final branchId = context
-                            .read<RetailerCheckoutCubit>()
-                            .state
-                            .selectedBranch
-                            ?.id;
-                        final country = _selectedCountry;
-
-                        if (branchId == null || country == null) return;
-
-                        context
-                            .read<RetailerCheckoutCubit>()
-                            .selectShippingMethod(
-                              branchId: branchId,
-                              countryId: country.id,
-                              regionId: _selectedRegion?.id,
-                              shippingMethodId: method.id,
-                            );
-                      },
+                  if (state.splitPreview != null) ...[
+                    _SplitFulfillmentGroupsCard(
+                      preview: state.splitPreview!,
+                      onShippingSelected: _selectSplitShippingMethod,
                     ),
                     const SizedBox(height: 14),
                     _PaymentMethodsCard(
-                      methods: state.preview!.paymentMethods,
+                      methods: state.splitPreview!.paymentMethods,
                       selectedPaymentMethod: state.selectedPaymentMethod,
                       onSelected: (methodName) {
                         context
@@ -434,10 +392,10 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
                       },
                     ),
                     const SizedBox(height: 14),
-                    _CheckoutSummaryCard(preview: state.preview!),
-                    if (state.paymentResult != null) ...[
+                    _SplitCheckoutSummaryCard(preview: state.splitPreview!),
+                    if (state.splitCheckoutResult != null) ...[
                       const SizedBox(height: 14),
-                      _PaymentResultCard(payment: state.paymentResult!),
+                      _SplitCheckoutResultCard(result: state.splitCheckoutResult!),
                     ],
                   ] else
                     _PreviewPlaceholderCard(onBackToCart: () => context.pop()),
@@ -454,12 +412,6 @@ class _RetailerCheckoutViewState extends State<_RetailerCheckoutView> {
 class _DeliveryDetailsCard extends StatelessWidget {
   final TextEditingController addressController;
   final TextEditingController notesController;
-
-  final List<RetailerEligibleCheckoutBranchModel> eligibleBranches;
-  final RetailerEligibleCheckoutBranchModel? selectedBranch;
-  final bool isLoadingBranches;
-  final ValueChanged<RetailerEligibleCheckoutBranchModel> onBranchSelected;
-
   final List<CountryModel> countries;
   final List<RegionModel> regions;
   final CountryModel? selectedCountry;
@@ -472,10 +424,6 @@ class _DeliveryDetailsCard extends StatelessWidget {
   const _DeliveryDetailsCard({
     required this.addressController,
     required this.notesController,
-    required this.eligibleBranches,
-    required this.selectedBranch,
-    required this.isLoadingBranches,
-    required this.onBranchSelected,
     required this.countries,
     required this.regions,
     required this.selectedCountry,
@@ -499,23 +447,6 @@ class _DeliveryDetailsCard extends StatelessWidget {
             title: l10n.deliveryInformationTitle,
           ),
           const SizedBox(height: 16),
-          SearchableSelectionField<RetailerEligibleCheckoutBranchModel>(
-            label: l10n.checkoutFulfillmentBranch,
-            hintText: l10n.checkoutSelectBranch,
-            searchHintText: l10n.checkoutSearchBranch,
-            items: eligibleBranches,
-            itemLabel: (branch) => branch.displayLabel,
-            value: selectedBranch,
-            isLoading: isLoadingBranches,
-            enabled: !isLoadingBranches && eligibleBranches.isNotEmpty,
-            emptyText: l10n.checkoutNoEligibleBranches,
-            onSelected: onBranchSelected,
-            validator: (value) {
-              if (value == null) return l10n.checkoutBranchRequired;
-              return null;
-            },
-          ),
-          const SizedBox(height: 14),
           SearchableSelectionField<CountryModel>(
             label: l10n.countryRequiredLabel,
             hintText: l10n.selectCountryHint,
@@ -543,8 +474,7 @@ class _DeliveryDetailsCard extends StatelessWidget {
             itemLabel: (region) => region.name,
             value: selectedRegion,
             isLoading: isLoadingRegions,
-            enabled:
-                selectedCountry != null &&
+            enabled: selectedCountry != null &&
                 !isLoadingRegions &&
                 regions.isNotEmpty,
             emptyText: l10n.noRegionsFound,
@@ -563,9 +493,7 @@ class _DeliveryDetailsCard extends StatelessWidget {
               if (value == null || value.trim().isEmpty) {
                 return l10n.rfqDeliveryAddressRequired;
               }
-              if (value.trim().length < 5) {
-                return l10n.addressSpecificError;
-              }
+              if (value.trim().length < 5) return l10n.addressSpecificError;
               return null;
             },
           ),
@@ -585,10 +513,15 @@ class _DeliveryDetailsCard extends StatelessWidget {
   }
 }
 
-class _CheckoutItemsCard extends StatelessWidget {
-  final RetailerCheckoutPreviewModel preview;
+class _SplitFulfillmentGroupsCard extends StatelessWidget {
+  final RetailerSplitCheckoutPreviewModel preview;
+  final Future<void> Function({required int branchId, required int? shippingMethodId})
+      onShippingSelected;
 
-  const _CheckoutItemsCard({required this.preview});
+  const _SplitFulfillmentGroupsCard({
+    required this.preview,
+    required this.onShippingSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -597,15 +530,164 @@ class _CheckoutItemsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SectionTitle(
-            icon: Icons.shopping_bag_outlined,
-            title: context.l10n.checkoutItems,
+            icon: Icons.account_tree_outlined,
+            title: context.l10n.checkoutFulfillmentBranch,
           ),
-          const SizedBox(height: 14),
-          ...preview.items.map(
+          const SizedBox(height: 12),
+          ...preview.groups.asMap().entries.map(
+                (entry) => _SplitFulfillmentGroupTile(
+                  index: entry.key,
+                  group: entry.value,
+                  currency: preview.currency,
+                  onShippingSelected: onShippingSelected,
+                ),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SplitFulfillmentGroupTile extends StatelessWidget {
+  final int index;
+  final RetailerSplitCheckoutGroupModel group;
+  final String currency;
+  final Future<void> Function({required int branchId, required int? shippingMethodId})
+      onShippingSelected;
+
+  const _SplitFulfillmentGroupTile({
+    required this.index,
+    required this.group,
+    required this.currency,
+    required this.onShippingSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final l10n = context.l10n;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.background,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: primary.withValues(alpha: 0.12),
+                child: Text(
+                  '${index + 1}',
+                  style: TextStyle(color: primary, fontWeight: FontWeight.w900),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      group.branchName,
+                      style: const TextStyle(
+                        color: AppThemeTokens.textPrimary,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                      ),
+                    ),
+                    if (group.displayBranchLabel != group.branchName)
+                      Text(
+                        group.displayBranchLabel,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppThemeTokens.textSecondary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Text(
+                _money(currency, group.finalTotal),
+                style: TextStyle(
+                  color: primary,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...group.items.map(
             (item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 10),
               child: _CheckoutItemTile(item: item),
             ),
+          ),
+          const SizedBox(height: 4),
+          const Divider(height: 22),
+          Text(
+            l10n.checkoutShippingMethod,
+            style: const TextStyle(
+              color: AppThemeTokens.textPrimary,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (group.availableShippingMethods.isEmpty)
+            Text(
+              l10n.checkoutNoShippingMethods,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            )
+          else
+            ...group.availableShippingMethods.map(
+              (method) => _SelectableTile(
+                title: method.methodName,
+                subtitle: _shippingSubtitle(context, currency, method),
+                trailing: method.freeShippingApplied ||
+                        method.appliedShippingCost == 0
+                    ? l10n.supplierFreeShipping
+                    : _money(currency, method.appliedShippingCost),
+                selected: group.selectedShippingMethod?.id == method.id,
+                onTap: () => onShippingSelected(
+                  branchId: group.branchId,
+                  shippingMethodId: method.id,
+                ),
+              ),
+            ),
+          const Divider(height: 22),
+          _SummaryRow(
+            label: l10n.subtotal,
+            value: _money(currency, group.itemsSubtotal),
+          ),
+          if (group.promotionDiscount > 0)
+            _SummaryRow(
+              label: l10n.checkoutPromotionDiscount,
+              value: '- ${_money(currency, group.promotionDiscount)}',
+            ),
+          _SummaryRow(
+            label: l10n.shipping,
+            value: _money(currency, group.shippingCost),
+          ),
+          _SummaryRow(
+            label: l10n.checkoutTax,
+            value: _money(currency, group.taxAmount),
+          ),
+          _SummaryRow(
+            label: l10n.total,
+            value: _money(currency, group.finalTotal),
+            isTotal: true,
+            color: primary,
           ),
         ],
       ),
@@ -628,12 +710,12 @@ class _CheckoutItemTile extends StatelessWidget {
       children: [
         RetailerProductImage(
           imageUrl: item.imageUrl,
-          width: 64,
-          height: 64,
-          borderRadius: 14,
-          iconSize: 28,
+          width: 52,
+          height: 52,
+          borderRadius: 12,
+          iconSize: 24,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,11 +726,11 @@ class _CheckoutItemTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: AppThemeTokens.textPrimary,
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 '${l10n.quantityLabel}: ${item.quantity}',
                 style: const TextStyle(
@@ -658,7 +740,7 @@ class _CheckoutItemTile extends StatelessWidget {
                 ),
               ),
               if (item.hasActivePromotion) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 3),
                 Text(
                   item.promotionLabel ?? l10n.promotions,
                   style: TextStyle(
@@ -671,7 +753,7 @@ class _CheckoutItemTile extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -680,7 +762,7 @@ class _CheckoutItemTile extends StatelessWidget {
                 _money(item.currency, item.originalLineTotal),
                 style: const TextStyle(
                   color: AppThemeTokens.textSecondary,
-                  fontSize: 12,
+                  fontSize: 11,
                   decoration: TextDecoration.lineThrough,
                   fontWeight: FontWeight.w700,
                 ),
@@ -689,7 +771,7 @@ class _CheckoutItemTile extends StatelessWidget {
               _money(item.currency, item.lineTotal),
               style: TextStyle(
                 color: primary,
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -697,107 +779,6 @@ class _CheckoutItemTile extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class _ShippingMethodsCard extends StatelessWidget {
-  final RetailerCheckoutPreviewModel preview;
-  final int? selectedShippingMethodId;
-  final ValueChanged<RetailerCheckoutShippingMethodModel> onSelected;
-
-  const _ShippingMethodsCard({
-    required this.preview,
-    required this.selectedShippingMethodId,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    return _Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _SectionTitle(
-            icon: Icons.delivery_dining_rounded,
-            title: l10n.checkoutShippingMethod,
-          ),
-          const SizedBox(height: 12),
-          if (preview.availableShippingMethods.isEmpty)
-            Text(
-              l10n.checkoutNoShippingMethods,
-              style: const TextStyle(
-                color: AppThemeTokens.textSecondary,
-                fontWeight: FontWeight.w700,
-              ),
-            )
-          else
-            ...preview.availableShippingMethods.map(
-              (method) => _SelectableTile(
-                title: method.methodName,
-                subtitle: _shippingSubtitle(context, preview.currency, method),
-                trailing:
-                    method.freeShippingApplied ||
-                        method.appliedShippingCost == 0
-                    ? l10n.supplierFreeShipping
-                    : _money(preview.currency, method.appliedShippingCost),
-                selected: selectedShippingMethodId == method.id,
-                onTap: () => onSelected(method),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  String _shippingSubtitle(
-    BuildContext context,
-    String currency,
-    RetailerCheckoutShippingMethodModel method,
-  ) {
-    final l10n = context.l10n;
-    final parts = <String>[];
-
-    if (method.methodType.isNotEmpty) {
-      parts.add(_shippingTypeLabel(context, method.methodType));
-    }
-
-    if (method.estimatedDeliveryTime != null &&
-        method.estimatedDeliveryTime!.trim().isNotEmpty) {
-      parts.add(method.estimatedDeliveryTime!.trim());
-    }
-
-    if (method.minimumOrderAmount > 0) {
-      parts.add(
-        '${l10n.checkoutMinimumOrder}: ${_money(currency, method.minimumOrderAmount)}',
-      );
-    }
-
-    if (method.freeShippingThreshold > 0) {
-      parts.add(
-        '${l10n.supplierFreeShippingThresholdPlain}: ${_money(currency, method.freeShippingThreshold)}',
-      );
-    }
-
-    if (parts.isEmpty) return l10n.shipping;
-    return parts.join(' • ');
-  }
-
-  String _shippingTypeLabel(BuildContext context, String type) {
-    final l10n = context.l10n;
-
-    switch (type.toUpperCase()) {
-      case 'STANDARD_DELIVERY':
-        return l10n.supplierStandardDelivery;
-      case 'EXPRESS_DELIVERY':
-        return l10n.supplierExpressDelivery;
-      case 'PICKUP':
-      case 'PICKUP_FROM_BRANCH':
-        return l10n.supplierPickupFromBranch;
-      default:
-        return type;
-    }
   }
 }
 
@@ -822,10 +803,7 @@ class _PaymentMethodsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionTitle(
-            icon: Icons.payments_outlined,
-            title: l10n.paymentMethods,
-          ),
+          _SectionTitle(icon: Icons.payments_outlined, title: l10n.paymentMethods),
           const SizedBox(height: 12),
           if (sorted.isEmpty)
             Text(
@@ -860,7 +838,6 @@ class _PaymentMethodsCard extends StatelessWidget {
     RetailerCheckoutPaymentMethodModel method,
   ) {
     final l10n = context.l10n;
-
     switch (method.methodName.toUpperCase()) {
       case 'CASH':
         return l10n.paymentCashOnDelivery;
@@ -876,10 +853,10 @@ class _PaymentMethodsCard extends StatelessWidget {
   }
 }
 
-class _CheckoutSummaryCard extends StatelessWidget {
-  final RetailerCheckoutPreviewModel preview;
+class _SplitCheckoutSummaryCard extends StatelessWidget {
+  final RetailerSplitCheckoutPreviewModel preview;
 
-  const _CheckoutSummaryCard({required this.preview});
+  const _SplitCheckoutSummaryCard({required this.preview});
 
   @override
   Widget build(BuildContext context) {
@@ -891,10 +868,7 @@ class _CheckoutSummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionTitle(
-            icon: Icons.summarize_outlined,
-            title: l10n.orderSummary,
-          ),
+          _SectionTitle(icon: Icons.summarize_outlined, title: l10n.orderSummary),
           const SizedBox(height: 16),
           _SummaryRow(
             label: l10n.subtotal,
@@ -925,44 +899,54 @@ class _CheckoutSummaryCard extends StatelessWidget {
   }
 }
 
-class _PaymentResultCard extends StatelessWidget {
-  final RetailerCheckoutPaymentStartModel payment;
+class _SplitCheckoutResultCard extends StatelessWidget {
+  final RetailerSplitCheckoutPlaceModel result;
 
-  const _PaymentResultCard({required this.payment});
+  const _SplitCheckoutResultCard({required this.result});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final method = payment.paymentMethod.toUpperCase();
-
-    String message;
-    if (method == 'CASH') {
-      message = l10n.checkoutCashPendingMessage;
-    } else if (method == 'STRIPE') {
-      message = l10n.checkoutStripeReadyMessage;
-    } else if (method == 'MPGS') {
-      message = payment.redirectUrl == null || payment.redirectUrl!.isEmpty
-          ? l10n.checkoutMpgsReadyMessage
-          : '${l10n.checkoutMpgsReadyMessage}\n${payment.redirectUrl}';
-    } else {
-      message = l10n.checkoutPaymentPreparedMessage;
-    }
-
+    final currency = r'$';
     return _Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SectionTitle(
             icon: Icons.check_circle_outline_rounded,
-            title: l10n.checkoutOrderCreated,
+            title: context.l10n.checkoutOrderCreated,
           ),
           const SizedBox(height: 12),
           Text(
-            message,
+            result.sessionNumber,
             style: const TextStyle(
-              color: AppThemeTokens.textSecondary,
-              fontWeight: FontWeight.w700,
-              height: 1.35,
+              color: AppThemeTokens.textPrimary,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 10),
+          ...result.orders.map(
+            (order) => Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${order.branchName} • ${order.orderNumber}',
+                      style: const TextStyle(
+                        color: AppThemeTokens.textSecondary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    _money(currency, order.orderTotal),
+                    style: const TextStyle(
+                      color: AppThemeTokens.textPrimary,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -1009,26 +993,26 @@ class _PreviewPlaceholderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          OutlinedButton(
-            onPressed: onBackToCart,
-            child: Text(l10n.shoppingCart),
-          ),
+          OutlinedButton(onPressed: onBackToCart, child: Text(l10n.shoppingCart)),
         ],
       ),
     );
   }
 }
 
-class _CheckoutBottomBar extends StatelessWidget {
+class _SplitCheckoutBottomBar extends StatelessWidget {
   final RetailerCheckoutState state;
   final VoidCallback onPlaceOrder;
 
-  const _CheckoutBottomBar({required this.state, required this.onPlaceOrder});
+  const _SplitCheckoutBottomBar({
+    required this.state,
+    required this.onPlaceOrder,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final preview = state.preview;
+    final preview = state.splitPreview;
     final currency = preview?.currency ?? r'$';
 
     return Container(
@@ -1073,7 +1057,9 @@ class _CheckoutBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 14),
             ElevatedButton(
-              onPressed: preview == null || state.isPlacingOrder
+              onPressed: preview == null ||
+                      state.isPlacingOrder ||
+                      state.hasMissingSplitShippingMethod
                   ? null
                   : onPlaceOrder,
               style: ElevatedButton.styleFrom(
@@ -1272,7 +1258,7 @@ class _SummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: isTotal ? 0 : 11),
+      padding: EdgeInsets.only(bottom: isTotal ? 0 : 10),
       child: Row(
         children: [
           Expanded(
@@ -1283,7 +1269,7 @@ class _SummaryRow extends StatelessWidget {
                     ? AppThemeTokens.textPrimary
                     : AppThemeTokens.textSecondary,
                 fontWeight: isTotal ? FontWeight.w900 : FontWeight.w700,
-                fontSize: isTotal ? 17 : 14,
+                fontSize: isTotal ? 16 : 13,
               ),
             ),
           ),
@@ -1293,12 +1279,60 @@ class _SummaryRow extends StatelessWidget {
             style: TextStyle(
               color: color ?? AppThemeTokens.textPrimary,
               fontWeight: FontWeight.w900,
-              fontSize: isTotal ? 18 : 14,
+              fontSize: isTotal ? 17 : 13,
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+String _shippingSubtitle(
+  BuildContext context,
+  String currency,
+  RetailerCheckoutShippingMethodModel method,
+) {
+  final l10n = context.l10n;
+  final parts = <String>[];
+
+  if (method.methodType.isNotEmpty) {
+    parts.add(_shippingTypeLabel(context, method.methodType));
+  }
+
+  if (method.estimatedDeliveryTime != null &&
+      method.estimatedDeliveryTime!.trim().isNotEmpty) {
+    parts.add(method.estimatedDeliveryTime!.trim());
+  }
+
+  if (method.minimumOrderAmount > 0) {
+    parts.add(
+      '${l10n.checkoutMinimumOrder}: ${_money(currency, method.minimumOrderAmount)}',
+    );
+  }
+
+  if (method.freeShippingThreshold > 0) {
+    parts.add(
+      '${l10n.supplierFreeShippingThresholdPlain}: ${_money(currency, method.freeShippingThreshold)}',
+    );
+  }
+
+  if (parts.isEmpty) return l10n.shipping;
+  return parts.join(' • ');
+}
+
+String _shippingTypeLabel(BuildContext context, String type) {
+  final l10n = context.l10n;
+  switch (type.toUpperCase()) {
+    case 'STANDARD_DELIVERY':
+      return l10n.supplierStandardDelivery;
+    case 'EXPRESS_DELIVERY':
+      return l10n.supplierExpressDelivery;
+    case 'PICKUP':
+    case 'PICKUP_FROM_BRANCH':
+      return l10n.supplierPickupFromBranch;
+    default:
+      return type;
   }
 }
 
