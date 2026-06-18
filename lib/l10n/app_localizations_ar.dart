@@ -3635,6 +3635,51 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mpgsSaving => 'جارِ الحفظ...';
 
   @override
+  String get promotionCreatedSuccessfully => 'تم إنشاء العرض بنجاح';
+
+  @override
+  String get promotionUpdatedSuccessfully => 'تم تحديث العرض بنجاح';
+
+  @override
+  String get promotionDeletedSuccessfully => 'تم حذف العرض بنجاح';
+
+  @override
+  String get couponCreatedSuccessfully => 'تم إنشاء الكوبون بنجاح';
+
+  @override
+  String get couponUpdatedSuccessfully => 'تم تحديث الكوبون بنجاح';
+
+  @override
+  String get couponDeletedSuccessfully => 'تم حذف الكوبون بنجاح';
+
+  @override
+  String get bannerCreatedSuccessfully => 'تم إنشاء البانر بنجاح';
+
+  @override
+  String get bannerUpdatedSuccessfully => 'تم تحديث البانر بنجاح';
+
+  @override
+  String get bannerDeletedSuccessfully => 'تم حذف البانر بنجاح';
+
+  @override
+  String get shippingMethodCreatedSuccessfully => 'تم إنشاء طريقة الشحن بنجاح';
+
+  @override
+  String get shippingMethodUpdatedSuccessfully => 'تم تحديث طريقة الشحن بنجاح';
+
+  @override
+  String get shippingMethodDeletedSuccessfully => 'تم حذف طريقة الشحن بنجاح';
+
+  @override
+  String get taxRuleCreatedSuccessfully => 'تم إنشاء قاعدة الضريبة بنجاح';
+
+  @override
+  String get taxRuleUpdatedSuccessfully => 'تم تحديث قاعدة الضريبة بنجاح';
+
+  @override
+  String get taxRuleDeletedSuccessfully => 'تم حذف قاعدة الضريبة بنجاح';
+
+  @override
   String get checkoutTitle => 'إتمام الطلب';
 
   @override

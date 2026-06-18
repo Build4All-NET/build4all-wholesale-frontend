@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -444,7 +445,10 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
         }
 
         if (state.successMessage != null) {
-          AppToast.success(context, state.successMessage!);
+          AppToast.success(
+            context,
+            localizeSupplierSuccessMessage(context, state.successMessage!),
+          );
 
           context.read<PromotionsBloc>().add(
                 const ClearPromotionMessageRequested(),

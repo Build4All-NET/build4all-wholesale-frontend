@@ -77,7 +77,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Banner created successfully',
+          successMessage: 'bannerCreatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -108,7 +108,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Banner updated successfully',
+          successMessage: 'bannerUpdatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -144,7 +144,7 @@ class BannersBloc extends Bloc<BannersEvent, BannersState> {
         state.copyWith(
           deleting: false,
           banners: updatedBanners,
-          successMessage: 'Banner deleted successfully',
+          successMessage: 'bannerDeletedSuccessfully',
         ),
       );
     } catch (e) {

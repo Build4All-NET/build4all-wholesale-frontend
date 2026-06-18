@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -472,7 +473,10 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
         }
 
         if (state.successMessage != null) {
-          AppToast.success(context, state.successMessage!);
+          AppToast.success(
+            context,
+            localizeSupplierSuccessMessage(context, state.successMessage!),
+          );
 
           context.read<TaxRulesBloc>().add(
                 const ClearTaxRuleMessageRequested(),

@@ -1424,12 +1424,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount products â€¢ $subCategoryCount sub categories';
+    return '$productCount products • $subCategoryCount sub categories';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName â€¢ $productCount products';
+    return '$categoryName • $productCount products';
   }
 
   @override
@@ -3666,6 +3666,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mpgsSaving => 'Saving...';
+
+  @override
+  String get promotionCreatedSuccessfully => 'Promotion created successfully';
+
+  @override
+  String get promotionUpdatedSuccessfully => 'Promotion updated successfully';
+
+  @override
+  String get promotionDeletedSuccessfully => 'Promotion deleted successfully';
+
+  @override
+  String get couponCreatedSuccessfully => 'Coupon created successfully';
+
+  @override
+  String get couponUpdatedSuccessfully => 'Coupon updated successfully';
+
+  @override
+  String get couponDeletedSuccessfully => 'Coupon deleted successfully';
+
+  @override
+  String get bannerCreatedSuccessfully => 'Banner created successfully';
+
+  @override
+  String get bannerUpdatedSuccessfully => 'Banner updated successfully';
+
+  @override
+  String get bannerDeletedSuccessfully => 'Banner deleted successfully';
+
+  @override
+  String get shippingMethodCreatedSuccessfully =>
+      'Shipping method created successfully';
+
+  @override
+  String get shippingMethodUpdatedSuccessfully =>
+      'Shipping method updated successfully';
+
+  @override
+  String get shippingMethodDeletedSuccessfully =>
+      'Shipping method deleted successfully';
+
+  @override
+  String get taxRuleCreatedSuccessfully => 'Tax rule created successfully';
+
+  @override
+  String get taxRuleUpdatedSuccessfully => 'Tax rule updated successfully';
+
+  @override
+  String get taxRuleDeletedSuccessfully => 'Tax rule deleted successfully';
 
   @override
   String get checkoutTitle => 'Checkout';

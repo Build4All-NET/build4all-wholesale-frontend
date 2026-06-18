@@ -77,7 +77,7 @@ class TaxRulesBloc extends Bloc<TaxRulesEvent, TaxRulesState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Tax rule created successfully',
+          successMessage: 'taxRuleCreatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -108,7 +108,7 @@ class TaxRulesBloc extends Bloc<TaxRulesEvent, TaxRulesState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Tax rule updated successfully',
+          successMessage: 'taxRuleUpdatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -144,7 +144,7 @@ class TaxRulesBloc extends Bloc<TaxRulesEvent, TaxRulesState> {
         state.copyWith(
           deleting: false,
           rules: updatedRules,
-          successMessage: 'Tax rule deleted successfully',
+          successMessage: 'taxRuleDeletedSuccessfully',
         ),
       );
     } catch (e) {

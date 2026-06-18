@@ -81,7 +81,7 @@ class ShippingMethodsBloc
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Shipping method created successfully',
+          successMessage: 'shippingMethodCreatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -112,7 +112,7 @@ class ShippingMethodsBloc
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Shipping method updated successfully',
+          successMessage: 'shippingMethodUpdatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -148,7 +148,7 @@ class ShippingMethodsBloc
         state.copyWith(
           deleting: false,
           methods: updatedMethods,
-          successMessage: 'Shipping method deleted successfully',
+          successMessage: 'shippingMethodDeletedSuccessfully',
         ),
       );
     } catch (e) {

@@ -2800,13 +2800,13 @@ abstract class AppLocalizations {
   /// No description provided for @categoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{productCount} products â€¢ {subCategoryCount} sub categories'**
+  /// **'{productCount} products • {subCategoryCount} sub categories'**
   String categoryStats(Object productCount, Object subCategoryCount);
 
   /// No description provided for @subCategoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{categoryName} â€¢ {productCount} products'**
+  /// **'{categoryName} • {productCount} products'**
   String subCategoryStats(Object categoryName, Object productCount);
 
   /// No description provided for @linkedLabel.
@@ -6803,6 +6803,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saving...'**
   String get mpgsSaving;
+
+  /// No description provided for @promotionCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion created successfully'**
+  String get promotionCreatedSuccessfully;
+
+  /// No description provided for @promotionUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion updated successfully'**
+  String get promotionUpdatedSuccessfully;
+
+  /// No description provided for @promotionDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion deleted successfully'**
+  String get promotionDeletedSuccessfully;
+
+  /// No description provided for @couponCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon created successfully'**
+  String get couponCreatedSuccessfully;
+
+  /// No description provided for @couponUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon updated successfully'**
+  String get couponUpdatedSuccessfully;
+
+  /// No description provided for @couponDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon deleted successfully'**
+  String get couponDeletedSuccessfully;
+
+  /// No description provided for @bannerCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner created successfully'**
+  String get bannerCreatedSuccessfully;
+
+  /// No description provided for @bannerUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner updated successfully'**
+  String get bannerUpdatedSuccessfully;
+
+  /// No description provided for @bannerDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner deleted successfully'**
+  String get bannerDeletedSuccessfully;
+
+  /// No description provided for @shippingMethodCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping method created successfully'**
+  String get shippingMethodCreatedSuccessfully;
+
+  /// No description provided for @shippingMethodUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping method updated successfully'**
+  String get shippingMethodUpdatedSuccessfully;
+
+  /// No description provided for @shippingMethodDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping method deleted successfully'**
+  String get shippingMethodDeletedSuccessfully;
+
+  /// No description provided for @taxRuleCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rule created successfully'**
+  String get taxRuleCreatedSuccessfully;
+
+  /// No description provided for @taxRuleUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rule updated successfully'**
+  String get taxRuleUpdatedSuccessfully;
+
+  /// No description provided for @taxRuleDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rule deleted successfully'**
+  String get taxRuleDeletedSuccessfully;
 
   /// No description provided for @checkoutTitle.
   ///

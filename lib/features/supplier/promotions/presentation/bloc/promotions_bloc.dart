@@ -77,7 +77,7 @@ class PromotionsBloc extends Bloc<PromotionsEvent, PromotionsState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Promotion created successfully',
+          successMessage: 'promotionCreatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -108,7 +108,7 @@ class PromotionsBloc extends Bloc<PromotionsEvent, PromotionsState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Promotion updated successfully',
+          successMessage: 'promotionUpdatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -144,7 +144,7 @@ class PromotionsBloc extends Bloc<PromotionsEvent, PromotionsState> {
         state.copyWith(
           deleting: false,
           promotions: updatedPromotions,
-          successMessage: 'Promotion deleted successfully',
+          successMessage: 'promotionDeletedSuccessfully',
         ),
       );
     } catch (e) {

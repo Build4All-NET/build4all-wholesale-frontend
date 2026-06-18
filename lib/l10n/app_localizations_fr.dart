@@ -3733,6 +3733,57 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mpgsSaving => 'Enregistrement...';
 
   @override
+  String get promotionCreatedSuccessfully => 'Promotion créée avec succès';
+
+  @override
+  String get promotionUpdatedSuccessfully =>
+      'Promotion mise à jour avec succès';
+
+  @override
+  String get promotionDeletedSuccessfully => 'Promotion supprimée avec succès';
+
+  @override
+  String get couponCreatedSuccessfully => 'Coupon créé avec succès';
+
+  @override
+  String get couponUpdatedSuccessfully => 'Coupon mis à jour avec succès';
+
+  @override
+  String get couponDeletedSuccessfully => 'Coupon supprimé avec succès';
+
+  @override
+  String get bannerCreatedSuccessfully => 'Bannière créée avec succès';
+
+  @override
+  String get bannerUpdatedSuccessfully => 'Bannière mise à jour avec succès';
+
+  @override
+  String get bannerDeletedSuccessfully => 'Bannière supprimée avec succès';
+
+  @override
+  String get shippingMethodCreatedSuccessfully =>
+      'Méthode de livraison créée avec succès';
+
+  @override
+  String get shippingMethodUpdatedSuccessfully =>
+      'Méthode de livraison mise à jour avec succès';
+
+  @override
+  String get shippingMethodDeletedSuccessfully =>
+      'Méthode de livraison supprimée avec succès';
+
+  @override
+  String get taxRuleCreatedSuccessfully => 'Règle de taxe créée avec succès';
+
+  @override
+  String get taxRuleUpdatedSuccessfully =>
+      'Règle de taxe mise à jour avec succès';
+
+  @override
+  String get taxRuleDeletedSuccessfully =>
+      'Règle de taxe supprimée avec succès';
+
+  @override
   String get checkoutTitle => 'Paiement';
 
   @override

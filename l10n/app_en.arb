@@ -506,14 +506,14 @@
   "noSubCategoriesFound": "No sub categories found",
   "searchCategoriesHint": "Search categories...",
   "searchSubCategoriesHint": "Search sub categories...",
-  "categoryStats": "{productCount} products â€¢ {subCategoryCount} sub categories",
+  "categoryStats": "{productCount} products • {subCategoryCount} sub categories",
   "@categoryStats": {
     "placeholders": {
       "productCount": {},
       "subCategoryCount": {}
     }
   },
-  "subCategoryStats": "{categoryName} â€¢ {productCount} products",
+  "subCategoryStats": "{categoryName} • {productCount} products",
   "@subCategoryStats": {
     "placeholders": {
       "categoryName": {},
@@ -1415,6 +1415,21 @@
   "mpgsTesting": "Testing...",
   "mpgsSaveButton": "Save Settings",
   "mpgsSaving": "Saving...",
+  "promotionCreatedSuccessfully": "Promotion created successfully",
+  "promotionUpdatedSuccessfully": "Promotion updated successfully",
+  "promotionDeletedSuccessfully": "Promotion deleted successfully",
+  "couponCreatedSuccessfully": "Coupon created successfully",
+  "couponUpdatedSuccessfully": "Coupon updated successfully",
+  "couponDeletedSuccessfully": "Coupon deleted successfully",
+  "bannerCreatedSuccessfully": "Banner created successfully",
+  "bannerUpdatedSuccessfully": "Banner updated successfully",
+  "bannerDeletedSuccessfully": "Banner deleted successfully",
+  "shippingMethodCreatedSuccessfully": "Shipping method created successfully",
+  "shippingMethodUpdatedSuccessfully": "Shipping method updated successfully",
+  "shippingMethodDeletedSuccessfully": "Shipping method deleted successfully",
+  "taxRuleCreatedSuccessfully": "Tax rule created successfully",
+  "taxRuleUpdatedSuccessfully": "Tax rule updated successfully",
+  "taxRuleDeletedSuccessfully": "Tax rule deleted successfully",
   "checkoutTitle": "Checkout",
   "checkoutBranchId": "Branch ID *",
   "checkoutBranchIdHint": "Enter fulfillment branch ID",
