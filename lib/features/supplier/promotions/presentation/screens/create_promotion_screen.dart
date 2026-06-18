@@ -215,6 +215,22 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     return null;
   }
 
+  String? _optionalPositiveNumber(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final parsed = double.tryParse(value.trim());
+
+    if (parsed == null) {
+      return context.l10n.supplierFieldValidNumber(fieldName);
+    }
+
+    if (parsed <= 0) {
+      return context.l10n.supplierFieldGreaterThanZero(fieldName);
+    }
+
+    return null;
+  }
+
   String? _discountValueValidator(String? value) {
     final baseError = _requiredPositiveNumber(
       value,
@@ -679,7 +695,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                               decimal: true,
                             ),
                             validator: (value) {
-                              return _optionalNonNegativeNumber(
+                              return _optionalPositiveNumber(
                                 value,
                                 context.l10n.supplierMaximumDiscountAmountPlain,
                               );

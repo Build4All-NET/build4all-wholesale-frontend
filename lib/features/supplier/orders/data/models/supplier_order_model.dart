@@ -11,6 +11,7 @@ class SupplierOrderModel extends SupplierOrderEntity {
     required super.branchName,
     required super.orderDate,
     required super.paymentMethod,
+    super.backendTotalAmount,
     required super.status,
     required super.items,
     super.statusUpdatedAt,
@@ -103,6 +104,12 @@ class SupplierOrderModel extends SupplierOrderEntity {
             json['payment_method'],
         fallback: 'N/A',
       ),
+      backendTotalAmount: _nullableDouble(
+        json['totalAmount'] ??
+            json['grandTotal'] ??
+            json['finalTotal'] ??
+            json['total_amount'],
+      ),
       status: _statusFromJson(json['status']),
       items: items,
       notes: _nullableString(
@@ -124,6 +131,9 @@ class SupplierOrderModel extends SupplierOrderEntity {
     final status = value?.toString().trim().toUpperCase();
 
     switch (status) {
+      case 'PENDING_PAYMENT':
+      case 'AWAITING_PAYMENT':
+        return SupplierOrderStatus.pendingPayment;
       case 'PENDING':
         return SupplierOrderStatus.pending;
       case 'ACCEPTED':
@@ -173,6 +183,15 @@ class SupplierOrderModel extends SupplierOrderEntity {
     if (value is num) return value.toInt();
 
     return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+
+  static double? _nullableDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+
+    final parsed = double.tryParse(value.toString());
+    return parsed;
   }
 
   static String _asString(dynamic value, {String fallback = ''}) {

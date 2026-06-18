@@ -31,6 +31,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   late final TextEditingController _brandNameCtrl;
   late bool _enabled;
   late String _mode;
+  late final bool _merchantIdAlreadyConfigured;
+  late final bool _apiPasswordAlreadyConfigured;
 
   bool _apiPasswordObscured = true;
 
@@ -38,8 +40,14 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   void initState() {
     super.initState();
     final cfg = widget.currentConfigValues;
-    _merchantIdCtrl = TextEditingController(text: _safe(cfg['merchantId']));
-    _apiPasswordCtrl = TextEditingController(text: _safe(cfg['apiPassword']));
+    _merchantIdAlreadyConfigured = cfg['merchantIdConfigured'] == true;
+    _apiPasswordAlreadyConfigured = cfg['apiPasswordConfigured'] == true;
+    _merchantIdCtrl = TextEditingController(
+      text: _merchantIdAlreadyConfigured ? '' : _safe(cfg['merchantId']),
+    );
+    _apiPasswordCtrl = TextEditingController(
+      text: _apiPasswordAlreadyConfigured ? '' : _safe(cfg['apiPassword']),
+    );
     _apiBaseUrlCtrl = TextEditingController(
       text: _safe(cfg['apiBaseUrl']).isEmpty
           ? 'https://test-bobsal.gateway.mastercard.com'
@@ -94,7 +102,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
       listenWhen: (previous, current) =>
           previous.errorMessage != current.errorMessage ||
           previous.successMessage != current.successMessage ||
-          previous.testResultMessage != current.testResultMessage,
+          previous.testResultMessage != current.testResultMessage ||
+          previous.testResultMethodCode != current.testResultMethodCode,
       listener: (ctx, state) {
         if (state.successMessage != null) {
           ScaffoldMessenger.of(ctx).showSnackBar(
@@ -211,15 +220,20 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                         TextFormField(
                           controller: _merchantIdCtrl,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return l10n.mpgsMerchantIdRequired;
+                            final text = value?.trim() ?? '';
+                            if (text.isEmpty) {
+                              return _merchantIdAlreadyConfigured
+                                  ? null
+                                  : l10n.mpgsMerchantIdRequired;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
                             labelText: l10n.mpgsMerchantIdLabel,
                             hintText: l10n.mpgsMerchantIdHint,
-                            helperText: l10n.mpgsMerchantIdHelper,
+                            helperText: _merchantIdAlreadyConfigured
+                                ? l10n.paymentCredentialAlreadyConfiguredHelper
+                                : l10n.mpgsMerchantIdHelper,
                             helperMaxLines: 2,
                           ),
                         ),
@@ -228,15 +242,20 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                           controller: _apiPasswordCtrl,
                           obscureText: _apiPasswordObscured,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return l10n.mpgsApiPasswordRequired;
+                            final text = value?.trim() ?? '';
+                            if (text.isEmpty) {
+                              return _apiPasswordAlreadyConfigured
+                                  ? null
+                                  : l10n.mpgsApiPasswordRequired;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
                             labelText: l10n.mpgsApiPasswordLabel,
                             hintText: l10n.mpgsApiPasswordHint,
-                            helperText: l10n.mpgsApiPasswordHelper,
+                            helperText: _apiPasswordAlreadyConfigured
+                                ? l10n.paymentCredentialAlreadyConfiguredHelper
+                                : l10n.mpgsApiPasswordHelper,
                             helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -301,7 +320,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (state.testResultMessage != null) ...[
+                  if (state.testResultMethodCode == 'MPGS' &&
+                      state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
                       message: state.testResultMessage!,
@@ -393,13 +413,21 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final configValues = <String, dynamic>{
-      'merchantId': _merchantIdCtrl.text.trim(),
-      'apiPassword': _apiPasswordCtrl.text.trim(),
       'apiBaseUrl': _apiBaseUrlCtrl.text.trim(),
       'mode': _mode,
       'currency': _currencyCtrl.text.trim().toUpperCase(),
       'returnUrl': _returnUrlCtrl.text.trim(),
     };
+
+    final merchantId = _merchantIdCtrl.text.trim();
+    if (merchantId.isNotEmpty) {
+      configValues['merchantId'] = merchantId;
+    }
+
+    final apiPassword = _apiPasswordCtrl.text.trim();
+    if (apiPassword.isNotEmpty) {
+      configValues['apiPassword'] = apiPassword;
+    }
 
     final brandName = _brandNameCtrl.text.trim();
     if (brandName.isNotEmpty) configValues['brandName'] = brandName;

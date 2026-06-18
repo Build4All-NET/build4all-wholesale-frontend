@@ -39,6 +39,8 @@ String _supplierOrderStatusLabel(
   SupplierOrderStatus status,
 ) {
   switch (status) {
+    case SupplierOrderStatus.pendingPayment:
+      return _supplierAwaitingPaymentLabel(context);
     case SupplierOrderStatus.pending:
       return context.l10n.orderStatusPending;
     case SupplierOrderStatus.accepted:
@@ -52,6 +54,24 @@ String _supplierOrderStatusLabel(
     case SupplierOrderStatus.cancelled:
       return context.l10n.orderStatusCancelled;
   }
+}
+
+String _supplierAwaitingPaymentLabel(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  if (languageCode == 'ar') return 'بانتظار الدفع';
+  if (languageCode == 'fr') return 'En attente de paiement';
+  return 'Awaiting payment';
+}
+
+String _supplierAwaitingPaymentActionMessage(BuildContext context) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  if (languageCode == 'ar') {
+    return 'بانتظار إكمال الدفع من retailer قبل قبول الطلب.';
+  }
+  if (languageCode == 'fr') {
+    return 'En attente du paiement du retailer avant acceptation.';
+  }
+  return 'Waiting for retailer payment before accepting this order.';
 }
 
 String _localizedPaymentText(BuildContext context, String key) {
@@ -71,11 +91,13 @@ String _localizedPaymentText(BuildContext context, String key) {
 }
 
 class SupplierOrderDetailsScreen extends StatelessWidget {
-  final SupplierOrderEntity order;
+  final int orderId;
+  final SupplierOrderEntity? initialOrder;
 
   SupplierOrderDetailsScreen({
     super.key,
-    required this.order,
+    required this.orderId,
+    this.initialOrder,
   });
 
   @override
@@ -84,8 +106,8 @@ class SupplierOrderDetailsScreen extends StatelessWidget {
       create: (_) => sl<SupplierOrderDetailsBloc>()
         ..add(
           SupplierOrderDetailsStarted(
-            orderId: order.id,
-            initialOrder: order,
+            orderId: orderId,
+            initialOrder: initialOrder,
           ),
         ),
       child: _SupplierOrderDetailsView(),
@@ -200,7 +222,7 @@ class _OrderDetailsContent extends StatelessWidget {
               ),
             ),
             Text(
-              order.orderNumber,
+              formatSupplierOrderReference(order.orderNumber, order.id),
               style: TextStyle(
                 color: AppThemeTokens.textSecondary,
                 fontSize: 14,
@@ -326,6 +348,7 @@ class _OrderDetailsContent extends StatelessWidget {
 
   Widget _buildStatusTimeline(BuildContext context, Color primary) {
     final statuses = [
+      SupplierOrderStatus.pendingPayment,
       SupplierOrderStatus.pending,
       SupplierOrderStatus.accepted,
       SupplierOrderStatus.preparing,
@@ -424,7 +447,7 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProductsCard(context) {
+  Widget _buildProductsCard(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -493,7 +516,7 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildDeliveryCard(context) {
+  Widget _buildDeliveryCard(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -532,7 +555,7 @@ class _OrderDetailsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildNotesCard(context) {
+  Widget _buildNotesCard(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -566,6 +589,10 @@ class _OrderDetailsContent extends StatelessWidget {
     final actions = _getAvailableActions(context);
 
     if (actions.isEmpty) {
+      final message = order.status == SupplierOrderStatus.pendingPayment
+          ? _supplierAwaitingPaymentActionMessage(context)
+          : context.l10n.noMoreStatusActions;
+
       return Container(
         width: double.infinity,
         padding: EdgeInsets.fromLTRB(16, 12, 16, 18),
@@ -576,7 +603,7 @@ class _OrderDetailsContent extends StatelessWidget {
           ),
         ),
         child: Text(
-          context.l10n.noMoreStatusActions,
+          message,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppThemeTokens.textSecondary,
@@ -602,6 +629,8 @@ class _OrderDetailsContent extends StatelessWidget {
 
   List<Widget> _getAvailableActions(BuildContext context) {
     switch (order.status) {
+      case SupplierOrderStatus.pendingPayment:
+        return [];
       case SupplierOrderStatus.pending:
         return [
           Row(
@@ -744,6 +773,8 @@ class _OrderDetailsContent extends StatelessWidget {
 
   String _statusLabel(BuildContext context, SupplierOrderStatus status) {
     switch (status) {
+      case SupplierOrderStatus.pendingPayment:
+        return _supplierAwaitingPaymentLabel(context);
       case SupplierOrderStatus.pending:
         return context.l10n.orderStatusPending;
       case SupplierOrderStatus.accepted:

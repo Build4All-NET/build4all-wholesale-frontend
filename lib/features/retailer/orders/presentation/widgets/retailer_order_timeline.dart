@@ -44,6 +44,7 @@ class RetailerOrderTimeline extends StatelessWidget {
     final isCancelled = order.status == RetailerOrderStatus.cancelled;
 
     final labels = [
+      i18n.paymentPendingStep,
       i18n.orderPlaced,
       i18n.accepted,
       i18n.preparing,
@@ -52,6 +53,7 @@ class RetailerOrderTimeline extends StatelessWidget {
     ];
 
     final icons = [
+      Icons.payments_outlined,
       Icons.receipt_long_rounded,
       Icons.verified_rounded,
       Icons.inventory_2_rounded,
@@ -79,16 +81,18 @@ class RetailerOrderTimeline extends StatelessWidget {
 
   int _currentStepIndex(RetailerOrderStatus status) {
     switch (status) {
-      case RetailerOrderStatus.pending:
+      case RetailerOrderStatus.pendingPayment:
         return 0;
-      case RetailerOrderStatus.accepted:
+      case RetailerOrderStatus.pending:
         return 1;
-      case RetailerOrderStatus.preparing:
+      case RetailerOrderStatus.accepted:
         return 2;
-      case RetailerOrderStatus.shipped:
+      case RetailerOrderStatus.preparing:
         return 3;
-      case RetailerOrderStatus.delivered:
+      case RetailerOrderStatus.shipped:
         return 4;
+      case RetailerOrderStatus.delivered:
+        return 5;
       case RetailerOrderStatus.cancelled:
         return 0;
     }

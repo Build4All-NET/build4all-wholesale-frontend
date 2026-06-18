@@ -6,7 +6,7 @@ import '../../domain/usecases/save_supplier_payment_method_usecase.dart';
 import '../../domain/usecases/test_supplier_payment_method_usecase.dart';
 import 'supplier_payment_methods_event.dart';
 import 'supplier_payment_methods_state.dart';
-import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
+import '../../../../../core/utils/app_error_mapper.dart';
 
 class SupplierPaymentMethodsBloc
     extends Bloc<SupplierPaymentMethodsEvent, SupplierPaymentMethodsState> {
@@ -79,6 +79,7 @@ class SupplierPaymentMethodsBloc
       savingMethodCode: code,
       clearErrorMessage: true,
       clearSuccessMessage: true,
+      clearTestResult: true,
     ));
 
     try {
@@ -129,12 +130,12 @@ class SupplierPaymentMethodsBloc
       emit(state.copyWith(
         methods: _replaceMethod(state.methods, code, updated),
         clearSavingMethodCode: true,
-        successMessage: 'Stripe configuration saved successfully.',
+        successMessage: '${updated.displayName} configuration saved successfully.',
       ));
     } catch (e) {
       emit(state.copyWith(
         clearSavingMethodCode: true,
-        errorMessage: e.toString(),
+        errorMessage: AppErrorMapper.toMessage(e),
       ));
     }
   }
@@ -159,14 +160,16 @@ class SupplierPaymentMethodsBloc
 
       emit(state.copyWith(
         clearTestingMethodCode: true,
+        testResultMethodCode: code,
         testResultSuccess: result.success,
         testResultMessage: result.message,
       ));
     } catch (e) {
       emit(state.copyWith(
         clearTestingMethodCode: true,
+        testResultMethodCode: code,
         testResultSuccess: false,
-        testResultMessage: e.toString(),
+        testResultMessage: AppErrorMapper.toMessage(e),
       ));
     }
   }

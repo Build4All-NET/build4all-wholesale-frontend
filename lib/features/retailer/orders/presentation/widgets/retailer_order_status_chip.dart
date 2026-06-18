@@ -36,6 +36,8 @@ class RetailerOrderStatusChip extends StatelessWidget {
 
   Color _color(BuildContext context) {
     switch (status) {
+      case RetailerOrderStatus.pendingPayment:
+        return const Color(0xFFEA580C);
       case RetailerOrderStatus.pending:
         return const Color(0xFFF59E0B);
       case RetailerOrderStatus.accepted:

@@ -56,6 +56,13 @@ class _RetailerReorderReviewView extends StatelessWidget {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
             AppToast.error(context, state.errorMessage!);
             context.read<RetailerOrdersCubit>().clearMessages();
+            return;
+          }
+
+          if (state.successMessage == 'ORDER_REORDERED') {
+            AppToast.success(context, i18n.reorderReadyForCheckout);
+            context.read<RetailerOrdersCubit>().clearMessages();
+            context.push('/retailer-checkout');
           }
         },
         builder: (context, state) {
@@ -106,10 +113,23 @@ class _RetailerReorderReviewView extends StatelessWidget {
               SizedBox(
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    AppToast.info(context, i18n.reorderCheckoutPending);
-                  },
-                  icon: const Icon(Icons.payment_rounded),
+                  onPressed: state.isDetailsLoading
+                      ? null
+                      : () {
+                          context.read<RetailerOrdersCubit>().reorder(
+                                orderId: order.id,
+                              );
+                        },
+                  icon: state.isDetailsLoading
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.payment_rounded),
                   label: Text(
                     i18n.proceedToCheckout,
                     style: const TextStyle(fontWeight: FontWeight.w900),
@@ -145,7 +165,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                i18n.currentCartNotChanged,
+                i18n.currentCartWillBeReplaced,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppThemeTokens.textSecondary,
@@ -196,7 +216,7 @@ class _ReorderInfoCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            order.orderNumber,
+            formatRetailerOrderReference(order.orderNumber, order.id),
             style: const TextStyle(
               color: AppThemeTokens.textPrimary,
               fontSize: 20,

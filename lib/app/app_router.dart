@@ -232,11 +232,24 @@ class AppRouter {
         builder: (context, state) => SupplierOrdersScreen(),
       ),
       GoRoute(
-        path: '/supplier-orders/details',
+        path: '/supplier-orders/details/:orderId',
         builder: (context, state) {
-          final order = state.extra as SupplierOrderEntity;
+          final orderId = int.tryParse(state.pathParameters['orderId'] ?? '');
+          final initialOrder = state.extra is SupplierOrderEntity
+              ? state.extra as SupplierOrderEntity
+              : null;
 
-          return SupplierOrderDetailsScreen(order: order);
+          if (orderId == null) {
+            return SupplierComingSoonScreen(
+              title: 'Order not found',
+              icon: Icons.error_outline_rounded,
+            );
+          }
+
+          return SupplierOrderDetailsScreen(
+            orderId: orderId,
+            initialOrder: initialOrder,
+          );
         },
       ),
       GoRoute(

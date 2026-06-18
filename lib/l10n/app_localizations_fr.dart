@@ -3830,4 +3830,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get checkoutNoEligibleBranches =>
       'Aucune branche ne peut préparer tous les articles du panier.';
+
+  @override
+  String get paymentCredentialAlreadyConfiguredHelper =>
+      'Déjà configuré. Laissez ce champ vide pour conserver la valeur enregistrée, ou saisissez une nouvelle valeur pour la remplacer.';
 }
