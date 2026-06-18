@@ -3626,6 +3626,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'Carte de crédit / débit';
 
   @override
+  String get paymentMethodCashOnDeliveryTitle => 'Paiement à la livraison';
+
+  @override
+  String get paymentMethodStripeTitle => 'Stripe';
+
+  @override
+  String get paymentMethodPayPalTitle => 'PayPal';
+
+  @override
+  String get paymentMethodCashDescription =>
+      'Le détaillant paie en espèces à la livraison ou lorsque le fournisseur encaisse le paiement.';
+
+  @override
+  String get paymentMethodStripeDescription =>
+      'Paiements par carte en ligne via Stripe. Configurez d’abord les clés de test, puis activez-le pour le checkout.';
+
+  @override
+  String get paymentMethodPayPalDescription =>
+      'Paiements en ligne via PayPal. Configurez d’abord les identifiants sandbox, puis activez-le pour le checkout.';
+
+  @override
+  String get paymentMethodMpgsDescription =>
+      'Paiements par carte via MPGS pour Visa et Mastercard. Configurez d’abord les identifiants de passerelle, puis activez-le pour le checkout.';
+
+  @override
   String get mpgsConfigTitle => 'Configurer carte crédit / débit';
 
   @override

@@ -37,6 +37,8 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
 
   bool _clientSecretObscured = true;
 
+  bool _showTestResultBanner = false;
+
   @override
   void initState() {
     super.initState();
@@ -101,7 +103,13 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
           previous.successMessage != current.successMessage ||
           previous.testResultMessage != current.testResultMessage ||
           previous.testResultMethodCode != current.testResultMethodCode,
-      listener: (_, __) {},
+      listener: (context, state) {
+        if (state.testResultMethodCode == 'PAYPAL' &&
+            state.testResultMessage != null &&
+            !_showTestResultBanner) {
+          setState(() => _showTestResultBanner = true);
+        }
+      },
       builder: (context, state) {
         final isSaving = state.savingMethodCode == 'PAYPAL';
         final isTesting = state.testingMethodCode == 'PAYPAL';
@@ -169,7 +177,14 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
                         Switch(
                           value: _enabled,
                           activeColor: primary,
-                          onChanged: (value) => setState(() => _enabled = value),
+                          onChanged: (value) {
+                            setState(() {
+                              _enabled = value;
+                              if (!value) {
+                                _showTestResultBanner = false;
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -296,7 +311,9 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (state.testResultMethodCode == 'PAYPAL' &&
+                  if (_enabled &&
+                      _showTestResultBanner &&
+                      state.testResultMethodCode == 'PAYPAL' &&
                       state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
@@ -391,6 +408,8 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _showTestResultBanner = false);
+
     final configValues = <String, dynamic>{
       'clientId': _clientIdCtrl.text.trim(),
       'clientSecret': _clientSecretCtrl.text.trim(),
@@ -413,9 +432,12 @@ class _PayPalConfigScreenState extends State<PayPalConfigScreen> {
 
   void _onTest() {
     if (!_enabled) {
+      setState(() => _showTestResultBanner = false);
       AppToast.warning(context, context.l10n.paymentMethodTestEnableFirst);
       return;
     }
+
+    setState(() => _showTestResultBanner = false);
 
     context.read<SupplierPaymentMethodsBloc>().add(
           const SupplierPaymentMethodTested(methodCode: 'PAYPAL'),

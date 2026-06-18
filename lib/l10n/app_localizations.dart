@@ -6612,6 +6612,48 @@ abstract class AppLocalizations {
   /// **'Credit / Debit Card'**
   String get paymentMethodCreditDebitCardTitle;
 
+  /// No description provided for @paymentMethodCashOnDeliveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on Delivery'**
+  String get paymentMethodCashOnDeliveryTitle;
+
+  /// No description provided for @paymentMethodStripeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe'**
+  String get paymentMethodStripeTitle;
+
+  /// No description provided for @paymentMethodPayPalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal'**
+  String get paymentMethodPayPalTitle;
+
+  /// No description provided for @paymentMethodCashDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailer pays cash when the supplier delivers or collects the payment.'**
+  String get paymentMethodCashDescription;
+
+  /// No description provided for @paymentMethodStripeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Online card payments through Stripe. Configure test keys first, then enable it for checkout.'**
+  String get paymentMethodStripeDescription;
+
+  /// No description provided for @paymentMethodPayPalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Online payments through PayPal. Configure sandbox credentials first, then enable it for checkout.'**
+  String get paymentMethodPayPalDescription;
+
+  /// No description provided for @paymentMethodMpgsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.'**
+  String get paymentMethodMpgsDescription;
+
   /// No description provided for @mpgsConfigTitle.
   ///
   /// In en, this message translates to:

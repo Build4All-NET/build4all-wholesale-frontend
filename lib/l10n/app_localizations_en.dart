@@ -3564,6 +3564,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'Credit / Debit Card';
 
   @override
+  String get paymentMethodCashOnDeliveryTitle => 'Cash on Delivery';
+
+  @override
+  String get paymentMethodStripeTitle => 'Stripe';
+
+  @override
+  String get paymentMethodPayPalTitle => 'PayPal';
+
+  @override
+  String get paymentMethodCashDescription =>
+      'Retailer pays cash when the supplier delivers or collects the payment.';
+
+  @override
+  String get paymentMethodStripeDescription =>
+      'Online card payments through Stripe. Configure test keys first, then enable it for checkout.';
+
+  @override
+  String get paymentMethodPayPalDescription =>
+      'Online payments through PayPal. Configure sandbox credentials first, then enable it for checkout.';
+
+  @override
+  String get paymentMethodMpgsDescription =>
+      'Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.';
+
+  @override
   String get mpgsConfigTitle => 'Configure Credit / Debit Card';
 
   @override

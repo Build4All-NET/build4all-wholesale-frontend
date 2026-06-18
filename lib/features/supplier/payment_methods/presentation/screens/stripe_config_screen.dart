@@ -38,8 +38,10 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   late final bool _secretKeyAlreadyConfigured;
   late final bool _webhookSecretAlreadyConfigured;
 
-  bool _secretObscured    = true;
-  bool _webhookObscured   = true;
+  bool _secretObscured = true;
+  bool _webhookObscured = true;
+
+  bool _showTestResultBanner = false;
 
   @override
   void initState() {
@@ -90,7 +92,13 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
           p.successMessage != c.successMessage ||
           p.testResultMessage != c.testResultMessage ||
           p.testResultMethodCode != c.testResultMethodCode,
-      listener: (_, __) {},
+      listener: (context, state) {
+        if (state.testResultMethodCode == 'STRIPE' &&
+            state.testResultMessage != null &&
+            !_showTestResultBanner) {
+          setState(() => _showTestResultBanner = true);
+        }
+      },
       builder: (context, state) {
         final isSaving  = state.savingMethodCode  == 'STRIPE';
         final isTesting = state.testingMethodCode == 'STRIPE';
@@ -181,7 +189,14 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                         Switch(
                           value: _enabled,
                           activeColor: primary,
-                          onChanged: (v) => setState(() => _enabled = v),
+                          onChanged: (v) {
+                            setState(() {
+                              _enabled = v;
+                              if (!v) {
+                                _showTestResultBanner = false;
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -292,7 +307,9 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                   const SizedBox(height: 24),
 
                   // ── Test result banner ──
-                  if (state.testResultMethodCode == 'STRIPE' &&
+                  if (_enabled &&
+                      _showTestResultBanner &&
+                      state.testResultMethodCode == 'STRIPE' &&
                       state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
@@ -374,6 +391,8 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _showTestResultBanner = false);
+
     final configValues = <String, dynamic>{
       'publishableKey': _publishableKeyCtrl.text.trim(),
     };
@@ -397,9 +416,12 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
 
   void _onTest() {
     if (!_enabled) {
+      setState(() => _showTestResultBanner = false);
       AppToast.warning(context, context.l10n.paymentMethodTestEnableFirst);
       return;
     }
+
+    setState(() => _showTestResultBanner = false);
 
     context.read<SupplierPaymentMethodsBloc>().add(
           const SupplierPaymentMethodTested(methodCode: 'STRIPE'),

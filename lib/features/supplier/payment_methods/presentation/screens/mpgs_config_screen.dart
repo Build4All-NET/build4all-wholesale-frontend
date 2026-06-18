@@ -38,6 +38,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
 
   bool _apiPasswordObscured = true;
 
+  bool _showTestResultBanner = false;
+
   @override
   void initState() {
     super.initState();
@@ -106,7 +108,13 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
           previous.successMessage != current.successMessage ||
           previous.testResultMessage != current.testResultMessage ||
           previous.testResultMethodCode != current.testResultMethodCode,
-      listener: (_, __) {},
+      listener: (context, state) {
+        if (state.testResultMethodCode == 'MPGS' &&
+            state.testResultMessage != null &&
+            !_showTestResultBanner) {
+          setState(() => _showTestResultBanner = true);
+        }
+      },
       builder: (context, state) {
         final isSaving = state.savingMethodCode == 'MPGS';
         final isTesting = state.testingMethodCode == 'MPGS';
@@ -171,7 +179,14 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                         Switch(
                           value: _enabled,
                           activeColor: primary,
-                          onChanged: (value) => setState(() => _enabled = value),
+                          onChanged: (value) {
+                            setState(() {
+                              _enabled = value;
+                              if (!value) {
+                                _showTestResultBanner = false;
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -308,7 +323,9 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (state.testResultMethodCode == 'MPGS' &&
+                  if (_enabled &&
+                      _showTestResultBanner &&
+                      state.testResultMethodCode == 'MPGS' &&
                       state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
@@ -403,6 +420,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _showTestResultBanner = false);
+
     final configValues = <String, dynamic>{
       'apiBaseUrl': _apiBaseUrlCtrl.text.trim(),
       'mode': _mode,
@@ -434,9 +453,12 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
 
   void _onTest() {
     if (!_enabled) {
+      setState(() => _showTestResultBanner = false);
       AppToast.warning(context, context.l10n.paymentMethodTestEnableFirst);
       return;
     }
+
+    setState(() => _showTestResultBanner = false);
 
     context.read<SupplierPaymentMethodsBloc>().add(
           const SupplierPaymentMethodTested(methodCode: 'MPGS'),

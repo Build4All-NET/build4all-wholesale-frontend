@@ -3532,6 +3532,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'بطاقة ائتمان / بطاقة مصرفية';
 
   @override
+  String get paymentMethodCashOnDeliveryTitle => 'الدفع عند الاستلام';
+
+  @override
+  String get paymentMethodStripeTitle => 'Stripe';
+
+  @override
+  String get paymentMethodPayPalTitle => 'PayPal';
+
+  @override
+  String get paymentMethodCashDescription =>
+      'يدفع المتجر نقدًا عند التسليم أو عند تحصيل المورد للدفع.';
+
+  @override
+  String get paymentMethodStripeDescription =>
+      'دفع إلكتروني بالبطاقة عبر Stripe. اضبطي مفاتيح الاختبار أولًا، ثم فعّليه في checkout.';
+
+  @override
+  String get paymentMethodPayPalDescription =>
+      'مدفوعات إلكترونية عبر PayPal. اضبطي بيانات sandbox أولًا، ثم فعّليه في checkout.';
+
+  @override
+  String get paymentMethodMpgsDescription =>
+      'دفع بالبطاقة عبر MPGS لبطاقات Visa وMastercard. اضبطي بيانات بوابة الدفع أولًا، ثم فعّليه في checkout.';
+
+  @override
   String get mpgsConfigTitle => 'إعداد بطاقة ائتمان / خصم';
 
   @override
