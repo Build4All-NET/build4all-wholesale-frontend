@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../bloc/supplier_payment_methods_bloc.dart';
 import '../bloc/supplier_payment_methods_event.dart';
 import '../bloc/supplier_payment_methods_state.dart';
@@ -35,6 +37,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   late final bool _apiPasswordAlreadyConfigured;
 
   bool _apiPasswordObscured = true;
+
+  bool _showTestResultBanner = false;
 
   @override
   void initState() {
@@ -104,19 +108,11 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
           previous.successMessage != current.successMessage ||
           previous.testResultMessage != current.testResultMessage ||
           previous.testResultMethodCode != current.testResultMethodCode,
-      listener: (ctx, state) {
-        if (state.successMessage != null) {
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(
-              content: Text(state.successMessage!),
-              backgroundColor: const Color(0xFF16A34A),
-            ),
-          );
-        }
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!), backgroundColor: error),
-          );
+      listener: (context, state) {
+        if (state.testResultMethodCode == 'MPGS' &&
+            state.testResultMessage != null &&
+            !_showTestResultBanner) {
+          setState(() => _showTestResultBanner = true);
         }
       },
       builder: (context, state) {
@@ -183,7 +179,14 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                         Switch(
                           value: _enabled,
                           activeColor: primary,
-                          onChanged: (value) => setState(() => _enabled = value),
+                          onChanged: (value) {
+                            setState(() {
+                              _enabled = value;
+                              if (!value) {
+                                _showTestResultBanner = false;
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -320,11 +323,16 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (state.testResultMethodCode == 'MPGS' &&
+                  if (_enabled &&
+                      _showTestResultBanner &&
+                      state.testResultMethodCode == 'MPGS' &&
                       state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
-                      message: state.testResultMessage!,
+                      message: localizeSupplierPaymentMessage(
+                        context,
+                        state.testResultMessage!,
+                      ),
                       errorColor: error,
                     ),
                     const SizedBox(height: 16),
@@ -412,6 +420,8 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _showTestResultBanner = false);
+
     final configValues = <String, dynamic>{
       'apiBaseUrl': _apiBaseUrlCtrl.text.trim(),
       'mode': _mode,
@@ -442,6 +452,14 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   }
 
   void _onTest() {
+    if (!_enabled) {
+      setState(() => _showTestResultBanner = false);
+      AppToast.warning(context, context.l10n.paymentMethodTestEnableFirst);
+      return;
+    }
+
+    setState(() => _showTestResultBanner = false);
+
     context.read<SupplierPaymentMethodsBloc>().add(
           const SupplierPaymentMethodTested(methodCode: 'MPGS'),
         );

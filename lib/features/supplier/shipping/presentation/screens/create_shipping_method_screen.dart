@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -504,7 +505,10 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
         }
 
         if (state.successMessage != null) {
-          AppToast.success(context, state.successMessage!);
+          AppToast.success(
+            context,
+            localizeSupplierSuccessMessage(context, state.successMessage!),
+          );
 
           context.read<ShippingMethodsBloc>().add(
                 const ClearShippingMethodMessageRequested(),
@@ -646,7 +650,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             onChanged: _handleMethodTypeChanged,
                           ),
                           const SizedBox(height: 8),
-                          _HelpText(text: _methodType.description),
+                          _HelpText(text: _localizedMethodTypeDescription(context, _methodType)),
                         ],
                       ),
                       const SizedBox(height: 18),
@@ -932,6 +936,21 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
       ),
     );
   }
+
+  String _localizedMethodTypeDescription(
+    BuildContext context,
+    ShippingMethodType type,
+  ) {
+    switch (type) {
+      case ShippingMethodType.pickup:
+        return context.l10n.supplierShippingPickupDescription;
+      case ShippingMethodType.expressDelivery:
+        return context.l10n.supplierShippingExpressDescription;
+      case ShippingMethodType.standardDelivery:
+        return context.l10n.supplierShippingStandardDescription;
+    }
+  }
+
 }
 
 class _SectionCard extends StatelessWidget {

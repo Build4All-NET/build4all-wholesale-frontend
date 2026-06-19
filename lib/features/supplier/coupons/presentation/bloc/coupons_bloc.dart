@@ -77,7 +77,7 @@ class CouponsBloc extends Bloc<CouponsEvent, CouponsState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Coupon created successfully',
+          successMessage: 'couponCreatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -108,7 +108,7 @@ class CouponsBloc extends Bloc<CouponsEvent, CouponsState> {
       emit(
         state.copyWith(
           saving: false,
-          successMessage: 'Coupon updated successfully',
+          successMessage: 'couponUpdatedSuccessfully',
         ),
       );
     } catch (e) {
@@ -144,7 +144,7 @@ class CouponsBloc extends Bloc<CouponsEvent, CouponsState> {
         state.copyWith(
           deleting: false,
           coupons: updatedCoupons,
-          successMessage: 'Coupon deleted successfully',
+          successMessage: 'couponDeletedSuccessfully',
         ),
       );
     } catch (e) {

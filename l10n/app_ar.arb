@@ -1383,6 +1383,13 @@
   "paymentMethodConfigureCard": "إعداد بطاقة ائتمان / خصم",
   "paymentMethodEditCard": "تعديل إعدادات البطاقة",
   "paymentMethodCreditDebitCardTitle": "بطاقة ائتمان / بطاقة مصرفية",
+  "paymentMethodCashOnDeliveryTitle": "الدفع عند الاستلام",
+  "paymentMethodStripeTitle": "Stripe",
+  "paymentMethodPayPalTitle": "PayPal",
+  "paymentMethodCashDescription": "يدفع المتجر نقدًا عند التسليم أو عند تحصيل المورد للدفع.",
+  "paymentMethodStripeDescription": "دفع إلكتروني بالبطاقة عبر Stripe. اضبطي مفاتيح الاختبار أولًا، ثم فعّليه في صفحة الدفع.",
+  "paymentMethodPayPalDescription": "مدفوعات إلكترونية عبر PayPal. اضبطي بيانات الاختبار أولًا، ثم فعّليه في صفحة الدفع.",
+  "paymentMethodMpgsDescription": "دفع بالبطاقة عبر MPGS لبطاقات Visa وMastercard. اضبطي بيانات بوابة الدفع أولًا، ثم فعّليه في صفحة الدفع.",
   "mpgsConfigTitle": "إعداد بطاقة ائتمان / خصم",
   "mpgsInfoBanner": "اضبطي إعدادات MPGS hosted checkout لدفع Visa وMastercard. سيستخدمها المتجر عند اختيار Credit / Debit Card في checkout.",
   "mpgsEnableLabel": "تفعيل الدفع بالبطاقة للمتاجر",
@@ -1415,6 +1422,70 @@
   "mpgsTesting": "جارِ الاختبار...",
   "mpgsSaveButton": "حفظ الإعدادات",
   "mpgsSaving": "جارِ الحفظ...",
+  "promotionCreatedSuccessfully": "تم إنشاء العرض بنجاح",
+  "promotionUpdatedSuccessfully": "تم تحديث العرض بنجاح",
+  "promotionDeletedSuccessfully": "تم حذف العرض بنجاح",
+  "couponCreatedSuccessfully": "تم إنشاء الكوبون بنجاح",
+  "couponUpdatedSuccessfully": "تم تحديث الكوبون بنجاح",
+  "couponDeletedSuccessfully": "تم حذف الكوبون بنجاح",
+  "bannerCreatedSuccessfully": "تم إنشاء البانر بنجاح",
+  "bannerUpdatedSuccessfully": "تم تحديث البانر بنجاح",
+  "bannerDeletedSuccessfully": "تم حذف البانر بنجاح",
+  "shippingMethodCreatedSuccessfully": "تم إنشاء طريقة الشحن بنجاح",
+  "shippingMethodUpdatedSuccessfully": "تم تحديث طريقة الشحن بنجاح",
+  "shippingMethodDeletedSuccessfully": "تم حذف طريقة الشحن بنجاح",
+  "taxRuleCreatedSuccessfully": "تم إنشاء قاعدة الضريبة بنجاح",
+  "taxRuleUpdatedSuccessfully": "تم تحديث قاعدة الضريبة بنجاح",
+  "taxRuleDeletedSuccessfully": "تم حذف قاعدة الضريبة بنجاح",
+  "supplierShippingPickupDescription": "يستلم التاجر الطلب من فرع متاح لدى المورد.",
+  "supplierShippingExpressDescription": "خيار توصيل أسرع، وعادةً يكون أعلى تكلفة.",
+  "supplierShippingStandardDescription": "خيار توصيل عادي، وعادةً يكون أرخص وأبطأ.",
+  "promotionTargetStockHelp": "يمكن أن يستهدف العرض منتجًا متوفرًا بالمخزون أو فئة فيها منتجات متوفرة. يتم اكتشاف الفروع تلقائيًا من المخزون.",
+  "promotionAutomaticStockDetection": "اكتشاف المخزون تلقائيًا",
+  "promotionAutomaticStockDetectionDescription": "اختاري منتجًا أو فئة لمعرفة أماكن توفر المخزون. لم يعد اختيار الفروع يدويًا مطلوبًا.",
+  "promotionSearchChooseInStockProduct": "ابحثي واختاري منتجًا متوفرًا بالمخزون",
+  "promotionSearchChooseInStockCategory": "ابحثي واختاري فئة تحتوي على مخزون",
+  "paymentMethodConfigurationSavedSuccessfully": "تم حفظ إعدادات {methodName} بنجاح.",
+  "@paymentMethodConfigurationSavedSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodEnabledSuccessfully": "تم تفعيل {methodName} بنجاح.",
+  "@paymentMethodEnabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodDisabledSuccessfully": "تم تعطيل {methodName} بنجاح.",
+  "@paymentMethodDisabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodRequiresCredentialsMessage": "تتطلب {methodName} بيانات اعتماد. استخدمي زر الإعداد أولًا.",
+  "@paymentMethodRequiresCredentialsMessage": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodNotFoundMessage": "لم يتم العثور على طريقة الدفع.",
+  "paymentMethodTestEnableFirst": "فعّلي طريقة الدفع هذه قبل اختبار الإعدادات.",
+  "paymentTestStripeReadySandbox": "إعدادات Stripe صالحة وجاهزة لبدء الدفع التجريبي.",
+  "paymentTestPayPalReadySandbox": "إعدادات PayPal صالحة وجاهزة لبدء الدفع التجريبي.",
+  "paymentTestMpgsReady": "إعدادات بطاقة الائتمان / الخصم صالحة وجاهزة للدفع المستضاف عبر MPGS.",
+  "paymentTestMpgsConnectionCouldNotComplete": "تعذر إكمال اختبار اتصال بطاقة الائتمان / الخصم. يمكن استخدام بيانات الاعتماد المحفوظة لتحضير الدفع عند checkout.",
+  "paymentTestMpgsNotEnabled": "بطاقة الائتمان / الخصم غير مفعّلة لهذا المورد.",
+  "paymentTestStripeNotEnabled": "Stripe غير مفعّل لهذا المورد.",
+  "paymentTestPayPalNotEnabled": "PayPal غير مفعّل لهذا المورد.",
   "checkoutTitle": "إتمام الطلب",
   "checkoutBranchId": "رقم الفرع *",
   "checkoutBranchIdHint": "أدخل رقم فرع التجهيز",

@@ -1383,6 +1383,13 @@
   "paymentMethodConfigureCard": "Configurer carte crédit / débit",
   "paymentMethodEditCard": "Modifier les paramètres carte",
   "paymentMethodCreditDebitCardTitle": "Carte de crédit / débit",
+  "paymentMethodCashOnDeliveryTitle": "Paiement à la livraison",
+  "paymentMethodStripeTitle": "Stripe",
+  "paymentMethodPayPalTitle": "PayPal",
+  "paymentMethodCashDescription": "Le détaillant paie en espèces à la livraison ou lorsque le fournisseur encaisse le paiement.",
+  "paymentMethodStripeDescription": "Paiements par carte en ligne via Stripe. Configurez d’abord les clés de test, puis activez-le sur la page de paiement.",
+  "paymentMethodPayPalDescription": "Paiements en ligne via PayPal. Configurez d’abord les identifiants de test, puis activez-le sur la page de paiement.",
+  "paymentMethodMpgsDescription": "Paiements par carte via MPGS pour Visa et Mastercard. Configurez d’abord les identifiants de passerelle, puis activez-le sur la page de paiement.",
   "mpgsConfigTitle": "Configurer carte crédit / débit",
   "mpgsInfoBanner": "Configurez MPGS hosted checkout pour les paiements Visa et Mastercard. Les détaillants l’utiliseront au checkout en choisissant Credit / Debit Card.",
   "mpgsEnableLabel": "Activer carte crédit / débit pour les détaillants",
@@ -1415,6 +1422,70 @@
   "mpgsTesting": "Test en cours...",
   "mpgsSaveButton": "Enregistrer",
   "mpgsSaving": "Enregistrement...",
+  "promotionCreatedSuccessfully": "Promotion créée avec succès",
+  "promotionUpdatedSuccessfully": "Promotion mise à jour avec succès",
+  "promotionDeletedSuccessfully": "Promotion supprimée avec succès",
+  "couponCreatedSuccessfully": "Coupon créé avec succès",
+  "couponUpdatedSuccessfully": "Coupon mis à jour avec succès",
+  "couponDeletedSuccessfully": "Coupon supprimé avec succès",
+  "bannerCreatedSuccessfully": "Bannière créée avec succès",
+  "bannerUpdatedSuccessfully": "Bannière mise à jour avec succès",
+  "bannerDeletedSuccessfully": "Bannière supprimée avec succès",
+  "shippingMethodCreatedSuccessfully": "Méthode de livraison créée avec succès",
+  "shippingMethodUpdatedSuccessfully": "Méthode de livraison mise à jour avec succès",
+  "shippingMethodDeletedSuccessfully": "Méthode de livraison supprimée avec succès",
+  "taxRuleCreatedSuccessfully": "Règle de taxe créée avec succès",
+  "taxRuleUpdatedSuccessfully": "Règle de taxe mise à jour avec succès",
+  "taxRuleDeletedSuccessfully": "Règle de taxe supprimée avec succès",
+  "supplierShippingPickupDescription": "Le détaillant récupère la commande dans une succursale disponible du fournisseur.",
+  "supplierShippingExpressDescription": "Option de livraison plus rapide, généralement plus coûteuse.",
+  "supplierShippingStandardDescription": "Option de livraison standard, généralement moins chère et plus lente.",
+  "promotionTargetStockHelp": "Les promotions peuvent cibler uniquement un produit en stock ou une catégorie avec des produits en stock. Les succursales sont détectées automatiquement depuis l’inventaire.",
+  "promotionAutomaticStockDetection": "Détection automatique du stock",
+  "promotionAutomaticStockDetectionDescription": "Choisissez un produit ou une catégorie pour voir où le stock est disponible. Vous ne sélectionnez plus les succursales manuellement.",
+  "promotionSearchChooseInStockProduct": "Rechercher et choisir un produit en stock",
+  "promotionSearchChooseInStockCategory": "Rechercher et choisir une catégorie en stock",
+  "paymentMethodConfigurationSavedSuccessfully": "Configuration de {methodName} enregistrée avec succès.",
+  "@paymentMethodConfigurationSavedSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodEnabledSuccessfully": "{methodName} activé avec succès.",
+  "@paymentMethodEnabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodDisabledSuccessfully": "{methodName} désactivé avec succès.",
+  "@paymentMethodDisabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodRequiresCredentialsMessage": "{methodName} nécessite des identifiants. Utilisez d’abord le bouton Configurer.",
+  "@paymentMethodRequiresCredentialsMessage": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodNotFoundMessage": "Méthode de paiement introuvable.",
+  "paymentMethodTestEnableFirst": "Activez cette méthode de paiement avant de tester la configuration.",
+  "paymentTestStripeReadySandbox": "La configuration Stripe est valide et prête pour le démarrage du paiement sandbox.",
+  "paymentTestPayPalReadySandbox": "La configuration PayPal est valide et prête pour le démarrage du paiement sandbox.",
+  "paymentTestMpgsReady": "La configuration carte crédit / débit est valide et prête pour le paiement hébergé MPGS.",
+  "paymentTestMpgsConnectionCouldNotComplete": "Le test de connexion carte crédit / débit n’a pas pu être terminé. Les identifiants enregistrés peuvent toujours être utilisés par le checkout pour préparer le paiement hébergé.",
+  "paymentTestMpgsNotEnabled": "La carte crédit / débit n’est pas activée pour ce fournisseur.",
+  "paymentTestStripeNotEnabled": "Stripe n’est pas activé pour ce fournisseur.",
+  "paymentTestPayPalNotEnabled": "PayPal n’est pas activé pour ce fournisseur.",
   "checkoutTitle": "Paiement",
   "checkoutBranchId": "ID de la branche *",
   "checkoutBranchIdHint": "Saisir l’ID de la branche de préparation",

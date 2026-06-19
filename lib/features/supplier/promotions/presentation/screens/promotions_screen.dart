@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../../domain/entities/promotion_entity.dart';
 import '../bloc/promotions_bloc.dart';
 import '../bloc/promotions_event.dart';
@@ -122,7 +123,10 @@ class _PromotionsViewState extends State<_PromotionsView> {
         }
 
         if (state.successMessage != null) {
-          AppToast.success(context, state.successMessage!);
+          AppToast.success(
+            context,
+            localizeSupplierSuccessMessage(context, state.successMessage!),
+          );
           context.read<PromotionsBloc>().add(
                 const ClearPromotionMessageRequested(),
               );

@@ -2800,13 +2800,13 @@ abstract class AppLocalizations {
   /// No description provided for @categoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{productCount} products â€¢ {subCategoryCount} sub categories'**
+  /// **'{productCount} products • {subCategoryCount} sub categories'**
   String categoryStats(Object productCount, Object subCategoryCount);
 
   /// No description provided for @subCategoryStats.
   ///
   /// In en, this message translates to:
-  /// **'{categoryName} â€¢ {productCount} products'**
+  /// **'{categoryName} • {productCount} products'**
   String subCategoryStats(Object categoryName, Object productCount);
 
   /// No description provided for @linkedLabel.
@@ -6612,6 +6612,48 @@ abstract class AppLocalizations {
   /// **'Credit / Debit Card'**
   String get paymentMethodCreditDebitCardTitle;
 
+  /// No description provided for @paymentMethodCashOnDeliveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on Delivery'**
+  String get paymentMethodCashOnDeliveryTitle;
+
+  /// No description provided for @paymentMethodStripeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe'**
+  String get paymentMethodStripeTitle;
+
+  /// No description provided for @paymentMethodPayPalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal'**
+  String get paymentMethodPayPalTitle;
+
+  /// No description provided for @paymentMethodCashDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailer pays cash when the supplier delivers or collects the payment.'**
+  String get paymentMethodCashDescription;
+
+  /// No description provided for @paymentMethodStripeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Online card payments through Stripe. Configure test keys first, then enable it for checkout.'**
+  String get paymentMethodStripeDescription;
+
+  /// No description provided for @paymentMethodPayPalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Online payments through PayPal. Configure sandbox credentials first, then enable it for checkout.'**
+  String get paymentMethodPayPalDescription;
+
+  /// No description provided for @paymentMethodMpgsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.'**
+  String get paymentMethodMpgsDescription;
+
   /// No description provided for @mpgsConfigTitle.
   ///
   /// In en, this message translates to:
@@ -6803,6 +6845,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saving...'**
   String get mpgsSaving;
+
+  /// No description provided for @promotionCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion created successfully'**
+  String get promotionCreatedSuccessfully;
+
+  /// No description provided for @promotionUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion updated successfully'**
+  String get promotionUpdatedSuccessfully;
+
+  /// No description provided for @promotionDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion deleted successfully'**
+  String get promotionDeletedSuccessfully;
+
+  /// No description provided for @couponCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon created successfully'**
+  String get couponCreatedSuccessfully;
+
+  /// No description provided for @couponUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon updated successfully'**
+  String get couponUpdatedSuccessfully;
+
+  /// No description provided for @couponDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon deleted successfully'**
+  String get couponDeletedSuccessfully;
+
+  /// No description provided for @bannerCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner created successfully'**
+  String get bannerCreatedSuccessfully;
+
+  /// No description provided for @bannerUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner updated successfully'**
+  String get bannerUpdatedSuccessfully;
+
+  /// No description provided for @bannerDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner deleted successfully'**
+  String get bannerDeletedSuccessfully;
+
+  /// No description provided for @shippingMethodCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping method created successfully'**
+  String get shippingMethodCreatedSuccessfully;
+
+  /// No description provided for @shippingMethodUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping method updated successfully'**
+  String get shippingMethodUpdatedSuccessfully;
+
+  /// No description provided for @shippingMethodDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping method deleted successfully'**
+  String get shippingMethodDeletedSuccessfully;
+
+  /// No description provided for @taxRuleCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rule created successfully'**
+  String get taxRuleCreatedSuccessfully;
+
+  /// No description provided for @taxRuleUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rule updated successfully'**
+  String get taxRuleUpdatedSuccessfully;
+
+  /// No description provided for @taxRuleDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax rule deleted successfully'**
+  String get taxRuleDeletedSuccessfully;
+
+  /// No description provided for @supplierShippingPickupDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Retailer picks up the order from an available supplier branch.'**
+  String get supplierShippingPickupDescription;
+
+  /// No description provided for @supplierShippingExpressDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Faster delivery option, usually more expensive.'**
+  String get supplierShippingExpressDescription;
+
+  /// No description provided for @supplierShippingStandardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal delivery option, usually cheaper and slower.'**
+  String get supplierShippingStandardDescription;
+
+  /// No description provided for @promotionTargetStockHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.'**
+  String get promotionTargetStockHelp;
+
+  /// No description provided for @promotionAutomaticStockDetection.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic stock detection'**
+  String get promotionAutomaticStockDetection;
+
+  /// No description provided for @promotionAutomaticStockDetectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a product or category to see where it has available stock. You do not select branches manually anymore.'**
+  String get promotionAutomaticStockDetectionDescription;
+
+  /// No description provided for @promotionSearchChooseInStockProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and choose an in-stock product'**
+  String get promotionSearchChooseInStockProduct;
+
+  /// No description provided for @promotionSearchChooseInStockCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and choose an in-stock category'**
+  String get promotionSearchChooseInStockCategory;
+
+  /// No description provided for @paymentMethodConfigurationSavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'{methodName} configuration saved successfully.'**
+  String paymentMethodConfigurationSavedSuccessfully(String methodName);
+
+  /// No description provided for @paymentMethodEnabledSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'{methodName} enabled successfully.'**
+  String paymentMethodEnabledSuccessfully(String methodName);
+
+  /// No description provided for @paymentMethodDisabledSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'{methodName} disabled successfully.'**
+  String paymentMethodDisabledSuccessfully(String methodName);
+
+  /// No description provided for @paymentMethodRequiresCredentialsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{methodName} requires credentials. Use the Configure button to set it up first.'**
+  String paymentMethodRequiresCredentialsMessage(String methodName);
+
+  /// No description provided for @paymentMethodNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method not found.'**
+  String get paymentMethodNotFoundMessage;
+
+  /// No description provided for @paymentMethodTestEnableFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable this payment method before testing the configuration.'**
+  String get paymentMethodTestEnableFirst;
+
+  /// No description provided for @paymentTestStripeReadySandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe configuration is valid and ready for sandbox payment start.'**
+  String get paymentTestStripeReadySandbox;
+
+  /// No description provided for @paymentTestPayPalReadySandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal configuration is valid and ready for sandbox payment start.'**
+  String get paymentTestPayPalReadySandbox;
+
+  /// No description provided for @paymentTestMpgsReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.'**
+  String get paymentTestMpgsReady;
+
+  /// No description provided for @paymentTestMpgsConnectionCouldNotComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.'**
+  String get paymentTestMpgsConnectionCouldNotComplete;
+
+  /// No description provided for @paymentTestMpgsNotEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit / Debit Card is not enabled for this supplier.'**
+  String get paymentTestMpgsNotEnabled;
+
+  /// No description provided for @paymentTestStripeNotEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe is not enabled for this supplier.'**
+  String get paymentTestStripeNotEnabled;
+
+  /// No description provided for @paymentTestPayPalNotEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal is not enabled for this supplier.'**
+  String get paymentTestPayPalNotEnabled;
 
   /// No description provided for @checkoutTitle.
   ///
