@@ -75,7 +75,7 @@ class SupplierExcelImportBloc
         throw Exception('The supplier template asset is not a valid .xlsx file.');
       }
 
-      final selectedPath = await FilePicker.platform.saveFile(
+      final selectedPath = await FilePicker.saveFile(
         dialogTitle: 'Save supplier Excel import template',
         fileName: 'supplier_import_template.xlsx',
         type: FileType.custom,
