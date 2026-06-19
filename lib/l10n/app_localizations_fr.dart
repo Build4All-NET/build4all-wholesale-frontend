@@ -3640,15 +3640,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get paymentMethodStripeDescription =>
-      'Paiements par carte en ligne via Stripe. Configurez d’abord les clés de test, puis activez-le pour le checkout.';
+      'Paiements par carte en ligne via Stripe. Configurez d’abord les clés de test, puis activez-le sur la page de paiement.';
 
   @override
   String get paymentMethodPayPalDescription =>
-      'Paiements en ligne via PayPal. Configurez d’abord les identifiants sandbox, puis activez-le pour le checkout.';
+      'Paiements en ligne via PayPal. Configurez d’abord les identifiants de test, puis activez-le sur la page de paiement.';
 
   @override
   String get paymentMethodMpgsDescription =>
-      'Paiements par carte via MPGS pour Visa et Mastercard. Configurez d’abord les identifiants de passerelle, puis activez-le pour le checkout.';
+      'Paiements par carte via MPGS pour Visa et Mastercard. Configurez d’abord les identifiants de passerelle, puis activez-le sur la page de paiement.';
 
   @override
   String get mpgsConfigTitle => 'Configurer carte crédit / débit';

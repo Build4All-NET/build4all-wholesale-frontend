@@ -3546,15 +3546,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentMethodStripeDescription =>
-      'دفع إلكتروني بالبطاقة عبر Stripe. اضبطي مفاتيح الاختبار أولًا، ثم فعّليه في checkout.';
+      'دفع إلكتروني بالبطاقة عبر Stripe. اضبطي مفاتيح الاختبار أولًا، ثم فعّليه في صفحة الدفع.';
 
   @override
   String get paymentMethodPayPalDescription =>
-      'مدفوعات إلكترونية عبر PayPal. اضبطي بيانات sandbox أولًا، ثم فعّليه في checkout.';
+      'مدفوعات إلكترونية عبر PayPal. اضبطي بيانات الاختبار أولًا، ثم فعّليه في صفحة الدفع.';
 
   @override
   String get paymentMethodMpgsDescription =>
-      'دفع بالبطاقة عبر MPGS لبطاقات Visa وMastercard. اضبطي بيانات بوابة الدفع أولًا، ثم فعّليه في checkout.';
+      'دفع بالبطاقة عبر MPGS لبطاقات Visa وMastercard. اضبطي بيانات بوابة الدفع أولًا، ثم فعّليه في صفحة الدفع.';
 
   @override
   String get mpgsConfigTitle => 'إعداد بطاقة ائتمان / خصم';
