@@ -3626,6 +3626,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'Carte de crédit / débit';
 
   @override
+  String get paymentMethodCashOnDeliveryTitle => 'Paiement à la livraison';
+
+  @override
+  String get paymentMethodStripeTitle => 'Stripe';
+
+  @override
+  String get paymentMethodPayPalTitle => 'PayPal';
+
+  @override
+  String get paymentMethodCashDescription =>
+      'Le détaillant paie en espèces à la livraison ou lorsque le fournisseur encaisse le paiement.';
+
+  @override
+  String get paymentMethodStripeDescription =>
+      'Paiements par carte en ligne via Stripe. Configurez d’abord les clés de test, puis activez-le sur la page de paiement.';
+
+  @override
+  String get paymentMethodPayPalDescription =>
+      'Paiements en ligne via PayPal. Configurez d’abord les identifiants de test, puis activez-le sur la page de paiement.';
+
+  @override
+  String get paymentMethodMpgsDescription =>
+      'Paiements par carte via MPGS pour Visa et Mastercard. Configurez d’abord les identifiants de passerelle, puis activez-le sur la page de paiement.';
+
+  @override
   String get mpgsConfigTitle => 'Configurer carte crédit / débit';
 
   @override
@@ -3731,6 +3756,144 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mpgsSaving => 'Enregistrement...';
+
+  @override
+  String get promotionCreatedSuccessfully => 'Promotion créée avec succès';
+
+  @override
+  String get promotionUpdatedSuccessfully =>
+      'Promotion mise à jour avec succès';
+
+  @override
+  String get promotionDeletedSuccessfully => 'Promotion supprimée avec succès';
+
+  @override
+  String get couponCreatedSuccessfully => 'Coupon créé avec succès';
+
+  @override
+  String get couponUpdatedSuccessfully => 'Coupon mis à jour avec succès';
+
+  @override
+  String get couponDeletedSuccessfully => 'Coupon supprimé avec succès';
+
+  @override
+  String get bannerCreatedSuccessfully => 'Bannière créée avec succès';
+
+  @override
+  String get bannerUpdatedSuccessfully => 'Bannière mise à jour avec succès';
+
+  @override
+  String get bannerDeletedSuccessfully => 'Bannière supprimée avec succès';
+
+  @override
+  String get shippingMethodCreatedSuccessfully =>
+      'Méthode de livraison créée avec succès';
+
+  @override
+  String get shippingMethodUpdatedSuccessfully =>
+      'Méthode de livraison mise à jour avec succès';
+
+  @override
+  String get shippingMethodDeletedSuccessfully =>
+      'Méthode de livraison supprimée avec succès';
+
+  @override
+  String get taxRuleCreatedSuccessfully => 'Règle de taxe créée avec succès';
+
+  @override
+  String get taxRuleUpdatedSuccessfully =>
+      'Règle de taxe mise à jour avec succès';
+
+  @override
+  String get taxRuleDeletedSuccessfully =>
+      'Règle de taxe supprimée avec succès';
+
+  @override
+  String get supplierShippingPickupDescription =>
+      'Le détaillant récupère la commande dans une succursale disponible du fournisseur.';
+
+  @override
+  String get supplierShippingExpressDescription =>
+      'Option de livraison plus rapide, généralement plus coûteuse.';
+
+  @override
+  String get supplierShippingStandardDescription =>
+      'Option de livraison standard, généralement moins chère et plus lente.';
+
+  @override
+  String get promotionTargetStockHelp =>
+      'Les promotions peuvent cibler uniquement un produit en stock ou une catégorie avec des produits en stock. Les succursales sont détectées automatiquement depuis l’inventaire.';
+
+  @override
+  String get promotionAutomaticStockDetection =>
+      'Détection automatique du stock';
+
+  @override
+  String get promotionAutomaticStockDetectionDescription =>
+      'Choisissez un produit ou une catégorie pour voir où le stock est disponible. Vous ne sélectionnez plus les succursales manuellement.';
+
+  @override
+  String get promotionSearchChooseInStockProduct =>
+      'Rechercher et choisir un produit en stock';
+
+  @override
+  String get promotionSearchChooseInStockCategory =>
+      'Rechercher et choisir une catégorie en stock';
+
+  @override
+  String paymentMethodConfigurationSavedSuccessfully(String methodName) {
+    return 'Configuration de $methodName enregistrée avec succès.';
+  }
+
+  @override
+  String paymentMethodEnabledSuccessfully(String methodName) {
+    return '$methodName activé avec succès.';
+  }
+
+  @override
+  String paymentMethodDisabledSuccessfully(String methodName) {
+    return '$methodName désactivé avec succès.';
+  }
+
+  @override
+  String paymentMethodRequiresCredentialsMessage(String methodName) {
+    return '$methodName nécessite des identifiants. Utilisez d’abord le bouton Configurer.';
+  }
+
+  @override
+  String get paymentMethodNotFoundMessage => 'Méthode de paiement introuvable.';
+
+  @override
+  String get paymentMethodTestEnableFirst =>
+      'Activez cette méthode de paiement avant de tester la configuration.';
+
+  @override
+  String get paymentTestStripeReadySandbox =>
+      'La configuration Stripe est valide et prête pour le démarrage du paiement sandbox.';
+
+  @override
+  String get paymentTestPayPalReadySandbox =>
+      'La configuration PayPal est valide et prête pour le démarrage du paiement sandbox.';
+
+  @override
+  String get paymentTestMpgsReady =>
+      'La configuration carte crédit / débit est valide et prête pour le paiement hébergé MPGS.';
+
+  @override
+  String get paymentTestMpgsConnectionCouldNotComplete =>
+      'Le test de connexion carte crédit / débit n’a pas pu être terminé. Les identifiants enregistrés peuvent toujours être utilisés par le checkout pour préparer le paiement hébergé.';
+
+  @override
+  String get paymentTestMpgsNotEnabled =>
+      'La carte crédit / débit n’est pas activée pour ce fournisseur.';
+
+  @override
+  String get paymentTestStripeNotEnabled =>
+      'Stripe n’est pas activé pour ce fournisseur.';
+
+  @override
+  String get paymentTestPayPalNotEnabled =>
+      'PayPal n’est pas activé pour ce fournisseur.';
 
   @override
   String get checkoutTitle => 'Paiement';

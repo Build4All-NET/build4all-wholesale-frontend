@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../injection_container.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../data/repositories/supplier_payment_method_repository_impl.dart';
 import '../../data/services/supplier_payment_method_api_service.dart';
@@ -89,10 +90,10 @@ class _SupplierPaymentMethodsView extends StatelessWidget {
             prev.successMessage != cur.successMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
-            AppToast.error(context, state.errorMessage!);
+            AppToast.error(context, localizeSupplierPaymentMessage(context, state.errorMessage!));
           }
           if (state.successMessage != null) {
-            AppToast.success(context, state.successMessage!);
+            AppToast.success(context, localizeSupplierSuccessMessage(context, state.successMessage!));
           }
         },
         builder: (context, state) {

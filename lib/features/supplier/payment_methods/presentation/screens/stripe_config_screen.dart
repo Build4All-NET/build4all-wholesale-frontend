@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
+import '../../../../../core/widgets/app_toast.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../bloc/supplier_payment_methods_bloc.dart';
 import '../bloc/supplier_payment_methods_event.dart';
 import '../bloc/supplier_payment_methods_state.dart';
@@ -36,8 +38,10 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   late final bool _secretKeyAlreadyConfigured;
   late final bool _webhookSecretAlreadyConfigured;
 
-  bool _secretObscured    = true;
-  bool _webhookObscured   = true;
+  bool _secretObscured = true;
+  bool _webhookObscured = true;
+
+  bool _showTestResultBanner = false;
 
   @override
   void initState() {
@@ -88,18 +92,11 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
           p.successMessage != c.successMessage ||
           p.testResultMessage != c.testResultMessage ||
           p.testResultMethodCode != c.testResultMethodCode,
-      listener: (ctx, state) {
-        if (state.successMessage != null) {
-          ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-            content: Text(state.successMessage!),
-            backgroundColor: const Color(0xFF16A34A),
-          ));
-        }
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-            content: Text(state.errorMessage!),
-            backgroundColor: error,
-          ));
+      listener: (context, state) {
+        if (state.testResultMethodCode == 'STRIPE' &&
+            state.testResultMessage != null &&
+            !_showTestResultBanner) {
+          setState(() => _showTestResultBanner = true);
         }
       },
       builder: (context, state) {
@@ -192,7 +189,14 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                         Switch(
                           value: _enabled,
                           activeColor: primary,
-                          onChanged: (v) => setState(() => _enabled = v),
+                          onChanged: (v) {
+                            setState(() {
+                              _enabled = v;
+                              if (!v) {
+                                _showTestResultBanner = false;
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -303,11 +307,16 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
                   const SizedBox(height: 24),
 
                   // ── Test result banner ──
-                  if (state.testResultMethodCode == 'STRIPE' &&
+                  if (_enabled &&
+                      _showTestResultBanner &&
+                      state.testResultMethodCode == 'STRIPE' &&
                       state.testResultMessage != null) ...[
                     _TestResultBanner(
                       success: state.testResultSuccess ?? false,
-                      message: state.testResultMessage!,
+                      message: localizeSupplierPaymentMessage(
+                        context,
+                        state.testResultMessage!,
+                      ),
                       errorColor: error,
                     ),
                     const SizedBox(height: 16),
@@ -382,6 +391,8 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _showTestResultBanner = false);
+
     final configValues = <String, dynamic>{
       'publishableKey': _publishableKeyCtrl.text.trim(),
     };
@@ -404,6 +415,14 @@ class _StripeConfigScreenState extends State<StripeConfigScreen> {
   }
 
   void _onTest() {
+    if (!_enabled) {
+      setState(() => _showTestResultBanner = false);
+      AppToast.warning(context, context.l10n.paymentMethodTestEnableFirst);
+      return;
+    }
+
+    setState(() => _showTestResultBanner = false);
+
     context.read<SupplierPaymentMethodsBloc>().add(
           const SupplierPaymentMethodTested(methodCode: 'STRIPE'),
         );

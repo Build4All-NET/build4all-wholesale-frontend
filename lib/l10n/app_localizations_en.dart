@@ -1424,12 +1424,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String categoryStats(Object productCount, Object subCategoryCount) {
-    return '$productCount products â€¢ $subCategoryCount sub categories';
+    return '$productCount products • $subCategoryCount sub categories';
   }
 
   @override
   String subCategoryStats(Object categoryName, Object productCount) {
-    return '$categoryName â€¢ $productCount products';
+    return '$categoryName • $productCount products';
   }
 
   @override
@@ -3564,6 +3564,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'Credit / Debit Card';
 
   @override
+  String get paymentMethodCashOnDeliveryTitle => 'Cash on Delivery';
+
+  @override
+  String get paymentMethodStripeTitle => 'Stripe';
+
+  @override
+  String get paymentMethodPayPalTitle => 'PayPal';
+
+  @override
+  String get paymentMethodCashDescription =>
+      'Retailer pays cash when the supplier delivers or collects the payment.';
+
+  @override
+  String get paymentMethodStripeDescription =>
+      'Online card payments through Stripe. Configure test keys first, then enable it for checkout.';
+
+  @override
+  String get paymentMethodPayPalDescription =>
+      'Online payments through PayPal. Configure sandbox credentials first, then enable it for checkout.';
+
+  @override
+  String get paymentMethodMpgsDescription =>
+      'Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.';
+
+  @override
   String get mpgsConfigTitle => 'Configure Credit / Debit Card';
 
   @override
@@ -3666,6 +3691,140 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mpgsSaving => 'Saving...';
+
+  @override
+  String get promotionCreatedSuccessfully => 'Promotion created successfully';
+
+  @override
+  String get promotionUpdatedSuccessfully => 'Promotion updated successfully';
+
+  @override
+  String get promotionDeletedSuccessfully => 'Promotion deleted successfully';
+
+  @override
+  String get couponCreatedSuccessfully => 'Coupon created successfully';
+
+  @override
+  String get couponUpdatedSuccessfully => 'Coupon updated successfully';
+
+  @override
+  String get couponDeletedSuccessfully => 'Coupon deleted successfully';
+
+  @override
+  String get bannerCreatedSuccessfully => 'Banner created successfully';
+
+  @override
+  String get bannerUpdatedSuccessfully => 'Banner updated successfully';
+
+  @override
+  String get bannerDeletedSuccessfully => 'Banner deleted successfully';
+
+  @override
+  String get shippingMethodCreatedSuccessfully =>
+      'Shipping method created successfully';
+
+  @override
+  String get shippingMethodUpdatedSuccessfully =>
+      'Shipping method updated successfully';
+
+  @override
+  String get shippingMethodDeletedSuccessfully =>
+      'Shipping method deleted successfully';
+
+  @override
+  String get taxRuleCreatedSuccessfully => 'Tax rule created successfully';
+
+  @override
+  String get taxRuleUpdatedSuccessfully => 'Tax rule updated successfully';
+
+  @override
+  String get taxRuleDeletedSuccessfully => 'Tax rule deleted successfully';
+
+  @override
+  String get supplierShippingPickupDescription =>
+      'Retailer picks up the order from an available supplier branch.';
+
+  @override
+  String get supplierShippingExpressDescription =>
+      'Faster delivery option, usually more expensive.';
+
+  @override
+  String get supplierShippingStandardDescription =>
+      'Normal delivery option, usually cheaper and slower.';
+
+  @override
+  String get promotionTargetStockHelp =>
+      'Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.';
+
+  @override
+  String get promotionAutomaticStockDetection => 'Automatic stock detection';
+
+  @override
+  String get promotionAutomaticStockDetectionDescription =>
+      'Choose a product or category to see where it has available stock. You do not select branches manually anymore.';
+
+  @override
+  String get promotionSearchChooseInStockProduct =>
+      'Search and choose an in-stock product';
+
+  @override
+  String get promotionSearchChooseInStockCategory =>
+      'Search and choose an in-stock category';
+
+  @override
+  String paymentMethodConfigurationSavedSuccessfully(String methodName) {
+    return '$methodName configuration saved successfully.';
+  }
+
+  @override
+  String paymentMethodEnabledSuccessfully(String methodName) {
+    return '$methodName enabled successfully.';
+  }
+
+  @override
+  String paymentMethodDisabledSuccessfully(String methodName) {
+    return '$methodName disabled successfully.';
+  }
+
+  @override
+  String paymentMethodRequiresCredentialsMessage(String methodName) {
+    return '$methodName requires credentials. Use the Configure button to set it up first.';
+  }
+
+  @override
+  String get paymentMethodNotFoundMessage => 'Payment method not found.';
+
+  @override
+  String get paymentMethodTestEnableFirst =>
+      'Enable this payment method before testing the configuration.';
+
+  @override
+  String get paymentTestStripeReadySandbox =>
+      'Stripe configuration is valid and ready for sandbox payment start.';
+
+  @override
+  String get paymentTestPayPalReadySandbox =>
+      'PayPal configuration is valid and ready for sandbox payment start.';
+
+  @override
+  String get paymentTestMpgsReady =>
+      'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.';
+
+  @override
+  String get paymentTestMpgsConnectionCouldNotComplete =>
+      'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.';
+
+  @override
+  String get paymentTestMpgsNotEnabled =>
+      'Credit / Debit Card is not enabled for this supplier.';
+
+  @override
+  String get paymentTestStripeNotEnabled =>
+      'Stripe is not enabled for this supplier.';
+
+  @override
+  String get paymentTestPayPalNotEnabled =>
+      'PayPal is not enabled for this supplier.';
 
   @override
   String get checkoutTitle => 'Checkout';

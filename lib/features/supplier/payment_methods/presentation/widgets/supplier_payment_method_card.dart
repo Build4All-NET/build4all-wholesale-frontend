@@ -86,7 +86,7 @@ class SupplierPaymentMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      method.helperText,
+                      _localizedHelperText(context),
                       style: TextStyle(
                         color: onSurfaceVariant,
                         fontSize: 13.5,
@@ -251,10 +251,33 @@ class SupplierPaymentMethodCard extends StatelessWidget {
   }
 
   String _displayTitle(BuildContext context) {
-    if (method.code.toUpperCase() == 'MPGS') {
-      return context.l10n.paymentMethodCreditDebitCardTitle;
+    switch (method.code.toUpperCase()) {
+      case 'CASH':
+        return context.l10n.paymentMethodCashOnDeliveryTitle;
+      case 'STRIPE':
+        return context.l10n.paymentMethodStripeTitle;
+      case 'PAYPAL':
+        return context.l10n.paymentMethodPayPalTitle;
+      case 'MPGS':
+        return context.l10n.paymentMethodCreditDebitCardTitle;
+      default:
+        return method.displayName;
     }
-    return method.displayName;
+  }
+
+  String _localizedHelperText(BuildContext context) {
+    switch (method.code.toUpperCase()) {
+      case 'CASH':
+        return context.l10n.paymentMethodCashDescription;
+      case 'STRIPE':
+        return context.l10n.paymentMethodStripeDescription;
+      case 'PAYPAL':
+        return context.l10n.paymentMethodPayPalDescription;
+      case 'MPGS':
+        return context.l10n.paymentMethodMpgsDescription;
+      default:
+        return method.helperText;
+    }
   }
 
   IconData _icon() {

@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../shared/widgets/supplier_app_drawer.dart';
+import '../../../shared/utils/supplier_success_message_localizer.dart';
 import '../../domain/entities/tax_rule_entity.dart';
 import '../bloc/tax_rules_bloc.dart';
 import '../bloc/tax_rules_event.dart';
@@ -118,7 +119,10 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
         }
 
         if (state.successMessage != null) {
-          AppToast.success(context, state.successMessage!);
+          AppToast.success(
+            context,
+            localizeSupplierSuccessMessage(context, state.successMessage!),
+          );
           context.read<TaxRulesBloc>().add(
                 const ClearTaxRuleMessageRequested(),
               );

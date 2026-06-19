@@ -506,14 +506,14 @@
   "noSubCategoriesFound": "No sub categories found",
   "searchCategoriesHint": "Search categories...",
   "searchSubCategoriesHint": "Search sub categories...",
-  "categoryStats": "{productCount} products â€¢ {subCategoryCount} sub categories",
+  "categoryStats": "{productCount} products • {subCategoryCount} sub categories",
   "@categoryStats": {
     "placeholders": {
       "productCount": {},
       "subCategoryCount": {}
     }
   },
-  "subCategoryStats": "{categoryName} â€¢ {productCount} products",
+  "subCategoryStats": "{categoryName} • {productCount} products",
   "@subCategoryStats": {
     "placeholders": {
       "categoryName": {},
@@ -1383,6 +1383,13 @@
   "paymentMethodConfigureCard": "Configure Credit / Debit Card",
   "paymentMethodEditCard": "Edit Card Settings",
   "paymentMethodCreditDebitCardTitle": "Credit / Debit Card",
+  "paymentMethodCashOnDeliveryTitle": "Cash on Delivery",
+  "paymentMethodStripeTitle": "Stripe",
+  "paymentMethodPayPalTitle": "PayPal",
+  "paymentMethodCashDescription": "Retailer pays cash when the supplier delivers or collects the payment.",
+  "paymentMethodStripeDescription": "Online card payments through Stripe. Configure test keys first, then enable it for checkout.",
+  "paymentMethodPayPalDescription": "Online payments through PayPal. Configure sandbox credentials first, then enable it for checkout.",
+  "paymentMethodMpgsDescription": "Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.",
   "mpgsConfigTitle": "Configure Credit / Debit Card",
   "mpgsInfoBanner": "Configure MPGS hosted checkout for Visa and Mastercard payments. Retailers will use this through checkout when they select Credit / Debit Card.",
   "mpgsEnableLabel": "Enable Credit / Debit Card for retailers",
@@ -1415,6 +1422,70 @@
   "mpgsTesting": "Testing...",
   "mpgsSaveButton": "Save Settings",
   "mpgsSaving": "Saving...",
+  "promotionCreatedSuccessfully": "Promotion created successfully",
+  "promotionUpdatedSuccessfully": "Promotion updated successfully",
+  "promotionDeletedSuccessfully": "Promotion deleted successfully",
+  "couponCreatedSuccessfully": "Coupon created successfully",
+  "couponUpdatedSuccessfully": "Coupon updated successfully",
+  "couponDeletedSuccessfully": "Coupon deleted successfully",
+  "bannerCreatedSuccessfully": "Banner created successfully",
+  "bannerUpdatedSuccessfully": "Banner updated successfully",
+  "bannerDeletedSuccessfully": "Banner deleted successfully",
+  "shippingMethodCreatedSuccessfully": "Shipping method created successfully",
+  "shippingMethodUpdatedSuccessfully": "Shipping method updated successfully",
+  "shippingMethodDeletedSuccessfully": "Shipping method deleted successfully",
+  "taxRuleCreatedSuccessfully": "Tax rule created successfully",
+  "taxRuleUpdatedSuccessfully": "Tax rule updated successfully",
+  "taxRuleDeletedSuccessfully": "Tax rule deleted successfully",
+  "supplierShippingPickupDescription": "Retailer picks up the order from an available supplier branch.",
+  "supplierShippingExpressDescription": "Faster delivery option, usually more expensive.",
+  "supplierShippingStandardDescription": "Normal delivery option, usually cheaper and slower.",
+  "promotionTargetStockHelp": "Promotions can target only an in-stock product or an in-stock category. Branches are detected automatically from inventory.",
+  "promotionAutomaticStockDetection": "Automatic stock detection",
+  "promotionAutomaticStockDetectionDescription": "Choose a product or category to see where it has available stock. You do not select branches manually anymore.",
+  "promotionSearchChooseInStockProduct": "Search and choose an in-stock product",
+  "promotionSearchChooseInStockCategory": "Search and choose an in-stock category",
+  "paymentMethodConfigurationSavedSuccessfully": "{methodName} configuration saved successfully.",
+  "@paymentMethodConfigurationSavedSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodEnabledSuccessfully": "{methodName} enabled successfully.",
+  "@paymentMethodEnabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodDisabledSuccessfully": "{methodName} disabled successfully.",
+  "@paymentMethodDisabledSuccessfully": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodRequiresCredentialsMessage": "{methodName} requires credentials. Use the Configure button to set it up first.",
+  "@paymentMethodRequiresCredentialsMessage": {
+    "placeholders": {
+      "methodName": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentMethodNotFoundMessage": "Payment method not found.",
+  "paymentMethodTestEnableFirst": "Enable this payment method before testing the configuration.",
+  "paymentTestStripeReadySandbox": "Stripe configuration is valid and ready for sandbox payment start.",
+  "paymentTestPayPalReadySandbox": "PayPal configuration is valid and ready for sandbox payment start.",
+  "paymentTestMpgsReady": "Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.",
+  "paymentTestMpgsConnectionCouldNotComplete": "Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.",
+  "paymentTestMpgsNotEnabled": "Credit / Debit Card is not enabled for this supplier.",
+  "paymentTestStripeNotEnabled": "Stripe is not enabled for this supplier.",
+  "paymentTestPayPalNotEnabled": "PayPal is not enabled for this supplier.",
   "checkoutTitle": "Checkout",
   "checkoutBranchId": "Branch ID *",
   "checkoutBranchIdHint": "Enter fulfillment branch ID",
