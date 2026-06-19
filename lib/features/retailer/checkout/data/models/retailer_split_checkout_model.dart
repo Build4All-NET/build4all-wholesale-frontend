@@ -10,10 +10,7 @@ class RetailerSplitCheckoutShippingSelectionRequestModel {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'branchId': branchId,
-      'shippingMethodId': shippingMethodId,
-    };
+    return {'branchId': branchId, 'shippingMethodId': shippingMethodId};
   }
 }
 
@@ -21,7 +18,7 @@ class RetailerSplitCheckoutPreviewRequestModel {
   final int deliveryCountryId;
   final int? deliveryRegionId;
   final List<RetailerSplitCheckoutShippingSelectionRequestModel>
-      shippingSelections;
+  shippingSelections;
 
   const RetailerSplitCheckoutPreviewRequestModel({
     required this.deliveryCountryId,
@@ -31,8 +28,11 @@ class RetailerSplitCheckoutPreviewRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'deliveryCountryId': deliveryCountryId,
-      'deliveryRegionId': deliveryRegionId,
+      // IMPORTANT:
+      // Backend split-preview DTO expects countryId / regionId.
+      // Do not send deliveryCountryId / deliveryRegionId here.
+      'countryId': deliveryCountryId,
+      'regionId': deliveryRegionId,
       'shippingSelections': shippingSelections
           .map((selection) => selection.toJson())
           .toList(),
@@ -47,7 +47,7 @@ class RetailerSplitCheckoutPlaceRequestModel {
   final String paymentMethod;
   final String? notes;
   final List<RetailerSplitCheckoutShippingSelectionRequestModel>
-      shippingSelections;
+  shippingSelections;
 
   const RetailerSplitCheckoutPlaceRequestModel({
     required this.deliveryAddress,
@@ -60,6 +60,8 @@ class RetailerSplitCheckoutPlaceRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
+      // Backend split-place DTO expects deliveryCountryId / deliveryRegionId.
+      // Keep these names for place order.
       'deliveryAddress': deliveryAddress,
       'deliveryCountryId': deliveryCountryId,
       'deliveryRegionId': deliveryRegionId,
@@ -99,9 +101,9 @@ class RetailerSplitCheckoutPreviewModel {
     Map<String, dynamic> json,
   ) {
     return RetailerSplitCheckoutPreviewModel(
-      groups: _asMapList(json['groups'])
-          .map(RetailerSplitCheckoutGroupModel.fromJson)
-          .toList(),
+      groups: _asMapList(
+        json['groups'],
+      ).map(RetailerSplitCheckoutGroupModel.fromJson).toList(),
       totalItems: _toInt(json['totalItems']),
       itemsSubtotal: _toDouble(json['itemsSubtotal']),
       discountedItemsSubtotal: _toDouble(json['discountedItemsSubtotal']),
@@ -109,9 +111,9 @@ class RetailerSplitCheckoutPreviewModel {
       shippingCost: _toDouble(json['shippingCost']),
       taxAmount: _toDouble(json['taxAmount']),
       finalTotal: _toDouble(json['finalTotal']),
-      paymentMethods: _asMapList(json['paymentMethods'])
-          .map(RetailerCheckoutPaymentMethodModel.fromJson)
-          .toList(),
+      paymentMethods: _asMapList(
+        json['paymentMethods'],
+      ).map(RetailerCheckoutPaymentMethodModel.fromJson).toList(),
     );
   }
 
@@ -164,16 +166,16 @@ class RetailerSplitCheckoutGroupModel {
       branchName: json['branchName']?.toString() ?? '',
       branchCity: json['branchCity']?.toString(),
       branchAddress: json['branchAddress']?.toString(),
-      items: _asMapList(json['items'])
-          .map(RetailerCheckoutItemModel.fromJson)
-          .toList(),
+      items: _asMapList(
+        json['items'],
+      ).map(RetailerCheckoutItemModel.fromJson).toList(),
       totalItems: _toInt(json['totalItems']),
       itemsSubtotal: _toDouble(json['itemsSubtotal']),
       discountedItemsSubtotal: _toDouble(json['discountedItemsSubtotal']),
       promotionDiscount: _toDouble(json['promotionDiscount']),
-      availableShippingMethods: _asMapList(json['availableShippingMethods'])
-          .map(RetailerCheckoutShippingMethodModel.fromJson)
-          .toList(),
+      availableShippingMethods: _asMapList(
+        json['availableShippingMethods'],
+      ).map(RetailerCheckoutShippingMethodModel.fromJson).toList(),
       selectedShippingMethod: json['selectedShippingMethod'] is Map
           ? RetailerCheckoutShippingMethodModel.fromJson(
               Map<String, dynamic>.from(json['selectedShippingMethod'] as Map),
@@ -192,13 +194,17 @@ class RetailerSplitCheckoutGroupModel {
 
   String get displayBranchLabel {
     final details = <String>[];
+
     if (branchCity != null && branchCity!.trim().isNotEmpty) {
       details.add(branchCity!.trim());
     }
+
     if (branchAddress != null && branchAddress!.trim().isNotEmpty) {
       details.add(branchAddress!.trim());
     }
+
     if (details.isEmpty) return branchName;
+
     return '$branchName - ${details.join(', ')}';
   }
 }
@@ -263,9 +269,9 @@ class RetailerSplitCheckoutPlaceModel {
       redirectUrl: json['redirectUrl']?.toString(),
       mpgsSessionId: json['mpgsSessionId']?.toString(),
       mpgsSuccessIndicator: json['mpgsSuccessIndicator']?.toString(),
-      orders: _asMapList(json['orders'])
-          .map(RetailerSplitCheckoutPlacedOrderModel.fromJson)
-          .toList(),
+      orders: _asMapList(
+        json['orders'],
+      ).map(RetailerSplitCheckoutPlacedOrderModel.fromJson).toList(),
     );
   }
 
@@ -322,6 +328,7 @@ class RetailerSplitCheckoutPlacedOrderModel {
 
 List<Map<String, dynamic>> _asMapList(dynamic value) {
   if (value is! List) return [];
+
   return value
       .whereType<Map>()
       .map((item) => Map<String, dynamic>.from(item))
@@ -332,6 +339,7 @@ int _toInt(dynamic value, {int fallback = 0}) {
   if (value == null) return fallback;
   if (value is int) return value;
   if (value is num) return value.toInt();
+
   return int.tryParse(value.toString()) ?? fallback;
 }
 
@@ -340,5 +348,6 @@ double _toDouble(dynamic value, {double fallback = 0}) {
   if (value is double) return value;
   if (value is int) return value.toDouble();
   if (value is num) return value.toDouble();
+
   return double.tryParse(value.toString()) ?? fallback;
 }
