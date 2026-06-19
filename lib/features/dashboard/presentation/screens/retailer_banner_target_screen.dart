@@ -36,10 +36,15 @@ class RetailerBannerTargetScreen extends StatelessWidget {
     List<HomeProductModel> products,
   ) {
     final targetType = banner.targetType.trim().toUpperCase();
+
+    if (targetType.isEmpty || targetType == 'NONE') {
+      return const [];
+    }
+
     final targetValue = int.tryParse(banner.targetValue?.trim() ?? '');
 
     if (targetValue == null) {
-      return products;
+      return const [];
     }
 
     switch (targetType) {
@@ -57,7 +62,7 @@ class RetailerBannerTargetScreen extends StatelessWidget {
             .toList();
 
       default:
-        return products;
+        return const [];
     }
   }
 }
