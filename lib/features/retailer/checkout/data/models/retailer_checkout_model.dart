@@ -1,3 +1,5 @@
+import '../../../../../core/currency/app_currency_runtime_store.dart';
+
 class RetailerEligibleCheckoutBranchModel {
   final int id;
   final String name;
@@ -97,10 +99,10 @@ class RetailerStartPaymentRequestModel {
   final String paymentMethod;
   final String currency;
 
-  const RetailerStartPaymentRequestModel({
+  RetailerStartPaymentRequestModel({
     required this.paymentMethod,
-    this.currency = 'USD',
-  });
+    String? currency,
+  }) : currency = currency ?? AppCurrencyRuntimeStore.code;
 
   Map<String, dynamic> toJson() {
     return {'paymentMethod': paymentMethod, 'currency': currency};
@@ -186,7 +188,7 @@ class RetailerCheckoutPreviewModel {
   }
 
   String get currency {
-    if (items.isEmpty) return r'$';
+    if (items.isEmpty) return AppCurrencyRuntimeStore.symbol;
     return items.first.currency;
   }
 }
@@ -247,7 +249,7 @@ class RetailerCheckoutItemModel {
       supplierBuild4allUserId: _toNullableInt(json['supplierBuild4allUserId']),
       productName: json['productName']?.toString() ?? '',
       imageUrl: json['imageUrl']?.toString(),
-      currency: json['currency']?.toString() ?? r'$',
+      currency: json['currency']?.toString() ?? AppCurrencyRuntimeStore.symbol,
       quantity: _toInt(json['quantity'], fallback: 1),
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',

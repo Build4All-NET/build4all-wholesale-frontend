@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../shared/utils/supplier_success_message_localizer.dart';
@@ -58,7 +59,9 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
           : _safe(cfg['apiBaseUrl']),
     );
     _currencyCtrl = TextEditingController(
-      text: _safe(cfg['currency']).isEmpty ? 'USD' : _safe(cfg['currency']).toUpperCase(),
+      text: _safe(cfg['currency']).isEmpty
+          ? CurrencyFormatter.runtimeCode()
+          : _safe(cfg['currency']).toUpperCase(),
     );
     _returnUrlCtrl = TextEditingController(
       text: _safe(cfg['returnUrl']).isEmpty

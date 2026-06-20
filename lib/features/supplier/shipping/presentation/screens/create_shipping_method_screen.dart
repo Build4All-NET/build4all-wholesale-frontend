@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../shared/utils/supplier_success_message_localizer.dart';
@@ -485,7 +486,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
     if (_isEditMode) {
       context.go('/supplier-shipping');
     } else {
-      context.go('/supplier-dashboard');
+      context.go('/supplier-shipping');
     }
   }
 
@@ -517,7 +518,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
           if (_isEditMode) {
             context.go('/supplier-shipping');
           } else {
-            context.go('/supplier-dashboard');
+            context.go('/supplier-shipping');
           }
         }
       },
@@ -727,7 +728,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                       _SectionCard(
                         title: context.l10n.supplierPricingTiming,
                         children: [
-                          _FieldLabel(context.l10n.supplierShippingCost),
+                          _FieldLabel(_currencyInputLabel(context, context.l10n.supplierShippingCost)),
                           _InputField(
                             controller: _shippingCostController,
                             hintText: _isPickup ? context.l10n.supplierPickupIsFree : '5',
@@ -763,7 +764,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel(context.l10n.supplierMinimumOrderAmount),
+                          _FieldLabel(_currencyInputLabel(context, context.l10n.supplierMinimumOrderAmount)),
                           _InputField(
                             controller: _minimumOrderAmountController,
                             hintText: '50',
@@ -779,7 +780,7 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel(context.l10n.supplierFreeShippingThreshold),
+                          _FieldLabel(_currencyInputLabel(context, context.l10n.supplierFreeShippingThreshold)),
                           _InputField(
                             controller: _freeShippingThresholdController,
                             hintText:
@@ -1431,4 +1432,7 @@ class _ShippingBranchOption {
 
     return '';
   }
+}
+String _currencyInputLabel(BuildContext context, String label) {
+  return '$label (${CurrencyFormatter.code(context)} (${CurrencyFormatter.symbol(context)}))';
 }

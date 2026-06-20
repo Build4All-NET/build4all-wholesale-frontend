@@ -34,8 +34,16 @@ class SupplierDashboardScreen extends StatelessWidget {
   }
 }
 
-class _SupplierDashboardView extends StatelessWidget {
+class _SupplierDashboardView extends StatefulWidget {
   _SupplierDashboardView();
+
+  @override
+  State<_SupplierDashboardView> createState() => _SupplierDashboardViewState();
+}
+
+class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
+  static const int _lowStockPreviewCount = 3;
+  bool _showAllLowStockAlerts = false;
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +176,16 @@ class _SupplierDashboardView extends StatelessWidget {
                         onTrailingTap: () => context.go('/supplier-products'),
                       ),
                       SizedBox(height: 12),
-                      _buildLowStockAlerts(context, state),
+                      _buildLowStockAlerts(
+                        context,
+                        state,
+                        showAllLowStockAlerts: _showAllLowStockAlerts,
+                        onToggleLowStockAlerts: () {
+                          setState(() {
+                            _showAllLowStockAlerts = !_showAllLowStockAlerts;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -294,7 +311,12 @@ class _SupplierDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildLowStockAlerts(BuildContext context, SupplierDashboardState state) {
+  Widget _buildLowStockAlerts(
+    BuildContext context,
+    SupplierDashboardState state, {
+    required bool showAllLowStockAlerts,
+    required VoidCallback onToggleLowStockAlerts,
+  }) {
     if (state.lowStockAlerts.isEmpty) {
       return Container(
         width: double.infinity,
@@ -316,10 +338,32 @@ class _SupplierDashboardView extends StatelessWidget {
       );
     }
 
+    final alerts = state.lowStockAlerts;
+    final hasMoreAlerts = alerts.length > _lowStockPreviewCount;
+    final visibleAlerts = showAllLowStockAlerts || !hasMoreAlerts
+        ? alerts
+        : alerts.take(_lowStockPreviewCount).toList();
+    final remainingAlerts = alerts.length - _lowStockPreviewCount;
+
     return Column(
-      children: state.lowStockAlerts.map((alert) {
-        return _LowStockAlertCard(alert: alert);
-      }).toList(),
+      children: [
+        AnimatedSize(
+          duration: Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: visibleAlerts.map((alert) {
+              return _LowStockAlertCard(alert: alert);
+            }).toList(),
+          ),
+        ),
+        if (hasMoreAlerts)
+          _LowStockAlertsToggle(
+            isExpanded: showAllLowStockAlerts,
+            hiddenCount: remainingAlerts,
+            onTap: onToggleLowStockAlerts,
+          ),
+      ],
     );
   }
 
@@ -583,6 +627,68 @@ class _FinancialItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _LowStockAlertsToggle extends StatelessWidget {
+  final bool isExpanded;
+  final int hiddenCount;
+  final VoidCallback onTap;
+
+  _LowStockAlertsToggle({
+    required this.isExpanded,
+    required this.hiddenCount,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: 2),
+      decoration: BoxDecoration(
+        color: primary.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: primary.withOpacity(0.14)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isExpanded
+                      ? context.l10n.supplierShowFewerLowStockAlerts
+                      : context.l10n.supplierShowMoreLowStockAlerts(
+                          hiddenCount,
+                        ),
+                  style: TextStyle(
+                    color: primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  color: primary,
+                  size: 22,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

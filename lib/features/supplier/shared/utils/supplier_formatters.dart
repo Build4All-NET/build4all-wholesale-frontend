@@ -1,16 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/currency/currency_formatter.dart';
+
 String supplierLocaleName(BuildContext context) {
   return Localizations.localeOf(context).toLanguageTag();
 }
 
-String formatSupplierCurrency(BuildContext context, double amount) {
-  return NumberFormat.currency(
-    locale: supplierLocaleName(context),
-    symbol: r'$ ',
-    decimalDigits: 2,
-  ).format(amount);
+String formatSupplierCurrency(BuildContext context, num? amount) {
+  return CurrencyFormatter.format(context, amount);
+}
+
+String formatSupplierCompactCurrency(BuildContext context, num? amount) {
+  return CurrencyFormatter.formatCompact(context, amount);
 }
 
 String formatSupplierNumber(BuildContext context, num value) {

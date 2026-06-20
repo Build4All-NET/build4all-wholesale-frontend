@@ -11,6 +11,15 @@ import 'core/theme/locale_cubit.dart';
 import 'core/theme/runtime_theme_service.dart';
 
 // =========================
+// CORE CURRENCY
+// =========================
+import 'core/currency/data/app_currency_api_service.dart';
+import 'core/currency/data/app_currency_repository_impl.dart';
+import 'core/currency/domain/app_currency_repository.dart';
+import 'core/currency/domain/get_project_currency_usecase.dart';
+import 'core/currency/presentation/app_currency_cubit.dart';
+
+// =========================
 // RETAILER PRODUCT AI
 // =========================
 import 'features/retailer/product_ai/data/repositories/retailer_product_ai_repository_impl.dart';
@@ -307,6 +316,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RuntimeThemeService>(() => RuntimeThemeService());
 
+  sl.registerLazySingleton<AppCurrencyApiService>(
+    () => AppCurrencyApiService(
+      sl<ApiClient>(instanceName: 'centralApiClient'),
+    ),
+  );
+
   // =========================
   // SERVICES
   // =========================
@@ -452,6 +467,12 @@ Future<void> init() async {
   // =========================
   // REPOSITORIES
   // =========================
+  sl.registerLazySingleton<AppCurrencyRepository>(
+    () => AppCurrencyRepositoryImpl(
+      apiService: sl<AppCurrencyApiService>(),
+    ),
+  );
+
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       authService: sl<AuthService>(),
@@ -566,6 +587,10 @@ Future<void> init() async {
     () => SupplierDashboardRepositoryImpl(
       apiService: sl<SupplierDashboardApiService>(),
     ),
+  );
+
+  sl.registerLazySingleton<GetProjectCurrencyUseCase>(
+    () => GetProjectCurrencyUseCase(sl<AppCurrencyRepository>()),
   );
 
   // =========================
@@ -977,6 +1002,12 @@ Future<void> init() async {
   // =========================
   // CUBITS / BLOCS
   // =========================
+  sl.registerLazySingleton<AppCurrencyCubit>(
+    () => AppCurrencyCubit(
+      getProjectCurrencyUseCase: sl<GetProjectCurrencyUseCase>(),
+    ),
+  );
+
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
       loginUseCase: sl<LoginUseCase>(),

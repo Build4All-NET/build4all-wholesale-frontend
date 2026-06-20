@@ -140,7 +140,9 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     try {
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1000,
+        imageQuality: 70,
       );
 
       if (pickedFile == null) return;
@@ -459,7 +461,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     if (_isEditMode) {
       context.go('/supplier-banners');
     } else {
-      context.go('/supplier-dashboard');
+      context.go('/supplier-banners');
     }
   }
 
@@ -492,7 +494,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
           if (_isEditMode) {
             context.go('/supplier-banners');
           } else {
-            context.go('/supplier-dashboard');
+            context.go('/supplier-banners');
           }
         }
       },

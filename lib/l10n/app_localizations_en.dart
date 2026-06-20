@@ -642,6 +642,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get supplierNoLowStockAlerts => 'No low stock alerts';
 
   @override
+  String supplierShowMoreLowStockAlerts(Object count) {
+    return 'Show $count more alerts';
+  }
+
+  @override
+  String get supplierShowFewerLowStockAlerts => 'Show fewer';
+
+  @override
   String get supplierAddProduct => 'Add Product';
 
   @override
@@ -1623,7 +1631,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity units Ã— $price';
+    return '$quantity units × $price';
   }
 
   @override

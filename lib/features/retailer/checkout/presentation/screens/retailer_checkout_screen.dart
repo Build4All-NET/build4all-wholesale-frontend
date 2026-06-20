@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/config/app_config.dart';
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/location/data/models/country_model.dart';
 import '../../../../../core/location/data/models/region_model.dart';
@@ -538,7 +539,6 @@ class _SplitFulfillmentGroupsCard extends StatelessWidget {
                 (entry) => _SplitFulfillmentGroupTile(
                   index: entry.key,
                   group: entry.value,
-                  currency: preview.currency,
                   onShippingSelected: onShippingSelected,
                 ),
               ),
@@ -551,14 +551,12 @@ class _SplitFulfillmentGroupsCard extends StatelessWidget {
 class _SplitFulfillmentGroupTile extends StatelessWidget {
   final int index;
   final RetailerSplitCheckoutGroupModel group;
-  final String currency;
   final Future<void> Function({required int branchId, required int? shippingMethodId})
       onShippingSelected;
 
   const _SplitFulfillmentGroupTile({
     required this.index,
     required this.group,
-    required this.currency,
     required this.onShippingSelected,
   });
 
@@ -616,7 +614,7 @@ class _SplitFulfillmentGroupTile extends StatelessWidget {
                 ),
               ),
               Text(
-                _money(currency, group.finalTotal),
+                _money(context, group.finalTotal),
                 style: TextStyle(
                   color: primary,
                   fontWeight: FontWeight.w900,
@@ -653,11 +651,11 @@ class _SplitFulfillmentGroupTile extends StatelessWidget {
             ...group.availableShippingMethods.map(
               (method) => _SelectableTile(
                 title: method.methodName,
-                subtitle: _shippingSubtitle(context, currency, method),
+                subtitle: _shippingSubtitle(context, method),
                 trailing: method.freeShippingApplied ||
                         method.appliedShippingCost == 0
                     ? l10n.supplierFreeShipping
-                    : _money(currency, method.appliedShippingCost),
+                    : _money(context, method.appliedShippingCost),
                 selected: group.selectedShippingMethod?.id == method.id,
                 onTap: () => onShippingSelected(
                   branchId: group.branchId,
@@ -668,24 +666,24 @@ class _SplitFulfillmentGroupTile extends StatelessWidget {
           const Divider(height: 22),
           _SummaryRow(
             label: l10n.subtotal,
-            value: _money(currency, group.itemsSubtotal),
+            value: _money(context, group.itemsSubtotal),
           ),
           if (group.promotionDiscount > 0)
             _SummaryRow(
               label: l10n.checkoutPromotionDiscount,
-              value: '- ${_money(currency, group.promotionDiscount)}',
+              value: '- ${_money(context, group.promotionDiscount)}',
             ),
           _SummaryRow(
             label: l10n.shipping,
-            value: _money(currency, group.shippingCost),
+            value: _money(context, group.shippingCost),
           ),
           _SummaryRow(
             label: l10n.checkoutTax,
-            value: _money(currency, group.taxAmount),
+            value: _money(context, group.taxAmount),
           ),
           _SummaryRow(
             label: l10n.total,
-            value: _money(currency, group.finalTotal),
+            value: _money(context, group.finalTotal),
             isTotal: true,
             color: primary,
           ),
@@ -759,7 +757,7 @@ class _CheckoutItemTile extends StatelessWidget {
           children: [
             if (item.shouldShowOriginalPrice)
               Text(
-                _money(item.currency, item.originalLineTotal),
+                _money(context, item.originalLineTotal),
                 style: const TextStyle(
                   color: AppThemeTokens.textSecondary,
                   fontSize: 11,
@@ -768,7 +766,7 @@ class _CheckoutItemTile extends StatelessWidget {
                 ),
               ),
             Text(
-              _money(item.currency, item.lineTotal),
+              _money(context, item.lineTotal),
               style: TextStyle(
                 color: primary,
                 fontSize: 13,
@@ -861,7 +859,6 @@ class _SplitCheckoutSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final currency = preview.currency;
     final primary = Theme.of(context).colorScheme.primary;
 
     return _Card(
@@ -872,24 +869,24 @@ class _SplitCheckoutSummaryCard extends StatelessWidget {
           const SizedBox(height: 16),
           _SummaryRow(
             label: l10n.subtotal,
-            value: _money(currency, preview.itemsSubtotal),
+            value: _money(context, preview.itemsSubtotal),
           ),
           _SummaryRow(
             label: l10n.checkoutPromotionDiscount,
-            value: '- ${_money(currency, preview.promotionDiscount)}',
+            value: '- ${_money(context, preview.promotionDiscount)}',
           ),
           _SummaryRow(
             label: l10n.shipping,
-            value: _money(currency, preview.shippingCost),
+            value: _money(context, preview.shippingCost),
           ),
           _SummaryRow(
             label: l10n.checkoutTax,
-            value: _money(currency, preview.taxAmount),
+            value: _money(context, preview.taxAmount),
           ),
           const Divider(height: 26),
           _SummaryRow(
             label: l10n.total,
-            value: _money(currency, preview.finalTotal),
+            value: _money(context, preview.finalTotal),
             isTotal: true,
             color: primary,
           ),
@@ -906,7 +903,6 @@ class _SplitCheckoutResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = r'$';
     return _Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -939,7 +935,7 @@ class _SplitCheckoutResultCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    _money(currency, order.orderTotal),
+                    _money(context, order.orderTotal),
                     style: const TextStyle(
                       color: AppThemeTokens.textPrimary,
                       fontWeight: FontWeight.w900,
@@ -1013,7 +1009,6 @@ class _SplitCheckoutBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final preview = state.splitPreview;
-    final currency = preview?.currency ?? r'$';
 
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
@@ -1045,7 +1040,7 @@ class _SplitCheckoutBottomBar extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          _money(currency, preview.finalTotal),
+                          _money(context, preview.finalTotal),
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 20,
@@ -1290,7 +1285,6 @@ class _SummaryRow extends StatelessWidget {
 
 String _shippingSubtitle(
   BuildContext context,
-  String currency,
   RetailerCheckoutShippingMethodModel method,
 ) {
   final l10n = context.l10n;
@@ -1307,13 +1301,13 @@ String _shippingSubtitle(
 
   if (method.minimumOrderAmount > 0) {
     parts.add(
-      '${l10n.checkoutMinimumOrder}: ${_money(currency, method.minimumOrderAmount)}',
+      '${l10n.checkoutMinimumOrder}: ${_money(context, method.minimumOrderAmount)}',
     );
   }
 
   if (method.freeShippingThreshold > 0) {
     parts.add(
-      '${l10n.supplierFreeShippingThresholdPlain}: ${_money(currency, method.freeShippingThreshold)}',
+      '${l10n.supplierFreeShippingThresholdPlain}: ${_money(context, method.freeShippingThreshold)}',
     );
   }
 
@@ -1336,6 +1330,6 @@ String _shippingTypeLabel(BuildContext context, String type) {
   }
 }
 
-String _money(String currency, double amount) {
-  return '$currency${amount.toStringAsFixed(2)}';
+String _money(BuildContext context, num? amount) {
+  return CurrencyFormatter.format(context, amount);
 }

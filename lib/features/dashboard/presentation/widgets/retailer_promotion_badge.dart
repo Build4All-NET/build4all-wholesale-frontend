@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/currency/currency_formatter.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
 
@@ -17,7 +18,7 @@ class RetailerPromotionBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = product.promotionLabel?.trim();
+    final label = _productPromotionLabel(context, product);
 
     if (!product.hasActivePromotion || label == null || label.isEmpty) {
       return const SizedBox.shrink();
@@ -73,7 +74,7 @@ class RetailerCategoryPromotionBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = category.promotionLabel?.trim();
+    final label = _categoryPromotionLabel(context, category);
 
     if (!category.hasActivePromotion || label == null || label.isEmpty) {
       return const SizedBox.shrink();
@@ -123,7 +124,7 @@ class RetailerPromotionInfoPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = product.promotionLabel?.trim();
+    final label = _productPromotionLabel(context, product);
     final title = product.promotionTitle?.trim();
 
     if (!product.hasActivePromotion || label == null || label.isEmpty) {
@@ -165,3 +166,55 @@ class RetailerPromotionInfoPill extends StatelessWidget {
     );
   }
 }
+
+
+String? _productPromotionLabel(BuildContext context, HomeProductModel product) {
+  if (!product.hasActivePromotion) return null;
+  return _promotionLabel(
+    context,
+    discountType: product.promotionDiscountType,
+    discountValue: product.promotionDiscountValue,
+    fallbackLabel: product.promotionLabel,
+  );
+}
+
+String? _categoryPromotionLabel(BuildContext context, HomeCategoryModel category) {
+  if (!category.hasActivePromotion) return null;
+  return _promotionLabel(
+    context,
+    discountType: category.promotionDiscountType,
+    discountValue: category.promotionDiscountValue,
+    fallbackLabel: category.promotionLabel,
+  );
+}
+
+String? _promotionLabel(
+  BuildContext context, {
+  required String? discountType,
+  required double? discountValue,
+  required String? fallbackLabel,
+}) {
+  final type = discountType?.trim().toUpperCase();
+
+  if (type == 'PERCENT' || type == 'PERCENTAGE') {
+    final value = discountValue;
+    if (value != null) return '${_cleanPromotionNumber(value)}% OFF';
+  }
+
+  if (type == 'FIXED' || type == 'FIXED_AMOUNT') {
+    final value = discountValue;
+    if (value != null) {
+      return '${CurrencyFormatter.formatCompact(context, value)} OFF';
+    }
+  }
+
+  final fallback = fallbackLabel?.trim();
+  return fallback == null || fallback.isEmpty ? null : fallback;
+}
+
+String _cleanPromotionNumber(double value) {
+  return value == value.roundToDouble()
+      ? value.toInt().toString()
+      : value.toStringAsFixed(2);
+}
+

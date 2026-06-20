@@ -1,3 +1,5 @@
+import '../../../../core/currency/app_currency_runtime_store.dart';
+
 class RetailerHomeModel {
   final String welcomeName;
   final int unreadNotificationsCount;
@@ -341,7 +343,7 @@ class HomeProductModel {
       imageUrl: json['imageUrl']?.toString(),
       price: parsedPrice,
       originalPrice: parsedOriginalPrice,
-      currency: json['currency']?.toString() ?? r'$',
+      currency: json['currency']?.toString() ?? AppCurrencyRuntimeStore.symbol,
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',
       rating: _toDouble(json['rating']),

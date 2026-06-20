@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-String formatRetailerOrderCurrency(BuildContext context, double amount) {
-  final locale = Localizations.localeOf(context).toLanguageTag();
-  return NumberFormat.currency(locale: locale, symbol: r'$').format(amount);
+import '../../../../../core/currency/currency_formatter.dart';
+
+String formatRetailerOrderCurrency(BuildContext context, num? amount) {
+  return CurrencyFormatter.format(context, amount);
 }
 
 String formatRetailerOrderDate(BuildContext context, DateTime date) {

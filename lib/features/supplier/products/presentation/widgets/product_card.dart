@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:build4all_wholesale_frontend/core/currency/currency_formatter.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -77,7 +78,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      '\$${product.price.toStringAsFixed(2)}',
+                      CurrencyFormatter.format(context, product.price),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

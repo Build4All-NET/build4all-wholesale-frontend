@@ -1,3 +1,4 @@
+import '../../../../../core/currency/app_currency_runtime_store.dart';
 import 'retailer_checkout_model.dart';
 
 class RetailerSplitCheckoutShippingSelectionRequestModel {
@@ -10,7 +11,12 @@ class RetailerSplitCheckoutShippingSelectionRequestModel {
   });
 
   Map<String, dynamic> toJson() {
-    return {'branchId': branchId, 'shippingMethodId': shippingMethodId};
+    // Backend split checkout DTO expects selectedShippingMethodId.
+    // Keep the Dart property name short, but send the exact backend field name.
+    return {
+      'branchId': branchId,
+      'selectedShippingMethodId': shippingMethodId,
+    };
   }
 }
 
@@ -121,7 +127,7 @@ class RetailerSplitCheckoutPreviewModel {
     for (final group in groups) {
       if (group.items.isNotEmpty) return group.items.first.currency;
     }
-    return r'$';
+    return AppCurrencyRuntimeStore.symbol;
   }
 }
 

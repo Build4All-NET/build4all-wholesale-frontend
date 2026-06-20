@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -62,7 +63,7 @@ class ShippingMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${_localizedOptionLabel(context, method.methodTypeLabel)} • ${_localizedShippingCostLabel(context, method.costLabel)}',
+                      '${_localizedOptionLabel(context, method.methodTypeLabel)} • ${_shippingCostLabel(context, method)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -99,8 +100,8 @@ class ShippingMethodCard extends StatelessWidget {
             children: [
               _TextChip(text: _localizedLocationLabel(context, method.locationLabel)),
               _TextChip(text: _localizedEstimatedTime(context, method.estimatedDeliveryTime)),
-              _TextChip(text: _localizedMinimumOrderLabel(context, method.minimumOrderLabel)),
-              _TextChip(text: _localizedFreeShippingLabel(context, method.freeShippingLabel)),
+              _TextChip(text: _minimumOrderLabel(context, method)),
+              _TextChip(text: _freeShippingLabel(context, method)),
               _TextChip(text: context.l10n.supplierBranchesValue(_localizedBranchScopeLabel(context, method.branchScopeLabel))),
             ],
           ),
@@ -274,26 +275,28 @@ String _localizedStatusLabel(BuildContext context, String label) {
   }
 }
 
-String _localizedShippingCostLabel(BuildContext context, String label) {
-  if (label == 'Free pickup') return context.l10n.supplierFreePickup;
-  return label;
+String _shippingCostLabel(BuildContext context, ShippingMethodEntity method) {
+  if (method.isPickup) return context.l10n.supplierFreePickup;
+  return CurrencyFormatter.formatCompact(context, method.cost);
 }
 
-String _localizedMinimumOrderLabel(BuildContext context, String label) {
-  if (label == 'No minimum') return context.l10n.supplierNoMinimum;
-  if (label.endsWith(' minimum')) {
-    return context.l10n.supplierMinimumValue(label.replaceFirst(' minimum', ''));
-  }
-  return label;
+String _minimumOrderLabel(BuildContext context, ShippingMethodEntity method) {
+  final value = method.minimumOrderAmount;
+  if (value == null) return context.l10n.supplierNoMinimum;
+  return context.l10n.supplierMinimumValue(
+    CurrencyFormatter.formatCompact(context, value),
+  );
 }
 
-String _localizedFreeShippingLabel(BuildContext context, String label) {
-  if (label == 'Pickup only') return context.l10n.supplierPickupOnly;
-  if (label == 'No free shipping') return context.l10n.supplierNoFreeShipping;
-  if (label.startsWith('Free above ')) {
-    return context.l10n.supplierFreeAboveValue(label.replaceFirst('Free above ', ''));
-  }
-  return label;
+String _freeShippingLabel(BuildContext context, ShippingMethodEntity method) {
+  if (method.isPickup) return context.l10n.supplierPickupOnly;
+
+  final value = method.freeShippingThreshold;
+  if (value == null) return context.l10n.supplierNoFreeShipping;
+
+  return context.l10n.supplierFreeAboveValue(
+    CurrencyFormatter.formatCompact(context, value),
+  );
 }
 
 String _localizedEstimatedTime(BuildContext context, String label) {

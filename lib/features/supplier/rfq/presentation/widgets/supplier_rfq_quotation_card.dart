@@ -65,11 +65,11 @@ class SupplierRfqQuotationCard extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              _InfoTile(label: l.t('unitPrice'), value: quotation.unitPrice.toStringAsFixed(2)),
-              _InfoTile(label: l.t('total'), value: quotation.totalPrice.toStringAsFixed(2)),
+              _InfoTile(label: l.t('unitPrice'), value: formatSupplierCurrency(context, quotation.unitPrice)),
+              _InfoTile(label: l.t('total'), value: formatSupplierCurrency(context, quotation.totalPrice)),
               if (quotation.availableQuantity != null)
                 _InfoTile(label: l.t('availableQty'), value: quotation.availableQuantity.toString()),
-              _InfoTile(label: l.t('shipping'), value: (quotation.shippingCost ?? 0).toStringAsFixed(2)),
+              _InfoTile(label: l.t('shipping'), value: formatSupplierCurrency(context, quotation.shippingCost ?? 0)),
               if (quotation.deliveryDate != null)
                 _InfoTile(label: l.t('deliveryDate'), value: formatSupplierShortDate(context, quotation.deliveryDate!)),
             ],

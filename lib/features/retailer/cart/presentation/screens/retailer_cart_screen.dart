@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:build4all_wholesale_frontend/core/currency/currency_formatter.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 import 'package:build4all_wholesale_frontend/core/theme/app_theme_tokens.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
@@ -261,7 +262,7 @@ class _CartItemCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        '${item.currency}${item.unitPrice.toStringAsFixed(2)} ${l10n.perUnit}',
+                        '${CurrencyFormatter.format(context, item.unitPrice)} ${l10n.perUnit}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -318,7 +319,7 @@ class _CartItemCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  '${item.currency}${item.lineTotal.toStringAsFixed(2)}',
+                  CurrencyFormatter.format(context, item.lineTotal),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
@@ -434,8 +435,6 @@ class _OrderSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final currency = cart.items.isEmpty ? r'$' : cart.items.first.currency;
-
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -466,7 +465,7 @@ class _OrderSummaryCard extends StatelessWidget {
           const SizedBox(height: 16),
           _SummaryRow(
             label: l10n.subtotal,
-            value: '$currency${cart.subtotal.toStringAsFixed(2)}',
+            value: CurrencyFormatter.format(context, cart.subtotal),
           ),
           const SizedBox(height: 12),
           _SummaryRow(
@@ -477,7 +476,7 @@ class _OrderSummaryCard extends StatelessWidget {
           const Divider(height: 30),
           _SummaryRow(
             label: l10n.totalBeforeShipping,
-            value: '$currency${cart.subtotal.toStringAsFixed(2)}',
+            value: CurrencyFormatter.format(context, cart.subtotal),
             isTotal: true,
             totalColor: primaryColor,
           ),

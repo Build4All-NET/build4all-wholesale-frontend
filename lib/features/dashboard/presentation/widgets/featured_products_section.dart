@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/currency/currency_formatter.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
@@ -284,7 +285,7 @@ class _ProductPriceBlock extends StatelessWidget {
       children: [
         Flexible(
           child: Text(
-            '${product.currency}${product.price.toStringAsFixed(2)}',
+            CurrencyFormatter.format(context, product.price),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -298,7 +299,7 @@ class _ProductPriceBlock extends StatelessWidget {
           const SizedBox(width: 7),
           Flexible(
             child: Text(
-              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              CurrencyFormatter.format(context, product.originalPrice),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

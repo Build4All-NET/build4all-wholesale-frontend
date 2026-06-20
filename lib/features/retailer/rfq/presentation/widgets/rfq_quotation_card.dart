@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../domain/entities/rfq_quotation_entity.dart';
@@ -77,14 +78,14 @@ class RfqQuotationCard extends StatelessWidget {
               Expanded(
                 child: _PriceBox(
                   title: l10n.rfqUnitPrice,
-                  value: '\$${quotation.unitPrice.toStringAsFixed(2)}',
+                  value: CurrencyFormatter.format(context, quotation.unitPrice),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _PriceBox(
                   title: l10n.rfqTotal,
-                  value: '\$${quotation.totalPrice.toStringAsFixed(2)}',
+                  value: CurrencyFormatter.format(context, quotation.totalPrice),
                 ),
               ),
             ],
@@ -106,7 +107,7 @@ class RfqQuotationCard extends StatelessWidget {
                 label: quotation.shippingCost == null
                     ? l10n.rfqShippingNotSpecified
                     : l10n.rfqShippingCost(
-                        '\$${quotation.shippingCost!.toStringAsFixed(2)}',
+                        CurrencyFormatter.format(context, quotation.shippingCost),
                       ),
               ),
               if (quotation.deliveryDate != null)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -37,7 +38,7 @@ class PromotionCard extends StatelessWidget {
             children: [
               _PromotionBadge(
                 primary: primary,
-                discountLabel: promotion.discountLabel,
+                discountLabel: _promotionDiscountLabel(context, promotion),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -56,7 +57,7 @@ class PromotionCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${_localizedOptionLabel(context, promotion.discountTypeLabel)} • ${promotion.discountLabel}',
+                      '${_localizedOptionLabel(context, promotion.discountTypeLabel)} • ${_promotionDiscountLabel(context, promotion)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -336,7 +337,7 @@ String _localizedMinOrderLabel(BuildContext context, PromotionEntity promotion) 
     return context.l10n.supplierNoMinimum;
   }
 
-  return context.l10n.supplierMinimumValue(_formatCurrencyAmount(minOrderAmount));
+  return context.l10n.supplierMinimumValue(CurrencyFormatter.formatCompact(context, minOrderAmount));
 }
 
 String _localizedMaxDiscountLabel(BuildContext context, PromotionEntity promotion) {
@@ -350,7 +351,7 @@ String _localizedMaxDiscountLabel(BuildContext context, PromotionEntity promotio
     return context.l10n.supplierUnlimited;
   }
 
-  return '${context.l10n.supplierMaxDiscount}: ${_formatCurrencyAmount(maxDiscountAmount)}';
+  return '${context.l10n.supplierMaxDiscount}: ${CurrencyFormatter.formatCompact(context, maxDiscountAmount)}';
 }
 
 String _formatPromotionDate(BuildContext context, DateTime value) {
@@ -359,12 +360,19 @@ String _formatPromotionDate(BuildContext context, DateTime value) {
   return DateFormat('yyyy-MM-dd h:mm a', localeTag).format(value);
 }
 
-String _formatCurrencyAmount(double value) {
-  final formatted = value == value.roundToDouble()
+
+String _promotionDiscountLabel(BuildContext context, PromotionEntity promotion) {
+  if (promotion.discountType == PromotionDiscountType.percent) {
+    return '${_cleanCurrencyNumber(promotion.discountValue)}% off';
+  }
+
+  return '${CurrencyFormatter.formatCompact(context, promotion.discountValue)} off';
+}
+
+String _cleanCurrencyNumber(double value) {
+  return value == value.roundToDouble()
       ? value.toInt().toString()
       : value.toStringAsFixed(2);
-
-  return '\$$formatted';
 }
 
 String _localizedOptionLabel(BuildContext context, String label) {

@@ -1,3 +1,5 @@
+import '../../../../../core/currency/app_currency_runtime_store.dart';
+
 class RetailerCartModel {
   final List<RetailerCartItemModel> items;
   final int totalItems;
@@ -62,7 +64,7 @@ class RetailerCartItemModel {
       productName: json['productName']?.toString() ?? '',
       imageUrl: json['imageUrl']?.toString(),
       unitPrice: _toDouble(json['unitPrice']),
-      currency: json['currency']?.toString() ?? r'$',
+      currency: json['currency']?.toString() ?? AppCurrencyRuntimeStore.symbol,
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',
       quantity: _toInt(json['quantity'], fallback: 1),

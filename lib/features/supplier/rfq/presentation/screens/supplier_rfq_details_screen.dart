@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../domain/entities/supplier_rfq_request_entity.dart';
@@ -294,7 +295,7 @@ class _MainInfoCard extends StatelessWidget {
               _MiniInfo(
                 icon: Icons.payments_outlined,
                 label: SupplierRfqI18n(context).t('targetUnitPrice'),
-                value: rfq.targetUnitPrice == null ? '-' : rfq.targetUnitPrice!.toStringAsFixed(2),
+                value: rfq.targetUnitPrice == null ? '-' : CurrencyFormatter.format(context, rfq.targetUnitPrice),
               ),
               _MiniInfo(icon: Icons.request_quote_outlined, label: SupplierRfqI18n(context).t('quotes'), value: rfq.quotationsCount.toString()),
             ],

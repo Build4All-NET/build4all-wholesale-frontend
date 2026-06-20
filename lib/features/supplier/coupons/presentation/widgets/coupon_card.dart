@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/coupon_entity.dart';
@@ -92,7 +93,7 @@ class CouponCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${_localizedOptionLabel(context, coupon.discountType.label)} • ${coupon.discountLabel}',
+                      '${_localizedOptionLabel(context, coupon.discountType.label)} • ${_couponDiscountLabel(context, coupon)}',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
@@ -140,13 +141,13 @@ class CouponCard extends StatelessWidget {
                 label: context.l10n.supplierMinOrder,
                 value: coupon.minOrderAmount == null
                     ? '—'
-                    : coupon.minOrderAmount!.toStringAsFixed(2),
+                    : CurrencyFormatter.format(context, coupon.minOrderAmount),
               ),
               _InfoChip(
                 label: context.l10n.supplierMaxDiscount,
                 value: coupon.maxDiscountAmount == null
                     ? '—'
-                    : coupon.maxDiscountAmount!.toStringAsFixed(2),
+                    : CurrencyFormatter.format(context, coupon.maxDiscountAmount),
               ),
               _InfoChip(
                 label: context.l10n.branchesLabel,
@@ -445,3 +446,22 @@ String _localizedStatusLabel(BuildContext context, String label) {
       return label;
   }
 }
+
+
+String _couponDiscountLabel(BuildContext context, CouponEntity coupon) {
+  switch (coupon.discountType) {
+    case CouponDiscountType.percent:
+      return '${_cleanNumber(coupon.discountValue)}% Off';
+    case CouponDiscountType.fixed:
+      return '${CurrencyFormatter.formatCompact(context, coupon.discountValue)} Off';
+    case CouponDiscountType.freeShipping:
+      return 'Free Shipping';
+  }
+}
+
+String _cleanNumber(double value) {
+  return value == value.roundToDouble()
+      ? value.toInt().toString()
+      : value.toStringAsFixed(2);
+}
+

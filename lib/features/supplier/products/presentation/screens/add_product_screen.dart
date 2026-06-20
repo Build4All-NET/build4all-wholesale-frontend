@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../core/config/app_config.dart';
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
@@ -405,7 +406,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Future<void> _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      imageQuality: 80,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      imageQuality: 70,
     );
 
     if (pickedImage == null) return;
@@ -1020,7 +1023,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
 
                       _AppTextField(
-                        label: context.l10n.pricePerUnitLabel,
+                        label: '${context.l10n.pricePerUnitLabel} (${CurrencyFormatter.code(context)} (${CurrencyFormatter.symbol(context)}))',
                         hint: '0.00',
                         controller: _priceController,
                         keyboardType: TextInputType.numberWithOptions(
@@ -2142,7 +2145,7 @@ class _SubCategorySelector extends StatelessWidget {
               ? context.l10n.loadingSubCategories
               : isEnabled
                   ? context.l10n.selectSubCategoryIfNeeded
-                  : context.l10n.selectCountryFirst,
+                  : context.l10n.selectCategoryFirstMessage,
         ),
       ),
       addButtonText:

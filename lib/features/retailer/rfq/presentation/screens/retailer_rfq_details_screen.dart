@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../../core/config/app_config.dart';
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../l10n/app_localizations.dart';
@@ -408,7 +409,7 @@ class _InfoGrid extends StatelessWidget {
         _InfoItem(
           icon: Icons.attach_money_rounded,
           title: l10n.rfqTargetPrice,
-          value: '\$${rfq.targetUnitPrice!.toStringAsFixed(2)} / ${rfq.unit}',
+          value: '${CurrencyFormatter.format(context, rfq.targetUnitPrice)} / ${rfq.unit}',
         ),
     ];
 

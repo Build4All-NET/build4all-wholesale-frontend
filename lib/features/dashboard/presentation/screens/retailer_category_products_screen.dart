@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
+import '../../../../core/currency/currency_formatter.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
@@ -529,7 +530,7 @@ class _ProductPriceLine extends StatelessWidget {
       children: [
         Flexible(
           child: Text(
-            '${product.currency}${product.price.toStringAsFixed(2)}',
+            CurrencyFormatter.format(context, product.price),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -543,7 +544,7 @@ class _ProductPriceLine extends StatelessWidget {
           const SizedBox(width: 7),
           Flexible(
             child: Text(
-              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
+              CurrencyFormatter.format(context, product.originalPrice),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

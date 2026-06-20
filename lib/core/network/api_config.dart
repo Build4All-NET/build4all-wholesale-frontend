@@ -15,6 +15,8 @@ class ApiConfig {
 
   static const String build4AllAdminProfileMe = '/admin/users/me';
 
+  static String currencyById(int id) => '/currencies/$id';
+
   static const String currentUser = '/auth/me';
   static const String supplierSync = '/auth/build4all/supplier-sync';
   static const String retailerSync = '/auth/build4all/retailer-sync';
