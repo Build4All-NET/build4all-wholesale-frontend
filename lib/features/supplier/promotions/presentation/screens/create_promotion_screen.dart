@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../shared/utils/supplier_success_message_localizer.dart';
@@ -425,7 +426,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
     if (_isEditMode) {
       context.go('/supplier-promotions');
     } else {
-      context.go('/supplier-dashboard');
+      context.go('/supplier-promotions');
     }
   }
 
@@ -457,7 +458,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
           if (_isEditMode) {
             context.go('/supplier-promotions');
           } else {
-            context.go('/supplier-dashboard');
+            context.go('/supplier-promotions');
           }
         }
       },
@@ -604,7 +605,14 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                                 : context.l10n.supplierFixedDiscountHelp,
                           ),
                           const _DividerSpace(),
-                          _FieldLabel(context.l10n.supplierDiscountValue),
+                          _FieldLabel(
+                            _isPercent
+                                ? context.l10n.supplierDiscountValue
+                                : _currencyInputLabel(
+                                    context,
+                                    context.l10n.supplierDiscountValue,
+                                  ),
+                          ),
                           _InputField(
                             controller: _discountValueController,
                             hintText: _isPercent ? '10' : '20',
@@ -669,7 +677,7 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                       _SectionCard(
                         title: context.l10n.supplierPromotionRules,
                         children: [
-                          _FieldLabel(context.l10n.supplierMinimumOrderAmount),
+                          _FieldLabel(_currencyInputLabel(context, context.l10n.supplierMinimumOrderAmount)),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '100',
@@ -686,7 +694,10 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                           ),
                           const _DividerSpace(),
                           _FieldLabel(
-                            context.l10n.supplierMaximumDiscountAmount,
+                            _currencyInputLabel(
+                              context,
+                              context.l10n.supplierMaximumDiscountAmount,
+                            ),
                           ),
                           _InputField(
                             controller: _maxDiscountAmountController,
@@ -1736,4 +1747,8 @@ String _localizedEnumLabel(BuildContext context, String label) {
     default:
       return label;
   }
+}
+
+String _currencyInputLabel(BuildContext context, String label) {
+  return '$label (${CurrencyFormatter.code(context)} (${CurrencyFormatter.symbol(context)}))';
 }

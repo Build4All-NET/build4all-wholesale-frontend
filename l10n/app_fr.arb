@@ -205,6 +205,13 @@
   "supplierMonthlyRevenue": "Revenu mensuel",
   "supplierOrdersToday": "Commandes aujourd’hui",
   "supplierNoLowStockAlerts": "Aucune alerte de stock faible",
+  "supplierShowMoreLowStockAlerts": "Afficher {count} alertes en plus",
+  "@supplierShowMoreLowStockAlerts": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierShowFewerLowStockAlerts": "Afficher moins",
   "supplierAddProduct": "Ajouter un produit",
   "supplierCreatePromotion": "Créer une promotion",
   "supplierManageBranches": "Gérer les succursales",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/supplier_rfq_request_entity.dart';
 import '../utils/supplier_rfq_i18n.dart';
@@ -90,7 +91,7 @@ class SupplierRfqCard extends StatelessWidget {
                       if (rfq.targetUnitPrice != null)
                         _MetaChip(
                           icon: Icons.payments_outlined,
-                          label: l.targetPrice(rfq.targetUnitPrice!.toStringAsFixed(2)),
+                          label: l.targetPrice(CurrencyFormatter.format(context, rfq.targetUnitPrice)),
                         ),
                     ],
                   ),

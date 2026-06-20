@@ -1330,6 +1330,18 @@ abstract class AppLocalizations {
   /// **'No low stock alerts'**
   String get supplierNoLowStockAlerts;
 
+  /// No description provided for @supplierShowMoreLowStockAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {count} more alerts'**
+  String supplierShowMoreLowStockAlerts(Object count);
+
+  /// No description provided for @supplierShowFewerLowStockAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer'**
+  String get supplierShowFewerLowStockAlerts;
+
   /// No description provided for @supplierAddProduct.
   ///
   /// In en, this message translates to:
@@ -3142,7 +3154,7 @@ abstract class AppLocalizations {
   /// No description provided for @unitsTimesPrice.
   ///
   /// In en, this message translates to:
-  /// **'{quantity} units Ã— {price}'**
+  /// **'{quantity} units × {price}'**
   String unitsTimesPrice(Object quantity, Object price);
 
   /// No description provided for @deliveryInformationTitle.

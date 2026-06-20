@@ -205,6 +205,13 @@
   "supplierMonthlyRevenue": "إيرادات الشهر",
   "supplierOrdersToday": "طلبات اليوم",
   "supplierNoLowStockAlerts": "لا توجد تنبيهات مخزون منخفض",
+  "supplierShowMoreLowStockAlerts": "إظهار {count} تنبيهات إضافية",
+  "@supplierShowMoreLowStockAlerts": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "supplierShowFewerLowStockAlerts": "إظهار أقل",
   "supplierAddProduct": "إضافة منتج",
   "supplierCreatePromotion": "إنشاء عرض ترويجي",
   "supplierManageBranches": "إدارة الفروع",

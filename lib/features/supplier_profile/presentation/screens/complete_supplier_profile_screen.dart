@@ -170,7 +170,9 @@ class _CompleteSupplierProfileScreenState
   Future<void> _pickLogoImage() async {
     final pickedImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      imageQuality: 85,
+      maxWidth: 1000,
+      maxHeight: 1000,
+      imageQuality: 75,
     );
 
     if (pickedImage == null) return;

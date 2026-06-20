@@ -27,6 +27,7 @@ class ApiClient {
               path == '/auth/send-verification' ||
               path == '/auth/verify-email-code' ||
               path == '/auth/complete-profile' ||
+              path.startsWith('/currencies') ||
               path.startsWith('/users/reset-password') ||
               path.startsWith('/users/verify-reset-code') ||
               path.startsWith('/users/update-password');

@@ -71,8 +71,9 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
 
     final picked = await picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 85,
       maxWidth: 1600,
+      maxHeight: 1600,
+      imageQuality: 70,
     );
 
     if (picked == null) return;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/utils/supplier_formatters.dart';
 import '../../domain/entities/supplier_rfq_quotation_entity.dart';
@@ -92,7 +93,7 @@ class _SupplierQuotationFormDialogState extends State<SupplierQuotationFormDialo
                 const SizedBox(height: 16),
                 _NumberField(
                   controller: _unitPriceController,
-                  label: "${l.t('unitPrice')} *",
+                  label: "${_currencyInputLabel(context, l.t('unitPrice'))} *",
                   hint: l.t('unitPriceHint'),
                   validator: (value) => _positiveDoubleValidator(value, l.t('unitPrice')),
                 ),
@@ -133,7 +134,7 @@ class _SupplierQuotationFormDialogState extends State<SupplierQuotationFormDialo
                 const SizedBox(height: 12),
                 _NumberField(
                   controller: _shippingCostController,
-                  label: "${l.t('shippingCost')} *",
+                  label: "${_currencyInputLabel(context, l.t('shippingCost'))} *",
                   hint: l.t('freeShippingHint'),
                   validator: (value) => _nonNegativeDoubleValidator(value, l.t('shippingCost')),
                 ),
@@ -276,4 +277,8 @@ class _NumberField extends StatelessWidget {
       ),
     );
   }
+}
+
+String _currencyInputLabel(BuildContext context, String label) {
+  return '$label (${CurrencyFormatter.code(context)} (${CurrencyFormatter.symbol(context)}))';
 }

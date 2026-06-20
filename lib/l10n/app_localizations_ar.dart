@@ -634,6 +634,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supplierNoLowStockAlerts => 'لا توجد تنبيهات مخزون منخفض';
 
   @override
+  String supplierShowMoreLowStockAlerts(Object count) {
+    return 'إظهار $count تنبيهات إضافية';
+  }
+
+  @override
+  String get supplierShowFewerLowStockAlerts => 'إظهار أقل';
+
+  @override
   String get supplierAddProduct => 'إضافة منتج';
 
   @override

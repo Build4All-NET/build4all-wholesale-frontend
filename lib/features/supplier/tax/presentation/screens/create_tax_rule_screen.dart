@@ -453,7 +453,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
     if (_isEditMode) {
       context.go('/supplier-tax-rules');
     } else {
-      context.go('/supplier-dashboard');
+      context.go('/supplier-tax-rules');
     }
   }
 
@@ -485,7 +485,7 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
           if (_isEditMode) {
             context.go('/supplier-tax-rules');
           } else {
-            context.go('/supplier-dashboard');
+            context.go('/supplier-tax-rules');
           }
         }
       },

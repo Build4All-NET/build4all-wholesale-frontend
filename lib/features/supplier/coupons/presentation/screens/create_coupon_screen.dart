@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 
+import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../shared/utils/supplier_success_message_localizer.dart';
@@ -430,7 +431,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
     if (_isEditMode) {
       context.go('/supplier-coupons');
     } else {
-      context.go('/supplier-dashboard');
+      context.go('/supplier-coupons');
     }
   }
 
@@ -464,7 +465,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
           if (_isEditMode) {
             context.go('/supplier-coupons');
           } else {
-            context.go('/supplier-dashboard');
+            context.go('/supplier-coupons');
           }
         }
       },
@@ -617,7 +618,10 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                           _FieldLabel(
                             _isPercent
                                 ? context.l10n.supplierDiscountValuePercent
-                                : context.l10n.supplierDiscountValue,
+                                : _currencyInputLabel(
+                                    context,
+                                    context.l10n.supplierDiscountValue,
+                                  ),
                           ),
                           _InputField(
                             controller: _discountValueController,
@@ -653,7 +657,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel(context.l10n.supplierMinOrderAmount),
+                          _FieldLabel(_currencyInputLabel(context, context.l10n.supplierMinOrderAmount)),
                           _InputField(
                             controller: _minOrderAmountController,
                             hintText: '50',
@@ -669,7 +673,7 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                             },
                           ),
                           const _DividerSpace(),
-                          _FieldLabel(context.l10n.supplierMaxDiscountAmount),
+                          _FieldLabel(_currencyInputLabel(context, context.l10n.supplierMaxDiscountAmount)),
                           _InputField(
                             controller: _maxDiscountAmountController,
                             hintText:
@@ -1298,3 +1302,7 @@ class _DividerSpace extends StatelessWidget {
   }
 }
 
+
+String _currencyInputLabel(BuildContext context, String label) {
+  return '$label (${CurrencyFormatter.code(context)} (${CurrencyFormatter.symbol(context)}))';
+}

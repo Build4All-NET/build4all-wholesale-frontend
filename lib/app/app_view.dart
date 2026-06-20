@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../core/branding/branding_cubit.dart';
 import '../core/branding/branding_state.dart';
+import '../core/currency/presentation/app_currency_cubit.dart';
 import '../core/storage/branding_storage.dart';
 import '../core/theme/app_theme_builder.dart';
 import '../core/theme/locale_cubit.dart';
@@ -25,6 +26,9 @@ class AppView extends StatelessWidget {
       providers: [
         BlocProvider.value(value: sl<ThemeCubit>()),
         BlocProvider.value(value: sl<LocaleCubit>()),
+        BlocProvider.value(
+          value: sl<AppCurrencyCubit>()..loadConfiguredCurrency(),
+        ),
         BlocProvider(
           create: (_) => BrandingCubit(BrandingStorage())..loadInitialBranding(),
         ),
