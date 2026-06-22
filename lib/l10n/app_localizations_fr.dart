@@ -606,6 +606,34 @@ class AppLocalizationsFr extends AppLocalizations {
   String get productAddedToCart => 'Produit ajouté au panier';
 
   @override
+  String get productDetails => 'Détails du produit';
+
+  @override
+  String get quantity => 'Quantité';
+
+  @override
+  String get addToCart => 'Ajouter au panier';
+
+  @override
+  String get minimumOrder => 'Commande minimale';
+
+  @override
+  String get promotionAvailable => 'Promotion disponible';
+
+  @override
+  String get availableFrom => 'disponible à partir de';
+
+  @override
+  String get maximumDiscount => 'Remise maximale';
+
+  @override
+  String get increaseQuantityInCartToUnlockPromotion =>
+      'Augmentez la quantité dans le panier pour débloquer cette promotion.';
+
+  @override
+  String get noDescriptionAvailable => 'Aucune description disponible.';
+
+  @override
   String get supplierDashboardTitle => 'Tableau de bord fournisseur';
 
   @override
@@ -653,14 +681,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supplierNoLowStockAlerts => 'Aucune alerte de stock faible';
-
-  @override
-  String supplierShowMoreLowStockAlerts(Object count) {
-    return 'Afficher $count alertes en plus';
-  }
-
-  @override
-  String get supplierShowFewerLowStockAlerts => 'Afficher moins';
 
   @override
   String get supplierAddProduct => 'Ajouter un produit';

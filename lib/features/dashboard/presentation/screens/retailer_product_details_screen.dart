@@ -1,0 +1,618 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+
+import '../../../../core/extensions/l10n_extension.dart';
+import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../injection_container.dart';
+import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
+import '../../data/models/retailer_home_model.dart';
+import '../cubit/retailer_home_cubit.dart';
+import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_product_image.dart';
+import '../widgets/retailer_promotion_badge.dart';
+
+class RetailerProductDetailsScreen extends StatelessWidget {
+  final HomeProductModel product;
+
+  const RetailerProductDetailsScreen({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<RetailerHomeCubit>(),
+      child: _RetailerProductDetailsView(product: product),
+    );
+  }
+}
+
+class _RetailerProductDetailsView extends StatefulWidget {
+  final HomeProductModel product;
+
+  const _RetailerProductDetailsView({required this.product});
+
+  @override
+  State<_RetailerProductDetailsView> createState() =>
+      _RetailerProductDetailsViewState();
+}
+
+class _RetailerProductDetailsViewState
+    extends State<_RetailerProductDetailsView> {
+  late int _quantity;
+
+  int get _safeMoq => widget.product.moq <= 0 ? 1 : widget.product.moq;
+
+  @override
+  void initState() {
+    super.initState();
+    _quantity = _safeMoq;
+  }
+
+  void _increaseQuantity() {
+    setState(() => _quantity += _safeMoq);
+  }
+
+  void _decreaseQuantity() {
+    final nextQuantity = _quantity - _safeMoq;
+    if (nextQuantity < _safeMoq) return;
+
+    setState(() => _quantity = nextQuantity);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final product = widget.product;
+    final l10n = context.l10n;
+    final isOutOfStock = product.totalStock <= 0;
+
+    return BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
+      listener: (context, state) {
+        if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+          AppToast.error(context, state.errorMessage!);
+          context.read<RetailerHomeCubit>().clearMessages();
+          return;
+        }
+
+        if (state.successMessage == 'PRODUCT_ADDED_TO_CART') {
+          AppToast.success(context, l10n.productAddedToCart);
+          context.read<RetailerHomeCubit>().clearMessages();
+        }
+      },
+      builder: (context, state) {
+        final isAdding = state.addingProductId == product.id;
+
+        return Scaffold(
+          backgroundColor: AppThemeTokens.background,
+          appBar: AppBar(
+            backgroundColor: AppThemeTokens.background,
+            elevation: 0,
+            title: Text(
+              l10n.productDetails,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textPrimary,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            children: [
+              _ProductImageHeader(product: product),
+              const SizedBox(height: 16),
+              _ProductMainInfo(product: product),
+              const SizedBox(height: 14),
+              _DescriptionCard(product: product),
+              const SizedBox(height: 14),
+              _QuantityCard(
+                product: product,
+                quantity: _quantity,
+                onIncrease: isOutOfStock ? null : _increaseQuantity,
+                onDecrease: isOutOfStock || _quantity <= _safeMoq
+                    ? null
+                    : _decreaseQuantity,
+              ),
+              _LockedPromotionExplanation(product: product),
+              const SizedBox(height: 14),
+              RetailerProductAiButton(
+                productId: product.id,
+                productName: product.name,
+                imageUrl: product.imageUrl,
+                expanded: true,
+              ),
+            ],
+          ),
+          bottomNavigationBar: SafeArea(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+              decoration: const BoxDecoration(
+                color: AppThemeTokens.surface,
+                border: Border(
+                  top: BorderSide(color: AppThemeTokens.border),
+                ),
+              ),
+              child: SizedBox(
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: isAdding || isOutOfStock
+                      ? null
+                      : () {
+                          context.read<RetailerHomeCubit>().addToCart(
+                            product: product,
+                            quantity: _quantity,
+                          );
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: AppThemeTokens.border,
+                    disabledForegroundColor: AppThemeTokens.textSecondary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: isAdding
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.3,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          isOutOfStock ? l10n.outOfStock : l10n.addToCart,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ProductImageHeader extends StatelessWidget {
+  final HomeProductModel product;
+
+  const _ProductImageHeader({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        RetailerProductImage(
+          imageUrl: product.imageUrl,
+          width: double.infinity,
+          height: 250,
+          borderRadius: 28,
+          iconSize: 64,
+          imagePadding: const EdgeInsets.all(12),
+        ),
+        if (product.hasActivePromotion)
+          Positioned(
+            top: 14,
+            left: 14,
+            child: RetailerPromotionBadge(product: product),
+          ),
+      ],
+    );
+  }
+}
+
+class _ProductMainInfo extends StatelessWidget {
+  final HomeProductModel product;
+
+  const _ProductMainInfo({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final primary = Theme.of(context).colorScheme.primary;
+    final categoryLine = _categoryLine(product);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (categoryLine.isNotEmpty) ...[
+            Text(
+              categoryLine,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 7),
+          ],
+          Text(
+            product.name,
+            style: const TextStyle(
+              color: AppThemeTokens.textPrimary,
+              fontSize: 23,
+              fontWeight: FontWeight.w900,
+              height: 1.14,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  _formatMoney(product.currency, product.price),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: primary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              if (product.shouldShowOriginalPrice) ...[
+                const SizedBox(width: 9),
+                Flexible(
+                  child: Text(
+                    _formatMoney(product.currency, product.originalPrice!),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      decoration: TextDecoration.lineThrough,
+                      decorationThickness: 2,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 10),
+          _SmallInfoPill(
+            icon: Icons.inventory_2_outlined,
+            text: '${l10n.minimumOrder}: ${product.moq} ${product.moqUnit}',
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _categoryLine(HomeProductModel product) {
+    final category = product.categoryName ?? '';
+    final subCategory = product.subCategoryName ?? '';
+
+    if (category.isNotEmpty && subCategory.isNotEmpty) {
+      return '$category • $subCategory';
+    }
+
+    if (category.isNotEmpty) return category;
+    if (subCategory.isNotEmpty) return subCategory;
+
+    return '';
+  }
+}
+
+class _DescriptionCard extends StatelessWidget {
+  final HomeProductModel product;
+
+  const _DescriptionCard({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final description = product.description.trim();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.description,
+            style: const TextStyle(
+              color: AppThemeTokens.textPrimary,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            description.isEmpty
+                ? context.l10n.noDescriptionAvailable
+                : description,
+            style: const TextStyle(
+              color: AppThemeTokens.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuantityCard extends StatelessWidget {
+  final HomeProductModel product;
+  final int quantity;
+  final VoidCallback? onIncrease;
+  final VoidCallback? onDecrease;
+
+  const _QuantityCard({
+    required this.product,
+    required this.quantity,
+    required this.onIncrease,
+    required this.onDecrease,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.quantity,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${l10n.moq}: ${product.moq} ${product.moqUnit}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _QuantityButton(
+            icon: Icons.remove_rounded,
+            onTap: onDecrease,
+          ),
+          SizedBox(
+            width: 66,
+            child: Text(
+              quantity.toString(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppThemeTokens.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          _QuantityButton(
+            icon: Icons.add_rounded,
+            onTap: onIncrease,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuantityButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  const _QuantityButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: enabled
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+              : AppThemeTokens.background,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: enabled
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.22)
+                : AppThemeTokens.border,
+          ),
+        ),
+        child: Icon(
+          icon,
+          color: enabled
+              ? Theme.of(context).colorScheme.primary
+              : AppThemeTokens.textSecondary,
+          size: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class _LockedPromotionExplanation extends StatelessWidget {
+  final HomeProductModel product;
+
+  const _LockedPromotionExplanation({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final message = _buildMessage(context);
+    if (message == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.local_offer_rounded,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.promotionAvailable,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    message,
+                    style: const TextStyle(
+                      color: AppThemeTokens.textSecondary,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String? _buildMessage(BuildContext context) {
+    if (!product.hasActivePromotion || product.shouldShowOriginalPrice) {
+      return null;
+    }
+
+    final label = product.promotionLabel?.trim();
+    if (label == null || label.isEmpty) return null;
+
+    final l10n = context.l10n;
+    final minimum = product.promotionMinimumOrderAmount;
+    final maximum = product.promotionMaximumDiscountAmount;
+    final buffer = StringBuffer(label);
+
+    if (minimum != null && minimum > 0) {
+      buffer.write(
+        ' ${l10n.availableFrom} ${_formatMoney(product.currency, minimum)}',
+      );
+    }
+
+    if (maximum != null && maximum > 0) {
+      buffer.write(
+        '. ${l10n.maximumDiscount}: ${_formatMoney(product.currency, maximum)}',
+      );
+    }
+
+    if (minimum != null && minimum > 0) {
+      buffer.write('. ${l10n.increaseQuantityInCartToUnlockPromotion}');
+    }
+
+    final message = buffer.toString().trim();
+    if (message.isEmpty) return null;
+
+    return message.endsWith('.') ? message : '$message.';
+  }
+}
+
+class _SmallInfoPill extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _SmallInfoPill({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.background,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 15, color: AppThemeTokens.textSecondary),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _formatMoney(String currency, double value) {
+  final formatted = value.truncateToDouble() == value
+      ? value.toStringAsFixed(0)
+      : value.toStringAsFixed(2);
+
+  return '$currency$formatted';
+}

@@ -140,10 +140,14 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
   Future<void> previewSplitCheckout({
     required int deliveryCountryId,
     required int? deliveryRegionId,
+    bool resetShippingSelections = false,
   }) async {
     emit(
       state.copyWith(
         isLoadingSplitPreview: true,
+        selectedSplitShippingMethodIds: resetShippingSelections
+            ? const <int, int?>{}
+            : state.selectedSplitShippingMethodIds,
         clearError: true,
         clearSuccess: true,
         clearSplitCheckoutResult: true,
@@ -155,7 +159,9 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
         request: RetailerSplitCheckoutPreviewRequestModel(
           deliveryCountryId: deliveryCountryId,
           deliveryRegionId: deliveryRegionId,
-          shippingSelections: _shippingSelectionsFromState(),
+          shippingSelections: resetShippingSelections
+              ? const []
+              : _shippingSelectionsFromState(),
         ),
       );
 
@@ -207,6 +213,18 @@ class RetailerCheckoutCubit extends Cubit<RetailerCheckoutState> {
     await previewSplitCheckout(
       deliveryCountryId: deliveryCountryId,
       deliveryRegionId: deliveryRegionId,
+    );
+  }
+
+  void resetSplitDeliverySelections() {
+    emit(
+      state.copyWith(
+        selectedSplitShippingMethodIds: const <int, int?>{},
+        clearError: true,
+        clearSuccess: true,
+        clearSplitPreview: true,
+        clearSplitCheckoutResult: true,
+      ),
     );
   }
 

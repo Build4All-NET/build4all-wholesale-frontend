@@ -9,5 +9,5 @@ abstract class RetailerHomeRepository {
 
   Future<List<HomeProductModel>> getPromotedProducts();
 
-  Future<void> addToCart({required HomeProductModel product});
+  Future<void> addToCart({required HomeProductModel product, int? quantity});
 }

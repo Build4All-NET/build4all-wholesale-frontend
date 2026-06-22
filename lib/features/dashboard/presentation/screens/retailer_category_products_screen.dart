@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
-import '../../../../core/currency/currency_formatter.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
@@ -385,120 +385,127 @@ class RetailerProductListCard extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
     final isOutOfStock = product.totalStock <= 0;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppThemeTokens.surface,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppThemeTokens.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.035),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              _ProductImage(imageUrl: product.imageUrl),
-              if (product.hasActivePromotion)
-                Positioned(
-                  top: 7,
-                  left: 7,
-                  child: RetailerPromotionBadge(
-                    product: product,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 4,
-                    ),
-                    fontSize: 9,
-                  ),
-                ),
+        onTap: () => context.push('/retailer-product-details', extra: product),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppThemeTokens.surface,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: AppThemeTokens.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.035),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
             ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppThemeTokens.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w900,
-                    height: 1.18,
-                  ),
-                ),
-                if (product.description.trim().isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    product.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppThemeTokens.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      height: 1.25,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 6),
-                Text(
-                  _categoryLine(product),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppThemeTokens.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _ProductPriceLine(product: product, primary: primary),
-                const SizedBox(height: 8),
-                RetailerPromotionInfoPill(product: product),
-                if (product.hasActivePromotion) const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: [
-                    _MiniInfo(
-                      icon: Icons.inventory_2_outlined,
-                      text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: RetailerProductAiButton(
-                        productId: product.id,
-                        productName: product.name,
-                        imageUrl: product.imageUrl,
-                        expanded: true,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  _ProductImage(imageUrl: product.imageUrl),
+                  if (product.hasActivePromotion)
+                    Positioned(
+                      top: 7,
+                      left: 7,
+                      child: RetailerPromotionBadge(
+                        product: product,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 4,
+                        ),
+                        fontSize: 9,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    _AddButton(
-                      isAdding: isAdding,
-                      disabled: isOutOfStock,
-                      onPressed: onAdd,
+                ],
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppThemeTokens.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                        height: 1.18,
+                      ),
+                    ),
+                    if (product.description.trim().isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        product.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppThemeTokens.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          height: 1.25,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 6),
+                    Text(
+                      _categoryLine(product),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppThemeTokens.textSecondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _ProductPriceLine(product: product, primary: primary),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        _MiniInfo(
+                          icon: Icons.inventory_2_outlined,
+                          text:
+                              '${l10n.moq}: ${product.moq} ${product.moqUnit}',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RetailerProductAiButton(
+                            productId: product.id,
+                            productName: product.name,
+                            imageUrl: product.imageUrl,
+                            expanded: true,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        _AddButton(
+                          isAdding: isAdding,
+                          disabled: isOutOfStock,
+                          onPressed: onAdd,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -530,7 +537,7 @@ class _ProductPriceLine extends StatelessWidget {
       children: [
         Flexible(
           child: Text(
-            CurrencyFormatter.format(context, product.price),
+            '${product.currency}${product.price.toStringAsFixed(2)}',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -544,7 +551,7 @@ class _ProductPriceLine extends StatelessWidget {
           const SizedBox(width: 7),
           Flexible(
             child: Text(
-              CurrencyFormatter.format(context, product.originalPrice),
+              '${product.currency}${product.originalPrice!.toStringAsFixed(2)}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -667,7 +674,7 @@ class _AddButton extends StatelessWidget {
                   ],
                   Flexible(
                     child: Text(
-                      disabled ? l10n.outOfStock : l10n.add,
+                      disabled ? l10n.outOfStock : l10n.addToCart,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(

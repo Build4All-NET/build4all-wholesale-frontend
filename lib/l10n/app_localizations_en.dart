@@ -593,6 +593,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get productAddedToCart => 'Product added to cart';
 
   @override
+  String get productDetails => 'Product details';
+
+  @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get addToCart => 'Add to cart';
+
+  @override
+  String get minimumOrder => 'Minimum order';
+
+  @override
+  String get promotionAvailable => 'Promotion available';
+
+  @override
+  String get availableFrom => 'available from';
+
+  @override
+  String get maximumDiscount => 'Maximum discount';
+
+  @override
+  String get increaseQuantityInCartToUnlockPromotion =>
+      'Increase quantity in cart to unlock this promotion.';
+
+  @override
+  String get noDescriptionAvailable => 'No description available.';
+
+  @override
   String get supplierDashboardTitle => 'Supplier Dashboard';
 
   @override
@@ -640,14 +668,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supplierNoLowStockAlerts => 'No low stock alerts';
-
-  @override
-  String supplierShowMoreLowStockAlerts(Object count) {
-    return 'Show $count more alerts';
-  }
-
-  @override
-  String get supplierShowFewerLowStockAlerts => 'Show fewer';
 
   @override
   String get supplierAddProduct => 'Add Product';
@@ -1631,7 +1651,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String unitsTimesPrice(Object quantity, Object price) {
-    return '$quantity units × $price';
+    return '$quantity units Ã— $price';
   }
 
   @override

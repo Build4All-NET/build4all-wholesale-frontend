@@ -58,142 +58,142 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
         AppToast.error(context, state.errorMessage!);
       },
       child: MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaler: const TextScaler.linear(1.0),
-        ),
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: const TextScaler.linear(1.0)),
         child: Scaffold(
-        backgroundColor: AppThemeTokens.background,
-        drawer: SupplierAppDrawer(),
-        appBar: AppBar(
           backgroundColor: AppThemeTokens.background,
-          surfaceTintColor: AppThemeTokens.background,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          centerTitle: true,
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                tooltip: context.l10n.supplierDashboardMenuTooltip,
-                icon: Icon(
-                  Icons.menu_rounded,
-                  size: 31,
-                  color: AppThemeTokens.textPrimary,
-                ),
-                onPressed: () => Scaffold.of(context).openDrawer(),
-              );
-            },
-          ),
-          title: Text(
-            context.l10n.supplierDashboardTitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: primary,
-              fontSize: 19,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          actions: [
-            IconButton(
-              tooltip: context.l10n.notifications,
-              onPressed: () => context.go('/supplier-notifications'),
-              icon: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Icon(
-                    Icons.notifications_none_rounded,
+          drawer: SupplierAppDrawer(),
+          appBar: AppBar(
+            backgroundColor: AppThemeTokens.background,
+            surfaceTintColor: AppThemeTokens.background,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                  tooltip: context.l10n.supplierDashboardMenuTooltip,
+                  icon: Icon(
+                    Icons.menu_rounded,
+                    size: 31,
                     color: AppThemeTokens.textPrimary,
-                    size: 29,
                   ),
-                  Positioned(
-                    right: -4,
-                    top: -5,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 5,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: primary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '3',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                );
+              },
+            ),
+            title: Text(
+              context.l10n.supplierDashboardTitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: primary,
+                fontSize: 19,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            actions: [
+              IconButton(
+                tooltip: context.l10n.notifications,
+                onPressed: () => context.go('/supplier-notifications'),
+                icon: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppThemeTokens.textPrimary,
+                      size: 29,
+                    ),
+                    Positioned(
+                      right: -4,
+                      top: -5,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '3',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 8),
-          ],
-        ),
-        body: BlocBuilder<SupplierDashboardBloc, SupplierDashboardState>(
-          builder: (context, state) {
-            return SafeArea(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  context.read<SupplierDashboardBloc>().add(
-                        SupplierDashboardRefreshed(),
-                      );
-                },
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.fromLTRB(
-                    AppThemeTokens.screenHorizontalPadding,
-                    12,
-                    AppThemeTokens.screenHorizontalPadding,
-                    24,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _WelcomeHeaderCard(
-                        supplierName: state.supplierDisplayName,
-                      ),
-                      SizedBox(height: 18),
-                      if (state.isLoading)
-                        _DashboardLoadingCard()
-                      else
-                        _buildStatsGrid(context, state),
-                      SizedBox(height: 18),
-                      _buildFinancialSummary(context, state),
-                      SizedBox(height: 24),
-                      _SectionTitle(
-                        title: context.l10n.supplierDashboardQuickActions,
-                      ),
-                      SizedBox(height: 12),
-                      _buildQuickActions(context),
-                      SizedBox(height: 24),
-                      _SectionTitle(
-                        title: context.l10n.supplierDashboardLowStockAlerts,
-                        trailingText: context.l10n.viewAll,
-                        onTrailingTap: () => context.go('/supplier-products'),
-                      ),
-                      SizedBox(height: 12),
-                      _buildLowStockAlerts(
-                        context,
-                        state,
-                        showAllLowStockAlerts: _showAllLowStockAlerts,
-                        onToggleLowStockAlerts: () {
-                          setState(() {
-                            _showAllLowStockAlerts = !_showAllLowStockAlerts;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
-            );
-          },
+              SizedBox(width: 8),
+            ],
+          ),
+          body: BlocBuilder<SupplierDashboardBloc, SupplierDashboardState>(
+            builder: (context, state) {
+              return SafeArea(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<SupplierDashboardBloc>().add(
+                      SupplierDashboardRefreshed(),
+                    );
+                  },
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(
+                      AppThemeTokens.screenHorizontalPadding,
+                      12,
+                      AppThemeTokens.screenHorizontalPadding,
+                      24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _WelcomeHeaderCard(
+                          supplierName: state.supplierDisplayName,
+                        ),
+                        SizedBox(height: 18),
+                        if (state.isLoading)
+                          _DashboardLoadingCard()
+                        else
+                          _buildStatsGrid(context, state),
+                        SizedBox(height: 18),
+                        _buildFinancialSummary(context, state),
+                        SizedBox(height: 24),
+                        _SectionTitle(
+                          title: context.l10n.supplierDashboardQuickActions,
+                        ),
+                        SizedBox(height: 12),
+                        _buildQuickActions(context),
+                        SizedBox(height: 24),
+                        _SectionTitle(
+                          title: context.l10n.supplierDashboardLowStockAlerts,
+                          trailingText: context.l10n.viewAll,
+                          onTrailingTap: () => context.go('/supplier-products'),
+                        ),
+                        SizedBox(height: 12),
+                        _buildLowStockAlerts(
+                          context,
+                          state,
+                          showAllLowStockAlerts: _showAllLowStockAlerts,
+                          onToggleLowStockAlerts: () {
+                            setState(() {
+                              _showAllLowStockAlerts = !_showAllLowStockAlerts;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
-      ),
       ),
     );
   }
@@ -516,11 +516,7 @@ class _SectionTitle extends StatelessWidget {
   final String? trailingText;
   final VoidCallback? onTrailingTap;
 
-  _SectionTitle({
-    required this.title,
-    this.trailingText,
-    this.onTrailingTap,
-  });
+  _SectionTitle({required this.title, this.trailingText, this.onTrailingTap});
 
   @override
   Widget build(BuildContext context) {
@@ -666,10 +662,8 @@ class _LowStockAlertsToggle extends StatelessWidget {
               children: [
                 Text(
                   isExpanded
-                      ? context.l10n.supplierShowFewerLowStockAlerts
-                      : context.l10n.supplierShowMoreLowStockAlerts(
-                          hiddenCount,
-                        ),
+                      ? 'Show fewer low-stock alerts'
+                      : 'Show more low-stock alerts ($hiddenCount hidden)',
                   style: TextStyle(
                     color: primary,
                     fontSize: 13,
@@ -696,9 +690,7 @@ class _LowStockAlertsToggle extends StatelessWidget {
 class _LowStockAlertCard extends StatelessWidget {
   final dynamic alert;
 
-  _LowStockAlertCard({
-    required this.alert,
-  });
+  _LowStockAlertCard({required this.alert});
 
   @override
   Widget build(BuildContext context) {
@@ -875,11 +867,7 @@ class _SoftIconBadge extends StatelessWidget {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(size / 2.6),
       ),
-      child: Icon(
-        icon,
-        color: iconColor,
-        size: iconSize,
-      ),
+      child: Icon(icon, color: iconColor, size: iconSize),
     );
   }
 }
@@ -887,11 +875,7 @@ class _SoftIconBadge extends StatelessWidget {
 class _VerticalDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 44,
-      color: AppThemeTokens.border,
-    );
+    return Container(width: 1, height: 44, color: AppThemeTokens.border);
   }
 }
 

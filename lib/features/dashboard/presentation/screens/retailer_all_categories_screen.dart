@@ -17,6 +17,9 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final activeCategories = categories
+        .where((category) => category.productCount > 0)
+        .toList(growable: false);
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
@@ -33,7 +36,7 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: categories.isEmpty
+      body: activeCategories.isEmpty
           ? Center(
               child: Text(
                 l10n.noProductsInCategory,
@@ -46,7 +49,7 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
             )
           : GridView.builder(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-              itemCount: categories.length,
+              itemCount: activeCategories.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
@@ -54,7 +57,7 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
                 childAspectRatio: 1.25,
               ),
               itemBuilder: (context, index) {
-                final category = categories[index];
+                final category = activeCategories[index];
 
                 return InkWell(
                   borderRadius: BorderRadius.circular(22),

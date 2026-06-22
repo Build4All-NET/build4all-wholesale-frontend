@@ -189,6 +189,42 @@
   "outOfStock": "Out",
   "noProductsInCategory": "No products in this category",
   "productAddedToCart": "Product added to cart",
+  "productDetails": "Product details",
+  "@productDetails": {
+    "description": "No description provided."
+  },
+  "quantity": "Quantity",
+  "@quantity": {
+    "description": "No description provided."
+  },
+  "addToCart": "Add to cart",
+  "@addToCart": {
+    "description": "No description provided."
+  },
+  "minimumOrder": "Minimum order",
+  "@minimumOrder": {
+    "description": "No description provided."
+  },
+  "promotionAvailable": "Promotion available",
+  "@promotionAvailable": {
+    "description": "No description provided."
+  },
+  "availableFrom": "available from",
+  "@availableFrom": {
+    "description": "No description provided."
+  },
+  "maximumDiscount": "Maximum discount",
+  "@maximumDiscount": {
+    "description": "No description provided."
+  },
+  "increaseQuantityInCartToUnlockPromotion": "Increase quantity in cart to unlock this promotion.",
+  "@increaseQuantityInCartToUnlockPromotion": {
+    "description": "No description provided."
+  },
+  "noDescriptionAvailable": "No description available.",
+  "@noDescriptionAvailable": {
+    "description": "No description provided."
+  },
   "supplierDashboardTitle": "Supplier Dashboard",
   "supplierDashboardMenuTooltip": "Menu",
   "supplierDashboardRefreshTooltip": "Refresh",
@@ -205,13 +241,6 @@
   "supplierMonthlyRevenue": "Monthly Revenue",
   "supplierOrdersToday": "Orders Today",
   "supplierNoLowStockAlerts": "No low stock alerts",
-  "supplierShowMoreLowStockAlerts": "Show {count} more alerts",
-  "@supplierShowMoreLowStockAlerts": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "supplierShowFewerLowStockAlerts": "Show fewer",
   "supplierAddProduct": "Add Product",
   "supplierCreatePromotion": "Create Promotion",
   "supplierManageBranches": "Manage Branches",
@@ -612,7 +641,7 @@
   "totalAmountLabel": "Total Amount",
   "orderCancelledMessage": "This order was cancelled.",
   "productsOrderedTitle": "Products Ordered",
-  "unitsTimesPrice": "{quantity} units × {price}",
+  "unitsTimesPrice": "{quantity} units Ã— {price}",
   "@unitsTimesPrice": {
     "placeholders": {
       "quantity": {},

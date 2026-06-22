@@ -15,7 +15,6 @@ import '../widgets/home_banner_section.dart';
 import '../widgets/quick_actions_section.dart';
 import '../widgets/retailer_home_header.dart';
 import '../widgets/retailer_search_bar.dart';
-import '../widgets/wholesale_opportunities_section.dart';
 import 'retailer_featured_products_screen.dart';
 
 class RetailerDashboardScreen extends StatelessWidget {
@@ -192,10 +191,6 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               },
             ),
             if (home.banners.isNotEmpty) const SizedBox(height: 18),
-            WholesaleOpportunitiesSection(groupDelivery: home.groupDelivery),
-            const SizedBox(height: 18),
-            QuickActionsSection(actions: home.quickActions),
-            const SizedBox(height: 24),
             CategoriesGridSection(categories: home.categories),
             const SizedBox(height: 24),
             FeaturedProductsSection(
@@ -204,6 +199,8 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               onAddToCart: _addToCart,
               onViewAll: () => _openAllFeaturedProducts(home.featuredProducts),
             ),
+            const SizedBox(height: 24),
+            QuickActionsSection(actions: home.quickActions),
           ],
         ),
       ),

@@ -11,15 +11,8 @@ import '../../domain/entities/supplier_picked_excel_file_entity.dart';
 
 class SupplierExcelReaderService {
   static const Map<SupplierExcelSection, List<String>> expectedHeaders = {
-    SupplierExcelSection.categories: [
-      'Name',
-      'Status',
-    ],
-    SupplierExcelSection.subCategories: [
-      'Category',
-      'SubCategory',
-      'Status',
-    ],
+    SupplierExcelSection.categories: ['Name', 'Status'],
+    SupplierExcelSection.subCategories: ['Category', 'SubCategory', 'Status'],
     SupplierExcelSection.branches: [
       'Branch Name',
       'Country Code',
@@ -158,7 +151,8 @@ class SupplierExcelReaderService {
         throw Exception('The selected Excel file does not contain worksheets.');
       }
 
-      final rowsBySection = <SupplierExcelSection, List<SupplierExcelRowEntity>>{};
+      final rowsBySection =
+          <SupplierExcelSection, List<SupplierExcelRowEntity>>{};
 
       for (final sheet in sheets) {
         final section = SupplierExcelSectionX.fromSheetName(sheet.name);
@@ -256,10 +250,13 @@ class SupplierExcelReaderService {
                 if (row.cells.every((cell) => cell.trim().isEmpty)) continue;
 
                 final values = <String, String>{};
-                for (final header in headersFor(SupplierExcelSection.products)) {
+                for (final header in headersFor(
+                  SupplierExcelSection.products,
+                )) {
                   final key = SupplierExcelRowEntity.normalizeHeader(header);
                   final columnIndex = headerMap[key];
-                  values[key] = columnIndex == null || columnIndex >= row.cells.length
+                  values[key] =
+                      columnIndex == null || columnIndex >= row.cells.length
                       ? ''
                       : row.cells[columnIndex].trim();
                 }
@@ -329,7 +326,8 @@ class SupplierExcelReaderService {
     for (final rowMatch in rowRegex.allMatches(sheetXml)) {
       final rowAttributes = rowMatch.group(1) ?? '';
       final rowBody = rowMatch.group(2) ?? '';
-      final rowNumber = int.tryParse(_readAttribute(rowAttributes, 'r') ?? '') ??
+      final rowNumber =
+          int.tryParse(_readAttribute(rowAttributes, 'r') ?? '') ??
           (rows.length + 1);
 
       final cells = <String>[];
@@ -427,8 +425,8 @@ class SupplierExcelReaderService {
       final normalizedTarget = target.startsWith('/')
           ? target.substring(1)
           : target.startsWith('xl/')
-              ? target
-              : 'xl/$target';
+          ? target
+          : 'xl/$target';
 
       relationshipTargets[id] = normalizedTarget;
     }
@@ -478,19 +476,41 @@ class SupplierExcelReaderService {
         requiredHeaders.addAll(['Category', 'SubCategory']);
         break;
       case SupplierExcelSection.branches:
-        requiredHeaders.addAll(['Branch Name', 'Country Code', 'City', 'Address', 'Phone']);
+        requiredHeaders.addAll([
+          'Branch Name',
+          'Country Code',
+          'City',
+          'Address',
+          'Phone',
+        ]);
         break;
       case SupplierExcelSection.products:
-        requiredHeaders.addAll(['Product Name', 'Description', 'Category', 'Price', 'MOQ']);
+        requiredHeaders.addAll([
+          'Product Name',
+          'Description',
+          'Category',
+          'Price',
+          'MOQ',
+        ]);
         break;
       case SupplierExcelSection.inventory:
         requiredHeaders.addAll(['Branch', 'Product Name', 'Stock Quantity']);
         break;
       case SupplierExcelSection.taxRules:
-        requiredHeaders.addAll(['Rule Name', 'Rate', 'Country ID', 'Country Name']);
+        requiredHeaders.addAll([
+          'Rule Name',
+          'Rate',
+          'Country ID',
+          'Country Name',
+        ]);
         break;
       case SupplierExcelSection.shippingMethods:
-        requiredHeaders.addAll(['Name', 'Type', 'Cost', 'Estimated Delivery Time']);
+        requiredHeaders.addAll([
+          'Name',
+          'Type',
+          'Cost',
+          'Estimated Delivery Time',
+        ]);
         break;
       case SupplierExcelSection.coupons:
         requiredHeaders.addAll(['Code', 'Discount Type', 'Discount Value']);
@@ -512,7 +532,11 @@ class SupplierExcelReaderService {
     }
 
     return requiredHeaders
-        .where((header) => !normalizedHeaders.contains(SupplierExcelRowEntity.normalizeHeader(header)))
+        .where(
+          (header) => !normalizedHeaders.contains(
+            SupplierExcelRowEntity.normalizeHeader(header),
+          ),
+        )
         .toList(growable: false);
   }
 
@@ -568,9 +592,10 @@ class SupplierExcelReaderService {
   int? _columnIndexFromCellReference(String? reference) {
     if (reference == null || reference.isEmpty) return null;
 
-    final letters = RegExp(r'^[A-Z]+', caseSensitive: false)
-        .firstMatch(reference)
-        ?.group(0);
+    final letters = RegExp(
+      r'^[A-Z]+',
+      caseSensitive: false,
+    ).firstMatch(reference)?.group(0);
     if (letters == null) return null;
 
     var index = 0;
@@ -586,10 +611,7 @@ class _ParsedWorksheetRow {
   final int rowNumber;
   final List<String> cells;
 
-  const _ParsedWorksheetRow({
-    required this.rowNumber,
-    required this.cells,
-  });
+  const _ParsedWorksheetRow({required this.rowNumber, required this.cells});
 }
 
 class _WorksheetInfo {

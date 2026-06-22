@@ -1234,6 +1234,60 @@ abstract class AppLocalizations {
   /// **'Product added to cart'**
   String get productAddedToCart;
 
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Product details'**
+  String get productDetails;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to cart'**
+  String get addToCart;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum order'**
+  String get minimumOrder;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion available'**
+  String get promotionAvailable;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'available from'**
+  String get availableFrom;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum discount'**
+  String get maximumDiscount;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase quantity in cart to unlock this promotion.'**
+  String get increaseQuantityInCartToUnlockPromotion;
+
+  /// No description provided.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available.'**
+  String get noDescriptionAvailable;
+
   /// No description provided for @supplierDashboardTitle.
   ///
   /// In en, this message translates to:
@@ -1329,18 +1383,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No low stock alerts'**
   String get supplierNoLowStockAlerts;
-
-  /// No description provided for @supplierShowMoreLowStockAlerts.
-  ///
-  /// In en, this message translates to:
-  /// **'Show {count} more alerts'**
-  String supplierShowMoreLowStockAlerts(Object count);
-
-  /// No description provided for @supplierShowFewerLowStockAlerts.
-  ///
-  /// In en, this message translates to:
-  /// **'Show fewer'**
-  String get supplierShowFewerLowStockAlerts;
 
   /// No description provided for @supplierAddProduct.
   ///
@@ -3154,7 +3196,7 @@ abstract class AppLocalizations {
   /// No description provided for @unitsTimesPrice.
   ///
   /// In en, this message translates to:
-  /// **'{quantity} units × {price}'**
+  /// **'{quantity} units Ã— {price}'**
   String unitsTimesPrice(Object quantity, Object price);
 
   /// No description provided for @deliveryInformationTitle.

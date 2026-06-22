@@ -6,6 +6,8 @@ import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
 
 class CategoriesGridSection extends StatelessWidget {
+  static const int _dashboardCategoryLimit = 6;
+
   final List<HomeCategoryModel> categories;
 
   const CategoriesGridSection({super.key, required this.categories});
@@ -14,19 +16,31 @@ class CategoriesGridSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    if (categories.isEmpty) return const SizedBox.shrink();
+    final activeCategories = categories
+        .where((category) => category.productCount > 0)
+        .toList(growable: false);
 
-    final visibleCategories = categories.length > 6
-        ? categories.take(6).toList()
-        : categories;
+    if (activeCategories.isEmpty) return const SizedBox.shrink();
+
+    final visibleCategories = activeCategories
+        .take(_dashboardCategoryLimit)
+        .toList(growable: false);
+    final hasMoreCategories = activeCategories.length > _dashboardCategoryLimit;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
           title: l10n.categories,
-          actionText: l10n.seeAll,
-          onTap: () => context.push('/retailer-categories', extra: categories),
+          actionText: hasMoreCategories
+              ? '${l10n.seeAll} (${activeCategories.length})'
+              : null,
+          onTap: hasMoreCategories
+              ? () => context.push(
+                    '/retailer-categories',
+                    extra: activeCategories,
+                  )
+              : null,
         ),
         const SizedBox(height: 12),
         GridView.builder(
@@ -188,8 +202,8 @@ class _PromotionBadge extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final String actionText;
-  final VoidCallback onTap;
+  final String? actionText;
+  final VoidCallback? onTap;
 
   const _SectionHeader({
     required this.title,
@@ -214,18 +228,19 @@ class _SectionHeader extends StatelessWidget {
             ),
           ),
         ),
-        TextButton(
-          onPressed: onTap,
-          child: Text(
-            actionText,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w800,
+        if (actionText != null && onTap != null)
+          TextButton(
+            onPressed: onTap,
+            child: Text(
+              actionText!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

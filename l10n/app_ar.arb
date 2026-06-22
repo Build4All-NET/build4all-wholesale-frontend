@@ -189,6 +189,42 @@
   "outOfStock": "غير متوفر",
   "noProductsInCategory": "لا توجد منتجات في هذه الفئة",
   "productAddedToCart": "تمت إضافة المنتج إلى السلة",
+  "productDetails": "تفاصيل المنتج",
+  "@productDetails": {
+    "description": "No description provided."
+  },
+  "quantity": "الكمية",
+  "@quantity": {
+    "description": "No description provided."
+  },
+  "addToCart": "إضافة إلى السلة",
+  "@addToCart": {
+    "description": "No description provided."
+  },
+  "minimumOrder": "الحد الأدنى للطلب",
+  "@minimumOrder": {
+    "description": "No description provided."
+  },
+  "promotionAvailable": "عرض متاح",
+  "@promotionAvailable": {
+    "description": "No description provided."
+  },
+  "availableFrom": "متاح من",
+  "@availableFrom": {
+    "description": "No description provided."
+  },
+  "maximumDiscount": "الحد الأقصى للخصم",
+  "@maximumDiscount": {
+    "description": "No description provided."
+  },
+  "increaseQuantityInCartToUnlockPromotion": "زد الكمية في السلة للاستفادة من هذا العرض.",
+  "@increaseQuantityInCartToUnlockPromotion": {
+    "description": "No description provided."
+  },
+  "noDescriptionAvailable": "لا يوجد وصف متاح.",
+  "@noDescriptionAvailable": {
+    "description": "No description provided."
+  },
   "supplierDashboardTitle": "لوحة تحكم المورد",
   "supplierDashboardMenuTooltip": "القائمة",
   "supplierDashboardRefreshTooltip": "تحديث",
@@ -205,13 +241,6 @@
   "supplierMonthlyRevenue": "إيرادات الشهر",
   "supplierOrdersToday": "طلبات اليوم",
   "supplierNoLowStockAlerts": "لا توجد تنبيهات مخزون منخفض",
-  "supplierShowMoreLowStockAlerts": "إظهار {count} تنبيهات إضافية",
-  "@supplierShowMoreLowStockAlerts": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "supplierShowFewerLowStockAlerts": "إظهار أقل",
   "supplierAddProduct": "إضافة منتج",
   "supplierCreatePromotion": "إنشاء عرض ترويجي",
   "supplierManageBranches": "إدارة الفروع",

@@ -585,6 +585,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get productAddedToCart => 'تمت إضافة المنتج إلى السلة';
 
   @override
+  String get productDetails => 'تفاصيل المنتج';
+
+  @override
+  String get quantity => 'الكمية';
+
+  @override
+  String get addToCart => 'إضافة إلى السلة';
+
+  @override
+  String get minimumOrder => 'الحد الأدنى للطلب';
+
+  @override
+  String get promotionAvailable => 'عرض متاح';
+
+  @override
+  String get availableFrom => 'متاح من';
+
+  @override
+  String get maximumDiscount => 'الحد الأقصى للخصم';
+
+  @override
+  String get increaseQuantityInCartToUnlockPromotion =>
+      'زد الكمية في السلة للاستفادة من هذا العرض.';
+
+  @override
+  String get noDescriptionAvailable => 'لا يوجد وصف متاح.';
+
+  @override
   String get supplierDashboardTitle => 'لوحة تحكم المورد';
 
   @override
@@ -632,14 +660,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supplierNoLowStockAlerts => 'لا توجد تنبيهات مخزون منخفض';
-
-  @override
-  String supplierShowMoreLowStockAlerts(Object count) {
-    return 'إظهار $count تنبيهات إضافية';
-  }
-
-  @override
-  String get supplierShowFewerLowStockAlerts => 'إظهار أقل';
 
   @override
   String get supplierAddProduct => 'إضافة منتج';

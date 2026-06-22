@@ -189,6 +189,42 @@
   "outOfStock": "Rupture",
   "noProductsInCategory": "Aucun produit dans cette catégorie",
   "productAddedToCart": "Produit ajouté au panier",
+  "productDetails": "Détails du produit",
+  "@productDetails": {
+    "description": "No description provided."
+  },
+  "quantity": "Quantité",
+  "@quantity": {
+    "description": "No description provided."
+  },
+  "addToCart": "Ajouter au panier",
+  "@addToCart": {
+    "description": "No description provided."
+  },
+  "minimumOrder": "Commande minimale",
+  "@minimumOrder": {
+    "description": "No description provided."
+  },
+  "promotionAvailable": "Promotion disponible",
+  "@promotionAvailable": {
+    "description": "No description provided."
+  },
+  "availableFrom": "disponible à partir de",
+  "@availableFrom": {
+    "description": "No description provided."
+  },
+  "maximumDiscount": "Remise maximale",
+  "@maximumDiscount": {
+    "description": "No description provided."
+  },
+  "increaseQuantityInCartToUnlockPromotion": "Augmentez la quantité dans le panier pour débloquer cette promotion.",
+  "@increaseQuantityInCartToUnlockPromotion": {
+    "description": "No description provided."
+  },
+  "noDescriptionAvailable": "Aucune description disponible.",
+  "@noDescriptionAvailable": {
+    "description": "No description provided."
+  },
   "supplierDashboardTitle": "Tableau de bord fournisseur",
   "supplierDashboardMenuTooltip": "Menu",
   "supplierDashboardRefreshTooltip": "Actualiser",
@@ -205,13 +241,6 @@
   "supplierMonthlyRevenue": "Revenu mensuel",
   "supplierOrdersToday": "Commandes aujourd’hui",
   "supplierNoLowStockAlerts": "Aucune alerte de stock faible",
-  "supplierShowMoreLowStockAlerts": "Afficher {count} alertes en plus",
-  "@supplierShowMoreLowStockAlerts": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "supplierShowFewerLowStockAlerts": "Afficher moins",
   "supplierAddProduct": "Ajouter un produit",
   "supplierCreatePromotion": "Créer une promotion",
   "supplierManageBranches": "Gérer les succursales",

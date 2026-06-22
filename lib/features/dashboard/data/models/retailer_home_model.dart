@@ -1,5 +1,3 @@
-import '../../../../core/currency/app_currency_runtime_store.dart';
-
 class RetailerHomeModel {
   final String welcomeName;
   final int unreadNotificationsCount;
@@ -280,6 +278,8 @@ class HomeProductModel {
   final String? promotionDiscountType;
   final double? promotionDiscountValue;
   final String? promotionLabel;
+  final double? promotionMinimumOrderAmount;
+  final double? promotionMaximumDiscountAmount;
 
   /// Used only for availability logic.
   /// Do not display this number to retailer.
@@ -312,6 +312,8 @@ class HomeProductModel {
     required this.promotionDiscountType,
     required this.promotionDiscountValue,
     required this.promotionLabel,
+    required this.promotionMinimumOrderAmount,
+    required this.promotionMaximumDiscountAmount,
     required this.totalStock,
   });
 
@@ -343,7 +345,7 @@ class HomeProductModel {
       imageUrl: json['imageUrl']?.toString(),
       price: parsedPrice,
       originalPrice: parsedOriginalPrice,
-      currency: json['currency']?.toString() ?? AppCurrencyRuntimeStore.symbol,
+      currency: json['currency']?.toString() ?? r'$',
       moq: _toInt(json['moq'], fallback: 1),
       moqUnit: json['moqUnit']?.toString() ?? 'units',
       rating: _toDouble(json['rating']),
@@ -362,6 +364,12 @@ class HomeProductModel {
       promotionDiscountType: json['promotionDiscountType']?.toString(),
       promotionDiscountValue: _toNullableDouble(json['promotionDiscountValue']),
       promotionLabel: json['promotionLabel']?.toString(),
+      promotionMinimumOrderAmount: _toNullableDouble(
+        json['promotionMinimumOrderAmount'],
+      ),
+      promotionMaximumDiscountAmount: _toNullableDouble(
+        json['promotionMaximumDiscountAmount'],
+      ),
       totalStock: _toInt(json['totalStock']),
     );
   }

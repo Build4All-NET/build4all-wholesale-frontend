@@ -72,7 +72,9 @@ class SupplierExcelImportBloc
       final bytes = data.buffer.asUint8List();
 
       if (!_looksLikeXlsx(bytes)) {
-        throw Exception('The supplier template asset is not a valid .xlsx file.');
+        throw Exception(
+          'The supplier template asset is not a valid .xlsx file.',
+        );
       }
 
       final selectedPath = await FilePicker.saveFile(
@@ -101,14 +103,10 @@ class SupplierExcelImportBloc
       );
     } catch (error) {
       emit(
-        state.copyWith(
-          isDownloadingTemplate: false,
-          error: _message(error),
-        ),
+        state.copyWith(isDownloadingTemplate: false, error: _message(error)),
       );
     }
   }
-
 
   bool _looksLikeXlsx(Uint8List bytes) {
     if (bytes.length < 4) return false;
@@ -201,7 +199,6 @@ class SupplierExcelImportBloc
     }
   }
 
-
   Future<void> _onRowUpdated(
     SupplierExcelRowUpdated event,
     Emitter<SupplierExcelImportState> emit,
@@ -240,12 +237,7 @@ class SupplierExcelImportBloc
         ),
       );
     } catch (error) {
-      emit(
-        state.copyWith(
-          error: _message(error),
-          clearImportResult: true,
-        ),
-      );
+      emit(state.copyWith(error: _message(error), clearImportResult: true));
     }
   }
 
@@ -255,7 +247,8 @@ class SupplierExcelImportBloc
     final categories = await getCategoriesUseCase();
     final existingProducts = await getProductsUseCase();
     final existingBranches = await getBranchesUseCase();
-    final subCategoriesByCategoryId = <String, List<SupplierSubCategoryEntity>>{};
+    final subCategoriesByCategoryId =
+        <String, List<SupplierSubCategoryEntity>>{};
 
     for (final category in categories) {
       subCategoriesByCategoryId[category.id] =
@@ -277,12 +270,7 @@ class SupplierExcelImportBloc
   ) async {
     if (!state.canImport || state.parsedFile == null) return;
 
-    emit(
-      state.copyWith(
-        isImporting: true,
-        clearMessages: true,
-      ),
-    );
+    emit(state.copyWith(isImporting: true, clearMessages: true));
 
     try {
       final result = await importSupplierExcelProductsUseCase(
@@ -299,12 +287,7 @@ class SupplierExcelImportBloc
         ),
       );
     } catch (error) {
-      emit(
-        state.copyWith(
-          isImporting: false,
-          error: _message(error),
-        ),
-      );
+      emit(state.copyWith(isImporting: false, error: _message(error)));
     }
   }
 
