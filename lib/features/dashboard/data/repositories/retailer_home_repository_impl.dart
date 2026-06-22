@@ -25,7 +25,7 @@ class RetailerHomeRepositoryImpl implements RetailerHomeRepository {
   }
 
   @override
-  Future<void> addToCart({required HomeProductModel product}) {
-    return retailerHomeService.addToCart(product: product);
+  Future<void> addToCart({required HomeProductModel product, int? quantity}) {
+    return retailerHomeService.addToCart(product: product, quantity: quantity);
   }
 }

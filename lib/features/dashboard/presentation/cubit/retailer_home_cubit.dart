@@ -91,7 +91,7 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
     }
   }
 
-  Future<void> addToCart({required HomeProductModel product}) async {
+  Future<void> addToCart({required HomeProductModel product, int? quantity}) async {
     emit(
       state.copyWith(
         addingProductId: product.id,
@@ -101,7 +101,10 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
     );
 
     try {
-      await retailerHomeRepository.addToCart(product: product);
+      await retailerHomeRepository.addToCart(
+        product: product,
+        quantity: quantity,
+      );
 
       RetailerHomeModel? refreshedHome;
       if (state.home != null) {

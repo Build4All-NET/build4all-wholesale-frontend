@@ -58,13 +58,16 @@ class RetailerHomeService {
     }
   }
 
-  Future<void> addToCart({required HomeProductModel product}) async {
+  Future<void> addToCart({
+    required HomeProductModel product,
+    int? quantity,
+  }) async {
     try {
-      final quantity = product.moq <= 0 ? 1 : product.moq;
+      final safeQuantity = quantity ?? (product.moq <= 0 ? 1 : product.moq);
 
       await apiClient.dio.post(
         ApiConfig.retailerCartItems,
-        data: {'productId': product.id, 'quantity': quantity},
+        data: {'productId': product.id, 'quantity': safeQuantity},
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));

@@ -18,6 +18,7 @@ import '../features/dashboard/presentation/screens/retailer_category_products_sc
 import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_promotions_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_product_details_screen.dart';
 
 import '../features/retailer_profile/presentation/screens/edit_retailer_profile_screen.dart';
 import '../features/retailer_profile/presentation/screens/profile_verification_code_screen.dart';
@@ -423,6 +424,24 @@ class AppRouter {
             title: l10n.categories,
             message: l10n.checkConnectionTryAgain,
             icon: Icons.category_outlined,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/retailer-product-details',
+        builder: (context, state) {
+          final extra = state.extra;
+
+          if (extra is HomeProductModel) {
+            return RetailerProductDetailsScreen(product: extra);
+          }
+
+          final l10n = AppLocalizations.of(context)!;
+
+          return RetailerPlaceholderScreen(
+            title: l10n.productDetails,
+            message: l10n.checkConnectionTryAgain,
+            icon: Icons.inventory_2_outlined,
           );
         },
       ),
