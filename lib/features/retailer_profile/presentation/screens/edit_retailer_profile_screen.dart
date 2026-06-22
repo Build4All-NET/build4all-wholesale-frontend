@@ -75,6 +75,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
   bool _filledOnce = false;
   bool _isLocationSyncScheduled = false;
+  bool _locationEditedByUser = false;
+  bool _didLoadSavedCities = false;
   bool _hideCurrentPassword = true;
   bool _hideNewPassword = true;
   bool _isLoadingCountries = true;
@@ -214,13 +216,16 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
   }
 
   void _syncSelectedLocationFromProfile() {
-    if (!mounted || _selectedCountry != null) return;
+    if (!mounted || _locationEditedByUser || _countries.isEmpty) return;
 
     final profile = context.read<RetailerProfileCubit>().state.profile;
     if (profile == null) return;
 
     final country = _findCountryFromProfile(profile.business);
     if (country == null) return;
+
+    final shouldLoadCities =
+        !_didLoadSavedCities || _selectedCountry?.id != country.id;
 
     setState(() {
       _selectedCountry = country;
@@ -234,7 +239,48 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       }
     });
 
-    _loadCitiesForCountry(country, cityToSelect: profile.business.city);
+    if (shouldLoadCities) {
+      _didLoadSavedCities = true;
+      _loadCitiesForCountry(country, cityToSelect: profile.business.city);
+    }
+  }
+
+  void _seedSavedLocationFromProfile(RetailerBusinessProfileModel business) {
+    final savedCountry = _findCountryFromProfile(business);
+
+    if (_selectedCountry == null && savedCountry != null) {
+      _selectedCountry = savedCountry;
+
+      if (!_countries.any((item) => item.id == savedCountry.id)) {
+        _countries = [savedCountry, ..._countries];
+      }
+
+      if (savedCountry.iso2Code.trim().isNotEmpty) {
+        _initialCountryCode = savedCountry.iso2Code.trim().toUpperCase();
+      }
+    }
+
+    if (_selectedCity == null &&
+        _selectedCountry != null &&
+        business.city.trim().isNotEmpty) {
+      final savedCity = _createFallbackCityFromSavedValue(
+        business.city,
+        _selectedCountry!,
+      );
+
+      if (savedCity != null) {
+        _selectedCity = savedCity;
+
+        if (!_cities.any(
+          (item) =>
+              item.id == savedCity.id &&
+              _normalizeLocationName(item.name) ==
+                  _normalizeLocationName(savedCity.name),
+        )) {
+          _cities = [savedCity, ..._cities];
+        }
+      }
+    }
   }
 
   String _normalizeLocationName(String value) {
@@ -301,14 +347,18 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     }
 
     if ((countryId != null && countryId > 0) ||
-        business.countryName.trim().isNotEmpty) {
+        business.countryName.trim().isNotEmpty ||
+        countryIso2.isNotEmpty ||
+        countryIso3.isNotEmpty) {
       return CountryModel(
         id: countryId ?? 0,
         iso2Code: countryIso2,
         iso3Code: countryIso3,
-        name: business.countryName.trim().isEmpty
+        name: business.countryName.trim().isNotEmpty
+            ? business.countryName.trim()
+            : countryIso2.isNotEmpty
             ? countryIso2
-            : business.countryName.trim(),
+            : countryIso3,
         active: true,
       );
     }
@@ -395,6 +445,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         _phoneController.text = phone.replaceAll('+', '');
       }
     }
+
+    _seedSavedLocationFromProfile(profile.business);
 
     _filledOnce = true;
 
@@ -1175,18 +1227,78 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     return result == true;
   }
 
+  RetailerBusinessProfileModel? get _currentBusinessProfile {
+    return context.read<RetailerProfileCubit>().state.profile?.business;
+  }
+
+  bool _hasSavedCountry(RetailerBusinessProfileModel? business) {
+    if (business == null) return false;
+
+    return (business.countryId != null && business.countryId! > 0) ||
+        business.countryName.trim().isNotEmpty ||
+        business.countryIso2Code.trim().isNotEmpty ||
+        business.countryIso3Code.trim().isNotEmpty;
+  }
+
+  bool _hasSavedCity(RetailerBusinessProfileModel? business) {
+    return business?.city.trim().isNotEmpty == true;
+  }
+
+  bool _isSelectedCountryDifferentFromSaved(
+    RetailerBusinessProfileModel? business,
+  ) {
+    if (business == null || _selectedCountry == null) return false;
+
+    final savedCountry = _findCountryFromProfile(business);
+    if (savedCountry == null) return false;
+
+    if (savedCountry.id > 0 && _selectedCountry!.id > 0) {
+      return savedCountry.id != _selectedCountry!.id;
+    }
+
+    final selectedIso2 = _selectedCountry!.iso2Code.trim().toUpperCase();
+    final savedIso2 = savedCountry.iso2Code.trim().toUpperCase();
+    if (selectedIso2.isNotEmpty && savedIso2.isNotEmpty) {
+      return selectedIso2 != savedIso2;
+    }
+
+    return _normalizeLocationName(_selectedCountry!.name) !=
+        _normalizeLocationName(savedCountry.name);
+  }
+
+  CountryModel? _countryForSave(RetailerBusinessProfileModel? business) {
+    if (_selectedCountry != null) return _selectedCountry;
+    if (business == null) return null;
+    return _findCountryFromProfile(business);
+  }
+
+  String _cityNameForSave(RetailerBusinessProfileModel? business) {
+    final selectedCityName = _selectedCity?.name.trim() ?? '';
+    if (selectedCityName.isNotEmpty) return selectedCityName;
+
+    if (!_isSelectedCountryDifferentFromSaved(business)) {
+      return business?.city.trim() ?? '';
+    }
+
+    return '';
+  }
+
   Future<void> _save() async {
     final l10n = context.l10n;
     final cubit = context.read<RetailerProfileCubit>();
 
     if (!_formKey.currentState!.validate()) return;
 
-    if (_selectedCountry == null) {
+    final businessProfile = cubit.state.profile?.business;
+    final countryForSave = _countryForSave(businessProfile);
+    final cityNameForSave = _cityNameForSave(businessProfile);
+
+    if (countryForSave == null || countryForSave.id <= 0) {
       _showMessage(l10n.countryRequiredError);
       return;
     }
 
-    if (_selectedCity == null) {
+    if (cityNameForSave.isEmpty) {
       _showMessage(l10n.cityRequiredError);
       return;
     }
@@ -1326,11 +1438,11 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
       storeName: _storeNameController.text.trim(),
       phoneNumber: normalizedPhone,
       storeAddress: _addressController.text.trim(),
-      countryId: _selectedCountry!.id,
-      countryName: _selectedCountry!.name,
-      countryIso2Code: _selectedCountry!.iso2Code,
-      countryIso3Code: _selectedCountry!.iso3Code,
-      city: _selectedCity!.name,
+      countryId: countryForSave.id,
+      countryName: countryForSave.name,
+      countryIso2Code: countryForSave.iso2Code,
+      countryIso3Code: countryForSave.iso3Code,
+      city: cityNameForSave,
       businessType: _businessTypeController.text.trim(),
       successMessage: l10n.profileUpdatedSuccessfully,
     );
@@ -1580,6 +1692,7 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           emptyText: l10n.noCountriesFound,
                           onSelected: (country) {
                             setState(() {
+                              _locationEditedByUser = true;
                               _selectedCountry = country;
                               _selectedCity = null;
                               _cities = [];
@@ -1595,7 +1708,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                             _loadCitiesForCountry(country);
                           },
                           validator: (value) {
-                            if (value == null) {
+                            final business = _currentBusinessProfile;
+                            if (value == null && !_hasSavedCountry(business)) {
                               return l10n.countryRequiredError;
                             }
                             return null;
@@ -1621,10 +1735,18 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                           isLoading: _isLoadingCities,
                           emptyText: l10n.noCitiesFoundForCountry,
                           onSelected: (city) {
-                            setState(() => _selectedCity = city);
+                            setState(() {
+                              _locationEditedByUser = true;
+                              _selectedCity = city;
+                            });
                           },
                           validator: (value) {
-                            if (value == null) {
+                            final business = _currentBusinessProfile;
+                            final changedCountry =
+                                _isSelectedCountryDifferentFromSaved(business);
+
+                            if (value == null &&
+                                (changedCountry || !_hasSavedCity(business))) {
                               return l10n.cityRequiredError;
                             }
                             return null;
