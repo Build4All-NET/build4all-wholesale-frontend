@@ -90,6 +90,8 @@ class RetailerSplitCheckoutPreviewModel {
   final double taxAmount;
   final double finalTotal;
   final List<RetailerCheckoutPaymentMethodModel> paymentMethods;
+  final bool canCheckout;
+  final String? validationMessage;
 
   const RetailerSplitCheckoutPreviewModel({
     required this.groups,
@@ -101,6 +103,8 @@ class RetailerSplitCheckoutPreviewModel {
     required this.taxAmount,
     required this.finalTotal,
     required this.paymentMethods,
+    this.canCheckout = true,
+    this.validationMessage,
   });
 
   factory RetailerSplitCheckoutPreviewModel.fromJson(
@@ -120,6 +124,8 @@ class RetailerSplitCheckoutPreviewModel {
       paymentMethods: _asMapList(
         json['paymentMethods'],
       ).map(RetailerCheckoutPaymentMethodModel.fromJson).toList(),
+      canCheckout: json['canCheckout'] != false,
+      validationMessage: json['validationMessage']?.toString(),
     );
   }
 

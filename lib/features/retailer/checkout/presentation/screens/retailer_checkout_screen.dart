@@ -130,27 +130,27 @@ class _RetailerSplitCheckoutViewState
   }
 
   Future<void> _placeSplitCheckout(RetailerCheckoutState state) async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      AppToast.info(
+        context,
+        'Please complete the required delivery information first.',
+      );
+      return;
+    }
 
     final country = _selectedCountry;
-    final paymentMethod = state.selectedPaymentMethod;
-
-    if (country == null) return;
-
-    if (state.splitPreview == null) {
-      AppToast.info(context, context.l10n.checkoutPreviewRequired);
+    if (country == null) {
+      AppToast.info(context, context.l10n.countryRequiredError);
       return;
     }
 
-    if (state.hasMissingSplitShippingMethod) {
-      AppToast.info(context, context.l10n.checkoutNoShippingMethods);
+    final issues = _checkoutBlockingIssues(state);
+    if (issues.isNotEmpty) {
+      _showCheckoutIssues(issues);
       return;
     }
 
-    if (paymentMethod == null || paymentMethod.trim().isEmpty) {
-      AppToast.info(context, context.l10n.checkoutSelectPaymentMethod);
-      return;
-    }
+    final paymentMethod = state.selectedPaymentMethod!.trim();
 
     await context.read<RetailerCheckoutCubit>().placeSplitCheckout(
           deliveryAddress: _addressController.text.trim(),
@@ -161,6 +161,130 @@ class _RetailerSplitCheckoutViewState
               ? null
               : _notesController.text.trim(),
         );
+  }
+
+  List<String> _checkoutBlockingIssues(RetailerCheckoutState state) {
+    final l10n = context.l10n;
+    final issues = <String>[];
+    final preview = state.splitPreview;
+    final countryName = _selectedCountry?.name.trim();
+    final regionName = _selectedRegion?.name.trim();
+    final deliveryLocation = [
+      if (countryName != null && countryName.isNotEmpty) countryName,
+      if (regionName != null && regionName.isNotEmpty) regionName,
+    ].join(' / ');
+
+    if (preview == null) {
+      issues.add(
+        '${l10n.checkoutPreviewRequired}. Tap Preview Order so we can calculate shipping, tax, promotions, and stock availability.',
+      );
+      return issues;
+    }
+
+    final backendMessage = preview.validationMessage?.trim();
+    if (!preview.canCheckout && backendMessage != null && backendMessage.isNotEmpty) {
+      issues.add(backendMessage);
+    }
+
+    if (preview.groups.isEmpty || preview.totalItems <= 0) {
+      issues.add(
+        'Your cart could not be prepared for checkout. Please refresh the cart and make sure the products are still available.',
+      );
+    }
+
+    for (final group in preview.groups) {
+      final branchLabel = group.displayBranchLabel;
+
+      if (group.items.isEmpty) {
+        issues.add(
+          'The branch $branchLabel has no checkout items. Please refresh the cart.',
+        );
+      }
+
+      if (group.availableShippingMethods.isEmpty) {
+        issues.add(
+          deliveryLocation.isEmpty
+              ? 'No shipping method is available for $branchLabel. Please choose another delivery location or ask the supplier to configure shipping for this branch.'
+              : 'No shipping method is available for $branchLabel to $deliveryLocation. Please choose another delivery location or ask the supplier to configure shipping for this branch.',
+        );
+        continue;
+      }
+
+      final selectedShipping = group.selectedShippingMethod;
+      if (selectedShipping == null) {
+        issues.add('Please select a shipping method for $branchLabel.');
+        continue;
+      }
+
+      if (selectedShipping.minimumOrderAmount > 0 &&
+          group.discountedItemsSubtotal < selectedShipping.minimumOrderAmount) {
+        issues.add(
+          'Minimum order for ${selectedShipping.methodName} at $branchLabel is ${_money(context, selectedShipping.minimumOrderAmount)}. Current branch subtotal is ${_money(context, group.discountedItemsSubtotal)}.',
+        );
+      }
+    }
+
+    final availablePaymentMethods = preview.paymentMethods
+        .where((method) => method.enabled && !method.comingSoon)
+        .toList();
+
+    if (availablePaymentMethods.isEmpty) {
+      issues.add(
+        'No payment method is currently available. Please ask the supplier to enable Cash, Stripe, or Credit / Debit Card.',
+      );
+    }
+
+    final selectedPaymentMethod = state.selectedPaymentMethod?.trim();
+    if (selectedPaymentMethod == null || selectedPaymentMethod.isEmpty) {
+      issues.add(l10n.checkoutSelectPaymentMethod);
+    } else {
+      final selectedMethod = preview.paymentMethods
+          .where(
+            (method) =>
+                method.methodName.toUpperCase() == selectedPaymentMethod.toUpperCase(),
+          )
+          .cast<RetailerCheckoutPaymentMethodModel?>()
+          .firstWhere((method) => method != null, orElse: () => null);
+
+      if (selectedMethod == null) {
+        issues.add('The selected payment method is no longer available. Please select another method.');
+      } else if (!selectedMethod.enabled) {
+        issues.add('${selectedMethod.displayName} is disabled by the supplier. Please select another payment method.');
+      } else if (selectedMethod.comingSoon) {
+        issues.add('${selectedMethod.displayName} is coming soon. Please select another payment method.');
+      }
+    }
+
+    return _uniqueIssues(issues);
+  }
+
+  List<String> _uniqueIssues(List<String> issues) {
+    final seen = <String>{};
+    final result = <String>[];
+
+    for (final issue in issues) {
+      final normalized = issue.trim();
+      if (normalized.isEmpty || seen.contains(normalized)) continue;
+      seen.add(normalized);
+      result.add(normalized);
+    }
+
+    return result;
+  }
+
+  void _showCheckoutIssues(List<String> issues) {
+    if (issues.isEmpty) return;
+
+    AppToast.error(context, issues.first);
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return _CheckoutIssuesSheet(issues: issues);
+      },
+    );
   }
 
   Future<void> _selectSplitShippingMethod({
@@ -383,6 +507,18 @@ class _RetailerSplitCheckoutViewState
                       onShippingSelected: _selectSplitShippingMethod,
                     ),
                     const SizedBox(height: 14),
+                    Builder(
+                      builder: (context) {
+                        final issues = _checkoutBlockingIssues(state);
+                        if (issues.isEmpty) return const SizedBox.shrink();
+                        return Column(
+                          children: [
+                            _CheckoutIssuesInlineCard(issues: issues),
+                            const SizedBox(height: 14),
+                          ],
+                        );
+                      },
+                    ),
                     _PaymentMethodsCard(
                       methods: state.splitPreview!.paymentMethods,
                       selectedPaymentMethod: state.selectedPaymentMethod,
@@ -951,6 +1087,212 @@ class _SplitCheckoutResultCard extends StatelessWidget {
   }
 }
 
+
+class _CheckoutIssuesInlineCard extends StatelessWidget {
+  final List<String> issues;
+
+  const _CheckoutIssuesInlineCard({required this.issues});
+
+  @override
+  Widget build(BuildContext context) {
+    if (issues.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF7ED),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFFED7AA)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                color: Color(0xFFC2410C),
+                size: 20,
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Before placing the order',
+                  style: TextStyle(
+                    color: Color(0xFF9A3412),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ...issues.take(3).map(
+                (issue) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        '• ',
+                        style: TextStyle(
+                          color: Color(0xFF9A3412),
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          issue,
+                          style: const TextStyle(
+                            color: Color(0xFF9A3412),
+                            fontWeight: FontWeight.w700,
+                            height: 1.35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          if (issues.length > 3)
+            Text(
+              '+${issues.length - 3} more issue(s). Tap Place Order to see all details.',
+              style: const TextStyle(
+                color: Color(0xFF9A3412),
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CheckoutIssuesSheet extends StatelessWidget {
+  final List<String> issues;
+
+  const _CheckoutIssuesSheet({required this.issues});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(14),
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 12),
+        decoration: BoxDecoration(
+          color: AppThemeTokens.surface,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFEDD5),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(
+                    Icons.warning_amber_rounded,
+                    color: Color(0xFFC2410C),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Place order needs your attention',
+                    style: TextStyle(
+                      color: AppThemeTokens.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Please fix the following checkout issue(s), then tap Place Order again.',
+              style: TextStyle(
+                color: AppThemeTokens.textSecondary,
+                fontWeight: FontWeight.w700,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: issues
+                      .map(
+                        (issue) => Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppThemeTokens.background,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: AppThemeTokens.border),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.error_outline_rounded,
+                                color: Color(0xFFC2410C),
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  issue,
+                                  style: const TextStyle(
+                                    color: AppThemeTokens.textPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text(
+                  'OK, I will fix it',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PreviewPlaceholderCard extends StatelessWidget {
   final VoidCallback onBackToCart;
 
@@ -1052,11 +1394,7 @@ class _SplitCheckoutBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 14),
             ElevatedButton(
-              onPressed: preview == null ||
-                      state.isPlacingOrder ||
-                      state.hasMissingSplitShippingMethod
-                  ? null
-                  : onPlaceOrder,
+              onPressed: state.isPlacingOrder ? null : onPlaceOrder,
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(150, 52),
                 backgroundColor: Theme.of(context).colorScheme.primary,

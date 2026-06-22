@@ -49,17 +49,19 @@ String formatSupplierOrderReference(String rawOrderNumber, int orderId) {
     return 'ORD-$suffix';
   }
 
-  // New readable backend references may be ORD-20260615-134500-3677.
-  // For mobile screens, keep the final unique part visible and clean.
+  // New backend references can be long, for example:
+  // ORD-20260622143950-62B87E or ORD-20260615-134500-3677.
+  // Supplier and Retailer screens should show the same short mobile-friendly
+  // reference by keeping only the final unique segment.
   final parts = normalized
       .split('-')
       .where((part) => part.trim().isNotEmpty)
       .toList();
-  if (parts.length >= 4 &&
-      parts.first == 'ORD' &&
-      RegExp(r'^\d{8}$').hasMatch(parts[1]) &&
-      RegExp(r'^\d{6}$').hasMatch(parts[2])) {
-    return 'ORD-${parts.last}';
+  if (parts.length >= 3 && parts.first == 'ORD') {
+    final last = parts.last.trim();
+    if (last.isNotEmpty && last.length <= 8) {
+      return 'ORD-$last';
+    }
   }
 
   return raw;
