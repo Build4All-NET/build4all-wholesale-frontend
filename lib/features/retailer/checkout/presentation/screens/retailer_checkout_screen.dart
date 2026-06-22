@@ -117,7 +117,9 @@ class _RetailerSplitCheckoutViewState
     }
   }
 
-  Future<void> _previewSplitCheckout() async {
+  Future<void> _previewSplitCheckout({
+    bool resetShippingSelections = false,
+  }) async {
     if (!_formKey.currentState!.validate()) return;
 
     final country = _selectedCountry;
@@ -126,6 +128,7 @@ class _RetailerSplitCheckoutViewState
     await context.read<RetailerCheckoutCubit>().previewSplitCheckout(
           deliveryCountryId: country.id,
           deliveryRegionId: _selectedRegion?.id,
+          resetShippingSelections: resetShippingSelections,
         );
   }
 
@@ -176,6 +179,44 @@ class _RetailerSplitCheckoutViewState
           deliveryCountryId: country.id,
           deliveryRegionId: _selectedRegion?.id,
         );
+  }
+
+  void _handleDeliveryCountrySelected(CountryModel country) {
+    setState(() {
+      _selectedCountry = country;
+      _selectedRegion = null;
+    });
+
+    context.read<RetailerCheckoutCubit>().resetSplitDeliverySelections();
+    _loadRegionsForCountry(country);
+  }
+
+  void _handleDeliveryRegionSelected(RegionModel region) {
+    setState(() => _selectedRegion = region);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _refreshSplitPreviewAfterDeliveryChange();
+    });
+  }
+
+  Future<void> _refreshSplitPreviewAfterDeliveryChange() async {
+    final checkoutCubit = context.read<RetailerCheckoutCubit>();
+    final hadPreview = checkoutCubit.state.splitPreview != null;
+
+    checkoutCubit.resetSplitDeliverySelections();
+
+    if (!hadPreview) return;
+
+    final country = _selectedCountry;
+    if (country == null) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    await checkoutCubit.previewSplitCheckout(
+      deliveryCountryId: country.id,
+      deliveryRegionId: _selectedRegion?.id,
+      resetShippingSelections: true,
+    );
   }
 
   void _navigateToOrdersAfterSuccess() {
@@ -340,16 +381,8 @@ class _RetailerSplitCheckoutViewState
                     selectedRegion: _selectedRegion,
                     isLoadingCountries: _isLoadingCountries,
                     isLoadingRegions: _isLoadingRegions,
-                    onCountrySelected: (country) {
-                      setState(() {
-                        _selectedCountry = country;
-                        _selectedRegion = null;
-                      });
-                      _loadRegionsForCountry(country);
-                    },
-                    onRegionSelected: (region) {
-                      setState(() => _selectedRegion = region);
-                    },
+                    onCountrySelected: _handleDeliveryCountrySelected,
+                    onRegionSelected: _handleDeliveryRegionSelected,
                   ),
                   const SizedBox(height: 14),
                   ElevatedButton.icon(
@@ -1310,21 +1343,37 @@ String _shippingSubtitle(
     parts.add(_shippingTypeLabel(context, method.methodType));
   }
 
-  final location = _shippingLocationLabel(method);
-  if (location.isNotEmpty) {
-    parts.add(location);
+  final locationParts = <String>[];
+  final countryName = method.countryName?.trim();
+  final regionName = method.regionName?.trim();
+  if (countryName != null && countryName.isNotEmpty) {
+    locationParts.add(countryName);
+  }
+  if (regionName != null && regionName.isNotEmpty) {
+    locationParts.add(regionName);
+  }
+  if (locationParts.isNotEmpty) {
+    parts.add(locationParts.join(' / '));
   }
 
   if (method.appliesToAllBranches) {
     parts.add(l10n.supplierAllBranches);
   }
 
-  if (method.estimatedDeliveryTime != null &&
-      method.estimatedDeliveryTime!.trim().isNotEmpty) {
-    parts.add(method.estimatedDeliveryTime!.trim());
+  final estimatedDeliveryTime = method.estimatedDeliveryTime?.trim();
+  if (estimatedDeliveryTime != null && estimatedDeliveryTime.isNotEmpty) {
+    parts.add(estimatedDeliveryTime);
   }
 
-  parts.add(_shippingCostDetail(context, currency, method));
+  if (method.freeShippingApplied && method.shippingCost > 0) {
+    parts.add(
+      '${l10n.shipping}: ${_money(currency, method.shippingCost)} → ${l10n.supplierFreeShipping}',
+    );
+  } else if (method.appliedShippingCost == 0) {
+    parts.add('${l10n.shipping}: ${l10n.supplierFreeShipping}');
+  } else {
+    parts.add('${l10n.shipping}: ${_money(currency, method.appliedShippingCost)}');
+  }
 
   if (method.minimumOrderAmount > 0) {
     parts.add(
@@ -1338,12 +1387,13 @@ String _shippingSubtitle(
     );
   }
 
-  if (method.notes != null && method.notes!.trim().isNotEmpty) {
-    parts.add(method.notes!.trim());
+  final notes = method.notes?.trim();
+  if (notes != null && notes.isNotEmpty) {
+    parts.add('${l10n.checkoutNotes}: $notes');
   }
 
   if (parts.isEmpty) return l10n.shipping;
-  return parts.join(' • ');
+  return parts.join('\n');
 }
 
 String _shippingTrailing(
@@ -1358,40 +1408,6 @@ String _shippingTrailing(
   }
 
   return _money(currency, method.appliedShippingCost);
-}
-
-String _shippingCostDetail(
-  BuildContext context,
-  String currency,
-  RetailerCheckoutShippingMethodModel method,
-) {
-  final l10n = context.l10n;
-  final originalCost = method.shippingCost;
-  final appliedCost = method.appliedShippingCost;
-
-  if (method.isPickup || originalCost == 0) {
-    return '${l10n.supplierShippingCostPlain}: ${l10n.supplierFreeShipping}';
-  }
-
-  if (method.freeShippingApplied && appliedCost == 0) {
-    return '${l10n.supplierShippingCostPlain}: ${_money(currency, originalCost)} → ${l10n.supplierFreeShipping}';
-  }
-
-  return '${l10n.supplierShippingCostPlain}: ${_money(currency, appliedCost)}';
-}
-
-String _shippingLocationLabel(RetailerCheckoutShippingMethodModel method) {
-  final parts = <String>[];
-
-  if (method.countryName != null && method.countryName!.trim().isNotEmpty) {
-    parts.add(method.countryName!.trim());
-  }
-
-  if (method.regionName != null && method.regionName!.trim().isNotEmpty) {
-    parts.add(method.regionName!.trim());
-  }
-
-  return parts.join(', ');
 }
 
 String _shippingTypeLabel(BuildContext context, String type) {
