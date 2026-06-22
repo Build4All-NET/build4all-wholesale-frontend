@@ -674,7 +674,7 @@ class _AddButton extends StatelessWidget {
                   ],
                   Flexible(
                     child: Text(
-                      disabled ? l10n.outOfStock : l10n.add,
+                      disabled ? l10n.outOfStock : l10n.addToCart,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(

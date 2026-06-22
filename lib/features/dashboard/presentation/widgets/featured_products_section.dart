@@ -243,7 +243,7 @@ class _ProductCard extends StatelessWidget {
                                       child: Text(
                                         isOutOfStock
                                             ? l10n.outOfStock
-                                            : l10n.add,
+                                            : l10n.addToCart,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
