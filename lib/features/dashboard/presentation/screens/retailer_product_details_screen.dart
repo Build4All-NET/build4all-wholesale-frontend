@@ -49,11 +49,11 @@ class _RetailerProductDetailsViewState
   }
 
   void _increaseQuantity() {
-    setState(() => _quantity += _safeMoq);
+    setState(() => _quantity += 1);
   }
 
   void _decreaseQuantity() {
-    final nextQuantity = _quantity - _safeMoq;
+    final nextQuantity = _quantity - 1;
     if (nextQuantity < _safeMoq) return;
 
     setState(() => _quantity = nextQuantity);
