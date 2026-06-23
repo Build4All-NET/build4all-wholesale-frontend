@@ -1234,55 +1234,67 @@ abstract class AppLocalizations {
   /// **'Product added to cart'**
   String get productAddedToCart;
 
-  /// No description provided.
+  /// No description provided for @productDetails.
   ///
   /// In en, this message translates to:
   /// **'Product details'**
   String get productDetails;
 
-  /// No description provided.
+  /// No description provided for @quantity.
   ///
   /// In en, this message translates to:
   /// **'Quantity'**
   String get quantity;
 
-  /// No description provided.
+  /// No description provided for @addToCart.
   ///
   /// In en, this message translates to:
   /// **'Add to cart'**
   String get addToCart;
 
-  /// No description provided.
+  /// No description provided for @minimumOrder.
   ///
   /// In en, this message translates to:
   /// **'Minimum order'**
   String get minimumOrder;
 
-  /// No description provided.
+  /// No description provided for @promotionTiersAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion tiers'**
+  String get promotionTiersAvailable;
+
+  /// No description provided for @bestEligiblePromotionAppliedAtCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'The best eligible promotion will be applied at checkout.'**
+  String get bestEligiblePromotionAppliedAtCheckout;
+
+  /// No description provided for @promotionAvailable.
   ///
   /// In en, this message translates to:
   /// **'Promotion available'**
   String get promotionAvailable;
 
-  /// No description provided.
+  /// No description provided for @availableFrom.
   ///
   /// In en, this message translates to:
   /// **'available from'**
   String get availableFrom;
 
-  /// No description provided.
+  /// No description provided for @maximumDiscount.
   ///
   /// In en, this message translates to:
   /// **'Maximum discount'**
   String get maximumDiscount;
 
-  /// No description provided.
+  /// No description provided for @increaseQuantityInCartToUnlockPromotion.
   ///
   /// In en, this message translates to:
   /// **'Increase quantity in cart to unlock this promotion.'**
   String get increaseQuantityInCartToUnlockPromotion;
 
-  /// No description provided.
+  /// No description provided for @noDescriptionAvailable.
   ///
   /// In en, this message translates to:
   /// **'No description available.'**

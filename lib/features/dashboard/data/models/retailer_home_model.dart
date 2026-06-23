@@ -280,6 +280,7 @@ class HomeProductModel {
   final String? promotionLabel;
   final double? promotionMinimumOrderAmount;
   final double? promotionMaximumDiscountAmount;
+  final List<PromotionTierModel> promotionTiers;
 
   /// Used only for availability logic.
   /// Do not display this number to retailer.
@@ -314,6 +315,7 @@ class HomeProductModel {
     required this.promotionLabel,
     required this.promotionMinimumOrderAmount,
     required this.promotionMaximumDiscountAmount,
+    required this.promotionTiers,
     required this.totalStock,
   });
 
@@ -370,7 +372,54 @@ class HomeProductModel {
       promotionMaximumDiscountAmount: _toNullableDouble(
         json['promotionMaximumDiscountAmount'],
       ),
+      promotionTiers: (json['promotionTiers'] as List<dynamic>? ?? [])
+          .map(
+            (item) => PromotionTierModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(),
       totalStock: _toInt(json['totalStock']),
+    );
+  }
+}
+
+
+class PromotionTierModel {
+  final int? promotionId;
+  final String? promotionTitle;
+  final String? promotionTargetType;
+  final String? promotionDiscountType;
+  final double? promotionDiscountValue;
+  final String? promotionLabel;
+  final double? promotionMinimumOrderAmount;
+  final double? promotionMaximumDiscountAmount;
+
+  const PromotionTierModel({
+    required this.promotionId,
+    required this.promotionTitle,
+    required this.promotionTargetType,
+    required this.promotionDiscountType,
+    required this.promotionDiscountValue,
+    required this.promotionLabel,
+    required this.promotionMinimumOrderAmount,
+    required this.promotionMaximumDiscountAmount,
+  });
+
+  factory PromotionTierModel.fromJson(Map<String, dynamic> json) {
+    return PromotionTierModel(
+      promotionId: json['promotionId'] == null ? null : _toInt(json['promotionId']),
+      promotionTitle: json['promotionTitle']?.toString(),
+      promotionTargetType: json['promotionTargetType']?.toString(),
+      promotionDiscountType: json['promotionDiscountType']?.toString(),
+      promotionDiscountValue: _toNullableDouble(json['promotionDiscountValue']),
+      promotionLabel: json['promotionLabel']?.toString(),
+      promotionMinimumOrderAmount: _toNullableDouble(
+        json['promotionMinimumOrderAmount'],
+      ),
+      promotionMaximumDiscountAmount: _toNullableDouble(
+        json['promotionMaximumDiscountAmount'],
+      ),
     );
   }
 }

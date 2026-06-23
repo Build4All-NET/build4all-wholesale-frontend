@@ -597,6 +597,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get minimumOrder => 'الحد الأدنى للطلب';
 
   @override
+  String get promotionTiersAvailable => 'مستويات العروض';
+
+  @override
+  String get bestEligiblePromotionAppliedAtCheckout => 'سيتم تطبيق أفضل عرض مؤهل عند إتمام الطلب.';
+
+  @override
   String get promotionAvailable => 'عرض متاح';
 
   @override
@@ -606,8 +612,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get maximumDiscount => 'الحد الأقصى للخصم';
 
   @override
-  String get increaseQuantityInCartToUnlockPromotion =>
-      'زد الكمية في السلة للاستفادة من هذا العرض.';
+  String get increaseQuantityInCartToUnlockPromotion => 'زد الكمية في السلة للاستفادة من هذا العرض.';
 
   @override
   String get noDescriptionAvailable => 'لا يوجد وصف متاح.';

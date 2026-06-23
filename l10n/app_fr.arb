@@ -205,6 +205,14 @@
   "@minimumOrder": {
     "description": "No description provided."
   },
+  "promotionTiersAvailable": "Paliers de promotion",
+  "@promotionTiersAvailable": {
+    "description": "No description provided."
+  },
+  "bestEligiblePromotionAppliedAtCheckout": "La meilleure promotion éligible sera appliquée au paiement.",
+  "@bestEligiblePromotionAppliedAtCheckout": {
+    "description": "No description provided."
+  },
   "promotionAvailable": "Promotion disponible",
   "@promotionAvailable": {
     "description": "No description provided."

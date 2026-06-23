@@ -481,8 +481,8 @@ class _LockedPromotionExplanation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final message = _buildMessage(context);
-    if (message == null) return const SizedBox.shrink();
+    final explanation = _buildExplanation(context);
+    if (explanation == null) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.only(top: 14),
@@ -510,23 +510,40 @@ class _LockedPromotionExplanation extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.l10n.promotionAvailable,
+                    explanation.title,
                     style: const TextStyle(
                       color: AppThemeTokens.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      color: AppThemeTokens.textSecondary,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                      height: 1.35,
+                  const SizedBox(height: 6),
+                  ...explanation.lines.map(
+                    (line) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        line,
+                        style: const TextStyle(
+                          color: AppThemeTokens.textSecondary,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          height: 1.35,
+                        ),
+                      ),
                     ),
                   ),
+                  if (explanation.footer != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      explanation.footer!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w900,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -536,7 +553,70 @@ class _LockedPromotionExplanation extends StatelessWidget {
     );
   }
 
-  String? _buildMessage(BuildContext context) {
+  _PromotionExplanationData? _buildExplanation(BuildContext context) {
+    final tiers = _promotionTiers(context);
+    final l10n = context.l10n;
+
+    if (tiers.length > 1) {
+      return _PromotionExplanationData(
+        title: l10n.promotionTiersAvailable,
+        lines: tiers.map((tier) => _buildTierLine(context, tier)).toList(),
+        footer: l10n.bestEligiblePromotionAppliedAtCheckout,
+      );
+    }
+
+    if (tiers.length == 1) {
+      if (product.shouldShowOriginalPrice) return null;
+
+      final tier = tiers.first;
+      final line = _buildTierLine(context, tier);
+      final shouldAddUnlockNote =
+          (tier.promotionMinimumOrderAmount ?? 0) > 0 &&
+          !product.shouldShowOriginalPrice;
+
+      return _PromotionExplanationData(
+        title: l10n.promotionAvailable,
+        lines: [
+          shouldAddUnlockNote
+              ? '$line ${l10n.increaseQuantityInCartToUnlockPromotion}'
+              : line,
+        ],
+      );
+    }
+
+    final fallback = _buildSingleFallbackMessage(context);
+    if (fallback == null) return null;
+
+    return _PromotionExplanationData(
+      title: l10n.promotionAvailable,
+      lines: [fallback],
+    );
+  }
+
+  List<PromotionTierModel> _promotionTiers(BuildContext context) {
+    final seenIds = <int>{};
+    final tiers = product.promotionTiers.where((tier) {
+      final label = _tierLabel(context, tier).trim();
+      if (label.isEmpty) return false;
+
+      final id = tier.promotionId;
+      if (id != null && !seenIds.add(id)) return false;
+
+      return true;
+    }).toList();
+
+    tiers.sort((a, b) {
+      final minCompare = (a.promotionMinimumOrderAmount ?? 0)
+          .compareTo(b.promotionMinimumOrderAmount ?? 0);
+      if (minCompare != 0) return minCompare;
+
+      return (a.promotionId ?? 0).compareTo(b.promotionId ?? 0);
+    });
+
+    return tiers;
+  }
+
+  String? _buildSingleFallbackMessage(BuildContext context) {
     if (!product.hasActivePromotion || product.shouldShowOriginalPrice) {
       return null;
     }
@@ -570,6 +650,66 @@ class _LockedPromotionExplanation extends StatelessWidget {
 
     return message.endsWith('.') ? message : '$message.';
   }
+
+  String _buildTierLine(BuildContext context, PromotionTierModel tier) {
+    final l10n = context.l10n;
+    final label = _tierLabel(context, tier);
+    final minimum = tier.promotionMinimumOrderAmount;
+    final maximum = tier.promotionMaximumDiscountAmount;
+    final buffer = StringBuffer(label);
+
+    if (minimum != null && minimum > 0) {
+      buffer.write(
+        ' ${l10n.availableFrom} ${_formatMoney(product.currency, minimum)}',
+      );
+    }
+
+    if (maximum != null && maximum > 0) {
+      buffer.write(
+        ', ${l10n.maximumDiscount.toLowerCase()}: ${_formatMoney(product.currency, maximum)}',
+      );
+    }
+
+    final line = buffer.toString().trim();
+    if (line.endsWith('.')) return line;
+    return '$line.';
+  }
+
+  String _tierLabel(BuildContext context, PromotionTierModel tier) {
+    final label = tier.promotionLabel?.trim();
+    if (label != null && label.isNotEmpty) {
+      if (tier.promotionDiscountType?.toUpperCase() == 'FIXED') {
+        return '$label ${context.l10n.perUnit}';
+      }
+      return label;
+    }
+
+    final value = tier.promotionDiscountValue;
+    if (value == null || value <= 0) return '';
+
+    if (tier.promotionDiscountType?.toUpperCase() == 'PERCENT') {
+      return '${_formatNumber(value)}% OFF';
+    }
+
+    if (tier.promotionDiscountType?.toUpperCase() == 'FIXED') {
+      return '${_formatMoney(product.currency, value)} OFF ${context.l10n.perUnit}';
+    }
+
+    return '';
+  }
+
+}
+
+class _PromotionExplanationData {
+  final String title;
+  final List<String> lines;
+  final String? footer;
+
+  const _PromotionExplanationData({
+    required this.title,
+    required this.lines,
+    this.footer,
+  });
 }
 
 class _SmallInfoPill extends StatelessWidget {
@@ -607,6 +747,12 @@ class _SmallInfoPill extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatNumber(double value) {
+  return value.truncateToDouble() == value
+      ? value.toStringAsFixed(0)
+      : value.toStringAsFixed(2);
 }
 
 String _formatMoney(String currency, double value) {

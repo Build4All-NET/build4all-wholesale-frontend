@@ -605,6 +605,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minimumOrder => 'Minimum order';
 
   @override
+  String get promotionTiersAvailable => 'Promotion tiers';
+
+  @override
+  String get bestEligiblePromotionAppliedAtCheckout => 'The best eligible promotion will be applied at checkout.';
+
+  @override
   String get promotionAvailable => 'Promotion available';
 
   @override
@@ -614,8 +620,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maximumDiscount => 'Maximum discount';
 
   @override
-  String get increaseQuantityInCartToUnlockPromotion =>
-      'Increase quantity in cart to unlock this promotion.';
+  String get increaseQuantityInCartToUnlockPromotion => 'Increase quantity in cart to unlock this promotion.';
 
   @override
   String get noDescriptionAvailable => 'No description available.';
