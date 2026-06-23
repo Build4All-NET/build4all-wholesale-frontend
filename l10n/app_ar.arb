@@ -205,6 +205,14 @@
   "@minimumOrder": {
     "description": "No description provided."
   },
+  "promotionTiersAvailable": "مستويات العروض",
+  "@promotionTiersAvailable": {
+    "description": "No description provided."
+  },
+  "bestEligiblePromotionAppliedAtCheckout": "سيتم تطبيق أفضل عرض مؤهل عند إتمام الطلب.",
+  "@bestEligiblePromotionAppliedAtCheckout": {
+    "description": "No description provided."
+  },
   "promotionAvailable": "عرض متاح",
   "@promotionAvailable": {
     "description": "No description provided."

@@ -205,6 +205,14 @@
   "@minimumOrder": {
     "description": "No description provided."
   },
+  "promotionTiersAvailable": "Promotion tiers",
+  "@promotionTiersAvailable": {
+    "description": "No description provided."
+  },
+  "bestEligiblePromotionAppliedAtCheckout": "The best eligible promotion will be applied at checkout.",
+  "@bestEligiblePromotionAppliedAtCheckout": {
+    "description": "No description provided."
+  },
   "promotionAvailable": "Promotion available",
   "@promotionAvailable": {
     "description": "No description provided."
