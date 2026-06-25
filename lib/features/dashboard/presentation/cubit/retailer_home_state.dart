@@ -12,6 +12,11 @@ class RetailerHomeState extends Equatable {
   final bool isPromotionsLoading;
   final List<HomeProductModel> promotedProducts;
 
+  final bool isSearchLoading;
+  final List<HomeProductModel> searchResults;
+  final String searchQuery;
+  final bool hasSearched;
+
   final int? addingProductId;
 
   final RetailerHomeModel? home;
@@ -25,6 +30,10 @@ class RetailerHomeState extends Equatable {
     this.selectedCategory,
     this.isPromotionsLoading = false,
     this.promotedProducts = const [],
+    this.isSearchLoading = false,
+    this.searchResults = const [],
+    this.searchQuery = '',
+    this.hasSearched = false,
     this.addingProductId,
     this.home,
     this.errorMessage,
@@ -41,6 +50,10 @@ class RetailerHomeState extends Equatable {
     bool clearSelectedCategory = false,
     bool? isPromotionsLoading,
     List<HomeProductModel>? promotedProducts,
+    bool? isSearchLoading,
+    List<HomeProductModel>? searchResults,
+    String? searchQuery,
+    bool? hasSearched,
     int? addingProductId,
     bool clearAddingProductId = false,
     RetailerHomeModel? home,
@@ -59,6 +72,10 @@ class RetailerHomeState extends Equatable {
           : (selectedCategory ?? this.selectedCategory),
       isPromotionsLoading: isPromotionsLoading ?? this.isPromotionsLoading,
       promotedProducts: promotedProducts ?? this.promotedProducts,
+      isSearchLoading: isSearchLoading ?? this.isSearchLoading,
+      searchResults: searchResults ?? this.searchResults,
+      searchQuery: searchQuery ?? this.searchQuery,
+      hasSearched: hasSearched ?? this.hasSearched,
       addingProductId: clearAddingProductId
           ? null
           : (addingProductId ?? this.addingProductId),
@@ -78,6 +95,10 @@ class RetailerHomeState extends Equatable {
     selectedCategory,
     isPromotionsLoading,
     promotedProducts,
+    isSearchLoading,
+    searchResults,
+    searchQuery,
+    hasSearched,
     addingProductId,
     home,
     errorMessage,

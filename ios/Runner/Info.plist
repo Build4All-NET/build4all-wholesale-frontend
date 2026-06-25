@@ -47,5 +47,17 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<!--
+			The wholesale backend (API + uploaded product images) is currently
+			served over plain HTTP. iOS App Transport Security blocks cleartext
+			HTTP by default, which made product/banner images fail to load on
+			iOS (showing only the colored placeholder box). Allow cleartext so
+			images and API calls work until the backend is moved behind HTTPS.
+		-->
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
 	</dict>
 </plist>

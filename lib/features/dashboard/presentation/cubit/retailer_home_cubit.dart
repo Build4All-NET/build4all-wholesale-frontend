@@ -91,6 +91,54 @@ class RetailerHomeCubit extends Cubit<RetailerHomeState> {
     }
   }
 
+  Future<void> searchProducts({required String query}) async {
+    final trimmedQuery = query.trim();
+
+    if (trimmedQuery.isEmpty) {
+      emit(
+        state.copyWith(
+          isSearchLoading: false,
+          searchResults: const [],
+          searchQuery: '',
+          hasSearched: false,
+          clearError: true,
+          clearSuccess: true,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        isSearchLoading: true,
+        searchQuery: trimmedQuery,
+        hasSearched: true,
+        clearError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    try {
+      final results = await retailerHomeRepository.searchProducts(
+        query: trimmedQuery,
+      );
+
+      // Ignore stale responses if the query changed while the request was in flight.
+      if (state.searchQuery != trimmedQuery) return;
+
+      emit(state.copyWith(isSearchLoading: false, searchResults: results));
+    } catch (e) {
+      if (state.searchQuery != trimmedQuery) return;
+
+      emit(
+        state.copyWith(
+          isSearchLoading: false,
+          errorMessage: AppErrorMapper.toMessage(e),
+        ),
+      );
+    }
+  }
+
   Future<void> addToCart({required HomeProductModel product, int? quantity}) async {
     emit(
       state.copyWith(

@@ -48,6 +48,8 @@ class ApiConfig {
   static String retailerHomeCategoryProducts(int categoryId) =>
       '/retailer-home/categories/$categoryId/products';
 
+  static const String retailerHomeSearch = '/retailer-home/search';
+
   // Important:
   // Keep this endpoint as retailer-home promotions because it belongs to the
   // retailer home aggregation flow, not a standalone /retailer/promotions route.

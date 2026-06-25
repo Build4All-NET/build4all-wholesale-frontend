@@ -98,7 +98,9 @@ class RfqQuotationCard extends StatelessWidget {
               _MetaChip(
                 icon: Icons.inventory_2_outlined,
                 label: l10n.rfqQuantityLabel(
-                  quotation.availableQuantity ?? 0,
+                  quotation.orderedQuantity ??
+                      quotation.availableQuantity ??
+                      0,
                   'units',
                 ),
               ),

@@ -7,6 +7,11 @@ class RfqQuotationEntity {
   final double unitPrice;
   final double totalPrice;
   final int? availableQuantity;
+
+  /// The quantity the retailer actually ordered (and pays for). The supplier
+  /// may declare a larger available stock, but the retailer is only charged
+  /// for what they requested.
+  final int? orderedQuantity;
   final DateTime? deliveryDate;
   final double? shippingCost;
   final String? message;
@@ -23,6 +28,7 @@ class RfqQuotationEntity {
     required this.unitPrice,
     required this.totalPrice,
     this.availableQuantity,
+    this.orderedQuantity,
     this.deliveryDate,
     this.shippingCost,
     this.message,
