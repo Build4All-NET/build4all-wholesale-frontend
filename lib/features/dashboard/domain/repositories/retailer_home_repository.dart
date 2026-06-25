@@ -9,5 +9,7 @@ abstract class RetailerHomeRepository {
 
   Future<List<HomeProductModel>> getPromotedProducts();
 
+  Future<List<HomeProductModel>> searchProducts({required String query});
+
   Future<void> addToCart({required HomeProductModel product, int? quantity});
 }

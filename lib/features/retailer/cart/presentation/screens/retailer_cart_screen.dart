@@ -5,6 +5,7 @@ import 'package:build4all_wholesale_frontend/core/currency/currency_formatter.da
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 import 'package:build4all_wholesale_frontend/core/theme/app_theme_tokens.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/quantity_input_dialog.dart';
 import 'package:build4all_wholesale_frontend/features/dashboard/presentation/widgets/retailer_product_image.dart';
 import 'package:build4all_wholesale_frontend/injection_container.dart';
 
@@ -391,17 +392,39 @@ class _QuantityControl extends StatelessWidget {
               padding: EdgeInsets.zero,
             ),
           ),
-          SizedBox(
-            width: 48,
-            child: Text(
-              item.quantity.toString(),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppThemeTokens.textPrimary,
-                fontWeight: FontWeight.w900,
-                fontSize: 15,
+          InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: isUpdating
+                ? null
+                : () async {
+                    final newQuantity = await showQuantityInputDialog(
+                      context,
+                      initialQuantity: item.quantity,
+                      minQuantity: item.moq,
+                    );
+
+                    if (newQuantity == null || newQuantity == item.quantity) {
+                      return;
+                    }
+
+                    await cubit.setQuantity(
+                      cartItemId: item.id,
+                      quantity: newQuantity,
+                      moq: item.moq,
+                    );
+                  },
+            child: SizedBox(
+              width: 48,
+              child: Text(
+                item.quantity.toString(),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppThemeTokens.textPrimary,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),

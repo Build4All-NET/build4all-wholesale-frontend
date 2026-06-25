@@ -42,6 +42,25 @@ class RetailerHomeService {
     }
   }
 
+  Future<List<HomeProductModel>> searchProducts(String query) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerHomeSearch,
+        queryParameters: {'query': query},
+      );
+
+      return (response.data as List<dynamic>? ?? [])
+          .map(
+            (item) => HomeProductModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList();
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
   Future<List<HomeProductModel>> getPromotedProducts() async {
     try {
       final response = await apiClient.dio.get(ApiConfig.retailerPromotions);

@@ -19,6 +19,7 @@ import '../features/dashboard/presentation/screens/retailer_dashboard_screen.dar
 import '../features/dashboard/presentation/screens/retailer_placeholder_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_promotions_screen.dart';
 import '../features/dashboard/presentation/screens/retailer_product_details_screen.dart';
+import '../features/dashboard/presentation/screens/retailer_search_screen.dart';
 
 import '../features/retailer_profile/presentation/screens/edit_retailer_profile_screen.dart';
 import '../features/retailer_profile/presentation/screens/profile_verification_code_screen.dart';
@@ -385,6 +386,10 @@ class AppRouter {
       GoRoute(
         path: '/retailer-dashboard',
         builder: (context, state) => const RetailerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/retailer-search',
+        builder: (context, state) => const RetailerSearchScreen(),
       ),
       GoRoute(
         path: '/retailer-banner-target',

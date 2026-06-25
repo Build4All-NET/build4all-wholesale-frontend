@@ -182,7 +182,11 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               },
             ),
             const SizedBox(height: 18),
-            RetailerSearchBar(controller: _searchController, onChanged: (_) {}),
+            RetailerSearchBar(
+              controller: _searchController,
+              readOnly: true,
+              onTap: () => context.push('/retailer-search'),
+            ),
             const SizedBox(height: 18),
             HomeBannerSection(
               banners: home.banners,

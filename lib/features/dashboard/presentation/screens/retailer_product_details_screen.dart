@@ -4,6 +4,7 @@ import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/widgets/quantity_input_dialog.dart';
 import '../../../../injection_container.dart';
 import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
 import '../../data/models/retailer_home_model.dart';
@@ -59,6 +60,19 @@ class _RetailerProductDetailsViewState
     setState(() => _quantity = nextQuantity);
   }
 
+  Future<void> _editQuantity() async {
+    final newQuantity = await showQuantityInputDialog(
+      context,
+      initialQuantity: _quantity,
+      minQuantity: _safeMoq,
+      unitLabel: widget.product.moqUnit,
+    );
+
+    if (newQuantity == null || !mounted) return;
+
+    setState(() => _quantity = newQuantity);
+  }
+
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
@@ -112,6 +126,7 @@ class _RetailerProductDetailsViewState
                 onDecrease: isOutOfStock || _quantity <= _safeMoq
                     ? null
                     : _decreaseQuantity,
+                onEdit: isOutOfStock ? null : _editQuantity,
               ),
               _LockedPromotionExplanation(product: product),
               const SizedBox(height: 14),
@@ -362,12 +377,14 @@ class _QuantityCard extends StatelessWidget {
   final int quantity;
   final VoidCallback? onIncrease;
   final VoidCallback? onDecrease;
+  final VoidCallback? onEdit;
 
   const _QuantityCard({
     required this.product,
     required this.quantity,
     required this.onIncrease,
     required this.onDecrease,
+    this.onEdit,
   });
 
   @override
@@ -413,15 +430,22 @@ class _QuantityCard extends StatelessWidget {
             icon: Icons.remove_rounded,
             onTap: onDecrease,
           ),
-          SizedBox(
-            width: 66,
-            child: Text(
-              quantity.toString(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppThemeTokens.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
+          InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: onEdit,
+            child: SizedBox(
+              width: 66,
+              height: 38,
+              child: Center(
+                child: Text(
+                  quantity.toString(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ),
             ),
           ),

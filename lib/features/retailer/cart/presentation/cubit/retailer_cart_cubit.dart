@@ -56,6 +56,19 @@ class RetailerCartCubit extends Cubit<RetailerCartState> {
     await _updateQuantity(cartItemId: cartItemId, quantity: newQuantity);
   }
 
+  /// Sets an exact quantity typed by the retailer.
+  /// Quantity cannot go below MOQ.
+  Future<void> setQuantity({
+    required int cartItemId,
+    required int quantity,
+    required int moq,
+  }) async {
+    final safeMoq = moq <= 0 ? 1 : moq;
+    final newQuantity = quantity < safeMoq ? safeMoq : quantity;
+
+    await _updateQuantity(cartItemId: cartItemId, quantity: newQuantity);
+  }
+
   Future<void> _updateQuantity({
     required int cartItemId,
     required int quantity,
