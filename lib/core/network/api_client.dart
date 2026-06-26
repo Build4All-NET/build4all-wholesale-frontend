@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import '../storage/auth_storage.dart';
@@ -10,12 +12,19 @@ class ApiClient {
     : dio = Dio(
         BaseOptions(
           baseUrl: baseUrl,
-          connectTimeout: const Duration(seconds: 60),
-          receiveTimeout: const Duration(seconds: 60),
+          // Shorter connect/receive timeouts so a stale socket left over from a
+          // Wi-Fi <-> mobile-data switch fails fast and is retried, instead of
+          // hanging for a full minute. Uploads keep a generous send timeout.
+          connectTimeout: const Duration(seconds: 20),
+          receiveTimeout: const Duration(seconds: 30),
           sendTimeout: const Duration(seconds: 60),
           headers: {'Content-Type': 'application/json'},
         ),
       ) {
+    // Recovers automatically from transient network failures (the classic
+    // Wi-Fi -> mobile-data handoff that kills in-flight connections).
+    dio.interceptors.add(_NetworkRetryInterceptor(dio));
+
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -169,5 +178,67 @@ class ApiClient {
     }
 
     return value;
+  }
+}
+
+/// Retries requests that fail because of a transient connectivity drop.
+///
+/// When the device switches between Wi-Fi and mobile data, the previous
+/// network's sockets die. A request issued around that moment fails (or hangs
+/// until timeout) on the dead connection; retrying establishes a fresh
+/// connection on the new network and succeeds, so the user never sees the
+/// error.
+class _NetworkRetryInterceptor extends Interceptor {
+  final Dio dio;
+  final int maxRetries;
+
+  _NetworkRetryInterceptor(this.dio, {this.maxRetries = 2});
+
+  bool _isRetriable(DioException error) {
+    switch (error.type) {
+      case DioExceptionType.connectionError:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+        // Request never completed reaching the server -> safe to retry.
+        return true;
+      case DioExceptionType.receiveTimeout:
+        // The server may have already processed a write request, so only retry
+        // idempotent reads.
+        final method = error.requestOptions.method.toUpperCase();
+        return method == 'GET' || method == 'HEAD';
+      case DioExceptionType.unknown:
+        return error.error is SocketException;
+      default:
+        return false;
+    }
+  }
+
+  @override
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final options = err.requestOptions;
+    final attempt = (options.extra['retry_attempt'] as int?) ?? 0;
+
+    if (attempt >= maxRetries || !_isRetriable(err)) {
+      return handler.next(err);
+    }
+
+    final nextAttempt = attempt + 1;
+
+    // Small backoff so the new network interface has time to come up.
+    await Future.delayed(Duration(milliseconds: 400 * nextAttempt));
+
+    try {
+      final response = await dio.fetch(
+        options.copyWith(
+          extra: {...options.extra, 'retry_attempt': nextAttempt},
+        ),
+      );
+      return handler.resolve(response);
+    } on DioException catch (error) {
+      return handler.next(error);
+    }
   }
 }
