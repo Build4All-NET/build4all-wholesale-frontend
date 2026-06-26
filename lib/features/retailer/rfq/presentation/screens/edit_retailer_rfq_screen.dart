@@ -112,11 +112,11 @@ class _EditRetailerRfqViewState extends State<_EditRetailerRfqView> {
   Future<void> _pickImage() async {
     final picker = ImagePicker();
 
+    // Do not pass maxWidth/maxHeight/imageQuality: image_picker's native
+    // resize bakes a green cast into wide-gamut (Display P3) iOS photos.
+    // The backend downscales and re-encodes the image to clean sRGB instead.
     final picked = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1600,
-      maxHeight: 1600,
-      imageQuality: 70,
     );
 
     if (picked == null) return;

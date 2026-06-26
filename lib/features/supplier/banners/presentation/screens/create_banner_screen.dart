@@ -138,11 +138,11 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     if (_uploadingImage) return;
 
     try {
+      // Do not pass maxWidth/maxHeight/imageQuality: image_picker's native
+      // resize bakes a green cast into wide-gamut (Display P3) iOS photos.
+      // The backend downscales and re-encodes the image to clean sRGB instead.
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 1600,
-        maxHeight: 1000,
-        imageQuality: 70,
       );
 
       if (pickedFile == null) return;
