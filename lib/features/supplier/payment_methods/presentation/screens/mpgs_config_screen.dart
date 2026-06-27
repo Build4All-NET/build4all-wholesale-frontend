@@ -30,7 +30,6 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
   late final TextEditingController _apiPasswordCtrl;
   late final TextEditingController _apiBaseUrlCtrl;
   late final TextEditingController _currencyCtrl;
-  late final TextEditingController _returnUrlCtrl;
   late final TextEditingController _brandNameCtrl;
   late bool _enabled;
   late String _mode;
@@ -63,11 +62,6 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
           ? CurrencyFormatter.runtimeCode()
           : _safe(cfg['currency']).toUpperCase(),
     );
-    _returnUrlCtrl = TextEditingController(
-      text: _safe(cfg['returnUrl']).isEmpty
-          ? 'http://localhost:8083/api/public/mpgs/return'
-          : _safe(cfg['returnUrl']),
-    );
     _brandNameCtrl = TextEditingController(
       text: _safe(cfg['brandName']).isEmpty
           ? 'Build4All Wholesale'
@@ -83,7 +77,6 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
     _apiPasswordCtrl.dispose();
     _apiBaseUrlCtrl.dispose();
     _currencyCtrl.dispose();
-    _returnUrlCtrl.dispose();
     _brandNameCtrl.dispose();
     super.dispose();
   }
@@ -305,16 +298,6 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
                         ),
                         const SizedBox(height: 18),
                         TextFormField(
-                          controller: _returnUrlCtrl,
-                          validator: _urlValidator,
-                          decoration: InputDecoration(
-                            labelText: l10n.mpgsReturnUrlLabel,
-                            helperText: l10n.mpgsReturnUrlHelper,
-                            helperMaxLines: 2,
-                          ),
-                        ),
-                        const SizedBox(height: 18),
-                        TextFormField(
                           controller: _brandNameCtrl,
                           decoration: InputDecoration(
                             labelText: l10n.mpgsBrandNameLabel,
@@ -429,7 +412,6 @@ class _MpgsConfigScreenState extends State<MpgsConfigScreen> {
       'apiBaseUrl': _apiBaseUrlCtrl.text.trim(),
       'mode': _mode,
       'currency': _currencyCtrl.text.trim().toUpperCase(),
-      'returnUrl': _returnUrlCtrl.text.trim(),
     };
 
     final merchantId = _merchantIdCtrl.text.trim();
