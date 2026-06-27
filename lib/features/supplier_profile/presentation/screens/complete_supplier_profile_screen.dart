@@ -168,11 +168,11 @@ class _CompleteSupplierProfileScreenState
 
 
   Future<void> _pickLogoImage() async {
+    // Do not pass maxWidth/maxHeight/imageQuality: image_picker's native
+    // resize bakes a green cast into wide-gamut (Display P3) iOS photos.
+    // The backend downscales and re-encodes the image to clean sRGB instead.
     final pickedImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1000,
-      maxHeight: 1000,
-      imageQuality: 75,
     );
 
     if (pickedImage == null) return;

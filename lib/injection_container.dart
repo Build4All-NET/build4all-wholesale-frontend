@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'core/config/app_config.dart';
 import 'core/network/api_client.dart';
+import 'core/network/connectivity_monitor.dart';
 import 'core/storage/auth_storage.dart';
 import 'core/storage/theme_storage.dart';
 import 'core/storage/locale_storage.dart';
@@ -305,6 +306,15 @@ Future<void> init() async {
   sl.registerLazySingleton<ApiClient>(
     () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.projectApiBaseUrl),
     instanceName: 'projectApiClient',
+  );
+
+  // Drops stale HTTP connections the instant the network changes
+  // (Wi-Fi <-> mobile data) so requests don't hang on dead sockets.
+  sl.registerLazySingleton<ConnectivityMonitor>(
+    () => ConnectivityMonitor([
+      sl<ApiClient>(instanceName: 'centralApiClient'),
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ]),
   );
 
   // =========================

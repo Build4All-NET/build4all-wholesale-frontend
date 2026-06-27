@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'app/app.dart';
 import 'core/config/app_config.dart';
+import 'core/network/connectivity_monitor.dart';
 import 'core/theme/locale_cubit.dart';
 import 'core/theme/theme_cubit.dart';
 import 'injection_container.dart' as di;
@@ -54,6 +55,11 @@ Future<void> main() async {
       };
 
       await di.init();
+
+      // Start watching for Wi-Fi <-> mobile-data switches so stale connections
+      // are dropped immediately instead of hanging the next request.
+      sl<ConnectivityMonitor>().start();
+
       await sl<ThemeCubit>().loadSavedTheme();
       await sl<LocaleCubit>().loadSavedLocale();
 

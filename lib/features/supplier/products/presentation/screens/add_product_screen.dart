@@ -404,11 +404,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _pickImage() async {
+    // Do not pass maxWidth/maxHeight/imageQuality: image_picker's native
+    // resize bakes a green cast into wide-gamut (Display P3) iOS photos.
+    // The backend downscales and re-encodes the image to clean sRGB instead.
     final pickedImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1600,
-      maxHeight: 1600,
-      imageQuality: 70,
     );
 
     if (pickedImage == null) return;
