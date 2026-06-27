@@ -48,6 +48,23 @@ class AppView extends StatelessWidget {
                     return MaterialApp.router(
                       debugShowCheckedModeBanner: false,
                       title: title,
+                      // Global keyboard dismissal: tapping anywhere outside a
+                      // text field (on empty screen area) closes the keyboard,
+                      // so it never gets stuck open. Taps on buttons/fields
+                      // still work because they win the gesture arena.
+                      builder: (context, child) {
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            final currentFocus = FocusManager.instance.primaryFocus;
+                            if (currentFocus != null &&
+                                !currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
+                          child: child,
+                        );
+                      },
                       theme: AppThemeBuilder.buildTheme(themeState.config),
                       routerConfig: AppRouter.router,
                       locale: localeState.locale,

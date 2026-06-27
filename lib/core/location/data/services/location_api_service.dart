@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../exceptions/app_exception.dart';
 import '../../../network/api_client.dart';
 import '../../../network/api_config.dart';
+import '../../blocked_countries.dart';
 import '../models/country_model.dart';
 import '../models/region_model.dart';
 
@@ -25,6 +26,13 @@ class LocationApiService {
             ),
           )
           .where((country) => country.active && country.id > 0)
+          .where(
+            (country) => !BlockedCountries.isBlocked(
+              iso2: country.iso2Code,
+              iso3: country.iso3Code,
+              name: country.name,
+            ),
+          )
           .toList()
         ..sort((a, b) => a.name.compareTo(b.name));
 

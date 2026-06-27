@@ -134,6 +134,7 @@
   "firstName": "First Name",
   "lastName": "Last Name",
   "phoneLebanon": "Phone Number (Lebanon)",
+  "phoneLebanonHint": "Lebanese number: 7 digits, e.g. +961 3 123456",
   "address": "Address",
   "saveChanges": "Save Changes",
   "profileUpdatedSuccessfully": "Profile updated successfully",

@@ -134,6 +134,7 @@
   "firstName": "الاسم الأول",
   "lastName": "اسم العائلة",
   "phoneLebanon": "رقم الهاتف (لبنان)",
+  "phoneLebanonHint": "رقم لبناني: 7 أرقام، مثال: +961 3 123456",
   "address": "العنوان",
   "saveChanges": "حفظ التغييرات",
   "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",

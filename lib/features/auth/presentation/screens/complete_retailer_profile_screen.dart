@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
@@ -12,6 +13,7 @@ import '../../../../core/extensions/select_option_l10n_extension.dart';
 import '../../../../core/location/data/models/country_model.dart';
 import '../../../../core/location/data/models/region_model.dart';
 import '../../../../core/location/data/services/location_api_service.dart';
+import '../../../../core/location/phone_countries.dart';
 import '../../../../core/models/select_option.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
@@ -37,6 +39,10 @@ class _CompleteRetailerProfileScreenState
   late final TextEditingController _phoneNumberController;
   late final TextEditingController _storeAddressController;
   late final LocationApiService _locationApiService;
+
+  /// Full international phone number (e.g. +9613123456) captured from the
+  /// country-code phone field.
+  String _fullPhone = '';
 
   List<CountryModel> _countries = [];
   List<RegionModel> _cities = [];
@@ -191,7 +197,9 @@ class _CompleteRetailerProfileScreenState
       await sl<AuthService>().updateRetailerProfile(
         fullName: _fullNameController.text.trim(),
         storeName: _storeNameController.text.trim(),
-        phoneNumber: _phoneNumberController.text.trim(),
+        phoneNumber: _fullPhone.trim().isNotEmpty
+            ? _fullPhone.trim()
+            : _phoneNumberController.text.trim(),
         storeAddress: _storeAddressController.text.trim(),
         countryId: _selectedCountry!.id,
         countryName: _selectedCountry!.name,
@@ -320,11 +328,23 @@ class _CompleteRetailerProfileScreenState
 
                         Text(l10n.phoneNumber),
                         const SizedBox(height: 8),
-                        PrimaryTextField(
+                        IntlPhoneField(
                           controller: _phoneNumberController,
-                          hintText: l10n.enterPhoneNumber,
+                          initialCountryCode: 'LB',
+                          countries: allowedPhoneCountries,
+                          disableLengthCheck: false,
                           keyboardType: TextInputType.phone,
-                          validator: _validatePhone,
+                          decoration: InputDecoration(
+                            hintText: l10n.enterPhoneNumber,
+                            helperText: l10n.phoneLebanonHint,
+                          ),
+                          validator: (phone) =>
+                              _validatePhone(phone?.completeNumber),
+                          onChanged: (phone) {
+                            _fullPhone = phone.number.trim().isEmpty
+                                ? ''
+                                : phone.completeNumber;
+                          },
                         ),
 
                         const SizedBox(height: 16),

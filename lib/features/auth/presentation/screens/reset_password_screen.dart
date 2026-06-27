@@ -5,6 +5,7 @@ import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../injection_container.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../data/services/auth_service.dart';
@@ -48,17 +49,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     if (_codeController.text.trim().isEmpty ||
         _newPasswordController.text.trim().isEmpty ||
         _confirmPasswordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('All fields are required')),
-      );
+      AppToast.error(context, 'All fields are required');
       return;
     }
 
     if (_newPasswordController.text.trim() !=
         _confirmPasswordController.text.trim()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
+      AppToast.error(context, 'Passwords do not match');
       return;
     }
 
@@ -78,16 +75,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password updated successfully')),
-      );
+      AppToast.success(context, 'Password updated successfully');
 
       context.go('/login');
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-      );
+      AppToast.error(context, e);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
