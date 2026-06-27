@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 
 import '../storage/auth_storage.dart';
 
@@ -21,6 +22,10 @@ class ApiClient {
           headers: {'Content-Type': 'application/json'},
         ),
       ) {
+    // Keep pooled connections short-lived so dead sockets from a network
+    // handoff are not reused for long.
+    _installHttpClientAdapter();
+
     // Recovers automatically from transient network failures (the classic
     // Wi-Fi -> mobile-data handoff that kills in-flight connections).
     dio.interceptors.add(_NetworkRetryInterceptor(dio));
@@ -83,6 +88,31 @@ class ApiClient {
         },
       ),
     );
+  }
+
+  HttpClient _buildHttpClient() {
+    final client = HttpClient();
+    // Drop idle pooled connections quickly so a socket that died during a
+    // network handoff is not kept around to be reused.
+    client.idleTimeout = const Duration(seconds: 8);
+    return client;
+  }
+
+  void _installHttpClientAdapter() {
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: _buildHttpClient,
+    );
+  }
+
+  /// Immediately drops all pooled connections. Called when the device switches
+  /// network (Wi-Fi <-> mobile data) so the next request opens a fresh socket
+  /// on the new interface instead of hanging on a dead one.
+  void resetConnections() {
+    final adapter = dio.httpClientAdapter;
+    if (adapter is IOHttpClientAdapter) {
+      adapter.close(force: true);
+    }
+    _installHttpClientAdapter();
   }
 
   String? _cleanToken(String? token) {
