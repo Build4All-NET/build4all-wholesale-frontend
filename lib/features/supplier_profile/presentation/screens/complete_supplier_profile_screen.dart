@@ -21,6 +21,7 @@ import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/models/select_option.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/location/phone_countries.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../core/utils/validators.dart';
@@ -443,6 +444,7 @@ class _CompleteSupplierProfileScreenState
                                 key: ValueKey('profile-phone-$_phoneIso2Code'),
                                 controller: _phoneNumberController,
                                 initialCountryCode: _phoneIso2Code,
+                                countries: allowedPhoneCountries,
                                 keyboardType: TextInputType.phone,
                                 validator: _validatePhone,
                                 onChanged: (phone) {
@@ -450,6 +452,7 @@ class _CompleteSupplierProfileScreenState
                                 },
                                 decoration: InputDecoration(
                                   hintText: l10n.enterPhoneNumber,
+                                  helperText: l10n.phoneLebanonHint,
                                   filled: true,
                                   fillColor: AppThemeTokens.inputFill,
                                   border: OutlineInputBorder(

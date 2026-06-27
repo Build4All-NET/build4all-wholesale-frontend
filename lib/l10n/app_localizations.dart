@@ -904,6 +904,12 @@ abstract class AppLocalizations {
   /// **'Phone Number (Lebanon)'**
   String get phoneLebanon;
 
+  /// No description provided for @phoneLebanonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Lebanese number: 7 digits, e.g. +961 3 123456'**
+  String get phoneLebanonHint;
+
   /// No description provided for @address.
   ///
   /// In en, this message translates to:

@@ -11,6 +11,7 @@ import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/location/data/models/country_model.dart';
 import '../../../../core/location/data/models/region_model.dart';
+import '../../../../core/location/phone_countries.dart';
 import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
@@ -1655,10 +1656,12 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                             controller: _phoneController,
                             focusNode: _phoneFocusNode,
                             initialCountryCode: _initialCountryCode,
+                            countries: allowedPhoneCountries,
                             disableLengthCheck: false,
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
                               hintText: l10n.phoneNumber,
+                              helperText: l10n.phoneLebanonHint,
                               prefixIcon: const Icon(Icons.phone_outlined),
                             ),
                             validator: (phone) {

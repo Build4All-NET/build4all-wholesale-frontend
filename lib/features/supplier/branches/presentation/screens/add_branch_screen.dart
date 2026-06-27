@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 
+import '../../../../../core/location/phone_countries.dart';
 import '../../../../../core/utils/app_error_mapper.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
@@ -734,6 +735,7 @@ class _PhoneField extends StatelessWidget {
             key: ValueKey('branch-phone-$initialCountryCode'),
             controller: controller,
             initialCountryCode: initialCountryCode,
+            countries: allowedPhoneCountries,
             keyboardType: TextInputType.phone,
             validator: validator,
             onChanged: onChanged,

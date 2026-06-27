@@ -431,6 +431,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get phoneLebanon => 'Numéro de téléphone (Liban)';
 
   @override
+  String get phoneLebanonHint =>
+      'Numéro libanais : 7 chiffres, ex. +961 3 123456';
+
+  @override
   String get address => 'Adresse';
 
   @override

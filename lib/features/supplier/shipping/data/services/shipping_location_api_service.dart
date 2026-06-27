@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
+import '../../../../../core/location/blocked_countries.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
 import '../models/shipping_location_model.dart';
@@ -25,6 +26,13 @@ class ShippingLocationApiService {
               ),
             )
             .where((country) => country.id.isNotEmpty && country.active)
+            .where(
+              (country) => !BlockedCountries.isBlocked(
+                iso2: country.iso2Code,
+                iso3: country.iso3Code,
+                name: country.name,
+              ),
+            )
             .toList();
       }
 

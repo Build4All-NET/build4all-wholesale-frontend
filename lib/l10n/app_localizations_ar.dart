@@ -416,6 +416,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get phoneLebanon => 'رقم الهاتف (لبنان)';
 
   @override
+  String get phoneLebanonHint => 'رقم لبناني: 7 أرقام، مثال: +961 3 123456';
+
+  @override
   String get address => 'العنوان';
 
   @override
