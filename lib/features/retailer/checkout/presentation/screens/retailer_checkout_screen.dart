@@ -365,6 +365,10 @@ class _RetailerSplitCheckoutViewState
             child: Form(
               key: _formKey,
               child: ListView(
+                // Dragging the form closes the keyboard so the (bottom) Place
+                // Order button is reachable again after typing the address.
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.fromLTRB(
                   AppThemeTokens.screenHorizontalPadding,
                   12,

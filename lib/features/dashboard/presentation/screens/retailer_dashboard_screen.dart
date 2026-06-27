@@ -38,7 +38,6 @@ class _RetailerDashboardView extends StatefulWidget {
 
 class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
   late final TextEditingController _searchController;
-  int _selectedBottomIndex = 0;
 
   @override
   void initState() {
@@ -80,27 +79,6 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     );
   }
 
-  void _goToBottomTab(int index) {
-    if (index == _selectedBottomIndex && index == 0) return;
-
-    setState(() => _selectedBottomIndex = index);
-
-    switch (index) {
-      case 0:
-        context.go('/retailer-dashboard');
-        break;
-      case 1:
-        context.push('/retailer-orders');
-        break;
-      case 2:
-        context.push('/retailer-rfqs');
-        break;
-      case 3:
-        context.go('/retailer-profile');
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
@@ -133,7 +111,6 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             ),
           ),
           body: _buildBody(context, state),
-          bottomNavigationBar: _buildBottomNavigationBar(context),
         );
       },
     );
@@ -211,43 +188,6 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     );
   }
 
-  Widget _buildBottomNavigationBar(BuildContext context) {
-    final l10n = context.l10n;
-
-    return BottomNavigationBar(
-      currentIndex: _selectedBottomIndex,
-      onTap: _goToBottomTab,
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: Theme.of(context).colorScheme.primary,
-      unselectedItemColor: AppThemeTokens.textSecondary,
-      selectedLabelStyle: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w800,
-      ),
-      unselectedLabelStyle: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-      ),
-      items: [
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.home_rounded),
-          label: l10n.home,
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.receipt_long_outlined),
-          label: l10n.orders,
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.description_outlined),
-          label: l10n.rfq,
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.person_outline_rounded),
-          label: l10n.profile,
-        ),
-      ],
-    );
-  }
 }
 
 class _ErrorView extends StatelessWidget {
