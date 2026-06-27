@@ -21,6 +21,7 @@ import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/models/select_option.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -221,17 +222,13 @@ class _CompleteSupplierProfileScreenState
     FocusScope.of(context).unfocus();
 
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.completeRequiredFieldsCorrectly)),
-      );
+      AppToast.error(context, context.l10n.completeRequiredFieldsCorrectly);
       return;
     }
 
     final country = _selectedCountry;
     if (country == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.pleaseSelectCountry)),
-      );
+      AppToast.error(context, context.l10n.pleaseSelectCountry);
       return;
     }
 
@@ -241,9 +238,7 @@ class _CompleteSupplierProfileScreenState
 
 
     if (_selectedLogoImagePath == null || _selectedLogoImagePath!.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.supplierLogoRequiredError)),
-      );
+      AppToast.error(context, context.l10n.supplierLogoRequiredError);
       return;
     }
 
@@ -270,16 +265,12 @@ class _CompleteSupplierProfileScreenState
       child: BlocConsumer<SupplierProfileCubit, SupplierProfileState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+            AppToast.error(context, state.errorMessage!);
             context.read<SupplierProfileCubit>().clearMessages();
           }
 
           if (state.success && state.profile != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.supplierProfileSavedSuccessfully)),
-            );
+            AppToast.success(context, l10n.supplierProfileSavedSuccessfully);
             context.read<SupplierProfileCubit>().clearMessages();
             context.go('/supplier-dashboard');
           }
