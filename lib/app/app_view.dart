@@ -55,13 +55,8 @@ class AppView extends StatelessWidget {
                       builder: (context, child) {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            final currentFocus = FocusManager.instance.primaryFocus;
-                            if (currentFocus != null &&
-                                !currentFocus.hasPrimaryFocus) {
-                              currentFocus.unfocus();
-                            }
-                          },
+                          onTap: () =>
+                              FocusManager.instance.primaryFocus?.unfocus(),
                           child: child,
                         );
                       },
