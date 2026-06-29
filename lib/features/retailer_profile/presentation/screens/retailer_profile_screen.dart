@@ -11,19 +11,26 @@ import '../cubit/retailer_profile_cubit.dart';
 import '../cubit/retailer_profile_state.dart';
 
 class RetailerProfileScreen extends StatelessWidget {
-  const RetailerProfileScreen({super.key});
+  /// When shown as a tab inside [RetailerHomeShell], the shell already provides
+  /// the bottom navigation bar, so the screen must not draw its own (which
+  /// previously stacked two identical nav bars).
+  final bool embedded;
+
+  const RetailerProfileScreen({super.key, this.embedded = false});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<RetailerProfileCubit>()..loadProfile(),
-      child: const _RetailerProfileView(),
+      child: _RetailerProfileView(embedded: embedded),
     );
   }
 }
 
 class _RetailerProfileView extends StatelessWidget {
-  const _RetailerProfileView();
+  final bool embedded;
+
+  const _RetailerProfileView({this.embedded = false});
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +62,15 @@ class _RetailerProfileView extends StatelessWidget {
             title: Text(l10n.profileTitle),
             backgroundColor: AppThemeTokens.background,
             elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.go('/retailer-dashboard'),
-            ),
+            automaticallyImplyLeading: false,
+            // As a shell tab the profile is a root destination, so it shows no
+            // back button; standalone it can return to the dashboard.
+            leading: embedded
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => context.go('/retailer-dashboard'),
+                  ),
           ),
           body: RefreshIndicator(
             onRefresh: () => context.read<RetailerProfileCubit>().loadProfile(),
@@ -99,24 +111,28 @@ class _RetailerProfileView extends StatelessWidget {
               ),
             ),
           ),
-          bottomNavigationBar: _ProfileBottomNav(
-            currentIndex: 3,
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  context.go('/retailer-dashboard');
-                  break;
-                case 1:
-                  context.push('/retailer-orders');
-                  break;
-                case 2:
-                  context.push('/retailer-rfqs');
-                  break;
-                case 3:
-                  break;
-              }
-            },
-          ),
+          // Inside the shell the bottom nav is owned by RetailerHomeShell;
+          // only the standalone route renders its own.
+          bottomNavigationBar: embedded
+              ? null
+              : _ProfileBottomNav(
+                  currentIndex: 3,
+                  onTap: (index) {
+                    switch (index) {
+                      case 0:
+                        context.go('/retailer-dashboard');
+                        break;
+                      case 1:
+                        context.push('/retailer-orders');
+                        break;
+                      case 2:
+                        context.push('/retailer-rfqs');
+                        break;
+                      case 3:
+                        break;
+                    }
+                  },
+                ),
         );
       },
     );
