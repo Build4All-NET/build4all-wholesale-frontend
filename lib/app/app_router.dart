@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'splash_gate.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 
@@ -85,9 +86,12 @@ import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/splash',
     routes: [
-      GoRoute(path: '/', redirect: (context, state) => '/login'),
+      GoRoute(path: '/', redirect: (context, state) => '/splash'),
+
+      // Decides on cold start whether to restore a saved session or go to login.
+      GoRoute(path: '/splash', builder: (context, state) => const SplashGate()),
 
       // =========================
       // AUTH ROUTES
