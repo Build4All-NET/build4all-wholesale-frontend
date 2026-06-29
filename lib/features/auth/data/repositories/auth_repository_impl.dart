@@ -86,6 +86,7 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
     final token = userLoginResponse['token']?.toString() ?? '';
+    final refreshToken = userLoginResponse['refreshToken']?.toString() ?? '';
 
     if (token.trim().isEmpty) {
       throw AppException('Retailer login failed. Token is missing.');
@@ -111,6 +112,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     await authStorage.saveSession(
       token: token,
+      refreshToken: refreshToken,
       build4allUserId: build4allUserId,
       ownerProjectLinkId: ownerProjectId,
       role: 'RETAILER',
@@ -132,6 +134,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     await authStorage.saveSession(
       token: token,
+      refreshToken: refreshToken,
       build4allUserId: build4allUserId,
       ownerProjectLinkId: ownerProjectId,
       role: 'RETAILER',
@@ -187,6 +190,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final adminEmail = admin['email']?.toString() ?? email;
     final fullName = ('$firstName $lastName').trim();
     final token = adminLoginResponse.token;
+    final refreshToken = adminLoginResponse.refreshToken;
 
     if (token.trim().isEmpty) {
       throw AppException('Supplier login failed. Token is missing.');
@@ -194,6 +198,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     await authStorage.saveSession(
       token: token,
+      refreshToken: refreshToken,
       build4allUserId: build4allUserId,
       ownerProjectLinkId: ownerProjectId,
       role: 'SUPPLIER',
@@ -219,6 +224,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
     await authStorage.saveSession(
       token: token,
+      refreshToken: refreshToken,
       build4allUserId: build4allUserId,
       ownerProjectLinkId: ownerProjectId,
       role: 'SUPPLIER',
