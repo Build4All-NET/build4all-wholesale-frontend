@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'core/config/app_config.dart';
 import 'core/network/api_client.dart';
+import 'core/network/auth_refresh_service.dart';
 import 'core/network/connectivity_monitor.dart';
 import 'core/storage/auth_storage.dart';
 import 'core/storage/theme_storage.dart';
@@ -298,13 +299,30 @@ Future<void> init() async {
   // =========================
   // CORE / NETWORK
   // =========================
+  // Rotates the access token against the central build4all backend. Shared by
+  // both API clients so a 401 from either side recovers the same session.
+  sl.registerLazySingleton<AuthRefreshService>(
+    () => AuthRefreshService(
+      sl<AuthStorage>(),
+      centralBaseUrl: AppConfig.apiBaseUrl,
+    ),
+  );
+
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.apiBaseUrl),
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.apiBaseUrl,
+      refreshService: sl<AuthRefreshService>(),
+    ),
     instanceName: 'centralApiClient',
   );
 
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(sl<AuthStorage>(), baseUrl: AppConfig.projectApiBaseUrl),
+    () => ApiClient(
+      sl<AuthStorage>(),
+      baseUrl: AppConfig.projectApiBaseUrl,
+      refreshService: sl<AuthRefreshService>(),
+    ),
     instanceName: 'projectApiClient',
   );
 

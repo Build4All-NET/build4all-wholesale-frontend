@@ -4,13 +4,18 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 
 import '../storage/auth_storage.dart';
+import 'auth_refresh_service.dart';
+import 'interceptors/refresh_token_interceptor.dart';
 
 class ApiClient {
   final Dio dio;
   final AuthStorage authStorage;
 
-  ApiClient(this.authStorage, {required String baseUrl})
-    : dio = Dio(
+  ApiClient(
+    this.authStorage, {
+    required String baseUrl,
+    AuthRefreshService? refreshService,
+  }) : dio = Dio(
         BaseOptions(
           baseUrl: baseUrl,
           // Shorter connect/receive timeouts so a stale socket left over from a
@@ -88,6 +93,18 @@ class ApiClient {
         },
       ),
     );
+
+    // Added last so it runs after logging: on a 401 it rotates the access
+    // token via the central refresh endpoint and replays the failed request.
+    if (refreshService != null) {
+      dio.interceptors.add(
+        RefreshTokenInterceptor(
+          dio: dio,
+          authStorage: authStorage,
+          refreshService: refreshService,
+        ),
+      );
+    }
   }
 
   HttpClient _buildHttpClient() {

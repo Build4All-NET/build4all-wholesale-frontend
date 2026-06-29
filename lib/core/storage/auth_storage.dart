@@ -4,6 +4,7 @@ class AuthStorage {
   static const _storage = FlutterSecureStorage();
 
   static const _tokenKey = 'build4all_access_token';
+  static const _refreshTokenKey = 'build4all_refresh_token';
   static const _build4allUserIdKey = 'build4all_user_id';
   static const _ownerProjectLinkIdKey = 'owner_project_link_id';
   static const _roleKey = 'role';
@@ -13,6 +14,7 @@ class AuthStorage {
 
   Future<void> saveSession({
     required String token,
+    required String refreshToken,
     required int build4allUserId,
     required int ownerProjectLinkId,
     required String role,
@@ -21,6 +23,7 @@ class AuthStorage {
     required String fullName,
   }) async {
     await _storage.write(key: _tokenKey, value: _cleanToken(token));
+    await _storage.write(key: _refreshTokenKey, value: refreshToken.trim());
     await _storage.write(
       key: _build4allUserIdKey,
       value: build4allUserId.toString(),
@@ -41,6 +44,22 @@ class AuthStorage {
   Future<String?> getToken() async {
     final token = await _storage.read(key: _tokenKey);
     return token != null ? _cleanToken(token) : null;
+  }
+
+  Future<String?> getRefreshToken() async {
+    final token = await _storage.read(key: _refreshTokenKey);
+    final trimmed = token?.trim();
+    return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+  }
+
+  /// Replaces only the access + refresh tokens after a successful refresh,
+  /// leaving the rest of the session (user id, role, profile flags) intact.
+  Future<void> updateTokens({
+    required String token,
+    required String refreshToken,
+  }) async {
+    await _storage.write(key: _tokenKey, value: _cleanToken(token));
+    await _storage.write(key: _refreshTokenKey, value: refreshToken.trim());
   }
 
   Future<int?> getBuild4allUserId() async {
