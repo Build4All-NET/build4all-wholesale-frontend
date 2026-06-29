@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import 'core/config/app_config.dart';
+import 'core/auth/session_manager.dart';
 import 'core/network/api_client.dart';
 import 'core/network/auth_refresh_service.dart';
 import 'core/network/connectivity_monitor.dart';
@@ -308,11 +309,17 @@ Future<void> init() async {
     ),
   );
 
+  // Resolved lazily at call time (only when a refresh token is finally
+  // rejected), so there is no construction-time cycle with SessionManager,
+  // which itself depends on AuthService -> ApiClient.
+  void onSessionExpired() => sl<SessionManager>().onSessionExpired();
+
   sl.registerLazySingleton<ApiClient>(
     () => ApiClient(
       sl<AuthStorage>(),
       baseUrl: AppConfig.apiBaseUrl,
       refreshService: sl<AuthRefreshService>(),
+      onSessionExpired: onSessionExpired,
     ),
     instanceName: 'centralApiClient',
   );
@@ -322,6 +329,7 @@ Future<void> init() async {
       sl<AuthStorage>(),
       baseUrl: AppConfig.projectApiBaseUrl,
       refreshService: sl<AuthRefreshService>(),
+      onSessionExpired: onSessionExpired,
     ),
     instanceName: 'projectApiClient',
   );
@@ -357,6 +365,14 @@ Future<void> init() async {
     () => AuthService(
       centralApiClient: sl<ApiClient>(instanceName: 'centralApiClient'),
       projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  // Single source of truth for auth state; the router listens to it.
+  sl.registerLazySingleton<SessionManager>(
+    () => SessionManager(
+      authStorage: sl<AuthStorage>(),
+      authService: sl<AuthService>(),
     ),
   );
 

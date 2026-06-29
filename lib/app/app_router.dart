@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'splash_gate.dart';
+import '../core/auth/session_manager.dart';
+import '../injection_container.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 
@@ -85,12 +87,47 @@ import '../features/retailer/checkout/presentation/screens/retailer_checkout_scr
 import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart';
 
 class AppRouter {
+  /// Routes reachable without a session (login + account recovery + signup).
+  static bool _isPublicLocation(String location) {
+    const publicRoutes = {
+      '/login',
+      '/forgot-password',
+      '/reset-password',
+    };
+
+    return publicRoutes.contains(location) || location.startsWith('/signup');
+  }
+
   static final GoRouter router = GoRouter(
     initialLocation: '/splash',
+    refreshListenable: sl<SessionManager>(),
+    redirect: (context, state) {
+      final session = sl<SessionManager>();
+      final location = state.matchedLocation;
+      final isSplash = location == '/splash';
+      final isPublic = _isPublicLocation(location);
+
+      // Still validating the stored session: hold on the splash screen.
+      if (session.status == AuthStatus.unknown) {
+        return isSplash ? null : '/splash';
+      }
+
+      // No session: only public/auth routes are allowed.
+      if (session.status == AuthStatus.unauthenticated) {
+        return isPublic ? null : '/login';
+      }
+
+      // Logged in: keep the user out of the splash/login screens.
+      if (isSplash || isPublic) {
+        return session.homeLocation;
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(path: '/', redirect: (context, state) => '/splash'),
 
-      // Decides on cold start whether to restore a saved session or go to login.
+      // Shown while the stored session is being restored on cold start.
       GoRoute(path: '/splash', builder: (context, state) => const SplashGate()),
 
       // =========================

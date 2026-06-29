@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
+import '../../../../core/auth/session_manager.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/theme/locale_cubit.dart';
+import '../../../../injection_container.dart';
 
 
 String _paymentMethodsLabel(BuildContext context) {
@@ -141,8 +143,12 @@ class SupplierAppDrawer extends StatelessWidget {
     );
 
     if (shouldLogout != true) return;
-    if (!context.mounted) return;
 
+    // Clears the stored session (token + refresh token); the router redirect
+    // then takes the user to /login.
+    await sl<SessionManager>().signOut();
+
+    if (!context.mounted) return;
     Navigator.of(context).pop();
     context.go('/login');
   }

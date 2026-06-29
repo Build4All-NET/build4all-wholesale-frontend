@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'app/app.dart';
+import 'core/auth/session_manager.dart';
 import 'core/config/app_config.dart';
 import 'core/network/connectivity_monitor.dart';
 import 'core/theme/locale_cubit.dart';
@@ -62,6 +63,10 @@ Future<void> main() async {
 
       await sl<ThemeCubit>().loadSavedTheme();
       await sl<LocaleCubit>().loadSavedLocale();
+
+      // Restore + validate any saved session in the background. The router
+      // shows the splash until this resolves the auth status, then redirects.
+      unawaited(sl<SessionManager>().bootstrap());
 
       debugPrint('APP_NAME: ${AppConfig.appName}');
       debugPrint('API_BASE_URL (Build4All): ${AppConfig.apiBaseUrl}');

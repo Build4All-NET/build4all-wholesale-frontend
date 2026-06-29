@@ -8,6 +8,7 @@ import '../../../../common/widgets/primary_text_field.dart';
 import '../../../../core/branding/app_brand_logo.dart';
 import '../../../../core/branding/branding_cubit.dart';
 import '../../../../core/branding/branding_state.dart';
+import '../../../../core/auth/session_manager.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
@@ -174,25 +175,19 @@ class _LoginScreenState extends State<LoginScreen> {
     if (state.loginSuccess && state.user != null) {
       final user = state.user!;
 
-      if (user.isSupplier) {
-        if (user.profileCompleted == false) {
-          context.go('/complete-supplier-profile');
-        } else {
-          context.go('/supplier-dashboard');
-        }
+      if (!user.isSupplier && !user.isRetailer) {
+        AppToast.error(context, 'Unknown user role returned from backend.');
         return;
       }
 
-      if (user.isRetailer) {
-        if (user.profileCompleted == false) {
-          context.go('/complete-retailer-profile');
-        } else {
-          context.go('/retailer-dashboard');
-        }
-        return;
-      }
-
-      AppToast.error(context, 'Unknown user role returned from backend.');
+      // Promote the session to authenticated, then let the router send the user
+      // to the correct destination for their role + profile-completion state.
+      final session = sl<SessionManager>();
+      session.onLogin(
+        role: user.role,
+        profileCompleted: user.profileCompleted,
+      );
+      context.go(session.homeLocation);
     }
   }
 
