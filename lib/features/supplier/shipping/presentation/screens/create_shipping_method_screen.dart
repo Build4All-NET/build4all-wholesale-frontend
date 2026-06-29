@@ -327,6 +327,13 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                 'Pickup from branch') {
           _estimatedDeliveryTimeController.text = 'Pickup from branch';
         }
+      } else {
+        // Switching away from Pickup: drop the auto-filled placeholder so the
+        // delivery-time field isn't left stuck showing "Pickup from branch".
+        if (_estimatedDeliveryTimeController.text.trim() ==
+            'Pickup from branch') {
+          _estimatedDeliveryTimeController.clear();
+        }
       }
     });
   }
