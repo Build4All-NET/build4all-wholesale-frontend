@@ -8,6 +8,7 @@ import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_dropdown_field.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/auth/session_manager.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/extensions/select_option_l10n_extension.dart';
 import '../../../../core/location/data/models/country_model.dart';
@@ -16,6 +17,7 @@ import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/location/phone_countries.dart';
 import '../../../../core/models/select_option.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../injection_container.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/searchable_selection_field.dart';
@@ -213,6 +215,7 @@ class _CompleteRetailerProfileScreenState
 
       AppToast.success(context, l10n.retailerProfileSavedSuccessfully);
 
+      sl<SessionManager>().markProfileCompleted();
       context.go('/retailer-dashboard');
     } catch (e) {
       if (!mounted) return;

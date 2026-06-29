@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
+import '../../../../core/auth/session_manager.dart';
+import '../../../../injection_container.dart';
 import '../../data/models/retailer_profile_model.dart';
 import '../../domain/repositories/retailer_profile_repository.dart';
 import 'retailer_profile_state.dart';
@@ -295,6 +297,10 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
     try {
       await retailerProfileRepository.deleteAccount(password: password);
 
+      // The repository already cleared storage; flip the global auth state so
+      // the router redirects to /login.
+      sl<SessionManager>().onSessionExpired();
+
       emit(
         state.copyWith(isDeletingAccount: false, accountDeletedSuccess: true),
       );
@@ -318,7 +324,9 @@ class RetailerProfileCubit extends Cubit<RetailerProfileState> {
     );
 
     try {
-      await retailerProfileRepository.logout();
+      // Routes logout through the session manager so stored credentials are
+      // cleared and the router redirects to /login globally.
+      await sl<SessionManager>().signOut();
 
       emit(state.copyWith(isLoggingOut: false, logoutSuccess: true));
     } catch (e) {

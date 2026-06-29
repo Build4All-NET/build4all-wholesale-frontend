@@ -15,6 +15,7 @@ class RefreshTokenInterceptor extends Interceptor {
     required this.dio,
     required this.authStorage,
     required this.refreshService,
+    this.onSessionExpired,
   });
 
   /// The client whose requests this interceptor guards. Used to replay the
@@ -22,6 +23,10 @@ class RefreshTokenInterceptor extends Interceptor {
   final Dio dio;
   final AuthStorage authStorage;
   final AuthRefreshService refreshService;
+
+  /// Invoked once the session has been cleared because the refresh token was
+  /// rejected. Lets the app redirect to login globally.
+  final void Function()? onSessionExpired;
 
   /// Auth endpoints must never trigger a refresh-and-retry: a 401 here means
   /// the credentials/refresh token themselves were rejected.
@@ -67,6 +72,7 @@ class RefreshTokenInterceptor extends Interceptor {
     } on RefreshTokenExpiredException {
       // Refresh token gone or rejected -> the session is over.
       await authStorage.clearSession();
+      onSessionExpired?.call();
       return handler.next(err);
     } catch (_) {
       // Transient refresh failure (e.g. network). Keep the session and let the

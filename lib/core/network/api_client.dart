@@ -15,6 +15,7 @@ class ApiClient {
     this.authStorage, {
     required String baseUrl,
     AuthRefreshService? refreshService,
+    void Function()? onSessionExpired,
   }) : dio = Dio(
         BaseOptions(
           baseUrl: baseUrl,
@@ -102,6 +103,7 @@ class ApiClient {
           dio: dio,
           authStorage: authStorage,
           refreshService: refreshService,
+          onSessionExpired: onSessionExpired,
         ),
       );
     }
