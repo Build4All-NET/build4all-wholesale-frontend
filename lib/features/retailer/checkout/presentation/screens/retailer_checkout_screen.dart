@@ -295,7 +295,7 @@ class _RetailerSplitCheckoutViewState
     final redirectUrl = payment.redirectUrl;
 
     if (redirectUrl == null || redirectUrl.trim().isEmpty) {
-      AppToast.error(context, 'Card checkout URL is missing. Please try again.');
+      AppToast.error(context, context.l10n.cardCheckoutUrlMissing);
       return;
     }
 

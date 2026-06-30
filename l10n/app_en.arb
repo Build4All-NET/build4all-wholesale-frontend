@@ -1570,5 +1570,40 @@
   "enterCode": "Enter code",
   "enterNewPassword": "Enter new password",
   "reEnterNewPassword": "Re-enter new password",
-  "updatePassword": "Update Password"
+  "updatePassword": "Update Password",
+  "emailRequired": "Email is required",
+  "enterValidEmail": "Enter a valid email",
+  "passwordRequired": "Password is required",
+  "confirmPasswordRequired": "Confirm password is required",
+  "enterPassword": "Enter password",
+  "reEnterPassword": "Re-enter password",
+  "enterUsername": "Enter username",
+  "enterFirstName": "Enter first name",
+  "enterLastName": "Enter last name",
+  "createYourAccount": "Create your account",
+  "createRetailerAccountUsingEmail": "Create your retailer account using email.",
+  "verifyYourEmail": "Verify Your Email",
+  "verifyAndContinue": "Verify and Continue",
+  "publicProfile": "Public Profile",
+  "completeProfile": "Complete Profile",
+  "verifyCode": "Verify Code",
+  "step1of3": "Step 1 of 3",
+  "finishAccountSetup": "Finish your account setup to continue.",
+  "pleaseEnterVerificationCode": "Please enter the verification code",
+  "verificationCodeResent": "Verification code resent successfully",
+  "resendCodeIn": "Resend code in {seconds}s",
+  "@resendCodeIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "Object"
+      }
+    }
+  },
+  "retailerAccountCreatedPleaseLogin": "Retailer account created successfully. Please login.",
+  "accountAlreadyCreatedPleaseLogin": "Account already created. Please login.",
+  "enterValidStockQuantity": "Please enter a valid stock quantity.",
+  "stockQuantityTooHigh": "Stock quantity is too high.",
+  "enterStockGreaterThanZero": "Please enter stock greater than 0",
+  "chooseBranchesSetStock": "Choose branches and set each stock quantity below.",
+  "cardCheckoutUrlMissing": "Card checkout URL is missing. Please try again."
 }

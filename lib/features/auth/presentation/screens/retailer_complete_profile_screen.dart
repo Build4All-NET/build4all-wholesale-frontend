@@ -6,6 +6,7 @@ import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
@@ -75,7 +76,7 @@ class _RetailerCompleteProfileScreenState
 
       if (!mounted) return;
 
-      AppToast.success(context, 'Retailer account created successfully. Please login.');
+      AppToast.success(context, context.l10n.retailerAccountCreatedPleaseLogin);
 
       context.go('/login');
       return;
@@ -85,7 +86,7 @@ class _RetailerCompleteProfileScreenState
       final message = AppErrorMapper.toMessage(e);
 
       if (message.toLowerCase().contains('username already in use')) {
-        AppToast.info(context, 'Account already created. Please login.');
+        AppToast.info(context, context.l10n.accountAlreadyCreatedPleaseLogin);
 
         context.go('/login');
         return;
@@ -104,7 +105,7 @@ class _RetailerCompleteProfileScreenState
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
-        title: const Text('Complete Profile'),
+        title: Text(context.l10n.completeProfile),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
         actions: const [
@@ -135,10 +136,10 @@ class _RetailerCompleteProfileScreenState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Center(
+                        Center(
                           child: Text(
-                            'Complete Profile',
-                            style: TextStyle(
+                            context.l10n.completeProfile,
+                            style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: AppThemeTokens.textPrimary,
@@ -146,11 +147,11 @@ class _RetailerCompleteProfileScreenState
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Center(
+                        Center(
                           child: Text(
-                            'Finish your account setup to continue.',
+                            context.l10n.finishAccountSetup,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               color: AppThemeTokens.textSecondary,
                             ),
@@ -158,40 +159,40 @@ class _RetailerCompleteProfileScreenState
                         ),
                         const SizedBox(height: 28),
 
-                        const Text('Username'),
+                        Text(context.l10n.username),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _usernameController,
-                          hintText: 'Enter username',
+                          hintText: context.l10n.enterUsername,
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Username',
+                            fieldName: context.l10n.username,
                           ),
                         ),
 
                         const SizedBox(height: 16),
 
-                        const Text('First Name'),
+                        Text(context.l10n.firstName),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _firstNameController,
-                          hintText: 'Enter first name',
+                          hintText: context.l10n.enterFirstName,
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'First Name',
+                            fieldName: context.l10n.firstName,
                           ),
                         ),
 
                         const SizedBox(height: 16),
 
-                        const Text('Last Name'),
+                        Text(context.l10n.lastName),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _lastNameController,
-                          hintText: 'Enter last name',
+                          hintText: context.l10n.enterLastName,
                           validator: (value) => Validators.requiredField(
                             value,
-                            fieldName: 'Last Name',
+                            fieldName: context.l10n.lastName,
                           ),
                         ),
 
@@ -205,13 +206,13 @@ class _RetailerCompleteProfileScreenState
                                   setState(() => _isPublicProfile = value);
                                 },
                           contentPadding: EdgeInsets.zero,
-                          title: const Text('Public Profile'),
+                          title: Text(context.l10n.publicProfile),
                         ),
 
                         const SizedBox(height: 24),
 
                         PrimaryButton(
-                          text: 'Save and Continue',
+                          text: context.l10n.saveAndContinue,
                           isLoading: _isSaving,
                           onPressed: _isSaving ? null : _saveProfile,
                         ),

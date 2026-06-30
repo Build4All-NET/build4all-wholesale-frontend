@@ -282,12 +282,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
 
     if (quantity == null || quantity < 0) {
-      AppToast.error(context, 'Please enter a valid stock quantity.');
+      AppToast.error(context, context.l10n.enterValidStockQuantity);
       return;
     }
 
     if (quantity > 1000000) {
-      AppToast.error(context, 'Stock quantity is too high.');
+      AppToast.error(context, context.l10n.stockQuantityTooHigh);
       return;
     }
 
@@ -1198,7 +1198,7 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
     final quantity = _typedQuantity();
 
     if (quantity == null) {
-      AppToast.error(context, 'Please enter stock greater than 0');
+      AppToast.error(context, context.l10n.enterStockGreaterThanZero);
       return;
     }
 
@@ -1216,7 +1216,7 @@ class _InitialBranchStockSectionState extends State<_InitialBranchStockSection> 
     }
 
     if (_selectedTarget == _multipleBranchesValue) {
-      AppToast.info(context, 'Choose branches and set each stock quantity below.');
+      AppToast.info(context, context.l10n.chooseBranchesSetStock);
       return;
     }
 

@@ -6,6 +6,7 @@ import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../../data/services/auth_service.dart';
@@ -73,7 +74,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
 
   Future<void> _verifyCode() async {
     if (_codeController.text.trim().isEmpty) {
-      AppToast.error(context, 'Please enter the verification code');
+      AppToast.error(context, context.l10n.pleaseEnterVerificationCode);
       return;
     }
 
@@ -120,7 +121,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
 
       if (!mounted) return;
 
-      AppToast.success(context, 'Verification code resent successfully');
+      AppToast.success(context, context.l10n.verificationCodeResent);
 
       _startTimer();
     } catch (e) {
@@ -139,7 +140,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
-        title: const Text('Verify Code'),
+        title: Text(context.l10n.verifyCode),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
         actions: const [
@@ -169,10 +170,10 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Center(
+                      Center(
                         child: Text(
-                          'Verify Your Email',
-                          style: TextStyle(
+                          context.l10n.verifyYourEmail,
+                          style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: AppThemeTokens.textPrimary,
@@ -182,7 +183,7 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
                       const SizedBox(height: 8),
                       Center(
                         child: Text(
-                          'Enter the code sent to ${widget.email}',
+                          context.l10n.enterCodeSentToEmail(widget.email),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 15,
@@ -191,18 +192,18 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      const Text('Verification Code'),
+                      Text(context.l10n.verificationCode),
                       const SizedBox(height: 8),
                       PrimaryTextField(
                         controller: _codeController,
-                        hintText: 'Enter code',
+                        hintText: context.l10n.enterCode,
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 16),
                       Center(
                         child: _secondsLeft > 0
                             ? Text(
-                                'Resend code in $_secondsLeft s',
+                                context.l10n.resendCodeIn(_secondsLeft),
                                 style: const TextStyle(
                                   color: AppThemeTokens.textSecondary,
                                   fontSize: 14,
@@ -218,12 +219,12 @@ class _RetailerVerifyCodeScreenState extends State<RetailerVerifyCodeScreen> {
                                           strokeWidth: 2,
                                         ),
                                       )
-                                    : const Text('Resend Code'),
+                                    : Text(context.l10n.resendCode),
                               ),
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(
-                        text: 'Verify and Continue',
+                        text: context.l10n.verifyAndContinue,
                         isLoading: _isLoading,
                         onPressed: _verifyCode,
                       ),
