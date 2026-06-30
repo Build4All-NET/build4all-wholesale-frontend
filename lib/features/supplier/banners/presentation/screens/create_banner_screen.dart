@@ -6,6 +6,7 @@ import '../../../shared/utils/supplier_success_message_localizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:build4all_wholesale_frontend/core/utils/picked_image_normalizer.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/network/api_client.dart';
@@ -140,12 +141,15 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
     try {
       // Do not pass maxWidth/maxHeight/imageQuality: image_picker's native
       // resize bakes a green cast into wide-gamut (Display P3) iOS photos.
-      // The backend downscales and re-encodes the image to clean sRGB instead.
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
       );
 
       if (pickedFile == null) return;
+
+      // Convert HEIC / Display P3 photos to clean sRGB on-device before upload.
+      final normalizedPath =
+          await PickedImageNormalizer.toSrgb(pickedFile.path);
 
       setState(() {
         _uploadingImage = true;
@@ -153,7 +157,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
       final imageUrl = UploadedImageUrlResolver.normalizeForBackend(
         await _imageUploadService.uploadBannerImage(
-          pickedFile.path,
+          normalizedPath,
         ),
       );
 
