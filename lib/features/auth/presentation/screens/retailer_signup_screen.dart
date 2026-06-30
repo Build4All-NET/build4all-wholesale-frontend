@@ -6,6 +6,7 @@ import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../../data/services/auth_service.dart';
@@ -45,13 +46,13 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
+      return context.l10n.emailRequired;
     }
 
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email';
+      return context.l10n.enterValidEmail;
     }
 
     return null;
@@ -59,11 +60,11 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
   String? _validatePassword(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Password is required';
+      return context.l10n.passwordRequired;
     }
 
     if (value.trim().length < 6) {
-      return 'Password must be at least 6 characters';
+      return context.l10n.passwordMinLength;
     }
 
     return null;
@@ -71,11 +72,11 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
 
   String? _validateConfirmPassword(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Confirm password is required';
+      return context.l10n.confirmPasswordRequired;
     }
 
     if (value.trim() != _passwordController.text.trim()) {
-      return 'Passwords do not match';
+      return context.l10n.passwordsDoNotMatch;
     }
 
     return null;
@@ -155,7 +156,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
             }
           },
         ),
-        title: const Text('Create Retailer Account'),
+        title: Text(context.l10n.createRetailerAccount),
         centerTitle: true,
         actions: const [
           Padding(
@@ -190,38 +191,38 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Step 1 of 3',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.step1of3,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: AppThemeTokens.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Create your account',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.createYourAccount,
+                          style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: AppThemeTokens.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Create your retailer account using email.',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.createRetailerAccountUsingEmail,
+                          style: const TextStyle(
                             fontSize: 15,
                             color: AppThemeTokens.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 28),
 
-                        const Text('Email'),
+                        Text(context.l10n.email),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _emailController,
-                          hintText: 'Enter your email',
+                          hintText: context.l10n.enterYourEmail,
                           keyboardType: TextInputType.emailAddress,
                           validator: _validateEmail,
                         ),
@@ -229,16 +230,16 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                         const SizedBox(height: 16),
 
                         _passwordField(
-                          label: 'Password',
+                          label: context.l10n.password,
                           controller: _passwordController,
-                          hintText: 'Enter password',
+                          hintText: context.l10n.enterPassword,
                           validator: _validatePassword,
                         ),
 
                         const SizedBox(height: 8),
-                        const Text(
-                          'Password must be at least 6 characters',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.passwordMinLength,
+                          style: const TextStyle(
                             fontSize: 13,
                             color: AppThemeTokens.textSecondary,
                           ),
@@ -247,16 +248,16 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                         const SizedBox(height: 16),
 
                         _passwordField(
-                          label: 'Confirm Password',
+                          label: context.l10n.confirmPassword,
                           controller: _confirmPasswordController,
-                          hintText: 'Re-enter password',
+                          hintText: context.l10n.reEnterPassword,
                           validator: _validateConfirmPassword,
                         ),
 
                         const SizedBox(height: 24),
 
                         PrimaryButton(
-                          text: 'Continue',
+                          text: context.l10n.continueLabel,
                           isLoading: _isLoading,
                           onPressed: _continueSignup,
                         ),
@@ -268,9 +269,9 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                             alignment: WrapAlignment.center,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              const Text(
-                                'Already have an account? ',
-                                style: TextStyle(
+                              Text(
+                                context.l10n.alreadyHaveAccount,
+                                style: const TextStyle(
                                   color: AppThemeTokens.textSecondary,
                                   fontSize: 16,
                                 ),
@@ -278,7 +279,7 @@ class _RetailerSignupScreenState extends State<RetailerSignupScreen> {
                               GestureDetector(
                                 onTap: () => context.go('/login'),
                                 child: Text(
-                                  'Login',
+                                  context.l10n.login,
                                   style: TextStyle(
                                     color: Theme.of(
                                       context,

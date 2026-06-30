@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_toast.dart';
@@ -65,7 +66,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text(context.l10n.forgotPassword),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
         actions: const [
@@ -95,10 +96,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Center(
+                        Center(
                           child: Text(
-                            'Reset your password',
-                            style: TextStyle(
+                            context.l10n.resetPassword,
+                            style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: AppThemeTokens.textPrimary,
@@ -106,29 +107,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Center(
+                        Center(
                           child: Text(
-                            'Enter your email to receive a reset code.',
+                            context.l10n.enterEmailToGenerateResetToken,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               color: AppThemeTokens.textSecondary,
                             ),
                           ),
                         ),
                         const SizedBox(height: 28),
-                        const Text('Email'),
+                        Text(context.l10n.email),
                         const SizedBox(height: 8),
                         PrimaryTextField(
                           controller: _emailController,
-                          hintText: 'Enter your email',
+                          hintText: context.l10n.enterYourEmail,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (value) =>
-                              Validators.requiredField(value, fieldName: 'Email'),
+                          validator: (value) => Validators.requiredField(
+                            value,
+                            fieldName: context.l10n.email,
+                          ),
                         ),
                         const SizedBox(height: 24),
                         PrimaryButton(
-                          text: 'Send Code',
+                          text: context.l10n.sendCode,
                           isLoading: _isLoading,
                           onPressed: _submit,
                         ),

@@ -295,18 +295,17 @@ class _RetailerSplitCheckoutViewState
     final redirectUrl = payment.redirectUrl;
 
     if (redirectUrl == null || redirectUrl.trim().isEmpty) {
-      AppToast.error(context, 'Card checkout URL is missing. Please try again.');
+      AppToast.error(context, context.l10n.cardCheckoutUrlMissing);
       return;
     }
 
     final completed = await HostedCheckoutFlow.openAndAskForCompletion(
       context: context,
       redirectUrl: redirectUrl,
-      title: 'Complete card payment',
-      message:
-          'The secure Visa / Mastercard checkout opened in your browser. Return here after payment and tap “I’ve paid”.',
-      paidButtonLabel: 'I’ve paid',
-      cancelButtonLabel: 'Cancel',
+      title: context.l10n.completeCardPayment,
+      message: context.l10n.hostedCheckoutMessage,
+      paidButtonLabel: context.l10n.ivePaid,
+      cancelButtonLabel: context.l10n.cancel,
     );
 
     if (!mounted) return;

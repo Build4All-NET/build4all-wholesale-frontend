@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../domain/entities/login_account_type.dart';
 
@@ -29,10 +30,10 @@ class LoginAccountChoiceDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 22),
-            const Text(
-              'Choose how to sign in',
+            Text(
+              context.l10n.chooseHowToSignIn,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: AppThemeTokens.textPrimary,
@@ -42,8 +43,8 @@ class LoginAccountChoiceDialog extends StatelessWidget {
             _ChoiceRow(
               icon: Icons.verified_user_outlined,
               iconColor: primaryColor,
-              title: 'Enter as Owner',
-              subtitle: 'Supplier / owner dashboard',
+              title: context.l10n.enterAsOwner,
+              subtitle: context.l10n.supplierOwnerDashboard,
               onTap: () {
                 Navigator.of(context).pop(LoginAccountType.supplier);
               },
@@ -55,8 +56,8 @@ class LoginAccountChoiceDialog extends StatelessWidget {
             _ChoiceRow(
               icon: Icons.person_outline,
               iconColor: AppThemeTokens.textPrimary,
-              title: 'Enter as User',
-              subtitle: 'Retailer account',
+              title: context.l10n.enterAsUser,
+              subtitle: context.l10n.retailerAccount,
               onTap: () {
                 Navigator.of(context).pop(LoginAccountType.retailer);
               },

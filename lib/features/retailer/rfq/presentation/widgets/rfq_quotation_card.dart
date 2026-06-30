@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
+
 import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../l10n/app_localizations.dart';
@@ -197,29 +199,29 @@ class _QuotationStatusChip extends StatelessWidget {
     final normalized = status.toUpperCase();
 
     final config = switch (normalized) {
-      'ACCEPTED' => const _QuotationStatusConfig(
-        label: 'ACCEPTED',
+      'ACCEPTED' => _QuotationStatusConfig(
+        label: context.l10n.statusAccepted,
         icon: Icons.check_circle_outline_rounded,
-        color: Color(0xFF16A34A),
-        background: Color(0xFFDCFCE7),
+        color: const Color(0xFF16A34A),
+        background: const Color(0xFFDCFCE7),
       ),
-      'REJECTED' => const _QuotationStatusConfig(
-        label: 'REJECTED',
+      'REJECTED' => _QuotationStatusConfig(
+        label: context.l10n.statusRejected,
         icon: Icons.cancel_outlined,
-        color: Color(0xFFDC2626),
-        background: Color(0xFFFEE2E2),
+        color: const Color(0xFFDC2626),
+        background: const Color(0xFFFEE2E2),
       ),
-      'WITHDRAWN' => const _QuotationStatusConfig(
-        label: 'WITHDRAWN',
+      'WITHDRAWN' => _QuotationStatusConfig(
+        label: context.l10n.statusWithdrawn,
         icon: Icons.undo_rounded,
-        color: Color(0xFFB45309),
-        background: Color(0xFFFEF3C7),
+        color: const Color(0xFFB45309),
+        background: const Color(0xFFFEF3C7),
       ),
-      _ => const _QuotationStatusConfig(
-        label: 'PENDING',
+      _ => _QuotationStatusConfig(
+        label: context.l10n.statusPending,
         icon: Icons.hourglass_empty_rounded,
-        color: Color(0xFF475569),
-        background: Color(0xFFF1F5F9),
+        color: const Color(0xFF475569),
+        background: const Color(0xFFF1F5F9),
       ),
     };
 
