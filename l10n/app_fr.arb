@@ -106,6 +106,8 @@
   "cartComingSoon": "La page panier sera bientôt disponible",
   "notifications": "Notifications",
   "notificationsComingSoon": "La page notifications sera bientôt disponible",
+  "notificationsEmpty": "Vous n'avez pas encore de notifications",
+  "notificationsLoadError": "Impossible de charger les notifications",
   "promotions": "Promotions",
   "promotionsComingSoon": "Les promotions seront bientôt disponibles",
   "topRankingComingSoon": "Les produits les mieux classés apparaîtront bientôt ici",

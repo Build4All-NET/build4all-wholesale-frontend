@@ -76,6 +76,7 @@ import '../features/supplier/rfq/presentation/screens/supplier_rfq_list_screen.d
 import '../features/supplier_profile/presentation/screens/complete_supplier_profile_screen.dart';
 
 import '../l10n/app_localizations.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/retailer/rfq/presentation/screens/create_retailer_rfq_screen.dart';
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_details_screen.dart';
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_list_screen.dart';
@@ -206,10 +207,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/supplier-notifications',
-        builder: (context, state) => SupplierComingSoonScreen(
-          title: AppLocalizations.of(context)!.notifications,
-          icon: Icons.notifications_none_rounded,
-        ),
+        builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         path: '/supplier-products',
@@ -517,15 +515,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/retailer-notifications',
-        builder: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
-
-          return RetailerPlaceholderScreen(
-            title: l10n.notifications,
-            message: l10n.notificationsComingSoon,
-            icon: Icons.notifications_none_rounded,
-          );
-        },
+        builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         path: '/retailer-promotions',

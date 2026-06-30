@@ -411,4 +411,14 @@ class ApiConfig {
     return '/retailer/checkout/sessions/$sessionId/payment/mpgs-confirm';
   }
 
+  // =========================
+  // Notifications (shared notify library)
+  // =========================
+  static const String notifyNotifications = '/notify/notifications';
+  static const String notifyUnreadCount = '/notify/notifications/unread-count';
+
+  static String notifyMarkRead(int notificationId) {
+    return '/notify/notifications/$notificationId/read';
+  }
+
 }

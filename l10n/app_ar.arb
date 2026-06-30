@@ -106,6 +106,8 @@
   "cartComingSoon": "صفحة السلة ستكون متاحة قريباً",
   "notifications": "الإشعارات",
   "notificationsComingSoon": "صفحة الإشعارات ستكون متاحة قريباً",
+  "notificationsEmpty": "لا توجد لديك إشعارات بعد",
+  "notificationsLoadError": "تعذّر تحميل الإشعارات",
   "promotions": "العروض",
   "promotionsComingSoon": "العروض ستكون متاحة قريباً",
   "topRankingComingSoon": "ستظهر المنتجات الأعلى تقييماً هنا قريباً",

@@ -43,6 +43,17 @@ import 'features/auth/domain/usecases/reset_password_usecase.dart';
 import 'features/auth/presentation/bloc/auth_cubit.dart';
 
 // =========================
+// NOTIFICATIONS (shared notify library)
+// =========================
+import 'features/notifications/data/repositories/notification_repository_impl.dart';
+import 'features/notifications/data/services/notification_api_service.dart';
+import 'features/notifications/domain/repositories/notification_repository.dart';
+import 'features/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'features/notifications/domain/usecases/get_unread_count_usecase.dart';
+import 'features/notifications/domain/usecases/mark_notification_read_usecase.dart';
+import 'features/notifications/presentation/cubit/notifications_cubit.dart';
+
+// =========================
 // SUPPLIER PROFILE
 // =========================
 import 'features/supplier_profile/data/repositories/supplier_profile_repository_impl.dart';
@@ -1270,5 +1281,39 @@ Future<void> init() async {
 
   sl.registerFactory<RetailerProductAiCubit>(
     () => RetailerProductAiCubit(repository: sl<RetailerProductAiRepository>()),
+  );
+
+  // =========================
+  // NOTIFICATIONS (shared notify library)
+  // =========================
+  sl.registerLazySingleton<NotificationApiService>(
+    () => NotificationApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(sl<NotificationApiService>()),
+  );
+
+  sl.registerLazySingleton<GetNotificationsUseCase>(
+    () => GetNotificationsUseCase(sl<NotificationRepository>()),
+  );
+
+  sl.registerLazySingleton<GetUnreadCountUseCase>(
+    () => GetUnreadCountUseCase(sl<NotificationRepository>()),
+  );
+
+  sl.registerLazySingleton<MarkNotificationReadUseCase>(
+    () => MarkNotificationReadUseCase(sl<NotificationRepository>()),
+  );
+
+  sl.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(
+      getNotificationsUseCase: sl<GetNotificationsUseCase>(),
+      getUnreadCountUseCase: sl<GetUnreadCountUseCase>(),
+      markNotificationReadUseCase: sl<MarkNotificationReadUseCase>(),
+      authService: sl<AuthService>(),
+    ),
   );
 }
