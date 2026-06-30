@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:build4all_wholesale_frontend/core/utils/picked_image_normalizer.dart';
 
 import '../../../../../core/config/app_config.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -114,15 +115,18 @@ class _EditRetailerRfqViewState extends State<_EditRetailerRfqView> {
 
     // Do not pass maxWidth/maxHeight/imageQuality: image_picker's native
     // resize bakes a green cast into wide-gamut (Display P3) iOS photos.
-    // The backend downscales and re-encodes the image to clean sRGB instead.
     final picked = await picker.pickImage(
       source: ImageSource.gallery,
     );
 
     if (picked == null) return;
 
+    // Convert HEIC / Display P3 photos to clean sRGB on-device before upload.
+    final normalizedPath = await PickedImageNormalizer.toSrgb(picked.path);
+    if (!mounted) return;
+
     setState(() {
-      _pickedImage = picked;
+      _pickedImage = XFile(normalizedPath);
       _existingImageUrl = null;
     });
   }
