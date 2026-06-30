@@ -3,9 +3,16 @@ import 'package:dio/dio.dart';
 import '../../storage/auth_storage.dart';
 import '../auth_refresh_service.dart';
 
-/// Catches `401 Unauthorized` responses on authenticated requests, rotates the
+/// Catches expired-token responses on authenticated requests, rotates the
 /// access token via [AuthRefreshService], then transparently replays the
 /// original request with the new token.
+///
+/// Both `401 Unauthorized` and `403 Forbidden` are treated as token-expiry
+/// triggers: the backend's JWT filter clears the security context when a token
+/// is expired and lets the request continue unauthenticated, which Spring
+/// Security answers with `403` (not `401`). Refreshing is only attempted when
+/// the failed request actually carried a token, so a genuine permission denial
+/// surfaces after a single retry rather than looping.
 ///
 /// Works the same for both sides of the app (supplier/admin and retailer/user)
 /// because they share a single session and the central refresh endpoint
@@ -51,7 +58,21 @@ class RefreshTokenInterceptor extends Interceptor {
 
     final alreadyRetried = request.extra['__retried'] == true;
 
-    if (status != 401 || _isAuthCall(request) || alreadyRetried) {
+    // The backend returns 403 (not 401) for an expired/invalid token, so both
+    // are treated as auth failures.
+    final isAuthFailure = status == 401 || status == 403;
+
+    // Only refresh when the request actually carried a token; a 401/403 on an
+    // anonymous request is a real authorization error, not an expiry.
+    final sentToken = (request.headers['Authorization'] ?? '')
+        .toString()
+        .trim()
+        .isNotEmpty;
+
+    if (!isAuthFailure ||
+        !sentToken ||
+        _isAuthCall(request) ||
+        alreadyRetried) {
       return handler.next(err);
     }
 
@@ -76,7 +97,7 @@ class RefreshTokenInterceptor extends Interceptor {
       return handler.next(err);
     } catch (_) {
       // Transient refresh failure (e.g. network). Keep the session and let the
-      // original 401 surface so the caller can retry later.
+      // original error surface so the caller can retry later.
       return handler.next(err);
     }
   }
