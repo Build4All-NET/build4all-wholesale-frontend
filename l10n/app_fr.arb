@@ -1561,5 +1561,14 @@
   "checkoutSelectBranch": "Sélectionner la branche de préparation",
   "checkoutSearchBranch": "Rechercher une branche",
   "checkoutNoEligibleBranches": "Aucune branche ne peut préparer tous les articles du panier.",
-  "paymentCredentialAlreadyConfiguredHelper": "Déjà configuré. Laissez ce champ vide pour conserver la valeur enregistrée, ou saisissez une nouvelle valeur pour la remplacer."
+  "paymentCredentialAlreadyConfiguredHelper": "Déjà configuré. Laissez ce champ vide pour conserver la valeur enregistrée, ou saisissez une nouvelle valeur pour la remplacer.",
+  "enterYourEmail": "Entrez votre e-mail",
+  "sendCode": "Envoyer le code",
+  "allFieldsRequired": "Tous les champs sont obligatoires",
+  "enterResetCode": "Entrez le code de réinitialisation",
+  "code": "Code",
+  "enterCode": "Entrez le code",
+  "enterNewPassword": "Entrez le nouveau mot de passe",
+  "reEnterNewPassword": "Ressaisissez le nouveau mot de passe",
+  "updatePassword": "Mettre à jour le mot de passe"
 }

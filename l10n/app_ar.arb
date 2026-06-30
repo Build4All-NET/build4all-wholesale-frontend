@@ -1561,5 +1561,14 @@
   "checkoutSelectBranch": "اختر فرع تجهيز الطلب",
   "checkoutSearchBranch": "ابحث عن فرع",
   "checkoutNoEligibleBranches": "لا يوجد فرع قادر على تجهيز كل منتجات السلة.",
-  "paymentCredentialAlreadyConfiguredHelper": "تم حفظها سابقًا. اتركي الحقل فارغًا للإبقاء على القيمة الحالية، أو أدخلي قيمة جديدة لاستبدالها."
+  "paymentCredentialAlreadyConfiguredHelper": "تم حفظها سابقًا. اتركي الحقل فارغًا للإبقاء على القيمة الحالية، أو أدخلي قيمة جديدة لاستبدالها.",
+  "enterYourEmail": "أدخل بريدك الإلكتروني",
+  "sendCode": "إرسال الرمز",
+  "allFieldsRequired": "جميع الحقول مطلوبة",
+  "enterResetCode": "أدخل رمز إعادة التعيين",
+  "code": "الرمز",
+  "enterCode": "أدخل الرمز",
+  "enterNewPassword": "أدخل كلمة المرور الجديدة",
+  "reEnterNewPassword": "أعد إدخال كلمة المرور الجديدة",
+  "updatePassword": "تحديث كلمة المرور"
 }

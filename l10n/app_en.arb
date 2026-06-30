@@ -1561,5 +1561,14 @@
   "checkoutSelectBranch": "Select fulfillment branch",
   "checkoutSearchBranch": "Search branch",
   "checkoutNoEligibleBranches": "No branch can fulfill all items in your cart.",
-  "paymentCredentialAlreadyConfiguredHelper": "Already configured. Leave this field empty to keep the saved value, or enter a new value to replace it."
+  "paymentCredentialAlreadyConfiguredHelper": "Already configured. Leave this field empty to keep the saved value, or enter a new value to replace it.",
+  "enterYourEmail": "Enter your email",
+  "sendCode": "Send Code",
+  "allFieldsRequired": "All fields are required",
+  "enterResetCode": "Enter reset code",
+  "code": "Code",
+  "enterCode": "Enter code",
+  "enterNewPassword": "Enter new password",
+  "reEnterNewPassword": "Re-enter new password",
+  "updatePassword": "Update Password"
 }

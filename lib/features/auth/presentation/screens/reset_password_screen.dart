@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../common/widgets/language_selector.dart';
 import '../../../../common/widgets/primary_button.dart';
 import '../../../../common/widgets/primary_text_field.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../injection_container.dart';
@@ -49,13 +50,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     if (_codeController.text.trim().isEmpty ||
         _newPasswordController.text.trim().isEmpty ||
         _confirmPasswordController.text.trim().isEmpty) {
-      AppToast.error(context, 'All fields are required');
+      AppToast.error(context, context.l10n.allFieldsRequired);
       return;
     }
 
     if (_newPasswordController.text.trim() !=
         _confirmPasswordController.text.trim()) {
-      AppToast.error(context, 'Passwords do not match');
+      AppToast.error(context, context.l10n.passwordsDoNotMatch);
       return;
     }
 
@@ -75,7 +76,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
       if (!mounted) return;
 
-      AppToast.success(context, 'Password updated successfully');
+      AppToast.success(context, context.l10n.passwordUpdatedSuccessfully);
 
       context.go('/login');
     } catch (e) {
@@ -91,7 +92,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
       appBar: AppBar(
-        title: const Text('Reset Password'),
+        title: Text(context.l10n.resetPassword),
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
         actions: const [
@@ -119,10 +120,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Center(
+                      Center(
                         child: Text(
-                          'Enter reset code',
-                          style: TextStyle(
+                          context.l10n.enterResetCode,
+                          style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: AppThemeTokens.textPrimary,
@@ -132,7 +133,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       const SizedBox(height: 8),
                       Center(
                         child: Text(
-                          'We sent a code to ${widget.email}',
+                          context.l10n.enterCodeSentToEmail(widget.email),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 15,
@@ -141,32 +142,32 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      const Text('Code'),
+                      Text(context.l10n.code),
                       const SizedBox(height: 8),
                       PrimaryTextField(
                         controller: _codeController,
-                        hintText: 'Enter code',
+                        hintText: context.l10n.enterCode,
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 16),
-                      const Text('New Password'),
+                      Text(context.l10n.newPassword),
                       const SizedBox(height: 8),
                       PrimaryTextField(
                         controller: _newPasswordController,
-                        hintText: 'Enter new password',
+                        hintText: context.l10n.enterNewPassword,
                         obscureText: true,
                       ),
                       const SizedBox(height: 16),
-                      const Text('Confirm Password'),
+                      Text(context.l10n.confirmPassword),
                       const SizedBox(height: 8),
                       PrimaryTextField(
                         controller: _confirmPasswordController,
-                        hintText: 'Re-enter new password',
+                        hintText: context.l10n.reEnterNewPassword,
                         obscureText: true,
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(
-                        text: 'Update Password',
+                        text: context.l10n.updatePassword,
                         isLoading: _isLoading,
                         onPressed: _submit,
                       ),
