@@ -1609,5 +1609,9 @@
   "ivePaid": "لقد دفعت",
   "hostedCheckoutMessage": "تم فتح صفحة الدفع الآمنة Visa / Mastercard في المتصفح. ارجع إلى هنا بعد الدفع واضغط «لقد دفعت».",
   "rfqCouldNotBeOpened": "تعذّر فتح طلب عرض السعر المحدد.",
-  "rfqCouldNotBeOpenedForEditing": "تعذّر فتح طلب عرض السعر المحدد للتعديل."
+  "rfqCouldNotBeOpenedForEditing": "تعذّر فتح طلب عرض السعر المحدد للتعديل.",
+  "statusAccepted": "مقبول",
+  "statusRejected": "مرفوض",
+  "statusWithdrawn": "مسحوب",
+  "statusPending": "قيد الانتظار"
 }

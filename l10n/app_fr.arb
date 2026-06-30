@@ -1609,5 +1609,9 @@
   "ivePaid": "J’ai payé",
   "hostedCheckoutMessage": "Le paiement sécurisé Visa / Mastercard s’est ouvert dans votre navigateur. Revenez ici après le paiement et appuyez sur « J’ai payé ».",
   "rfqCouldNotBeOpened": "Le RFQ sélectionné n’a pas pu être ouvert.",
-  "rfqCouldNotBeOpenedForEditing": "Le RFQ sélectionné n’a pas pu être ouvert pour modification."
+  "rfqCouldNotBeOpenedForEditing": "Le RFQ sélectionné n’a pas pu être ouvert pour modification.",
+  "statusAccepted": "ACCEPTÉ",
+  "statusRejected": "REJETÉ",
+  "statusWithdrawn": "RETIRÉ",
+  "statusPending": "EN ATTENTE"
 }
