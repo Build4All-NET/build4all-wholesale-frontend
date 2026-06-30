@@ -266,7 +266,7 @@ class AppRouter {
       GoRoute(
         path: '/supplier-inventory',
         builder: (context, state) => SupplierComingSoonScreen(
-          title: 'Branch Inventory',
+          title: AppLocalizations.of(context)!.branchInventory,
           icon: Icons.warehouse_outlined,
         ),
       ),
@@ -284,7 +284,7 @@ class AppRouter {
 
           if (orderId == null) {
             return SupplierComingSoonScreen(
-              title: 'Order not found',
+              title: AppLocalizations.of(context)!.orderNotFound,
               icon: Icons.error_outline_rounded,
             );
           }
@@ -310,7 +310,7 @@ class AppRouter {
 
           if (rfqId == null) {
             return SupplierComingSoonScreen(
-              title: 'RFQ not found',
+              title: AppLocalizations.of(context)!.rfqNotFound,
               icon: Icons.error_outline_rounded,
             );
           }
@@ -590,9 +590,9 @@ class AppRouter {
           final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
 
           if (rfqId == null) {
-            return const RetailerPlaceholderScreen(
-              title: 'RFQ not found',
-              message: 'The selected RFQ could not be opened.',
+            return RetailerPlaceholderScreen(
+              title: AppLocalizations.of(context)!.rfqNotFound,
+              message: AppLocalizations.of(context)!.rfqCouldNotBeOpened,
               icon: Icons.error_outline_rounded,
             );
           }
@@ -643,9 +643,9 @@ class AppRouter {
           final rfqId = int.tryParse(state.pathParameters['rfqId'] ?? '');
 
           if (rfqId == null) {
-            return const RetailerPlaceholderScreen(
-              title: 'RFQ not found',
-              message: 'The selected RFQ could not be opened for editing.',
+            return RetailerPlaceholderScreen(
+              title: AppLocalizations.of(context)!.rfqNotFound,
+              message: AppLocalizations.of(context)!.rfqCouldNotBeOpenedForEditing,
               icon: Icons.error_outline_rounded,
             );
           }

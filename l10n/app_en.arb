@@ -1605,5 +1605,16 @@
   "stockQuantityTooHigh": "Stock quantity is too high.",
   "enterStockGreaterThanZero": "Please enter stock greater than 0",
   "chooseBranchesSetStock": "Choose branches and set each stock quantity below.",
-  "cardCheckoutUrlMissing": "Card checkout URL is missing. Please try again."
+  "cardCheckoutUrlMissing": "Card checkout URL is missing. Please try again.",
+  "branchInventory": "Branch Inventory",
+  "completeCardPayment": "Complete card payment",
+  "enterAsOwner": "Enter as Owner",
+  "supplierOwnerDashboard": "Supplier / owner dashboard",
+  "enterAsUser": "Enter as User",
+  "retailerAccount": "Retailer account",
+  "chooseHowToSignIn": "Choose how to sign in",
+  "ivePaid": "I’ve paid",
+  "hostedCheckoutMessage": "The secure Visa / Mastercard checkout opened in your browser. Return here after payment and tap “I’ve paid”.",
+  "rfqCouldNotBeOpened": "The selected RFQ could not be opened.",
+  "rfqCouldNotBeOpenedForEditing": "The selected RFQ could not be opened for editing."
 }

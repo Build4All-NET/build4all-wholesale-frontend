@@ -1598,5 +1598,16 @@
   "stockQuantityTooHigh": "La quantité de stock est trop élevée.",
   "enterStockGreaterThanZero": "Veuillez saisir un stock supérieur à 0",
   "chooseBranchesSetStock": "Choisissez les branches et définissez la quantité de stock de chacune ci-dessous.",
-  "cardCheckoutUrlMissing": "L'URL de paiement par carte est manquante. Veuillez réessayer."
+  "cardCheckoutUrlMissing": "L'URL de paiement par carte est manquante. Veuillez réessayer.",
+  "branchInventory": "Inventaire de la branche",
+  "completeCardPayment": "Finaliser le paiement par carte",
+  "enterAsOwner": "Entrer en tant que propriétaire",
+  "supplierOwnerDashboard": "Tableau de bord fournisseur / propriétaire",
+  "enterAsUser": "Entrer en tant qu'utilisateur",
+  "retailerAccount": "Compte détaillant",
+  "chooseHowToSignIn": "Choisissez comment vous connecter",
+  "ivePaid": "J’ai payé",
+  "hostedCheckoutMessage": "Le paiement sécurisé Visa / Mastercard s’est ouvert dans votre navigateur. Revenez ici après le paiement et appuyez sur « J’ai payé ».",
+  "rfqCouldNotBeOpened": "Le RFQ sélectionné n’a pas pu être ouvert.",
+  "rfqCouldNotBeOpenedForEditing": "Le RFQ sélectionné n’a pas pu être ouvert pour modification."
 }

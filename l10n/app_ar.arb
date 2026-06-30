@@ -1598,5 +1598,16 @@
   "stockQuantityTooHigh": "كمية المخزون مرتفعة جدًا.",
   "enterStockGreaterThanZero": "يرجى إدخال مخزون أكبر من 0",
   "chooseBranchesSetStock": "اختر الفروع وحدد كمية المخزون لكل منها أدناه.",
-  "cardCheckoutUrlMissing": "رابط الدفع بالبطاقة مفقود. يرجى المحاولة مرة أخرى."
+  "cardCheckoutUrlMissing": "رابط الدفع بالبطاقة مفقود. يرجى المحاولة مرة أخرى.",
+  "branchInventory": "مخزون الفرع",
+  "completeCardPayment": "إكمال الدفع بالبطاقة",
+  "enterAsOwner": "الدخول كمالك",
+  "supplierOwnerDashboard": "لوحة المورّد / المالك",
+  "enterAsUser": "الدخول كمستخدم",
+  "retailerAccount": "حساب التاجر",
+  "chooseHowToSignIn": "اختر طريقة تسجيل الدخول",
+  "ivePaid": "لقد دفعت",
+  "hostedCheckoutMessage": "تم فتح صفحة الدفع الآمنة Visa / Mastercard في المتصفح. ارجع إلى هنا بعد الدفع واضغط «لقد دفعت».",
+  "rfqCouldNotBeOpened": "تعذّر فتح طلب عرض السعر المحدد.",
+  "rfqCouldNotBeOpenedForEditing": "تعذّر فتح طلب عرض السعر المحدد للتعديل."
 }
