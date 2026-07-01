@@ -748,6 +748,29 @@ abstract class AppLocalizations {
   /// **'Couldn\'t load notifications'**
   String get notificationsLoadError;
 
+  /// Supplier drawer entry + licensing screen strings.
+  String get supplierDrawerSubscription;
+  String get licensingTitle;
+  String get licensingCurrentPlan;
+  String get licensingUpgrade;
+  String get licensingChoosePlan;
+  String get licensingBillingMonthly;
+  String get licensingBillingYearly;
+  String get licensingPaymentMethod;
+  String get licensingPayNow;
+  String get licensingNoPlans;
+  String get licensingPaymentSuccess;
+  String get licensingPaymentCancelled;
+  String get licensingSelectPlan;
+  String get licensingSelectMethod;
+  String get licensingIvePaid;
+  String get licensingCompletePaymentTitle;
+  String get licensingCompletePaymentContent;
+  String get licensingStatus;
+  String get licensingDaysLeft;
+  String get licensingUsers;
+  String get licensingUpgradePending;
+
   /// No description provided for @promotions.
   ///
   /// In en, this message translates to:

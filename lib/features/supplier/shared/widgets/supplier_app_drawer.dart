@@ -185,6 +185,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-profile',
                   ),
                   _DrawerItem(
+                    icon: Icons.workspace_premium_outlined,
+                    title: l10n.supplierDrawerSubscription,
+                    route: '/supplier-subscription',
+                  ),
+                  _DrawerItem(
                     icon: Icons.inventory_2_outlined,
                     title: l10n.supplierDrawerProducts,
                     route: '/supplier-products',

@@ -351,6 +351,72 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de charger les notifications';
 
   @override
+  String get supplierDrawerSubscription => 'Abonnement';
+
+  @override
+  String get licensingTitle => 'Abonnement';
+
+  @override
+  String get licensingCurrentPlan => 'Forfait actuel';
+
+  @override
+  String get licensingUpgrade => 'Améliorer le forfait';
+
+  @override
+  String get licensingChoosePlan => 'Choisissez un forfait';
+
+  @override
+  String get licensingBillingMonthly => 'Mensuel';
+
+  @override
+  String get licensingBillingYearly => 'Annuel';
+
+  @override
+  String get licensingPaymentMethod => 'Moyen de paiement';
+
+  @override
+  String get licensingPayNow => 'Payer maintenant';
+
+  @override
+  String get licensingNoPlans =>
+      'Aucun forfait d\'amélioration n\'est disponible pour le moment';
+
+  @override
+  String get licensingPaymentSuccess => 'Votre abonnement a été mis à jour';
+
+  @override
+  String get licensingPaymentCancelled => 'Le paiement a été annulé';
+
+  @override
+  String get licensingSelectPlan => 'Veuillez sélectionner un forfait';
+
+  @override
+  String get licensingSelectMethod =>
+      'Veuillez sélectionner un moyen de paiement';
+
+  @override
+  String get licensingIvePaid => 'J\'ai payé';
+
+  @override
+  String get licensingCompletePaymentTitle => 'Terminez votre paiement';
+
+  @override
+  String get licensingCompletePaymentContent =>
+      'Terminez le paiement dans la page ouverte, puis appuyez sur J\'ai payé.';
+
+  @override
+  String get licensingStatus => 'Statut';
+
+  @override
+  String get licensingDaysLeft => 'Jours restants';
+
+  @override
+  String get licensingUsers => 'Utilisateurs';
+
+  @override
+  String get licensingUpgradePending => 'Demande d\'amélioration en attente';
+
+  @override
   String get promotions => 'Promotions';
 
   @override
