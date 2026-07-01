@@ -27,10 +27,20 @@ class SessionManager extends ChangeNotifier {
   SessionManager({
     required this.authStorage,
     required this.authService,
+    this.onAuthenticated,
+    this.onSignedOut,
   });
 
   final AuthStorage authStorage;
   final AuthService authService;
+
+  /// Called (best-effort) when a session becomes active, so push notifications
+  /// can register the device token. Never blocks or breaks the auth flow.
+  final Future<void> Function()? onAuthenticated;
+
+  /// Called (best-effort) on explicit logout, before credentials are cleared,
+  /// so the device token can be deactivated on the backend.
+  final Future<void> Function()? onSignedOut;
 
   AuthStatus _status = AuthStatus.unknown;
   String _role = '';
@@ -94,6 +104,7 @@ class SessionManager extends ChangeNotifier {
 
     _status = AuthStatus.authenticated;
     notifyListeners();
+    _fireAuthenticated();
   }
 
   /// Marks the session active after a successful login.
@@ -105,6 +116,14 @@ class SessionManager extends ChangeNotifier {
     _profileCompleted = profileCompleted;
     _status = AuthStatus.authenticated;
     notifyListeners();
+    _fireAuthenticated();
+  }
+
+  void _fireAuthenticated() {
+    final hook = onAuthenticated;
+    if (hook == null) return;
+    // Best-effort, non-blocking: push registration must never affect auth.
+    hook().catchError((_) {});
   }
 
   /// Keeps the session in sync once the user finishes completing their profile.
@@ -116,6 +135,15 @@ class SessionManager extends ChangeNotifier {
 
   /// User-initiated logout: clears stored credentials and flips to logged out.
   Future<void> signOut() async {
+    // Deactivate the device token while the session token is still valid.
+    final hook = onSignedOut;
+    if (hook != null) {
+      try {
+        await hook();
+      } catch (_) {
+        // Best-effort; never block logout.
+      }
+    }
     await authStorage.clearSession();
     _setUnauthenticated();
   }

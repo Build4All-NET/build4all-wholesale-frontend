@@ -416,6 +416,7 @@ class ApiConfig {
   // =========================
   static const String notifyNotifications = '/notify/notifications';
   static const String notifyUnreadCount = '/notify/notifications/unread-count';
+  static const String notifyDeviceTokens = '/notify/device-tokens';
 
   static String notifyMarkRead(int notificationId) {
     return '/notify/notifications/$notificationId/read';

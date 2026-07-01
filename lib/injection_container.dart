@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'core/config/app_config.dart';
 import 'core/auth/session_manager.dart';
+import 'core/notifications/push_notification_service.dart';
 import 'core/network/api_client.dart';
 import 'core/network/auth_refresh_service.dart';
 import 'core/network/connectivity_monitor.dart';
@@ -380,10 +381,20 @@ Future<void> init() async {
   );
 
   // Single source of truth for auth state; the router listens to it.
+  sl.registerLazySingleton<PushNotificationService>(
+    () => PushNotificationService(
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+      authService: sl<AuthService>(),
+    ),
+  );
+
   sl.registerLazySingleton<SessionManager>(
     () => SessionManager(
       authStorage: sl<AuthStorage>(),
       authService: sl<AuthService>(),
+      onAuthenticated: () =>
+          sl<PushNotificationService>().registerForCurrentUser(),
+      onSignedOut: () => sl<PushNotificationService>().unregister(),
     ),
   );
 
