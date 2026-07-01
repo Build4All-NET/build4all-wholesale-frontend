@@ -638,6 +638,20 @@ jobs:
         with:
           ruby-version: "3.2"
 
+      # Cache the CocoaPods download + specs caches (NOT ios/Pods, which is
+      # cleaned below for a correct install). This is what makes repeat iOS
+      # builds fast after adding heavy pods like Firebase: the pod source
+      # archives and the specs repo no longer need to be re-fetched/cloned.
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('pubspec.lock', 'ios/Podfile') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
       - name: Install fastlane + CocoaPods
         shell: bash
         run: |
@@ -649,7 +663,9 @@ jobs:
           rm -rf ios/Pods
           rm -f ios/Podfile.lock
           cd ios
-          pod install || { pod repo update; pod install; }
+          # --repo-update refreshes specs in one pass; the cached specs make it
+          # incremental instead of a full clone.
+          pod install --repo-update
 
       - name: Create App Store Connect api_key.json
         shell: bash
