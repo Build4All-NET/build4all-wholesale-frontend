@@ -343,6 +343,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsLoadError => 'Couldn\'t load notifications';
 
   @override
+  String get supplierDrawerSubscription => 'Subscription';
+
+  @override
+  String get licensingTitle => 'Subscription';
+
+  @override
+  String get licensingCurrentPlan => 'Current plan';
+
+  @override
+  String get licensingUpgrade => 'Upgrade plan';
+
+  @override
+  String get licensingChoosePlan => 'Choose a plan';
+
+  @override
+  String get licensingBillingMonthly => 'Monthly';
+
+  @override
+  String get licensingBillingYearly => 'Yearly';
+
+  @override
+  String get licensingPaymentMethod => 'Payment method';
+
+  @override
+  String get licensingPayNow => 'Pay now';
+
+  @override
+  String get licensingNoPlans => 'No upgrade plans are available right now';
+
+  @override
+  String get licensingPaymentSuccess => 'Your subscription has been updated';
+
+  @override
+  String get licensingPaymentCancelled => 'Payment was cancelled';
+
+  @override
+  String get licensingSelectPlan => 'Please select a plan';
+
+  @override
+  String get licensingSelectMethod => 'Please select a payment method';
+
+  @override
+  String get licensingIvePaid => 'I\'ve paid';
+
+  @override
+  String get licensingCompletePaymentTitle => 'Complete your payment';
+
+  @override
+  String get licensingCompletePaymentContent =>
+      'Finish the payment in the page that opened, then tap I\'ve paid.';
+
+  @override
+  String get licensingStatus => 'Status';
+
+  @override
+  String get licensingDaysLeft => 'Days left';
+
+  @override
+  String get licensingUsers => 'Users';
+
+  @override
+  String get licensingUpgradePending => 'Upgrade request pending';
+
+  @override
   String get promotions => 'Promotions';
 
   @override

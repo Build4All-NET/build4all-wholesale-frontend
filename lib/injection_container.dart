@@ -55,6 +55,16 @@ import 'features/notifications/domain/usecases/mark_notification_read_usecase.da
 import 'features/notifications/presentation/cubit/notifications_cubit.dart';
 
 // =========================
+// SUPPLIER LICENSING (build4all subscription/upgrade)
+// =========================
+import 'features/supplier/licensing/data/repositories/licensing_repository_impl.dart';
+import 'features/supplier/licensing/data/services/licensing_api_service.dart';
+import 'features/supplier/licensing/domain/repositories/i_licensing_repository.dart';
+import 'features/supplier/licensing/domain/usecases/licensing_usecases.dart';
+import 'features/supplier/licensing/presentation/bloc/upgrade_flow_bloc.dart';
+import 'features/supplier/licensing/presentation/cubit/supplier_subscription_cubit.dart';
+
+// =========================
 // SUPPLIER PROFILE
 // =========================
 import 'features/supplier_profile/data/repositories/supplier_profile_repository_impl.dart';
@@ -1325,6 +1335,54 @@ Future<void> init() async {
       getUnreadCountUseCase: sl<GetUnreadCountUseCase>(),
       markNotificationReadUseCase: sl<MarkNotificationReadUseCase>(),
       authService: sl<AuthService>(),
+    ),
+  );
+
+  // =========================
+  // SUPPLIER LICENSING
+  // =========================
+  sl.registerLazySingleton<LicensingApiService>(
+    () => LicensingApiService(
+      sl<ApiClient>(instanceName: 'centralApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<ILicensingRepository>(
+    () => LicensingRepositoryImpl(sl<LicensingApiService>()),
+  );
+
+  sl.registerLazySingleton<GetCurrentLicensePlan>(
+    () => GetCurrentLicensePlan(sl<ILicensingRepository>()),
+  );
+  sl.registerLazySingleton<RefreshOwnerSubscription>(
+    () => RefreshOwnerSubscription(sl<ILicensingRepository>()),
+  );
+  sl.registerLazySingleton<GetAvailableUpgradePlans>(
+    () => GetAvailableUpgradePlans(sl<ILicensingRepository>()),
+  );
+  sl.registerLazySingleton<GetAvailablePaymentMethods>(
+    () => GetAvailablePaymentMethods(sl<ILicensingRepository>()),
+  );
+  sl.registerLazySingleton<InitiateUpgradePayment>(
+    () => InitiateUpgradePayment(sl<ILicensingRepository>()),
+  );
+  sl.registerLazySingleton<ConfirmUpgradePayment>(
+    () => ConfirmUpgradePayment(sl<ILicensingRepository>()),
+  );
+
+  sl.registerFactory<SupplierSubscriptionCubit>(
+    () => SupplierSubscriptionCubit(
+      getCurrentLicensePlanUc: sl<GetCurrentLicensePlan>(),
+    ),
+  );
+
+  sl.registerFactory<UpgradeFlowBloc>(
+    () => UpgradeFlowBloc(
+      getPlansUc: sl<GetAvailableUpgradePlans>(),
+      getPaymentMethodsUc: sl<GetAvailablePaymentMethods>(),
+      initiatePaymentUc: sl<InitiateUpgradePayment>(),
+      confirmPaymentUc: sl<ConfirmUpgradePayment>(),
+      refreshSubscriptionUc: sl<RefreshOwnerSubscription>(),
     ),
   );
 }

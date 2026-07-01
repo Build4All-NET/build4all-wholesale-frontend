@@ -337,6 +337,70 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsLoadError => 'تعذّر تحميل الإشعارات';
 
   @override
+  String get supplierDrawerSubscription => 'الاشتراك';
+
+  @override
+  String get licensingTitle => 'الاشتراك';
+
+  @override
+  String get licensingCurrentPlan => 'الخطة الحالية';
+
+  @override
+  String get licensingUpgrade => 'ترقية الخطة';
+
+  @override
+  String get licensingChoosePlan => 'اختر خطة';
+
+  @override
+  String get licensingBillingMonthly => 'شهري';
+
+  @override
+  String get licensingBillingYearly => 'سنوي';
+
+  @override
+  String get licensingPaymentMethod => 'طريقة الدفع';
+
+  @override
+  String get licensingPayNow => 'ادفع الآن';
+
+  @override
+  String get licensingNoPlans => 'لا توجد خطط ترقية متاحة حالياً';
+
+  @override
+  String get licensingPaymentSuccess => 'تم تحديث اشتراكك';
+
+  @override
+  String get licensingPaymentCancelled => 'تم إلغاء الدفع';
+
+  @override
+  String get licensingSelectPlan => 'الرجاء اختيار خطة';
+
+  @override
+  String get licensingSelectMethod => 'الرجاء اختيار طريقة دفع';
+
+  @override
+  String get licensingIvePaid => 'لقد دفعت';
+
+  @override
+  String get licensingCompletePaymentTitle => 'أكمل الدفع';
+
+  @override
+  String get licensingCompletePaymentContent =>
+      'أكمل الدفع في الصفحة التي فُتحت، ثم اضغط لقد دفعت.';
+
+  @override
+  String get licensingStatus => 'الحالة';
+
+  @override
+  String get licensingDaysLeft => 'الأيام المتبقية';
+
+  @override
+  String get licensingUsers => 'المستخدمون';
+
+  @override
+  String get licensingUpgradePending => 'طلب الترقية قيد المراجعة';
+
+  @override
   String get promotions => 'العروض';
 
   @override

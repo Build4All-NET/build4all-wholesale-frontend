@@ -77,6 +77,7 @@ import '../features/supplier_profile/presentation/screens/complete_supplier_prof
 
 import '../l10n/app_localizations.dart';
 import '../features/notifications/presentation/screens/notifications_screen.dart';
+import '../features/supplier/licensing/presentation/screens/supplier_subscription_screen.dart';
 import '../features/retailer/rfq/presentation/screens/create_retailer_rfq_screen.dart';
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_details_screen.dart';
 import '../features/retailer/rfq/presentation/screens/retailer_rfq_list_screen.dart';
@@ -204,6 +205,10 @@ class AppRouter {
       GoRoute(
         path: '/supplier-profile',
         builder: (context, state) => SupplierProfileDisplayScreen(),
+      ),
+      GoRoute(
+        path: '/supplier-subscription',
+        builder: (context, state) => const SupplierSubscriptionScreen(),
       ),
       GoRoute(
         path: '/supplier-notifications',
