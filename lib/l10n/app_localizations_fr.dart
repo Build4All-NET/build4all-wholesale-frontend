@@ -343,6 +343,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'La page notifications sera bientôt disponible';
 
   @override
+  String get notificationsEmpty =>
+      'Vous n\'avez pas encore de notifications';
+
+  @override
+  String get notificationsLoadError =>
+      'Impossible de charger les notifications';
+
+  @override
   String get promotions => 'Promotions';
 
   @override

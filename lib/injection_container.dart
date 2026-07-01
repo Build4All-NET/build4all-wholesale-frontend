@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'core/config/app_config.dart';
 import 'core/auth/session_manager.dart';
+import 'core/notifications/push_notification_service.dart';
 import 'core/network/api_client.dart';
 import 'core/network/auth_refresh_service.dart';
 import 'core/network/connectivity_monitor.dart';
@@ -41,6 +42,17 @@ import 'features/auth/domain/usecases/retailer_signup_usecase.dart';
 import 'features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'features/auth/domain/usecases/reset_password_usecase.dart';
 import 'features/auth/presentation/bloc/auth_cubit.dart';
+
+// =========================
+// NOTIFICATIONS (shared notify library)
+// =========================
+import 'features/notifications/data/repositories/notification_repository_impl.dart';
+import 'features/notifications/data/services/notification_api_service.dart';
+import 'features/notifications/domain/repositories/notification_repository.dart';
+import 'features/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'features/notifications/domain/usecases/get_unread_count_usecase.dart';
+import 'features/notifications/domain/usecases/mark_notification_read_usecase.dart';
+import 'features/notifications/presentation/cubit/notifications_cubit.dart';
 
 // =========================
 // SUPPLIER PROFILE
@@ -369,10 +381,20 @@ Future<void> init() async {
   );
 
   // Single source of truth for auth state; the router listens to it.
+  sl.registerLazySingleton<PushNotificationService>(
+    () => PushNotificationService(
+      projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
+      authService: sl<AuthService>(),
+    ),
+  );
+
   sl.registerLazySingleton<SessionManager>(
     () => SessionManager(
       authStorage: sl<AuthStorage>(),
       authService: sl<AuthService>(),
+      onAuthenticated: () =>
+          sl<PushNotificationService>().registerForCurrentUser(),
+      onSignedOut: () => sl<PushNotificationService>().unregister(),
     ),
   );
 
@@ -1270,5 +1292,39 @@ Future<void> init() async {
 
   sl.registerFactory<RetailerProductAiCubit>(
     () => RetailerProductAiCubit(repository: sl<RetailerProductAiRepository>()),
+  );
+
+  // =========================
+  // NOTIFICATIONS (shared notify library)
+  // =========================
+  sl.registerLazySingleton<NotificationApiService>(
+    () => NotificationApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(sl<NotificationApiService>()),
+  );
+
+  sl.registerLazySingleton<GetNotificationsUseCase>(
+    () => GetNotificationsUseCase(sl<NotificationRepository>()),
+  );
+
+  sl.registerLazySingleton<GetUnreadCountUseCase>(
+    () => GetUnreadCountUseCase(sl<NotificationRepository>()),
+  );
+
+  sl.registerLazySingleton<MarkNotificationReadUseCase>(
+    () => MarkNotificationReadUseCase(sl<NotificationRepository>()),
+  );
+
+  sl.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(
+      getNotificationsUseCase: sl<GetNotificationsUseCase>(),
+      getUnreadCountUseCase: sl<GetUnreadCountUseCase>(),
+      markNotificationReadUseCase: sl<MarkNotificationReadUseCase>(),
+      authService: sl<AuthService>(),
+    ),
   );
 }

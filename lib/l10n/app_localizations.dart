@@ -736,6 +736,18 @@ abstract class AppLocalizations {
   /// **'Notifications page will be available soon'**
   String get notificationsComingSoon;
 
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no notifications yet'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load notifications'**
+  String get notificationsLoadError;
+
   /// No description provided for @promotions.
   ///
   /// In en, this message translates to:

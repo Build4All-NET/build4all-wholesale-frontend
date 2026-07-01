@@ -106,6 +106,8 @@
   "cartComingSoon": "Cart page will be available soon",
   "notifications": "Notifications",
   "notificationsComingSoon": "Notifications page will be available soon",
+  "notificationsEmpty": "You have no notifications yet",
+  "notificationsLoadError": "Couldn't load notifications",
   "promotions": "Promotions",
   "promotionsComingSoon": "Promotions will be available soon",
   "topRankingComingSoon": "Top ranking products will appear here soon",

@@ -331,6 +331,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsComingSoon => 'صفحة الإشعارات ستكون متاحة قريباً';
 
   @override
+  String get notificationsEmpty => 'لا توجد لديك إشعارات بعد';
+
+  @override
+  String get notificationsLoadError => 'تعذّر تحميل الإشعارات';
+
+  @override
   String get promotions => 'العروض';
 
   @override
