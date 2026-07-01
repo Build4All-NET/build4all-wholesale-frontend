@@ -53,7 +53,13 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     try {
       final ok = await _ensureIdentity();
       if (!ok) {
-        emit(state.copyWith(isLoading: false, notifications: [], unreadCount: 0));
+        // Identity could not be resolved (missing OWNER_PROJECT_LINK_ID in the
+        // build, or /auth/me returned no user). Surface it instead of showing a
+        // misleading "no notifications" empty state.
+        emit(state.copyWith(
+          isLoading: false,
+          errorMessage: 'IDENTITY_UNRESOLVED',
+        ));
         return;
       }
 

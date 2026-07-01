@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../domain/entities/owner_app_access.dart';
 import '../cubit/supplier_subscription_cubit.dart';
 import '../cubit/supplier_subscription_state.dart';
@@ -30,9 +31,16 @@ class _SubscriptionView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
+      drawer: SupplierAppDrawer(),
       appBar: AppBar(
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: AppThemeTokens.textPrimary),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         title: Text(
           l10n.licensingTitle,
           style: const TextStyle(

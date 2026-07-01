@@ -96,7 +96,7 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
             actions: [
               IconButton(
                 tooltip: context.l10n.notifications,
-                onPressed: () => context.go('/supplier-notifications'),
+                onPressed: () => context.push('/supplier-notifications'),
                 icon: Stack(
                   clipBehavior: Clip.none,
                   children: [
