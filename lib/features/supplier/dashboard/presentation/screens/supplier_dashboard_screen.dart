@@ -8,6 +8,8 @@ import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../../../../notifications/presentation/cubit/notifications_cubit.dart';
 import '../../../../notifications/presentation/cubit/notifications_state.dart';
+import '../../../licensing/domain/entities/owner_app_access.dart';
+import '../../../licensing/presentation/cubit/supplier_subscription_cubit.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_event.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_state.dart';
@@ -37,6 +39,9 @@ class SupplierDashboardScreen extends StatelessWidget {
         BlocProvider<NotificationsCubit>(
           create: (_) => sl<NotificationsCubit>()..loadUnreadCount(),
         ),
+        BlocProvider<SupplierSubscriptionCubit>(
+          create: (_) => sl<SupplierSubscriptionCubit>()..load(),
+        ),
       ],
       child: _SupplierDashboardView(),
     );
@@ -54,9 +59,40 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
   static const int _lowStockPreviewCount = 3;
   bool _showAllLowStockAlerts = false;
 
+  /// Mirrors the ecommerce admin dashboard: blocked when the license API says
+  /// the dashboard is closed, the blocking reason is an expiry, or the period
+  /// end date is in the past. Soft blocks that renewing cannot fix (user
+  /// limit, dedicated server) only lock via canAccessDashboard == false.
+  bool _isLicenseBlocked(OwnerAppAccess? access) {
+    if (access == null) return false;
+    if (access.canAccessDashboard == false) return true;
+
+    final reason = (access.blockingReason ?? '').trim().toUpperCase();
+    if (reason == 'LICENSE_EXPIRED' ||
+        reason == 'SUBSCRIPTION_EXPIRED' ||
+        reason == 'APP_EXPIRED' ||
+        reason == 'NO_SUBSCRIPTION' ||
+        reason == 'NO_ACTIVE_SUBSCRIPTION') {
+      return true;
+    }
+
+    final end = DateTime.tryParse(access.periodEnd ?? '');
+    if (end != null) {
+      final today = DateTime.now();
+      if (DateTime(end.year, end.month, end.day)
+          .isBefore(DateTime(today.year, today.month, today.day))) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final licenseState = context.watch<SupplierSubscriptionCubit>().state;
+    final licenseBlocked = _isLicenseBlocked(licenseState.access);
 
     return BlocListener<SupplierDashboardBloc, SupplierDashboardState>(
       listenWhen: (previous, current) {
@@ -178,6 +214,10 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
                         _WelcomeHeaderCard(
                           supplierName: state.supplierDisplayName,
                         ),
+                        if (licenseBlocked) ...[
+                          SizedBox(height: 12),
+                          _LicenseExpiredBanner(),
+                        ],
                         SizedBox(height: 18),
                         if (state.isLoading)
                           _DashboardLoadingCard()
@@ -190,7 +230,7 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
                           title: context.l10n.supplierDashboardQuickActions,
                         ),
                         SizedBox(height: 12),
-                        _buildQuickActions(context),
+                        _buildQuickActions(context, licenseBlocked),
                         SizedBox(height: 24),
                         _SectionTitle(
                           title: context.l10n.supplierDashboardLowStockAlerts,
@@ -389,61 +429,74 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions(BuildContext context, bool licenseBlocked) {
+    // Same pattern as the ecommerce admin dashboard: when the license is
+    // expired every action shows a "renew to continue" toast instead of
+    // navigating. The backend rejects the writes too; this is the client side.
+    VoidCallback guarded(VoidCallback realAction) {
+      return () {
+        if (licenseBlocked) {
+          AppToast.error(context, context.l10n.supplierLicenseBlockedToast);
+          return;
+        }
+        realAction();
+      };
+    }
+
     final actions = [
       SupplierQuickActionCard(
         title: context.l10n.supplierAddProduct,
         icon: Icons.add_rounded,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.push('/supplier-products/add'),
+        onTap: guarded(() => context.push('/supplier-products/add')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierCreatePromotion,
         icon: Icons.local_offer_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-promotions/create'),
+        onTap: guarded(() => context.go('/supplier-promotions/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierManageBranches,
         icon: Icons.location_on_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-branches'),
+        onTap: guarded(() => context.go('/supplier-branches')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerShippingMethods,
         icon: Icons.local_shipping_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-shipping/create'),
+        onTap: guarded(() => context.go('/supplier-shipping/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierConfigureTaxes,
         icon: Icons.attach_money_rounded,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-tax-rules/create'),
+        onTap: guarded(() => context.go('/supplier-tax-rules/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierImportExcel,
         icon: Icons.upload_file_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-excel-import'),
+        onTap: guarded(() => context.go('/supplier-excel-import')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerHomeBanners,
         icon: Icons.image_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-banners/create'),
+        onTap: guarded(() => context.go('/supplier-banners/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerCoupons,
         icon: Icons.confirmation_number_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-coupons/create'),
+        onTap: guarded(() => context.go('/supplier-coupons/create')),
       ),
       SupplierQuickActionCard(
         title: _paymentMethodsDashboardLabel(context),
         icon: Icons.account_balance_wallet_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: () => context.go('/supplier-payment-methods'),
+        onTap: guarded(() => context.go('/supplier-payment-methods')),
       ),
     ];
 
@@ -458,6 +511,70 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
         childAspectRatio: 2.75,
       ),
       itemBuilder: (context, index) => actions[index],
+    );
+  }
+}
+
+/// Red banner shown at the top of the dashboard when the supplier's
+/// subscription is expired/blocked, with a shortcut to the renewal screen.
+class _LicenseExpiredBanner extends StatelessWidget {
+  const _LicenseExpiredBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.error.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.error.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.lock_outline_rounded, color: AppThemeTokens.error, size: 28),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.supplierLicenseExpiredTitle,
+                  style: TextStyle(
+                    color: AppThemeTokens.error,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  l10n.supplierLicenseExpiredBody,
+                  style: TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.5,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppThemeTokens.error,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            onPressed: () => context.push('/supplier-subscription'),
+            child: Text(
+              l10n.supplierLicenseRenew,
+              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
