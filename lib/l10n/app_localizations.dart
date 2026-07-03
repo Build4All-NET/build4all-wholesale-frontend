@@ -770,6 +770,10 @@ abstract class AppLocalizations {
   String get licensingDaysLeft;
   String get licensingUsers;
   String get licensingUpgradePending;
+  String get supplierLicenseExpiredTitle;
+  String get supplierLicenseExpiredBody;
+  String get supplierLicenseRenew;
+  String get supplierLicenseBlockedToast;
 
   /// No description provided for @promotions.
   ///

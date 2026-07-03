@@ -417,6 +417,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get licensingUpgradePending => 'Demande d\'amélioration en attente';
 
   @override
+  String get supplierLicenseExpiredTitle => 'Abonnement expiré';
+
+  @override
+  String get supplierLicenseExpiredBody => 'Votre abonnement est terminé. Renouvelez votre offre pour continuer à gérer votre boutique.';
+
+  @override
+  String get supplierLicenseRenew => 'Renouveler';
+
+  @override
+  String get supplierLicenseBlockedToast => 'Abonnement expiré — renouvelez votre offre pour continuer';
+
+  @override
   String get promotions => 'Promotions';
 
   @override

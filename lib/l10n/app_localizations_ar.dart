@@ -401,6 +401,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get licensingUpgradePending => 'طلب الترقية قيد المراجعة';
 
   @override
+  String get supplierLicenseExpiredTitle => 'انتهى الاشتراك';
+
+  @override
+  String get supplierLicenseExpiredBody => 'انتهت صلاحية اشتراكك. جدّد خطتك لتتابع إدارة متجرك.';
+
+  @override
+  String get supplierLicenseRenew => 'تجديد';
+
+  @override
+  String get supplierLicenseBlockedToast => 'انتهى الاشتراك — جدّد خطتك للمتابعة';
+
+  @override
   String get promotions => 'العروض';
 
   @override
