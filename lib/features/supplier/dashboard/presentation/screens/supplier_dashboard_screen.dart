@@ -105,7 +105,14 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
             actions: [
               IconButton(
                 tooltip: context.l10n.notifications,
-                onPressed: () => context.go('/supplier-notifications'),
+                // push (not go) so the notifications screen gets a back arrow;
+                // refresh the badge when the supplier comes back.
+                onPressed: () async {
+                  await context.push('/supplier-notifications');
+                  if (context.mounted) {
+                    context.read<NotificationsCubit>().loadUnreadCount();
+                  }
+                },
                 icon: BlocBuilder<NotificationsCubit, NotificationsState>(
                   builder: (context, notificationsState) {
                     final unread = notificationsState.unreadCount;
