@@ -6,6 +6,8 @@ import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
+import '../../../../notifications/presentation/cubit/notifications_cubit.dart';
+import '../../../../notifications/presentation/cubit/notifications_state.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_event.dart';
 import '../bloc/supplier_dashboard/supplier_dashboard_state.dart';
@@ -26,9 +28,16 @@ class SupplierDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SupplierDashboardBloc>(
-      create: (_) =>
-          sl<SupplierDashboardBloc>()..add(SupplierDashboardStarted()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SupplierDashboardBloc>(
+          create: (_) =>
+              sl<SupplierDashboardBloc>()..add(SupplierDashboardStarted()),
+        ),
+        BlocProvider<NotificationsCubit>(
+          create: (_) => sl<NotificationsCubit>()..loadUnreadCount(),
+        ),
+      ],
       child: _SupplierDashboardView(),
     );
   }
@@ -97,37 +106,43 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
               IconButton(
                 tooltip: context.l10n.notifications,
                 onPressed: () => context.go('/supplier-notifications'),
-                icon: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Icon(
-                      Icons.notifications_none_rounded,
-                      color: AppThemeTokens.textPrimary,
-                      size: 29,
-                    ),
-                    Positioned(
-                      right: -4,
-                      top: -5,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 2,
+                icon: BlocBuilder<NotificationsCubit, NotificationsState>(
+                  builder: (context, notificationsState) {
+                    final unread = notificationsState.unreadCount;
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Icon(
+                          Icons.notifications_none_rounded,
+                          color: AppThemeTokens.textPrimary,
+                          size: 29,
                         ),
-                        decoration: BoxDecoration(
-                          color: primary,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          '3',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
+                        if (unread > 0)
+                          Positioned(
+                            right: -4,
+                            top: -5,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: primary,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                unread > 99 ? '99+' : '$unread',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 ),
               ),
               SizedBox(width: 8),
