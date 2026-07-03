@@ -95,6 +95,25 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   Future<void> refresh() => load();
 
+  /// Lightweight variant for dashboard badges: fetches only the unread count,
+  /// without loading the notification list. Fails silently (badge stays at 0).
+  Future<void> loadUnreadCount() async {
+    try {
+      final ok = await _ensureIdentity();
+      if (!ok) return;
+
+      final unread = await getUnreadCountUseCase(
+        projectId: _projectId!,
+        recipientType: _recipientType!,
+        recipientId: _recipientId!,
+      );
+
+      emit(state.copyWith(unreadCount: unread));
+    } catch (_) {
+      // Badge is non-critical; keep whatever count we had.
+    }
+  }
+
   Future<void> markRead(int notificationId) async {
     final alreadyRead = state.notifications
         .any((n) => n.id == notificationId && n.read);
