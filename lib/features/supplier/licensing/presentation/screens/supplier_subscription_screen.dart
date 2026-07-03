@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/supplier_app_drawer.dart';
 import '../../domain/entities/owner_app_access.dart';
 import '../cubit/supplier_subscription_cubit.dart';
 import '../cubit/supplier_subscription_state.dart';
@@ -30,6 +31,9 @@ class _SubscriptionView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppThemeTokens.background,
+      // Drawer navigation uses context.go(), which replaces the stack: without
+      // a drawer here there is no back arrow and no menu — the user is stuck.
+      drawer: const SupplierAppDrawer(),
       appBar: AppBar(
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
