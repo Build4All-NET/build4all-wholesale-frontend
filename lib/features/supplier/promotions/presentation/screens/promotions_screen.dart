@@ -60,7 +60,20 @@ class _PromotionsViewState extends State<_PromotionsView> {
 
       if (query.isEmpty) return true;
 
-      return promotion.title.toLowerCase().contains(query);
+      final searchableText = [
+        promotion.title,
+        promotion.description ?? '',
+        promotion.discountLabel,
+        promotion.discountTypeLabel,
+        promotion.targetLabel,
+        promotion.statusLabel,
+        promotion.branchScopeLabel,
+        promotion.selectedBranchNames.join(' '),
+        promotion.minOrderAmount?.toString() ?? '',
+        promotion.maxDiscountAmount?.toString() ?? '',
+      ].join(' ').toLowerCase();
+
+      return searchableText.contains(query);
     }).toList();
   }
 

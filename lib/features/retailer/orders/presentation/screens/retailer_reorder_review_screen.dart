@@ -5,6 +5,7 @@ import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
+import '../../../cart/data/services/retailer_cart_service.dart';
 import '../../../../dashboard/presentation/widgets/retailer_product_image.dart';
 import '../../domain/entities/retailer_order_entity.dart';
 import '../../domain/entities/retailer_order_item_entity.dart';
@@ -34,6 +35,65 @@ class RetailerReorderReviewScreen extends StatelessWidget {
 class _RetailerReorderReviewView extends StatelessWidget {
   const _RetailerReorderReviewView();
 
+  Future<void> _prepareReorder(BuildContext context, int orderId) async {
+    final i18n = RetailerOrderI18n(context);
+
+    try {
+      final currentCart = await sl<RetailerCartService>().getCart();
+      final cartIsEmpty = currentCart.totalItems <= 0 || currentCart.items.isEmpty;
+
+      if (!context.mounted) return;
+
+      final mode = cartIsEmpty
+          ? _ReorderMode.replace
+          : await _showReorderModeDialog(context, i18n);
+
+      if (mode == null) {
+        AppToast.info(context, i18n.currentCartNotChanged);
+        return;
+      }
+
+      if (!context.mounted) return;
+
+      await context.read<RetailerOrdersCubit>().reorder(
+            orderId: orderId,
+            mode: mode.backendValue,
+          );
+    } catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, error);
+    }
+  }
+
+  Future<_ReorderMode?> _showReorderModeDialog(
+    BuildContext context,
+    RetailerOrderI18n i18n,
+  ) {
+    return showDialog<_ReorderMode>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(i18n.reorderCartConflictTitle),
+          content: Text(i18n.reorderCartConflictMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(i18n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(_ReorderMode.add),
+              child: Text(i18n.addToCurrentCart),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(_ReorderMode.replace),
+              child: Text(i18n.replaceCurrentCart),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final i18n = RetailerOrderI18n(context);
@@ -60,7 +120,12 @@ class _RetailerReorderReviewView extends StatelessWidget {
           }
 
           if (state.successMessage == 'ORDER_REORDERED') {
-            AppToast.success(context, i18n.reorderReadyForCheckout);
+            final warning = state.reorderWarningMessage;
+            if (warning != null && warning.trim().isNotEmpty) {
+              AppToast.warning(context, warning);
+            } else {
+              AppToast.success(context, i18n.reorderReadyForCheckout);
+            }
             context.read<RetailerOrdersCubit>().clearMessages();
             context.push('/retailer-checkout');
           }
@@ -115,11 +180,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: state.isDetailsLoading
                       ? null
-                      : () {
-                          context.read<RetailerOrdersCubit>().reorder(
-                                orderId: order.id,
-                              );
-                        },
+                      : () => _prepareReorder(context, order.id),
                   icon: state.isDetailsLoading
                       ? const SizedBox(
                           height: 18,
@@ -179,6 +240,15 @@ class _RetailerReorderReviewView extends StatelessWidget {
       ),
     );
   }
+}
+
+enum _ReorderMode {
+  add('ADD'),
+  replace('REPLACE');
+
+  final String backendValue;
+
+  const _ReorderMode(this.backendValue);
 }
 
 class _ReorderInfoCard extends StatelessWidget {

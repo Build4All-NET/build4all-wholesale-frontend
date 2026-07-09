@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +12,7 @@ import '../../data/models/retailer_home_model.dart';
 import '../../../retailer/product_ai/presentation/widgets/retailer_product_ai_button.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_pagination_footer.dart';
 import '../widgets/retailer_product_image.dart';
 import '../widgets/retailer_promotion_badge.dart';
 
@@ -41,65 +44,50 @@ class _RetailerCategoryProductsView extends StatefulWidget {
 class _RetailerCategoryProductsViewState
     extends State<_RetailerCategoryProductsView> {
   late final TextEditingController _searchController;
-
-  String _query = '';
-  String? _selectedSubCategoryName;
+  late final ScrollController _scrollController;
+  Timer? _searchDebounce;
+  int? _selectedSubCategoryId;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 
-  List<String> _extractSubCategories(List<HomeProductModel> products) {
-    final subCategoryNames = <String>{};
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
 
-    for (final subCategory in widget.category.subCategories) {
-      final name = subCategory.name.trim();
-      if (name.isNotEmpty) {
-        subCategoryNames.add(name);
-      }
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 320) {
+      context.read<RetailerHomeCubit>().loadMoreProductsByCategory();
     }
-
-    for (final product in products) {
-      final name = product.subCategoryName?.trim();
-      if (name != null && name.isNotEmpty) {
-        subCategoryNames.add(name);
-      }
-    }
-
-    final subCategories = subCategoryNames.toList()..sort();
-    return subCategories;
   }
 
-  List<HomeProductModel> _filterProducts(List<HomeProductModel> products) {
-    final cleanQuery = _query.trim().toLowerCase();
+  void _loadFirstPage() {
+    context.read<RetailerHomeCubit>().loadProductsByCategory(
+      category: widget.category,
+      subCategoryId: _selectedSubCategoryId,
+      search: _searchController.text,
+    );
+  }
 
-    return products.where((product) {
-      final productSubCategory = product.subCategoryName?.trim() ?? '';
-      final matchesSubCategory =
-          _selectedSubCategoryName == null ||
-          productSubCategory.toLowerCase() ==
-              _selectedSubCategoryName!.trim().toLowerCase();
-
-      final searchableText = [
-        product.name,
-        product.description,
-        product.categoryName ?? '',
-        product.subCategoryName ?? '',
-      ].join(' ').toLowerCase();
-
-      final matchesSearch =
-          cleanQuery.isEmpty || searchableText.contains(cleanQuery);
-
-      return matchesSubCategory && matchesSearch;
-    }).toList();
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      _loadFirstPage();
+    });
   }
 
   @override
@@ -114,8 +102,6 @@ class _RetailerCategoryProductsViewState
         titleSpacing: 0,
         title: BlocBuilder<RetailerHomeCubit, RetailerHomeState>(
           builder: (context, state) {
-            final filteredProducts = _filterProducts(state.categoryProducts);
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -132,7 +118,7 @@ class _RetailerCategoryProductsViewState
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${filteredProducts.length} ${l10n.productsLabel}',
+                  '${state.categoryProducts.length} ${l10n.productsLabel}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -149,7 +135,7 @@ class _RetailerCategoryProductsViewState
       body: BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          AppToast.error(context, state.errorMessage!);
+            AppToast.error(context, state.errorMessage!);
             context.read<RetailerHomeCubit>().clearMessages();
           }
 
@@ -159,7 +145,7 @@ class _RetailerCategoryProductsViewState
           }
         },
         builder: (context, state) {
-          if (state.isCategoryProductsLoading) {
+          if (state.isCategoryProductsLoading && state.categoryProducts.isEmpty) {
             return Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
@@ -167,36 +153,34 @@ class _RetailerCategoryProductsViewState
             );
           }
 
-          final subCategories = _extractSubCategories(state.categoryProducts);
-          final filteredProducts = _filterProducts(state.categoryProducts);
+          final products = state.categoryProducts;
 
           return RefreshIndicator(
             color: Theme.of(context).colorScheme.primary,
-            onRefresh: () => context
-                .read<RetailerHomeCubit>()
-                .loadProductsByCategory(category: widget.category),
+            onRefresh: () async => _loadFirstPage(),
             child: ListView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               children: [
                 _SearchBox(
                   controller: _searchController,
-                  onChanged: (value) {
-                    setState(() => _query = value);
-                  },
+                  onChanged: _onSearchChanged,
                 ),
                 const SizedBox(height: 12),
                 _SubCategoryChips(
-                  subCategories: subCategories,
-                  selectedSubCategoryName: _selectedSubCategoryName,
-                  onSelected: (name) {
-                    setState(() => _selectedSubCategoryName = name);
+                  subCategories: widget.category.subCategories,
+                  selectedSubCategoryId: _selectedSubCategoryId,
+                  onSelected: (subCategoryId) {
+                    setState(() => _selectedSubCategoryId = subCategoryId);
+                    _loadFirstPage();
                   },
                 ),
                 const SizedBox(height: 16),
-                if (filteredProducts.isEmpty)
+                if (products.isEmpty)
                   _EmptyProductsState(categoryName: widget.category.name)
                 else
-                  ...filteredProducts.map(
+                  ...products.map(
                     (product) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: RetailerProductListCard(
@@ -210,6 +194,11 @@ class _RetailerCategoryProductsViewState
                       ),
                     ),
                   ),
+                RetailerPaginationFooter(
+                  isLoadingMore: state.isCategoryProductsLoadingMore,
+                  hasNext: state.categoryProductsHasNext,
+                  showEndMessage: products.length > 20,
+                ),
               ],
             ),
           );
@@ -218,7 +207,6 @@ class _RetailerCategoryProductsViewState
     );
   }
 }
-
 class _SearchBox extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
@@ -257,20 +245,26 @@ class _SearchBox extends StatelessWidget {
               ),
             ),
           ),
-          if (controller.text.isNotEmpty)
-            IconButton(
-              onPressed: () {
-                controller.clear();
-                onChanged('');
-              },
-              icon: const Icon(
-                Icons.close_rounded,
-                color: AppThemeTokens.textSecondary,
-                size: 20,
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+
+              return IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: AppThemeTokens.textSecondary,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -278,13 +272,13 @@ class _SearchBox extends StatelessWidget {
 }
 
 class _SubCategoryChips extends StatelessWidget {
-  final List<String> subCategories;
-  final String? selectedSubCategoryName;
-  final ValueChanged<String?> onSelected;
+  final List<HomeSubCategoryModel> subCategories;
+  final int? selectedSubCategoryId;
+  final ValueChanged<int?> onSelected;
 
   const _SubCategoryChips({
     required this.subCategories,
-    required this.selectedSubCategoryName,
+    required this.selectedSubCategoryId,
     required this.onSelected,
   });
 
@@ -303,7 +297,7 @@ class _SubCategoryChips extends StatelessWidget {
           if (index == 0) {
             return _Chip(
               label: l10n.all,
-              selected: selectedSubCategoryName == null,
+              selected: selectedSubCategoryId == null,
               color: primary,
               onTap: () => onSelected(null),
             );
@@ -312,10 +306,10 @@ class _SubCategoryChips extends StatelessWidget {
           final subCategory = subCategories[index - 1];
 
           return _Chip(
-            label: subCategory,
-            selected: selectedSubCategoryName == subCategory,
+            label: subCategory.name,
+            selected: selectedSubCategoryId == subCategory.id,
             color: primary,
-            onTap: () => onSelected(subCategory),
+            onTap: () => onSelected(subCategory.id),
           );
         },
       ),

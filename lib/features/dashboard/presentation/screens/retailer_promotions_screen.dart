@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
@@ -5,9 +7,9 @@ import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
-import '../../data/models/retailer_home_model.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_pagination_footer.dart';
 import 'retailer_category_products_screen.dart';
 
 class RetailerPromotionsScreen extends StatelessWidget {
@@ -31,36 +33,41 @@ class _RetailerPromotionsView extends StatefulWidget {
 
 class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
   late final TextEditingController _searchController;
-  String _query = '';
+  late final ScrollController _scrollController;
+  Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 
-  List<HomeProductModel> _filterProducts(List<HomeProductModel> products) {
-    final cleanQuery = _query.trim().toLowerCase();
-    if (cleanQuery.isEmpty) return products;
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
 
-    return products.where((product) {
-      final searchableText = [
-        product.name,
-        product.description,
-        product.categoryName ?? '',
-        product.subCategoryName ?? '',
-        product.promotionTitle ?? '',
-        product.promotionLabel ?? '',
-      ].join(' ').toLowerCase();
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 320) {
+      context.read<RetailerHomeCubit>().loadMorePromotedProducts();
+    }
+  }
 
-      return searchableText.contains(cleanQuery);
-    }).toList();
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      context.read<RetailerHomeCubit>().loadPromotedProducts(search: value);
+    });
   }
 
   @override
@@ -85,7 +92,7 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
       body: BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          AppToast.error(context, state.errorMessage!);
+            AppToast.error(context, state.errorMessage!);
             context.read<RetailerHomeCubit>().clearMessages();
           }
 
@@ -95,7 +102,7 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
           }
         },
         builder: (context, state) {
-          if (state.isPromotionsLoading) {
+          if (state.isPromotionsLoading && state.promotedProducts.isEmpty) {
             return Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
@@ -103,33 +110,35 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
             );
           }
 
-          final filteredProducts = _filterProducts(state.promotedProducts);
+          final products = state.promotedProducts;
 
           return RefreshIndicator(
             color: Theme.of(context).colorScheme.primary,
-            onRefresh: () => context
-                .read<RetailerHomeCubit>()
-                .loadPromotedProducts(),
+            onRefresh: () => context.read<RetailerHomeCubit>().loadPromotedProducts(
+              search: _searchController.text,
+            ),
             child: ListView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
               children: [
-                _PromotionsHeader(count: state.promotedProducts.length),
+                _PromotionsHeader(count: products.length),
                 const SizedBox(height: 14),
                 _SearchBox(
                   controller: _searchController,
-                  onChanged: (value) => setState(() => _query = value),
+                  onChanged: _onSearchChanged,
                 ),
                 const SizedBox(height: 16),
-                if (filteredProducts.isEmpty)
+                if (products.isEmpty)
                   _EmptyPromotionsState(
-                    hasQuery: _query.trim().isNotEmpty,
+                    hasQuery: _searchController.text.trim().isNotEmpty,
                     onClear: () {
                       _searchController.clear();
-                      setState(() => _query = '');
+                      context.read<RetailerHomeCubit>().loadPromotedProducts();
                     },
                   )
                 else
-                  ...filteredProducts.map(
+                  ...products.map(
                     (product) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: RetailerProductListCard(
@@ -143,6 +152,11 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
                       ),
                     ),
                   ),
+                RetailerPaginationFooter(
+                  isLoadingMore: state.isPromotionsLoadingMore,
+                  hasNext: state.promotedProductsHasNext,
+                  showEndMessage: products.length > 20,
+                ),
               ],
             ),
           );
@@ -196,7 +210,7 @@ class _PromotionsHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '$count promoted products with active supplier promotions',
+                  '$count promoted products loaded',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -251,20 +265,26 @@ class _SearchBox extends StatelessWidget {
               ),
             ),
           ),
-          if (controller.text.isNotEmpty)
-            IconButton(
-              onPressed: () {
-                controller.clear();
-                onChanged('');
-              },
-              icon: const Icon(
-                Icons.close_rounded,
-                color: AppThemeTokens.textSecondary,
-                size: 20,
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+
+              return IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: AppThemeTokens.textSecondary,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              );
+            },
+          ),
         ],
       ),
     );

@@ -385,6 +385,59 @@ class HomeProductModel {
 }
 
 
+
+class HomeProductPageModel {
+  final List<HomeProductModel> products;
+  final int page;
+  final int size;
+  final int totalElements;
+  final int totalPages;
+  final bool hasNext;
+  final bool hasPrevious;
+
+  const HomeProductPageModel({
+    required this.products,
+    required this.page,
+    required this.size,
+    required this.totalElements,
+    required this.totalPages,
+    required this.hasNext,
+    required this.hasPrevious,
+  });
+
+  factory HomeProductPageModel.fromJson(Map<String, dynamic> json) {
+    final rawProducts = json['content'] ?? json['products'] ?? const [];
+
+    return HomeProductPageModel(
+      products: (rawProducts as List<dynamic>? ?? [])
+          .map(
+            (item) => HomeProductModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList(),
+      page: _toInt(json['page']),
+      size: _toInt(json['size'], fallback: 20),
+      totalElements: _toInt(json['totalElements']),
+      totalPages: _toInt(json['totalPages']),
+      hasNext: json['hasNext'] == true,
+      hasPrevious: json['hasPrevious'] == true,
+    );
+  }
+
+  factory HomeProductPageModel.empty({int page = 0, int size = 20}) {
+    return HomeProductPageModel(
+      products: const [],
+      page: page,
+      size: size,
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: page > 0,
+    );
+  }
+}
+
 class PromotionTierModel {
   final int? promotionId;
   final String? promotionTitle;

@@ -58,7 +58,19 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
 
       if (query.isEmpty) return true;
 
-      return rule.ruleName.toLowerCase().contains(query);
+      final searchableText = [
+        rule.ruleName,
+        rule.rateLabel,
+        rule.locationLabel,
+        rule.countryName,
+        rule.regionName ?? '',
+        rule.scopeLabel,
+        rule.shippingTaxLabel,
+        rule.statusLabel,
+        rule.notes ?? '',
+      ].join(' ').toLowerCase();
+
+      return searchableText.contains(query);
     }).toList();
   }
 

@@ -28,6 +28,8 @@ class BranchInventoryScreen extends StatefulWidget {
 
 class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
   final BranchInventoryBloc _branchInventoryBloc = sl<BranchInventoryBloc>();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -40,8 +42,47 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
 
   @override
   void dispose() {
+    _searchController.dispose();
     _branchInventoryBloc.close();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchQuery = value;
+    });
+  }
+
+  bool _matchesInventoryQuery(BranchInventoryItemEntity item) {
+    final query = _searchQuery.trim().toLowerCase();
+
+    if (query.isEmpty) return true;
+
+    final searchableText = [
+      item.productName,
+      item.categoryName,
+      item.subCategoryName ?? '',
+      item.stockQuantity.toString(),
+    ].join(' ').toLowerCase();
+
+    return searchableText.contains(query);
+  }
+
+  bool _matchesProductQuery(ProductEntity product, String query) {
+    final normalizedQuery = query.trim().toLowerCase();
+
+    if (normalizedQuery.isEmpty) return true;
+
+    final searchableText = [
+      product.name,
+      product.description,
+      product.categoryName,
+      product.subCategoryName ?? '',
+      product.price.toString(),
+      product.minimumOrderQuantity.toString(),
+    ].join(' ').toLowerCase();
+
+    return searchableText.contains(normalizedQuery);
   }
 
   Future<void> _refreshInventory() async {
@@ -69,6 +110,8 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
     }
 
     ProductEntity? selectedProduct = availableProducts.first;
+    String productSearchQuery = '';
+    final productSearchController = TextEditingController();
     final stockController = TextEditingController();
 
     final result = await showDialog<_AssignProductResult>(
@@ -94,25 +137,27 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                       ),
                     ),
                     SizedBox(height: 8),
-                    DropdownButtonFormField<ProductEntity>(
-                      value: selectedProduct,
-                      items: availableProducts.map((product) {
-                        return DropdownMenuItem<ProductEntity>(
-                          value: product,
-                          child: Text(
-                            product.name,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
+                    TextField(
+                      controller: productSearchController,
                       onChanged: (value) {
-                        if (value == null) return;
-
                         setDialogState(() {
-                          selectedProduct = value;
+                          productSearchQuery = value;
                         });
                       },
                       decoration: InputDecoration(
+                        hintText: context.l10n.searchProductsHint,
+                        prefixIcon: Icon(Icons.search_rounded, size: 20),
+                        suffixIcon: productSearchQuery.trim().isEmpty
+                            ? null
+                            : IconButton(
+                                onPressed: () {
+                                  productSearchController.clear();
+                                  setDialogState(() {
+                                    productSearchQuery = '';
+                                  });
+                                },
+                                icon: Icon(Icons.close_rounded, size: 18),
+                              ),
                         filled: true,
                         fillColor: AppThemeTokens.inputFill,
                         border: OutlineInputBorder(
@@ -122,6 +167,61 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                           borderSide: BorderSide.none,
                         ),
                       ),
+                    ),
+                    SizedBox(height: 10),
+                    Builder(
+                      builder: (context) {
+                        final filteredProducts = availableProducts
+                            .where(
+                              (product) => _matchesProductQuery(
+                                product,
+                                productSearchQuery,
+                              ),
+                            )
+                            .toList();
+
+                        final safeSelectedProduct = filteredProducts.any(
+                          (product) => product.id == selectedProduct?.id,
+                        )
+                            ? selectedProduct
+                            : null;
+
+                        if (filteredProducts.isEmpty) {
+                          return _SearchEmptyCard(
+                            text: 'No matching products found.',
+                          );
+                        }
+
+                        return DropdownButtonFormField<ProductEntity>(
+                          value: safeSelectedProduct,
+                          items: filteredProducts.map((product) {
+                            return DropdownMenuItem<ProductEntity>(
+                              value: product,
+                              child: Text(
+                                product.name,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+
+                            setDialogState(() {
+                              selectedProduct = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: AppThemeTokens.inputFill,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppThemeTokens.radiusSmall,
+                              ),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 14),
                     Text(
@@ -168,7 +268,10 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                   onPressed: () {
                     final stock = int.tryParse(stockController.text.trim());
 
-                    if (selectedProduct == null ||
+                    final product = selectedProduct;
+
+                    if (product == null ||
+                        !_matchesProductQuery(product, productSearchQuery) ||
                         stock == null ||
                         stock <= 0 ||
                         stock > 1000000) {
@@ -177,7 +280,7 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
 
                     Navigator.of(dialogContext).pop(
                       _AssignProductResult(
-                        product: selectedProduct!,
+                        product: product,
                         stockQuantity: stock,
                       ),
                     );
@@ -190,6 +293,9 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
         );
       },
     );
+
+    productSearchController.dispose();
+    stockController.dispose();
 
     if (result == null) return;
 
@@ -355,6 +461,10 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
         child: BlocBuilder<BranchInventoryBloc, BranchInventoryState>(
           builder: (context, state) {
             final primaryColor = Theme.of(context).colorScheme.primary;
+            final filteredInventoryItems = state.inventoryItems
+                .where(_matchesInventoryQuery)
+                .toList();
+            final hasSearchQuery = _searchQuery.trim().isNotEmpty;
 
             return Scaffold(
               backgroundColor: AppThemeTokens.background,
@@ -410,25 +520,112 @@ class _BranchInventoryScreenState extends State<BranchInventoryScreen> {
                         )
                       : RefreshIndicator(
                           onRefresh: _refreshInventory,
-                          child: ListView.builder(
+                          child: ListView(
                             padding: EdgeInsets.all(16),
-                            itemCount: state.inventoryItems.length,
-                            itemBuilder: (context, index) {
-                              final item = state.inventoryItems[index];
-
-                              return BranchInventoryItemCard(
-                                item: item,
-                                onUpdate: () => _showUpdateStockDialog(item),
-                                onDelete: state.isDeleting
-                                    ? () {}
-                                    : () => _deleteInventoryItem(item),
-                              );
-                            },
+                            children: [
+                              _InventorySearchField(
+                                controller: _searchController,
+                                hintText: context.l10n.searchProductsHint,
+                                onChanged: _onSearchChanged,
+                              ),
+                              SizedBox(height: 14),
+                              if (filteredInventoryItems.isEmpty &&
+                                  hasSearchQuery)
+                                _SearchEmptyCard(
+                                  text: 'No matching inventory items found.',
+                                )
+                              else
+                                ...filteredInventoryItems.map((item) {
+                                  return BranchInventoryItemCard(
+                                    item: item,
+                                    onUpdate: () =>
+                                        _showUpdateStockDialog(item),
+                                    onDelete: state.isDeleting
+                                        ? () {}
+                                        : () => _deleteInventoryItem(item),
+                                  );
+                                }),
+                            ],
                           ),
                         ),
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _InventorySearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+
+  const _InventorySearchField({
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: Icon(Icons.search_rounded, size: 20),
+        suffixIcon: controller.text.trim().isEmpty
+            ? null
+            : IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: Icon(Icons.close_rounded, size: 18),
+              ),
+        filled: true,
+        fillColor: AppThemeTokens.inputFill,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchEmptyCard extends StatelessWidget {
+  final String text;
+
+  const _SearchEmptyCard({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.search_off_rounded, color: primaryColor, size: 32),
+          SizedBox(height: 8),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+        ],
       ),
     );
   }

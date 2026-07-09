@@ -19,6 +19,19 @@ import '../../data/models/retailer_split_checkout_model.dart';
 import '../cubit/retailer_checkout_cubit.dart';
 import '../cubit/retailer_checkout_state.dart';
 
+
+class _CheckoutBlockingIssue {
+  final String title;
+  final String description;
+  final String action;
+
+  const _CheckoutBlockingIssue({
+    required this.title,
+    required this.description,
+    required this.action,
+  });
+}
+
 class RetailerCheckoutScreen extends StatelessWidget {
   const RetailerCheckoutScreen({super.key});
 
@@ -59,6 +72,7 @@ class _RetailerSplitCheckoutViewState
   bool _isLoadingCountries = false;
   bool _isLoadingRegions = false;
   bool _navigatedAfterSuccess = false;
+  bool _isCheckoutIssueDialogOpen = false;
   int? _handledOnlinePaymentSessionId;
 
   @override
@@ -120,10 +134,11 @@ class _RetailerSplitCheckoutViewState
   Future<void> _previewSplitCheckout({
     bool resetShippingSelections = false,
   }) async {
-    if (!_formKey.currentState!.validate()) return;
-
     final country = _selectedCountry;
-    if (country == null) return;
+    if (country == null) {
+      _formKey.currentState?.validate();
+      return;
+    }
 
     await context.read<RetailerCheckoutCubit>().previewSplitCheckout(
           deliveryCountryId: country.id,
@@ -133,25 +148,28 @@ class _RetailerSplitCheckoutViewState
   }
 
   Future<void> _placeSplitCheckout(RetailerCheckoutState state) async {
-    if (!_formKey.currentState!.validate()) return;
+    final formValid = _formKey.currentState?.validate() ?? false;
+    final blockingIssues = _collectCheckoutBlockingIssues(
+      state,
+      formValid: formValid,
+    );
+
+    if (blockingIssues.isNotEmpty) {
+      await _showCheckoutIssuesDialog(blockingIssues);
+      return;
+    }
 
     final country = _selectedCountry;
     final paymentMethod = state.selectedPaymentMethod;
 
-    if (country == null) return;
-
-    if (state.splitPreview == null) {
-      AppToast.info(context, context.l10n.checkoutPreviewRequired);
-      return;
-    }
-
-    if (state.hasMissingSplitShippingMethod) {
-      AppToast.info(context, context.l10n.checkoutNoShippingMethods);
-      return;
-    }
-
-    if (paymentMethod == null || paymentMethod.trim().isEmpty) {
-      AppToast.info(context, context.l10n.checkoutSelectPaymentMethod);
+    if (country == null || paymentMethod == null || paymentMethod.trim().isEmpty) {
+      await _showCheckoutIssuesDialog([
+        const _CheckoutBlockingIssue(
+          title: 'Checkout information is incomplete',
+          description: 'Some required checkout information is missing.',
+          action: 'Review the delivery details, shipping method and payment method, then try again.',
+        ),
+      ]);
       return;
     }
 
@@ -164,6 +182,374 @@ class _RetailerSplitCheckoutViewState
               ? null
               : _notesController.text.trim(),
         );
+  }
+
+  List<_CheckoutBlockingIssue> _collectCheckoutBlockingIssues(
+    RetailerCheckoutState state, {
+    required bool formValid,
+  }) {
+    final issues = <_CheckoutBlockingIssue>[];
+    final preview = state.splitPreview;
+
+    if (state.isLoadingSplitPreview) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'Order preview is still updating',
+          description: 'The checkout totals, shipping, tax and promotions are being recalculated.',
+          action: 'Wait a few seconds until the preview finishes loading, then press Place Order again.',
+        ),
+      );
+    }
+
+    if (!formValid) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'Delivery information is incomplete',
+          description: 'A required delivery field is missing or invalid.',
+          action: 'Fill the required delivery country and address fields. The address should be specific enough for delivery.',
+        ),
+      );
+    }
+
+    if (_selectedCountry == null) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'Delivery country is required',
+          description: 'The system cannot calculate shipping and tax without a delivery country.',
+          action: 'Select the delivery country, then preview the order again.',
+        ),
+      );
+    }
+
+    if (preview == null) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'Order preview is required',
+          description: 'Checkout must calculate current prices, promotions, shipping and tax before creating the order.',
+          action: 'Press Preview Order first. After the preview appears, choose shipping and payment, then place the order.',
+        ),
+      );
+      return _deduplicateCheckoutIssues(issues);
+    }
+
+    if (preview.groups.isEmpty || preview.totalItems <= 0) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'Cart is empty',
+          description: 'There are no products available to checkout.',
+          action: 'Return to the cart and add products before placing an order.',
+        ),
+      );
+    }
+
+    if (!preview.canCheckout &&
+        preview.validationMessage != null &&
+        preview.validationMessage!.trim().isNotEmpty) {
+      issues.add(_checkoutIssueFromBackendMessage(preview.validationMessage!));
+    }
+
+    for (final group in preview.groups) {
+      final branchName = group.branchName.trim().isEmpty
+          ? 'branch #${group.branchId}'
+          : group.branchName.trim();
+
+      if (!group.canCheckout &&
+          group.validationMessage != null &&
+          group.validationMessage!.trim().isNotEmpty) {
+        issues.add(_checkoutIssueFromBackendMessage(group.validationMessage!));
+      }
+
+      if (group.availableShippingMethods.isEmpty) {
+        issues.add(
+          _CheckoutBlockingIssue(
+            title: 'No shipping method is available for $branchName',
+            description: 'This branch has no active shipping method matching the selected country, region, branch and order amount.',
+            action: 'Choose another country or region, adjust the cart amount, or ask the supplier to configure an active shipping method for this branch.',
+          ),
+        );
+      } else if (group.selectedShippingMethod == null) {
+        issues.add(
+          _CheckoutBlockingIssue(
+            title: 'Shipping method is required for $branchName',
+            description: 'The order cannot be created until a valid shipping method is selected for every fulfillment branch.',
+            action: 'Select one of the available shipping methods under $branchName, then press Place Order again.',
+          ),
+        );
+      }
+    }
+
+    final enabledPaymentMethods = preview.paymentMethods
+        .where((method) => method.enabled && !method.comingSoon)
+        .toList();
+    final paymentMethod = state.selectedPaymentMethod?.trim();
+
+    if (enabledPaymentMethods.isEmpty) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'No payment method is available',
+          description: 'The supplier has not enabled an available payment method for checkout.',
+          action: 'Ask the supplier to enable Cash, Stripe or Credit / Debit Card from payment settings, then preview the order again.',
+        ),
+      );
+    } else if (paymentMethod == null || paymentMethod.isEmpty) {
+      issues.add(
+        const _CheckoutBlockingIssue(
+          title: 'Payment method is required',
+          description: 'Checkout needs a payment method before creating the order.',
+          action: 'Select Cash, Stripe or Credit / Debit Card, then place the order.',
+        ),
+      );
+    } else {
+      final paymentStillAvailable = enabledPaymentMethods.any(
+        (method) => method.methodName.toUpperCase() == paymentMethod.toUpperCase(),
+      );
+
+      if (!paymentStillAvailable) {
+        issues.add(
+          const _CheckoutBlockingIssue(
+            title: 'Selected payment method is no longer available',
+            description: 'The selected payment method was disabled or is no longer valid for this checkout.',
+            action: 'Select another available payment method and try again.',
+          ),
+        );
+      }
+    }
+
+    return _deduplicateCheckoutIssues(issues);
+  }
+
+  List<_CheckoutBlockingIssue> _deduplicateCheckoutIssues(
+    List<_CheckoutBlockingIssue> issues,
+  ) {
+    final seen = <String>{};
+    final unique = <_CheckoutBlockingIssue>[];
+
+    for (final issue in issues) {
+      final key = '${issue.title}|${issue.description}|${issue.action}';
+      if (seen.add(key)) unique.add(issue);
+    }
+
+    return unique;
+  }
+
+  _CheckoutBlockingIssue _checkoutIssueFromBackendMessage(String message) {
+    final cleaned = message.trim();
+    final lower = cleaned.toLowerCase();
+
+    if (lower.contains('cart is empty')) {
+      return const _CheckoutBlockingIssue(
+        title: 'Cart is empty',
+        description: 'There are no products available to checkout.',
+        action: 'Return to products, add items to the cart, then preview the order again.',
+      );
+    }
+
+    if (lower.contains('no shipping method') ||
+        lower.contains('shipping method is required') ||
+        lower.contains('selected shipping method')) {
+      return _CheckoutBlockingIssue(
+        title: 'Shipping method problem',
+        description: cleaned,
+        action: 'Select a valid shipping method. If none appears, change the country/region or ask the supplier to activate a shipping method for this branch and order amount.',
+      );
+    }
+
+    if (lower.contains('country')) {
+      return _CheckoutBlockingIssue(
+        title: 'Delivery country problem',
+        description: cleaned,
+        action: 'Select a valid active country, then preview the order again.',
+      );
+    }
+
+    if (lower.contains('region')) {
+      return _CheckoutBlockingIssue(
+        title: 'Delivery region problem',
+        description: cleaned,
+        action: 'Select a region that belongs to the selected country, then preview the order again.',
+      );
+    }
+
+    if (lower.contains('address')) {
+      return _CheckoutBlockingIssue(
+        title: 'Delivery address problem',
+        description: cleaned,
+        action: 'Enter a clear delivery address, then place the order again.',
+      );
+    }
+
+    if (lower.contains('stock') ||
+        lower.contains('fulfill') ||
+        lower.contains('branch can') ||
+        lower.contains('selected branch')) {
+      return _CheckoutBlockingIssue(
+        title: 'Stock or fulfillment problem',
+        description: cleaned,
+        action: 'Reduce the quantity, remove unavailable products, or ask the supplier to update branch inventory.',
+      );
+    }
+
+    if (lower.contains('product')) {
+      return _CheckoutBlockingIssue(
+        title: 'Product availability problem',
+        description: cleaned,
+        action: 'Remove unavailable or inactive products from the cart, then preview checkout again.',
+      );
+    }
+
+    if (lower.contains('payment') ||
+        lower.contains('stripe') ||
+        lower.contains('mpgs') ||
+        lower.contains('card') ||
+        lower.contains('paypal')) {
+      return _CheckoutBlockingIssue(
+        title: 'Payment problem',
+        description: cleaned,
+        action: 'Choose an enabled payment method. For online payment, make sure the supplier payment credentials are configured correctly.',
+      );
+    }
+
+    if (lower.contains('tax')) {
+      return _CheckoutBlockingIssue(
+        title: 'Tax calculation problem',
+        description: cleaned,
+        action: 'Preview the order again. If the problem remains, check that the supplier tax configuration matches the selected country and region.',
+      );
+    }
+
+    if (lower.contains('promotion') || lower.contains('discount')) {
+      return _CheckoutBlockingIssue(
+        title: 'Promotion calculation problem',
+        description: cleaned,
+        action: 'Preview the order again so current product prices and promotions are recalculated.',
+      );
+    }
+
+    if (lower.contains('server') || lower.contains('connection') || lower.contains('timeout')) {
+      return _CheckoutBlockingIssue(
+        title: 'Server connection problem',
+        description: cleaned,
+        action: 'Check the internet connection and server address, then try again.',
+      );
+    }
+
+    return _CheckoutBlockingIssue(
+      title: 'Checkout could not be completed',
+      description: cleaned.isEmpty
+          ? 'The order could not be created because checkout validation failed.'
+          : cleaned,
+      action: 'Review delivery details, shipping, payment, cart items and preview totals, then try again.',
+    );
+  }
+
+  Future<void> _showCheckoutIssuesDialog(
+    List<_CheckoutBlockingIssue> issues,
+  ) async {
+    if (!mounted || issues.isEmpty || _isCheckoutIssueDialogOpen) return;
+
+    _isCheckoutIssueDialogOpen = true;
+
+    try {
+      await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final primary = Theme.of(dialogContext).colorScheme.primary;
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(22, 22, 22, 8),
+          contentPadding: const EdgeInsets.fromLTRB(22, 8, 22, 8),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.info_outline_rounded, color: primary),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Complete checkout requirements',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Place Order is blocked for your protection. Please fix the following item(s):',
+                  style: TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontWeight: FontWeight.w700,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ...issues.asMap().entries.map((entry) {
+                  final issue = entry.value;
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppThemeTokens.background,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppThemeTokens.border),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${entry.key + 1}. ${issue.title}',
+                          style: const TextStyle(
+                            color: AppThemeTokens.textPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          issue.description,
+                          style: const TextStyle(
+                            color: AppThemeTokens.textSecondary,
+                            fontWeight: FontWeight.w600,
+                            height: 1.35,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'What to do: ${issue.action}',
+                          style: TextStyle(
+                            color: primary,
+                            fontWeight: FontWeight.w800,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text(
+                'OK',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        );
+      },
+      );
+    } finally {
+      _isCheckoutIssueDialogOpen = false;
+    }
   }
 
   Future<void> _selectSplitShippingMethod({
@@ -187,8 +573,12 @@ class _RetailerSplitCheckoutViewState
       _selectedRegion = null;
     });
 
-    context.read<RetailerCheckoutCubit>().resetSplitDeliverySelections();
     _loadRegionsForCountry(country);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _refreshSplitPreviewAfterDeliveryChange();
+    });
   }
 
   void _handleDeliveryRegionSelected(RegionModel region) {
@@ -210,7 +600,6 @@ class _RetailerSplitCheckoutViewState
 
     final country = _selectedCountry;
     if (country == null) return;
-    if (!(_formKey.currentState?.validate() ?? false)) return;
 
     await checkoutCubit.previewSplitCheckout(
       deliveryCountryId: country.id,
@@ -332,7 +721,11 @@ class _RetailerSplitCheckoutViewState
         _handleOnlinePaymentIfNeeded(state);
 
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          AppToast.error(context, state.errorMessage!);
+          final issue = _checkoutIssueFromBackendMessage(state.errorMessage!);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            _showCheckoutIssuesDialog([issue]);
+          });
           context.read<RetailerCheckoutCubit>().clearMessages();
         }
 
@@ -1098,11 +1491,7 @@ class _SplitCheckoutBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 14),
             ElevatedButton(
-              onPressed: preview == null ||
-                      state.isPlacingOrder ||
-                      state.hasMissingSplitShippingMethod
-                  ? null
-                  : onPlaceOrder,
+              onPressed: state.isPlacingOrder ? null : onPlaceOrder,
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(150, 52),
                 backgroundColor: Theme.of(context).colorScheme.primary,

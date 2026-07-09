@@ -61,7 +61,23 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
 
       if (query.isEmpty) return true;
 
-      return method.name.toLowerCase().contains(query);
+      final searchableText = [
+        method.name,
+        method.methodTypeLabel,
+        method.locationLabel,
+        method.countryName ?? '',
+        method.regionName ?? '',
+        method.branchScopeLabel,
+        method.selectedBranchNames.join(' '),
+        method.statusLabel,
+        method.costLabel,
+        method.minimumOrderLabel,
+        method.freeShippingLabel,
+        method.estimatedDeliveryTime,
+        method.notes ?? '',
+      ].join(' ').toLowerCase();
+
+      return searchableText.contains(query);
     }).toList();
   }
 

@@ -153,6 +153,8 @@ class RetailerSplitCheckoutGroupModel {
   final RetailerCheckoutTaxPreviewModel? taxPreview;
   final double taxAmount;
   final double finalTotal;
+  final bool canCheckout;
+  final String? validationMessage;
 
   const RetailerSplitCheckoutGroupModel({
     required this.branchId,
@@ -170,6 +172,8 @@ class RetailerSplitCheckoutGroupModel {
     required this.taxPreview,
     required this.taxAmount,
     required this.finalTotal,
+    this.canCheckout = true,
+    this.validationMessage,
   });
 
   factory RetailerSplitCheckoutGroupModel.fromJson(Map<String, dynamic> json) {
@@ -201,6 +205,8 @@ class RetailerSplitCheckoutGroupModel {
           : null,
       taxAmount: _toDouble(json['taxAmount']),
       finalTotal: _toDouble(json['finalTotal']),
+      canCheckout: json['canCheckout'] != false,
+      validationMessage: json['validationMessage']?.toString(),
     );
   }
 

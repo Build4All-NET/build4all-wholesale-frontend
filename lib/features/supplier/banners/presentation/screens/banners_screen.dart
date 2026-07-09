@@ -60,7 +60,17 @@ class _BannersViewState extends State<_BannersView> {
       if (!matchesStatus) return false;
       if (query.isEmpty) return true;
 
-      return banner.title.toLowerCase().contains(query);
+      final searchableText = [
+        banner.title,
+        banner.subtitle ?? '',
+        banner.targetType.label,
+        banner.targetLabelText,
+        banner.statusLabel,
+        banner.validityLabel,
+        banner.sortOrder.toString(),
+      ].join(' ').toLowerCase();
+
+      return searchableText.contains(query);
     }).toList();
   }
 

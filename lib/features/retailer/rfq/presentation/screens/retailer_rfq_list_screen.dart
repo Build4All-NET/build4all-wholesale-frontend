@@ -24,8 +24,49 @@ class RetailerRfqListScreen extends StatelessWidget {
   }
 }
 
-class _RetailerRfqListView extends StatelessWidget {
+class _RetailerRfqListView extends StatefulWidget {
   const _RetailerRfqListView();
+
+  @override
+  State<_RetailerRfqListView> createState() => _RetailerRfqListViewState();
+}
+
+class _RetailerRfqListViewState extends State<_RetailerRfqListView> {
+  late final TextEditingController _searchController;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<RfqRequestEntity> _filteredRfqs(List<RfqRequestEntity> source) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return source;
+
+    return source.where((rfq) {
+      final text = [
+        rfq.productName,
+        rfq.requirements,
+        rfq.categoryName ?? '',
+        rfq.subCategoryName ?? '',
+        rfq.status,
+        rfq.quantityLabel,
+        rfq.targetUnitPrice?.toString() ?? '',
+        rfq.deliveryLocationLabel,
+        rfq.deliveryAddress ?? '',
+      ].join(' ').toLowerCase();
+
+      return text.contains(query);
+    }).toList(growable: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +145,22 @@ class _RetailerRfqListView extends StatelessWidget {
       );
     }
 
+    final visibleRfqs = _filteredRfqs(state.rfqs);
+    final hasSearch = _searchQuery.trim().isNotEmpty;
+
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
       children: [
         const RfqInfoBanner(),
+        const SizedBox(height: 18),
+        _RfqSearchBox(
+          controller: _searchController,
+          hintText: '${l10n.searchLabel} ${l10n.rfq}',
+          onChanged: (value) {
+            setState(() => _searchQuery = value);
+          },
+        ),
         const SizedBox(height: 18),
         Row(
           children: [
@@ -136,8 +188,12 @@ class _RetailerRfqListView extends StatelessWidget {
         const SizedBox(height: 12),
         if (state.rfqs.isEmpty)
           _EmptyRfqsView(onCreate: () => context.push('/retailer-rfqs/create'))
+        else if (visibleRfqs.isEmpty)
+          _EmptySearchRfqsView(
+            message: hasSearch ? 'No matching RFQs found.' : l10n.rfqNoRfqsYet,
+          )
         else
-          ...state.rfqs.map(
+          ...visibleRfqs.map(
             (rfq) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: RfqCard(
@@ -246,6 +302,110 @@ class _RetailerRfqListView extends StatelessWidget {
   }
 }
 
+class _RfqSearchBox extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+
+  const _RfqSearchBox({
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 52,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, color: AppThemeTokens.textSecondary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              onChanged: onChanged,
+              decoration: InputDecoration(
+                hintText: hintText,
+                border: InputBorder.none,
+                isCollapsed: true,
+              ),
+              style: const TextStyle(
+                color: AppThemeTokens.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+
+              return IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: AppThemeTokens.textSecondary,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptySearchRfqsView extends StatelessWidget {
+  final String message;
+
+  const _EmptySearchRfqsView({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.search_off_rounded,
+            size: 54,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppThemeTokens.textSecondary,
+              fontWeight: FontWeight.w700,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _EmptyRfqsView extends StatelessWidget {
   final VoidCallback onCreate;
 
@@ -259,32 +419,22 @@ class _EmptyRfqsView extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppThemeTokens.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppThemeTokens.border),
       ),
       child: Column(
         children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Icon(
-              Icons.description_outlined,
-              color: Theme.of(context).colorScheme.primary,
-              size: 34,
-            ),
+          Icon(
+            Icons.request_quote_outlined,
+            size: 64,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 16),
           Text(
             l10n.rfqNoRfqsYet,
             style: const TextStyle(
               color: AppThemeTokens.textPrimary,
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -294,8 +444,8 @@ class _EmptyRfqsView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: AppThemeTokens.textSecondary,
-              height: 1.35,
-              fontWeight: FontWeight.w500,
+              height: 1.4,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 18),
@@ -304,12 +454,11 @@ class _EmptyRfqsView extends StatelessWidget {
             icon: const Icon(Icons.add_rounded),
             label: Text(l10n.rfqCreate),
             style: ElevatedButton.styleFrom(
-              elevation: 0,
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+              elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),

@@ -225,9 +225,39 @@ class RetailerOrderI18n {
       );
 
   String get currentCartWillBeReplaced => _select(
-        en: 'Proceeding will replace your current cart with these re-order items.',
-        ar: 'المتابعة ستستبدل السلة الحالية بعناصر إعادة الطلب هذه.',
-        fr: 'Continuer remplacera votre panier actuel par ces articles.',
+        en: 'Prices and product information will be refreshed from the current catalog before checkout.',
+        ar: 'سيتم تحديث الأسعار ومعلومات المنتجات من الكتالوج الحالي قبل الدفع.',
+        fr: 'Les prix et les informations produits seront actualisés depuis le catalogue actuel avant le paiement.',
+      );
+
+  String get reorderCartConflictTitle => _select(
+        en: 'Your cart is not empty',
+        ar: 'السلة ليست فارغة',
+        fr: 'Votre panier n’est pas vide',
+      );
+
+  String get reorderCartConflictMessage => _select(
+        en: 'Choose how you want to add the items from this old order.',
+        ar: 'اختَر كيف تريد إضافة عناصر هذا الطلب القديم.',
+        fr: 'Choisissez comment ajouter les articles de cette ancienne commande.',
+      );
+
+  String get addToCurrentCart => _select(
+        en: 'Add to current cart',
+        ar: 'إضافة إلى السلة الحالية',
+        fr: 'Ajouter au panier actuel',
+      );
+
+  String get replaceCurrentCart => _select(
+        en: 'Replace current cart',
+        ar: 'استبدال السلة الحالية',
+        fr: 'Remplacer le panier actuel',
+      );
+
+  String get cancel => _select(
+        en: 'Cancel',
+        ar: 'إلغاء',
+        fr: 'Annuler',
       );
 
   String get currentCartNotChanged => _select(

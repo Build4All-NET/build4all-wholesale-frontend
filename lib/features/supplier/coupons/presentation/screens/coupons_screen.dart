@@ -57,7 +57,19 @@ class _CouponsViewState extends State<_CouponsView> {
       if (!matchesStatus) return false;
       if (query.isEmpty) return true;
 
-      return coupon.code.toLowerCase().contains(query);
+      final searchableText = [
+        coupon.code,
+        coupon.description ?? '',
+        coupon.discountLabel,
+        coupon.discountTypeLabel,
+        coupon.statusLabel,
+        coupon.branchScopeLabel,
+        coupon.selectedBranchNames.join(' '),
+        coupon.minOrderAmount?.toString() ?? '',
+        coupon.maxDiscountAmount?.toString() ?? '',
+      ].join(' ').toLowerCase();
+
+      return searchableText.contains(query);
     }).toList();
   }
 

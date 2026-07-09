@@ -38,8 +38,30 @@ class SupplierPaymentMethodsScreen extends StatelessWidget {
   }
 }
 
-class _SupplierPaymentMethodsView extends StatelessWidget {
+class _SupplierPaymentMethodsView extends StatefulWidget {
   const _SupplierPaymentMethodsView();
+
+  @override
+  State<_SupplierPaymentMethodsView> createState() =>
+      _SupplierPaymentMethodsViewState();
+}
+
+class _SupplierPaymentMethodsViewState
+    extends State<_SupplierPaymentMethodsView> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchQuery = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +123,23 @@ class _SupplierPaymentMethodsView extends StatelessWidget {
             return Center(child: CircularProgressIndicator(color: primary));
           }
 
+          final query = _searchQuery.trim().toLowerCase();
+          final filteredMethods = state.methods.where((method) {
+            if (query.isEmpty) return true;
+
+            final searchableText = [
+              method.code,
+              method.displayName,
+              method.helperText,
+              method.projectEnabled ? 'enabled active' : 'disabled inactive',
+              method.supportedNow ? 'supported' : 'coming soon unsupported',
+              method.requiresCredentials ? 'credentials required' : 'no credentials',
+            ].join(' ').toLowerCase();
+
+            return searchableText.contains(query);
+          }).toList();
+          final hasSearchQuery = query.isNotEmpty;
+
           return RefreshIndicator(
             onRefresh: () async => context
                 .read<SupplierPaymentMethodsBloc>()
@@ -151,6 +190,11 @@ class _SupplierPaymentMethodsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
+                _PaymentMethodSearchField(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
+                ),
+                const SizedBox(height: 18),
 
                 // ── Method cards ──
                 if (state.methods.isEmpty)
@@ -170,8 +214,10 @@ class _SupplierPaymentMethodsView extends StatelessWidget {
                       ),
                     ),
                   )
+                else if (filteredMethods.isEmpty && hasSearchQuery)
+                  _PaymentMethodsSearchEmptyCard(primary: primary)
                 else
-                  ...state.methods.map((method) {
+                  ...filteredMethods.map((method) {
                     final code = method.code.toUpperCase();
                     final isSaving = state.savingMethodCode == code;
 
@@ -195,6 +241,88 @@ class _SupplierPaymentMethodsView extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _PaymentMethodSearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  const _PaymentMethodSearchField({
+    required this.controller,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        hintText: 'Search payment methods',
+        prefixIcon: const Icon(Icons.search_rounded, size: 20),
+        suffixIcon: controller.text.trim().isEmpty
+            ? null
+            : IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(Icons.close_rounded, size: 18),
+              ),
+        filled: true,
+        fillColor: theme.colorScheme.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.25)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.25)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.colorScheme.primary.withOpacity(0.55)),
+        ),
+      ),
+    );
+  }
+}
+
+class _PaymentMethodsSearchEmptyCard extends StatelessWidget {
+  final Color primary;
+
+  const _PaymentMethodsSearchEmptyCard({required this.primary});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.search_off_rounded, color: primary, size: 34),
+          const SizedBox(height: 10),
+          Text(
+            'No matching payment methods',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
       ),
     );
   }

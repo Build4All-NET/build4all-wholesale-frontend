@@ -441,11 +441,9 @@ class AppRouter {
           final extra = state.extra;
 
           if (extra is Map<String, dynamic> &&
-              extra['banner'] is HomeBannerModel &&
-              extra['products'] is List<HomeProductModel>) {
+              extra['banner'] is HomeBannerModel) {
             return RetailerBannerTargetScreen(
               banner: extra['banner'] as HomeBannerModel,
-              products: extra['products'] as List<HomeProductModel>,
             );
           }
 

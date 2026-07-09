@@ -6,6 +6,7 @@ class RetailerCartModel {
   final double subtotal;
   final double shippingEstimated;
   final double total;
+  final List<String> warnings;
 
   const RetailerCartModel({
     required this.items,
@@ -13,6 +14,7 @@ class RetailerCartModel {
     required this.subtotal,
     required this.shippingEstimated,
     required this.total,
+    this.warnings = const [],
   });
 
   factory RetailerCartModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,10 @@ class RetailerCartModel {
       subtotal: _toDouble(json['subtotal']),
       shippingEstimated: _toDouble(json['shippingEstimated']),
       total: _toDouble(json['total']),
+      warnings: (json['warnings'] as List<dynamic>? ?? [])
+          .map((warning) => warning.toString())
+          .where((warning) => warning.trim().isNotEmpty)
+          .toList(),
     );
   }
 }

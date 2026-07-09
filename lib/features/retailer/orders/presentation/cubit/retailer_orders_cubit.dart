@@ -87,16 +87,30 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
     }
   }
 
-  Future<void> reorder({required int orderId}) async {
-    emit(state.copyWith(isDetailsLoading: true, clearErrorMessage: true));
+  Future<void> reorder({
+    required int orderId,
+    String mode = 'REPLACE',
+  }) async {
+    emit(
+      state.copyWith(
+        isDetailsLoading: true,
+        clearErrorMessage: true,
+        clearReorderWarningMessage: true,
+      ),
+    );
 
     try {
-      await reorderRetailerOrderUseCase(orderId: orderId);
+      final cart = await reorderRetailerOrderUseCase(
+        orderId: orderId,
+        mode: mode,
+      );
+      final warnings = cart.warnings.where((warning) => warning.trim().isNotEmpty);
 
       emit(
         state.copyWith(
           isDetailsLoading: false,
           successMessage: 'ORDER_REORDERED',
+          reorderWarningMessage: warnings.isEmpty ? null : warnings.join('\n'),
         ),
       );
     } catch (e) {
@@ -114,6 +128,7 @@ class RetailerOrdersCubit extends Cubit<RetailerOrdersState> {
       state.copyWith(
         clearErrorMessage: true,
         clearSuccessMessage: true,
+        clearReorderWarningMessage: true,
       ),
     );
   }

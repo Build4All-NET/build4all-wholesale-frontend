@@ -687,7 +687,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                                 validator: _targetValueValidator,
                               ),
                             ] else ...[
-                              _FieldLabel('${context.l10n.supplierTarget} *'),
+                              _FieldLabel('${_localizedOptionLabel(context, _targetType.label)} *'),
                               if (_loadingTargets)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16),

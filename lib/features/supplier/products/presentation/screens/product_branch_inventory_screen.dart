@@ -30,6 +30,8 @@ class _ProductBranchInventoryScreenState
     extends State<ProductBranchInventoryScreen> {
   final ProductBranchInventoryBloc _productBranchInventoryBloc =
       sl<ProductBranchInventoryBloc>();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -42,8 +44,37 @@ class _ProductBranchInventoryScreenState
 
   @override
   void dispose() {
+    _searchController.dispose();
     _productBranchInventoryBloc.close();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      _searchQuery = value;
+    });
+  }
+
+  bool _matchesBranchQuery({
+    required BranchEntity branch,
+    required BranchInventoryItemEntity? inventoryItem,
+  }) {
+    final query = _searchQuery.trim().toLowerCase();
+
+    if (query.isEmpty) return true;
+
+    final searchableText = [
+      branch.name,
+      branch.city,
+      branch.address,
+      branch.regionName,
+      branch.countryName,
+      branch.status.name,
+      inventoryItem == null ? 'not assigned' : 'assigned',
+      inventoryItem?.stockQuantity.toString() ?? '0',
+    ].join(' ').toLowerCase();
+
+    return searchableText.contains(query);
   }
 
   Future<void> _refreshInventory() async {
@@ -262,6 +293,18 @@ class _ProductBranchInventoryScreenState
             BlocBuilder<ProductBranchInventoryBloc, ProductBranchInventoryState>(
           builder: (context, state) {
             final primaryColor = Theme.of(context).colorScheme.primary;
+            final visibleBranches = state.branches.where((branch) {
+              final inventoryItem = _getInventoryForBranch(
+                state: state,
+                branchId: branch.id,
+              );
+
+              return _matchesBranchQuery(
+                branch: branch,
+                inventoryItem: inventoryItem,
+              );
+            }).toList();
+            final hasSearchQuery = _searchQuery.trim().isNotEmpty;
 
             return Scaffold(
               backgroundColor: AppThemeTokens.background,
@@ -338,10 +381,20 @@ class _ProductBranchInventoryScreenState
                             ),
                           ),
                           SizedBox(height: 16),
+                          _InventorySearchField(
+                            controller: _searchController,
+                            hintText: context.l10n.searchBranchesHint,
+                            onChanged: _onSearchChanged,
+                          ),
+                          SizedBox(height: 14),
                           if (state.branches.isEmpty)
                             _EmptyBranchesCard()
+                          else if (visibleBranches.isEmpty && hasSearchQuery)
+                            _SearchEmptyCard(
+                              text: 'No matching branches found.',
+                            )
                           else
-                            ...state.branches.map((branch) {
+                            ...visibleBranches.map((branch) {
                               final inventoryItem = _getInventoryForBranch(
                                 state: state,
                                 branchId: branch.id,
@@ -373,6 +426,81 @@ class _ProductBranchInventoryScreenState
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _InventorySearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+
+  const _InventorySearchField({
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: Icon(Icons.search_rounded, size: 20),
+        suffixIcon: controller.text.trim().isEmpty
+            ? null
+            : IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: Icon(Icons.close_rounded, size: 18),
+              ),
+        filled: true,
+        fillColor: AppThemeTokens.inputFill,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppThemeTokens.radiusSmall),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchEmptyCard extends StatelessWidget {
+  final String text;
+
+  const _SearchEmptyCard({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.search_off_rounded, color: primaryColor, size: 32),
+          SizedBox(height: 8),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+        ],
       ),
     );
   }

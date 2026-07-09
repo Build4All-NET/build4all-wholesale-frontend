@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
+import '../../../cart/data/models/retailer_cart_model.dart';
 import '../models/retailer_order_model.dart';
 
 class RetailerOrderApiService {
@@ -59,10 +60,18 @@ class RetailerOrderApiService {
     }
   }
 
-  Future<void> reorder({required int orderId}) async {
+  Future<RetailerCartModel> reorder({
+    required int orderId,
+    String mode = 'REPLACE',
+  }) async {
     try {
-      await apiClient.dio.post(
+      final response = await apiClient.dio.post(
         ApiConfig.retailerOrderReorder(orderId.toString()),
+        queryParameters: {'mode': mode},
+      );
+
+      return RetailerCartModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
       );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));

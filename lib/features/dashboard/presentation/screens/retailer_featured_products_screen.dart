@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
@@ -5,29 +7,25 @@ import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
-import '../../data/models/retailer_home_model.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_pagination_footer.dart';
 import 'retailer_category_products_screen.dart';
 
 class RetailerFeaturedProductsScreen extends StatelessWidget {
-  final List<HomeProductModel> products;
-
-  const RetailerFeaturedProductsScreen({super.key, required this.products});
+  const RetailerFeaturedProductsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<RetailerHomeCubit>(),
-      child: _RetailerFeaturedProductsView(products: products),
+      create: (_) => sl<RetailerHomeCubit>()..loadAllProducts(),
+      child: const _RetailerFeaturedProductsView(),
     );
   }
 }
 
 class _RetailerFeaturedProductsView extends StatefulWidget {
-  final List<HomeProductModel> products;
-
-  const _RetailerFeaturedProductsView({required this.products});
+  const _RetailerFeaturedProductsView();
 
   @override
   State<_RetailerFeaturedProductsView> createState() =>
@@ -37,36 +35,41 @@ class _RetailerFeaturedProductsView extends StatefulWidget {
 class _RetailerFeaturedProductsViewState
     extends State<_RetailerFeaturedProductsView> {
   late final TextEditingController _searchController;
-
-  String _query = '';
+  late final ScrollController _scrollController;
+  Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 
-  List<HomeProductModel> _filteredProducts() {
-    final cleanQuery = _query.trim().toLowerCase();
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
 
-    if (cleanQuery.isEmpty) return widget.products;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 320) {
+      context.read<RetailerHomeCubit>().loadMoreAllProducts();
+    }
+  }
 
-    return widget.products.where((product) {
-      final searchableText = [
-        product.name,
-        product.description,
-        product.categoryName ?? '',
-        product.subCategoryName ?? '',
-      ].join(' ').toLowerCase();
-
-      return searchableText.contains(cleanQuery);
-    }).toList();
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      context.read<RetailerHomeCubit>().loadAllProducts(search: value);
+    });
   }
 
   @override
@@ -93,7 +96,7 @@ class _RetailerFeaturedProductsViewState
       body: BlocConsumer<RetailerHomeCubit, RetailerHomeState>(
         listener: (context, state) {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          AppToast.error(context, state.errorMessage!);
+            AppToast.error(context, state.errorMessage!);
             context.read<RetailerHomeCubit>().clearMessages();
             return;
           }
@@ -104,47 +107,66 @@ class _RetailerFeaturedProductsViewState
           }
         },
         builder: (context, state) {
-          final products = _filteredProducts();
+          if (state.isAllProductsLoading && state.allProducts.isEmpty) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            );
+          }
 
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            children: [
-              _SearchBox(
-                controller: _searchController,
-                onChanged: (value) {
-                  setState(() => _query = value);
-                },
-              ),
-              const SizedBox(height: 14),
-              Text(
-                '${products.length} ${l10n.productsLabel}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppThemeTokens.textSecondary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
+          final products = state.allProducts;
+
+          return RefreshIndicator(
+            color: Theme.of(context).colorScheme.primary,
+            onRefresh: () => context.read<RetailerHomeCubit>().loadAllProducts(
+              search: _searchController.text,
+            ),
+            child: ListView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              children: [
+                _SearchBox(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
                 ),
-              ),
-              const SizedBox(height: 14),
-              if (products.isEmpty)
-                const _EmptyFeaturedProductsState()
-              else
-                ...products.map(
-                  (product) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: RetailerProductListCard(
-                      product: product,
-                      isAdding: state.addingProductId == product.id,
-                      onAdd: () {
-                        context.read<RetailerHomeCubit>().addToCart(
-                          product: product,
-                        );
-                      },
-                    ),
+                const SizedBox(height: 14),
+                Text(
+                  '${products.length} ${l10n.productsLabel}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-            ],
+                const SizedBox(height: 14),
+                if (products.isEmpty)
+                  const _EmptyFeaturedProductsState()
+                else
+                  ...products.map(
+                    (product) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: RetailerProductListCard(
+                        product: product,
+                        isAdding: state.addingProductId == product.id,
+                        onAdd: () {
+                          context.read<RetailerHomeCubit>().addToCart(
+                            product: product,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                RetailerPaginationFooter(
+                  isLoadingMore: state.isAllProductsLoadingMore,
+                  hasNext: state.allProductsHasNext,
+                  showEndMessage: products.length > 20,
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -190,20 +212,26 @@ class _SearchBox extends StatelessWidget {
               ),
             ),
           ),
-          if (controller.text.isNotEmpty)
-            IconButton(
-              onPressed: () {
-                controller.clear();
-                onChanged('');
-              },
-              icon: const Icon(
-                Icons.close_rounded,
-                color: AppThemeTokens.textSecondary,
-                size: 20,
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+
+              return IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: AppThemeTokens.textSecondary,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              );
+            },
+          ),
         ],
       ),
     );

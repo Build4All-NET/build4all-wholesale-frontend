@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
+import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../domain/entities/retailer_order_entity.dart';
@@ -23,8 +24,51 @@ class RetailerOrdersScreen extends StatelessWidget {
   }
 }
 
-class _RetailerOrdersView extends StatelessWidget {
+class _RetailerOrdersView extends StatefulWidget {
   const _RetailerOrdersView();
+
+  @override
+  State<_RetailerOrdersView> createState() => _RetailerOrdersViewState();
+}
+
+class _RetailerOrdersViewState extends State<_RetailerOrdersView> {
+  late final TextEditingController _searchController;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<RetailerOrderEntity> _searchOrders(List<RetailerOrderEntity> source) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return source;
+
+    return source.where((order) {
+      final itemNames = order.items.map((item) => item.productName).join(' ');
+      final text = [
+        order.orderNumber,
+        order.status.name,
+        order.paymentMethod,
+        order.deliveryAddress,
+        order.branchName ?? '',
+        order.branchCity ?? '',
+        order.branchAddress ?? '',
+        order.totalAmount.toStringAsFixed(2),
+        order.totalItems.toString(),
+        itemNames,
+      ].join(' ').toLowerCase();
+
+      return text.contains(query);
+    }).toList(growable: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +108,29 @@ class _RetailerOrdersView extends StatelessWidget {
             );
           }
 
+          final filteredByStatus = state.filteredOrders;
+          final visibleOrders = _searchOrders(filteredByStatus);
+          final hasSearch = _searchQuery.trim().isNotEmpty;
+
           return RefreshIndicator(
             onRefresh: () => context.read<RetailerOrdersCubit>().refreshOrders(),
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
+                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+                    child: _OrderSearchBox(
+                      controller: _searchController,
+                      hintText: context.l10n.searchOrdersHint,
+                      onChanged: (value) {
+                        setState(() => _searchQuery = value);
+                      },
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                     child: _OrderFilterTabs(state: state),
                   ),
                 ),
@@ -82,7 +142,15 @@ class _RetailerOrdersView extends StatelessWidget {
                       message: i18n.noOrdersMessage,
                     ),
                   )
-                else if (state.filteredOrders.isEmpty)
+                else if (filteredByStatus.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _EmptyOrdersState(
+                      title: i18n.noOrdersTitle,
+                      message: i18n.noFilteredOrders,
+                    ),
+                  )
+                else if (visibleOrders.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: _EmptyOrdersState(
@@ -94,9 +162,9 @@ class _RetailerOrdersView extends StatelessWidget {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                     sliver: SliverList.builder(
-                      itemCount: state.filteredOrders.length,
+                      itemCount: visibleOrders.length,
                       itemBuilder: (context, index) {
-                        final order = state.filteredOrders[index];
+                        final order = visibleOrders[index];
 
                         return RetailerOrderCard(
                           order: order,
@@ -153,7 +221,73 @@ class _RetailerOrdersView extends StatelessWidget {
       context.read<RetailerOrdersCubit>().cancelOrder(orderId: order.id);
     }
   }
+}
 
+class _OrderSearchBox extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+
+  const _OrderSearchBox({
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 52,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppThemeTokens.border),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, color: AppThemeTokens.textSecondary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              onChanged: onChanged,
+              decoration: InputDecoration(
+                hintText: hintText,
+                border: InputBorder.none,
+                isCollapsed: true,
+              ),
+              style: const TextStyle(
+                color: AppThemeTokens.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+
+              return IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: AppThemeTokens.textSecondary,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _OrderFilterTabs extends StatelessWidget {

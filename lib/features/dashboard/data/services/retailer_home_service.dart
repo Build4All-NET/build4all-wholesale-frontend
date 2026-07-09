@@ -22,56 +22,123 @@ class RetailerHomeService {
     }
   }
 
-  Future<List<HomeProductModel>> getProductsByCategory({
+  Future<HomeProductPageModel> getProducts({
+    required int page,
+    int size = 20,
+    String? search,
+    int? categoryId,
+    int? subCategoryId,
+  }) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerHomeProducts,
+        queryParameters: _productQueryParameters(
+          page: page,
+          size: size,
+          search: search,
+          categoryId: categoryId,
+          subCategoryId: subCategoryId,
+        ),
+      );
+
+      return HomeProductPageModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<HomeProductPageModel> getProductsByCategory({
     required int categoryId,
+    required int page,
+    int size = 20,
+    String? search,
+    int? subCategoryId,
   }) async {
     try {
       final response = await apiClient.dio.get(
         ApiConfig.retailerHomeCategoryProducts(categoryId),
+        queryParameters: _productQueryParameters(
+          page: page,
+          size: size,
+          search: search,
+          subCategoryId: subCategoryId,
+        ),
       );
 
-      return (response.data as List<dynamic>? ?? [])
-          .map(
-            (item) => HomeProductModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
-          )
-          .toList();
+      return HomeProductPageModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<List<HomeProductModel>> searchProducts(String query) async {
+  Future<HomeProductPageModel> searchProducts({
+    required String query,
+    required int page,
+    int size = 20,
+  }) async {
     try {
       final response = await apiClient.dio.get(
         ApiConfig.retailerHomeSearch,
-        queryParameters: {'query': query},
+        queryParameters: {'query': query, 'page': page, 'size': size},
       );
 
-      return (response.data as List<dynamic>? ?? [])
-          .map(
-            (item) => HomeProductModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
-          )
-          .toList();
+      return HomeProductPageModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<List<HomeProductModel>> getPromotedProducts() async {
+  Future<HomeProductPageModel> getPromotedProducts({
+    required int page,
+    int size = 20,
+    String? search,
+  }) async {
     try {
-      final response = await apiClient.dio.get(ApiConfig.retailerPromotions);
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerPromotions,
+        queryParameters: _productQueryParameters(
+          page: page,
+          size: size,
+          search: search,
+        ),
+      );
 
-      return (response.data as List<dynamic>? ?? [])
-          .map(
-            (item) => HomeProductModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
-          )
-          .toList();
+      return HomeProductPageModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<HomeProductPageModel> getBannerTargetProducts({
+    required HomeBannerModel banner,
+    required int page,
+    int size = 20,
+    String? search,
+  }) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerBannerTargetProducts,
+        queryParameters: {
+          'targetType': banner.targetType,
+          if (banner.targetValue != null) 'targetValue': banner.targetValue,
+          'page': page,
+          'size': size,
+          if (search != null && search.trim().isNotEmpty)
+            'search': search.trim(),
+        },
+      );
+
+      return HomeProductPageModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
@@ -91,6 +158,22 @@ class RetailerHomeService {
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
+  }
+
+  Map<String, dynamic> _productQueryParameters({
+    required int page,
+    required int size,
+    String? search,
+    int? categoryId,
+    int? subCategoryId,
+  }) {
+    return {
+      'page': page,
+      'size': size,
+      if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      if (categoryId != null) 'categoryId': categoryId,
+      if (subCategoryId != null) 'subCategoryId': subCategoryId,
+    };
   }
 
   String _extractMessage(DioException e) {

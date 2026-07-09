@@ -1,3 +1,4 @@
+import '../entities/reorder_cart_result_entity.dart';
 import '../entities/retailer_order_entity.dart';
 
 abstract class RetailerOrderRepository {
@@ -7,5 +8,5 @@ abstract class RetailerOrderRepository {
 
   Future<RetailerOrderEntity> cancelOrder({required int orderId});
 
-  Future<void> reorder({required int orderId});
+  Future<ReorderCartResultEntity> reorder({required int orderId, String mode = 'REPLACE'});
 }

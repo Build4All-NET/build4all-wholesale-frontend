@@ -11,6 +11,7 @@ class OrderPaymentSection extends StatelessWidget {
   final bool isUpdating;
   final VoidCallback onRefresh;
   final VoidCallback onMarkCashAsPaid;
+  final bool canMarkCashAsPaidForOrderStatus;
 
   const OrderPaymentSection({
     super.key,
@@ -20,12 +21,14 @@ class OrderPaymentSection extends StatelessWidget {
     required this.isUpdating,
     required this.onRefresh,
     required this.onMarkCashAsPaid,
+    this.canMarkCashAsPaidForOrderStatus = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final canMarkPaid = payment?.canMarkCashAsPaid ?? false;
+    final canMarkPaid =
+        (payment?.canMarkCashAsPaid ?? false) && canMarkCashAsPaidForOrderStatus;
 
     return Container(
       width: double.infinity,

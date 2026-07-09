@@ -13,20 +13,78 @@ class RetailerHomeRepositoryImpl implements RetailerHomeRepository {
   }
 
   @override
-  Future<List<HomeProductModel>> getProductsByCategory({
-    required int categoryId,
+  Future<HomeProductPageModel> getProducts({
+    required int page,
+    int size = 20,
+    String? search,
+    int? categoryId,
+    int? subCategoryId,
   }) {
-    return retailerHomeService.getProductsByCategory(categoryId: categoryId);
+    return retailerHomeService.getProducts(
+      page: page,
+      size: size,
+      search: search,
+      categoryId: categoryId,
+      subCategoryId: subCategoryId,
+    );
   }
 
   @override
-  Future<List<HomeProductModel>> getPromotedProducts() {
-    return retailerHomeService.getPromotedProducts();
+  Future<HomeProductPageModel> getProductsByCategory({
+    required int categoryId,
+    required int page,
+    int size = 20,
+    String? search,
+    int? subCategoryId,
+  }) {
+    return retailerHomeService.getProductsByCategory(
+      categoryId: categoryId,
+      page: page,
+      size: size,
+      search: search,
+      subCategoryId: subCategoryId,
+    );
   }
 
   @override
-  Future<List<HomeProductModel>> searchProducts({required String query}) {
-    return retailerHomeService.searchProducts(query);
+  Future<HomeProductPageModel> getPromotedProducts({
+    required int page,
+    int size = 20,
+    String? search,
+  }) {
+    return retailerHomeService.getPromotedProducts(
+      page: page,
+      size: size,
+      search: search,
+    );
+  }
+
+  @override
+  Future<HomeProductPageModel> searchProducts({
+    required String query,
+    required int page,
+    int size = 20,
+  }) {
+    return retailerHomeService.searchProducts(
+      query: query,
+      page: page,
+      size: size,
+    );
+  }
+
+  @override
+  Future<HomeProductPageModel> getBannerTargetProducts({
+    required HomeBannerModel banner,
+    required int page,
+    int size = 20,
+    String? search,
+  }) {
+    return retailerHomeService.getBannerTargetProducts(
+      banner: banner,
+      page: page,
+      size: size,
+      search: search,
+    );
   }
 
   @override

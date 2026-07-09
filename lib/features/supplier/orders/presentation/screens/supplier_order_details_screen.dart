@@ -264,6 +264,9 @@ class _OrderDetailsContent extends StatelessWidget {
                               SupplierOrderDetailsMarkCashPaidRequested(),
                             );
                       },
+                      canMarkCashAsPaidForOrderStatus:
+                          order.status == SupplierOrderStatus.shipped ||
+                              order.status == SupplierOrderStatus.delivered,
                     ),
                     if (order.notes != null &&
                         order.notes!.trim().isNotEmpty) ...[

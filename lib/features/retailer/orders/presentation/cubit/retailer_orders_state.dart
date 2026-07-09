@@ -8,6 +8,7 @@ class RetailerOrdersState {
   final RetailerOrderFilter selectedFilter;
   final String? errorMessage;
   final String? successMessage;
+  final String? reorderWarningMessage;
 
   const RetailerOrdersState({
     required this.isLoading,
@@ -17,6 +18,7 @@ class RetailerOrdersState {
     required this.selectedFilter,
     required this.errorMessage,
     required this.successMessage,
+    required this.reorderWarningMessage,
   });
 
   factory RetailerOrdersState.initial() {
@@ -28,6 +30,7 @@ class RetailerOrdersState {
       selectedFilter: RetailerOrderFilter.all,
       errorMessage: null,
       successMessage: null,
+      reorderWarningMessage: null,
     );
   }
 
@@ -76,6 +79,8 @@ class RetailerOrdersState {
     bool clearErrorMessage = false,
     String? successMessage,
     bool clearSuccessMessage = false,
+    String? reorderWarningMessage,
+    bool clearReorderWarningMessage = false,
   }) {
     return RetailerOrdersState(
       isLoading: isLoading ?? this.isLoading,
@@ -88,6 +93,9 @@ class RetailerOrdersState {
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       successMessage:
           clearSuccessMessage ? null : successMessage ?? this.successMessage,
+      reorderWarningMessage: clearReorderWarningMessage
+          ? null
+          : reorderWarningMessage ?? this.reorderWarningMessage,
     );
   }
 }

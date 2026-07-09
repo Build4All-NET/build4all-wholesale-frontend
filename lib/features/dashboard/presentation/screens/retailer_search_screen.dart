@@ -9,6 +9,7 @@ import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
+import '../widgets/retailer_pagination_footer.dart';
 import 'retailer_category_products_screen.dart';
 
 class RetailerSearchScreen extends StatelessWidget {
@@ -33,13 +34,14 @@ class _RetailerSearchView extends StatefulWidget {
 class _RetailerSearchViewState extends State<_RetailerSearchView> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  late final ScrollController _scrollController;
 
   Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
-    // Open the keyboard immediately so the retailer can start typing.
+    _scrollController = ScrollController()..addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _searchFocusNode.requestFocus();
     });
@@ -50,7 +52,19 @@ class _RetailerSearchViewState extends State<_RetailerSearchView> {
     _searchDebounce?.cancel();
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 320) {
+      context.read<RetailerHomeCubit>().loadMoreSearchProducts();
+    }
   }
 
   void _onSearchChanged(String value) {
@@ -100,7 +114,7 @@ class _RetailerSearchViewState extends State<_RetailerSearchView> {
           }
         },
         builder: (context, state) {
-          if (state.isSearchLoading) {
+          if (state.isSearchLoading && state.searchResults.isEmpty) {
             return Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
@@ -117,9 +131,18 @@ class _RetailerSearchViewState extends State<_RetailerSearchView> {
           }
 
           return ListView.builder(
+            controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            itemCount: state.searchResults.length,
+            itemCount: state.searchResults.length + 1,
             itemBuilder: (context, index) {
+              if (index == state.searchResults.length) {
+                return RetailerPaginationFooter(
+                  isLoadingMore: state.isSearchLoadingMore,
+                  hasNext: state.searchHasNext,
+                  showEndMessage: state.searchResults.length > 20,
+                );
+              }
+
               final product = state.searchResults[index];
 
               return Padding(
