@@ -360,6 +360,8 @@ class _DetailRow extends StatelessWidget {
             width: 130,
             child: Text(
               label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(color: AppThemeTokens.textSecondary, fontWeight: FontWeight.w700),
             ),
           ),

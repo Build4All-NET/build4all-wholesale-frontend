@@ -406,6 +406,8 @@ class _PaymentInfoRow extends StatelessWidget {
           width: 125,
           child: Text(
             label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w700,

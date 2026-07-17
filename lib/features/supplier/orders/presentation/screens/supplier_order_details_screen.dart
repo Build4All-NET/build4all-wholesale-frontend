@@ -812,6 +812,8 @@ class _InfoRow extends StatelessWidget {
           width: 125,
           child: Text(
             label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w700,

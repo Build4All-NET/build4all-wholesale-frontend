@@ -440,6 +440,8 @@ class _QuantityCard extends StatelessWidget {
                 child: Text(
                   quantity.toString(),
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppThemeTokens.textPrimary,
                     fontSize: 18,
