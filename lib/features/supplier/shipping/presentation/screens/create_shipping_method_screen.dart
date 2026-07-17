@@ -490,8 +490,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
   }
 
   void _cancel() {
-    if (_isEditMode) {
-      context.go('/supplier-shipping');
+    if (context.canPop()) {
+      context.pop();
     } else {
       context.go('/supplier-shipping');
     }
@@ -522,8 +522,8 @@ class _CreateShippingMethodViewState extends State<_CreateShippingMethodView> {
                 const ClearShippingMethodMessageRequested(),
               );
 
-          if (_isEditMode) {
-            context.go('/supplier-shipping');
+          if (context.canPop()) {
+            context.pop();
           } else {
             context.go('/supplier-shipping');
           }

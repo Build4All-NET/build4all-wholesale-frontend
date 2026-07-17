@@ -200,7 +200,7 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
 
     if (created == null || !mounted) return;
 
-    context.go('/retailer-rfqs/${created.id}');
+    context.pushReplacement('/retailer-rfqs/${created.id}');
   }
 
   String? _emptyToNull(String value) {

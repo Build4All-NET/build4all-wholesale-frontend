@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/currency/currency_formatter.dart';
+import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../data/models/retailer_home_model.dart';
 
@@ -198,13 +199,17 @@ String? _promotionLabel(
 
   if (type == 'PERCENT' || type == 'PERCENTAGE') {
     final value = discountValue;
-    if (value != null) return '${_cleanPromotionNumber(value)}% OFF';
+    if (value != null) {
+      return context.l10n.discountPercentOff(_cleanPromotionNumber(value)).toUpperCase();
+    }
   }
 
   if (type == 'FIXED' || type == 'FIXED_AMOUNT') {
     final value = discountValue;
     if (value != null) {
-      return '${CurrencyFormatter.formatCompact(context, value)} OFF';
+      return context.l10n
+          .discountAmountOff(CurrencyFormatter.formatCompact(context, value))
+          .toUpperCase();
     }
   }
 

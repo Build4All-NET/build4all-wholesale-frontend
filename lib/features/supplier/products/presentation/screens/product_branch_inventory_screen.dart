@@ -549,45 +549,51 @@ class _ProductBranchStockCard extends StatelessWidget {
           SizedBox(height: 14),
           Row(
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: stockColor.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  hasStockRecord
-                      ? context.l10n.stockWithQuantity(stockQuantity)
-                      : context.l10n.notAssignedYet,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: stockColor,
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: stockColor.withOpacity(0.10),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    hasStockRecord
+                        ? context.l10n.stockWithQuantity(stockQuantity)
+                        : context.l10n.notAssignedYet,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      color: stockColor,
+                    ),
                   ),
                 ),
               ),
               Spacer(),
-              OutlinedButton.icon(
-                onPressed: onAssignOrUpdate,
-                icon: Icon(
-                  hasStockRecord
-                      ? Icons.edit_outlined
-                      : Icons.add_circle_outline,
-                  size: 18,
-                ),
-                label: Text(
-                  hasStockRecord ? context.l10n.updateButton : context.l10n.assignButton,
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppThemeTokens.textPrimary,
-                  side: BorderSide(color: AppThemeTokens.border),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppThemeTokens.radiusSmall,
+              Flexible(
+                child: OutlinedButton.icon(
+                  onPressed: onAssignOrUpdate,
+                  icon: Icon(
+                    hasStockRecord
+                        ? Icons.edit_outlined
+                        : Icons.add_circle_outline,
+                    size: 18,
+                  ),
+                  label: Text(
+                    hasStockRecord ? context.l10n.updateButton : context.l10n.assignButton,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppThemeTokens.textPrimary,
+                    side: BorderSide(color: AppThemeTokens.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppThemeTokens.radiusSmall,
+                      ),
                     ),
                   ),
                 ),

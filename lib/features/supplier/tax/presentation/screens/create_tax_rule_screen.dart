@@ -450,8 +450,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
   }
 
   void _cancel() {
-    if (_isEditMode) {
-      context.go('/supplier-tax-rules');
+    if (context.canPop()) {
+      context.pop();
     } else {
       context.go('/supplier-tax-rules');
     }
@@ -482,8 +482,8 @@ class _CreateTaxRuleViewState extends State<_CreateTaxRuleView> {
                 const ClearTaxRuleMessageRequested(),
               );
 
-          if (_isEditMode) {
-            context.go('/supplier-tax-rules');
+          if (context.canPop()) {
+            context.pop();
           } else {
             context.go('/supplier-tax-rules');
           }

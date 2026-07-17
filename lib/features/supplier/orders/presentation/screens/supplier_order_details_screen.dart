@@ -66,10 +66,10 @@ String _supplierAwaitingPaymentLabel(BuildContext context) {
 String _supplierAwaitingPaymentActionMessage(BuildContext context) {
   final languageCode = Localizations.localeOf(context).languageCode;
   if (languageCode == 'ar') {
-    return 'بانتظار إكمال الدفع من retailer قبل قبول الطلب.';
+    return 'بانتظار إكمال الدفع من التاجر قبل قبول الطلب.';
   }
   if (languageCode == 'fr') {
-    return 'En attente du paiement du retailer avant acceptation.';
+    return 'En attente du paiement du détaillant avant acceptation.';
   }
   return 'Waiting for retailer payment before accepting this order.';
 }

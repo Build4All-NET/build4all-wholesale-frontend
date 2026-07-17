@@ -5184,6 +5184,18 @@ abstract class AppLocalizations {
   /// **'{value} minimum'**
   String supplierMinimumValue(Object value);
 
+  /// No description provided for @discountPercentOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}% off'**
+  String discountPercentOff(Object value);
+
+  /// No description provided for @discountAmountOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} off'**
+  String discountAmountOff(Object value);
+
   /// No description provided for @supplierNoFreeShipping.
   ///
   /// In en, this message translates to:

@@ -363,10 +363,10 @@ String _formatPromotionDate(BuildContext context, DateTime value) {
 
 String _promotionDiscountLabel(BuildContext context, PromotionEntity promotion) {
   if (promotion.discountType == PromotionDiscountType.percent) {
-    return '${_cleanCurrencyNumber(promotion.discountValue)}% off';
+    return context.l10n.discountPercentOff(_cleanCurrencyNumber(promotion.discountValue));
   }
 
-  return '${CurrencyFormatter.formatCompact(context, promotion.discountValue)} off';
+  return context.l10n.discountAmountOff(CurrencyFormatter.formatCompact(context, promotion.discountValue));
 }
 
 String _cleanCurrencyNumber(double value) {

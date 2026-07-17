@@ -157,7 +157,7 @@ class _CouponsViewState extends State<_CouponsView> {
           actions: [
             IconButton(
               tooltip: context.l10n.supplierCreateCoupon,
-              onPressed: () => context.go('/supplier-coupons/create'),
+              onPressed: () => context.push('/supplier-coupons/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
@@ -232,7 +232,7 @@ class _CouponsViewState extends State<_CouponsView> {
                             return CouponCard(
                               coupon: coupon,
                               onEdit: () {
-                                context.go(
+                                context.push(
                                   '/supplier-coupons/edit',
                                   extra: coupon,
                                 );

@@ -59,38 +59,44 @@ class BranchInventoryItemCard extends StatelessWidget {
           SizedBox(height: 14),
           Row(
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: stockColor.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  context.l10n.stockWithQuantity(item.stockQuantity),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: stockColor,
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: stockColor.withOpacity(0.10),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    context.l10n.stockWithQuantity(item.stockQuantity),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      color: stockColor,
+                    ),
                   ),
                 ),
               ),
               Spacer(),
-              OutlinedButton.icon(
-                onPressed: onUpdate,
-                icon: Icon(Icons.edit_outlined, size: 18),
-                label: Text(
-                  context.l10n.updateButton,
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppThemeTokens.textPrimary,
-                  side: BorderSide(color: AppThemeTokens.border),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppThemeTokens.radiusSmall,
+              Flexible(
+                child: OutlinedButton.icon(
+                  onPressed: onUpdate,
+                  icon: Icon(Icons.edit_outlined, size: 18),
+                  label: Text(
+                    context.l10n.updateButton,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppThemeTokens.textPrimary,
+                    side: BorderSide(color: AppThemeTokens.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppThemeTokens.radiusSmall,
+                      ),
                     ),
                   ),
                 ),

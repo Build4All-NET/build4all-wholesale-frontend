@@ -246,7 +246,11 @@ class _EditRetailerRfqViewState extends State<_EditRetailerRfqView> {
 
     if (updated == null || !mounted) return;
 
-    context.go('/retailer-rfqs/${updated.id}');
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/retailer-rfqs/${updated.id}');
+    }
   }
 
   String? _emptyToNull(String value) {
@@ -648,7 +652,9 @@ class _NotEditableView extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             OutlinedButton.icon(
-              onPressed: () => context.go('/retailer-rfqs/${rfq.id}'),
+              onPressed: () => context.canPop()
+                  ? context.pop()
+                  : context.go('/retailer-rfqs/${rfq.id}'),
               icon: const Icon(Icons.arrow_back_rounded),
               label: Text(l10n.rfqBackToDetails),
             ),

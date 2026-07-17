@@ -1139,6 +1139,18 @@
       "value": {}
     }
   },
+  "discountPercentOff": "{value} % de réduction",
+  "@discountPercentOff": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "discountAmountOff": "{value} de réduction",
+  "@discountAmountOff": {
+    "placeholders": {
+      "value": {}
+    }
+  },
   "supplierNoFreeShipping": "Pas de livraison gratuite",
   "supplierFreeAboveValue": "Gratuit au-dessus de {value}",
   "@supplierFreeAboveValue": {

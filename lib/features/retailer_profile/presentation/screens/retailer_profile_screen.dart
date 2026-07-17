@@ -104,7 +104,14 @@ class _RetailerProfileView extends StatelessWidget {
                   const SizedBox(height: 12),
                   _SettingsCard(
                     isLoggingOut: state.isLoggingOut,
-                    onEditProfile: () => context.push('/retailer-profile/edit'),
+                    onEditProfile: () async {
+                      final cubit = context.read<RetailerProfileCubit>();
+                      final updated =
+                          await context.push<bool>('/retailer-profile/edit');
+                      if (updated == true) {
+                        cubit.loadProfile();
+                      }
+                    },
                     onLogout: () => _confirmLogout(context),
                   ),
                 ],

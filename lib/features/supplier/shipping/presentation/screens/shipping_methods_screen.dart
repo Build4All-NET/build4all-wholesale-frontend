@@ -161,7 +161,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
           actions: [
             IconButton(
               tooltip: context.l10n.supplierCreateShippingMethod,
-              onPressed: () => context.go('/supplier-shipping/create'),
+              onPressed: () => context.push('/supplier-shipping/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
@@ -236,7 +236,7 @@ class _ShippingMethodsViewState extends State<_ShippingMethodsView> {
                             return ShippingMethodCard(
                               method: method,
                               onEdit: () {
-                                context.go(
+                                context.push(
                                   '/supplier-shipping/edit',
                                   extra: method,
                                 );

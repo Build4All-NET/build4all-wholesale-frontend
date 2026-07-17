@@ -462,8 +462,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
   }
 
   void _cancel() {
-    if (_isEditMode) {
-      context.go('/supplier-banners');
+    if (context.canPop()) {
+      context.pop();
     } else {
       context.go('/supplier-banners');
     }
@@ -495,8 +495,8 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                 const ClearBannerMessageRequested(),
               );
 
-          if (_isEditMode) {
-            context.go('/supplier-banners');
+          if (context.canPop()) {
+            context.pop();
           } else {
             context.go('/supplier-banners');
           }

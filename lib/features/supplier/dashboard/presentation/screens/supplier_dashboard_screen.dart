@@ -235,7 +235,7 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
                         _SectionTitle(
                           title: context.l10n.supplierDashboardLowStockAlerts,
                           trailingText: context.l10n.viewAll,
-                          onTrailingTap: () => context.go('/supplier-products'),
+                          onTrailingTap: () => context.push('/supplier-products'),
                         ),
                         SizedBox(height: 12),
                         _buildLowStockAlerts(
@@ -454,49 +454,49 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
         title: context.l10n.supplierCreatePromotion,
         icon: Icons.local_offer_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-promotions/create')),
+        onTap: guarded(() => context.push('/supplier-promotions/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierManageBranches,
         icon: Icons.location_on_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-branches')),
+        onTap: guarded(() => context.push('/supplier-branches')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerShippingMethods,
         icon: Icons.local_shipping_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-shipping/create')),
+        onTap: guarded(() => context.push('/supplier-shipping/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierConfigureTaxes,
         icon: Icons.attach_money_rounded,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-tax-rules/create')),
+        onTap: guarded(() => context.push('/supplier-tax-rules/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierImportExcel,
         icon: Icons.upload_file_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-excel-import')),
+        onTap: guarded(() => context.push('/supplier-excel-import')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerHomeBanners,
         icon: Icons.image_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-banners/create')),
+        onTap: guarded(() => context.push('/supplier-banners/create')),
       ),
       SupplierQuickActionCard(
         title: context.l10n.supplierDrawerCoupons,
         icon: Icons.confirmation_number_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-coupons/create')),
+        onTap: guarded(() => context.push('/supplier-coupons/create')),
       ),
       SupplierQuickActionCard(
         title: _paymentMethodsDashboardLabel(context),
         icon: Icons.account_balance_wallet_outlined,
         iconColor: Theme.of(context).colorScheme.primary,
-        onTap: guarded(() => context.go('/supplier-payment-methods')),
+        onTap: guarded(() => context.push('/supplier-payment-methods')),
       ),
     ];
 

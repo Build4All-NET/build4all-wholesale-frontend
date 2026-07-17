@@ -158,7 +158,7 @@ class _BannersViewState extends State<_BannersView> {
           actions: [
             IconButton(
               tooltip: context.l10n.supplierCreateBanner,
-              onPressed: () => context.go('/supplier-banners/create'),
+              onPressed: () => context.push('/supplier-banners/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
@@ -233,7 +233,7 @@ class _BannersViewState extends State<_BannersView> {
                             return BannerCard(
                               banner: banner,
                               onEdit: () {
-                                context.go(
+                                context.push(
                                   '/supplier-banners/edit',
                                   extra: banner,
                                 );

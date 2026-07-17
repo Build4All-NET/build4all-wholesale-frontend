@@ -428,8 +428,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
 
 
   void _cancel() {
-    if (_isEditMode) {
-      context.go('/supplier-coupons');
+    if (context.canPop()) {
+      context.pop();
     } else {
       context.go('/supplier-coupons');
     }
@@ -462,8 +462,8 @@ class _CreateCouponViewState extends State<_CreateCouponView> {
                 const ClearCouponMessageRequested(),
               );
 
-          if (_isEditMode) {
-            context.go('/supplier-coupons');
+          if (context.canPop()) {
+            context.pop();
           } else {
             context.go('/supplier-coupons');
           }
