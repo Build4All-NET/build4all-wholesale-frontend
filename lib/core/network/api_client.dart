@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 import '../storage/auth_storage.dart';
 import 'auth_refresh_service.dart';
@@ -61,34 +63,40 @@ class ApiClient {
             }
           }
 
-          print(
-            'API REQUEST: ${options.method} ${options.baseUrl}${options.path}',
-          );
-          print('API HEADERS: ${_safeHeaders(options.headers)}');
-          print('API QUERY: ${options.queryParameters}');
-          print('API BODY SAFE: ${_safeData(options.data)}');
+          if (kDebugMode) {
+            print(
+              'API REQUEST: ${options.method} ${options.baseUrl}${options.path}',
+            );
+            print('API HEADERS: ${_safeHeaders(options.headers)}');
+            print('API QUERY: ${options.queryParameters}');
+            print('API BODY SAFE: ${_safeData(options.data)}');
+          }
 
           handler.next(options);
         },
         onResponse: (response, handler) {
-          print(
-            'API RESPONSE: ${response.requestOptions.method} '
-            '${response.requestOptions.baseUrl}${response.requestOptions.path}',
-          );
-          print('STATUS CODE: ${response.statusCode}');
-          print('RESPONSE DATA: ${response.data}');
+          if (kDebugMode) {
+            print(
+              'API RESPONSE: ${response.requestOptions.method} '
+              '${response.requestOptions.baseUrl}${response.requestOptions.path}',
+            );
+            print('STATUS CODE: ${response.statusCode}');
+            print('RESPONSE DATA: ${_safeData(response.data)}');
+          }
 
           handler.next(response);
         },
         onError: (error, handler) {
-          print(
-            'API ERROR: ${error.requestOptions.method} '
-            '${error.requestOptions.baseUrl}${error.requestOptions.path}',
-          );
-          print('ERROR TYPE: ${error.type}');
-          print('ERROR MESSAGE: ${error.message}');
-          print('ERROR STATUS CODE: ${error.response?.statusCode}');
-          print('ERROR RESPONSE DATA: ${error.response?.data}');
+          if (kDebugMode) {
+            print(
+              'API ERROR: ${error.requestOptions.method} '
+              '${error.requestOptions.baseUrl}${error.requestOptions.path}',
+            );
+            print('ERROR TYPE: ${error.type}');
+            print('ERROR MESSAGE: ${error.message}');
+            print('ERROR STATUS CODE: ${error.response?.statusCode}');
+            print('ERROR RESPONSE DATA: ${_safeData(error.response?.data)}');
+          }
 
           handler.next(error);
         },
@@ -217,16 +225,55 @@ class ApiClient {
     return safe;
   }
 
-  Object? _maskIfSensitive(String key, Object? value) {
-    final lowerKey = key.toLowerCase();
+  static const List<String> _sensitiveKeyFragments = [
+    'password',
+    'token',
+    'authorization',
+    'secret',
+    'apikey',
+    'api_key',
+    'clientsecret',
+    'privatekey',
+    'config', // e.g. configJson: gateway credentials (Stripe/MPGS/PayPal keys)
+  ];
 
-    if (lowerKey.contains('password') ||
-        lowerKey.contains('token') ||
-        lowerKey.contains('authorization')) {
+  Object? _maskIfSensitive(String key, Object? value) {
+    final lowerKey = key.toLowerCase().replaceAll('_', '');
+
+    final isSensitiveKey = _sensitiveKeyFragments
+        .any((fragment) => lowerKey.contains(fragment.replaceAll('_', '')));
+
+    if (isSensitiveKey) {
       return '***';
     }
 
+    // A nested payload can arrive as a JSON-encoded string (e.g. a
+    // "configJson" field carrying gateway credentials) rather than a Map,
+    // so key-based masking above never inspects it. Decode and mask it too.
+    if (value is String) {
+      final decoded = _tryDecodeJson(value);
+      if (decoded is Map) {
+        return jsonEncode(_safeMap(decoded));
+      }
+      if (decoded is List) {
+        return jsonEncode(
+          decoded.map((item) => item is Map ? _safeMap(item) : item).toList(),
+        );
+      }
+    }
+
     return value;
+  }
+
+  Object? _tryDecodeJson(String value) {
+    final trimmed = value.trim();
+    if (!(trimmed.startsWith('{') || trimmed.startsWith('['))) return null;
+
+    try {
+      return jsonDecode(trimmed);
+    } catch (_) {
+      return null;
+    }
   }
 }
 
