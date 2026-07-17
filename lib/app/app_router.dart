@@ -440,13 +440,8 @@ class AppRouter {
         builder: (context, state) {
           final extra = state.extra;
 
-          if (extra is Map<String, dynamic> &&
-              extra['banner'] is HomeBannerModel &&
-              extra['products'] is List<HomeProductModel>) {
-            return RetailerBannerTargetScreen(
-              banner: extra['banner'] as HomeBannerModel,
-              products: extra['products'] as List<HomeProductModel>,
-            );
+          if (extra is HomeBannerModel) {
+            return RetailerBannerTargetScreen(banner: extra);
           }
 
           final l10n = AppLocalizations.of(context)!;

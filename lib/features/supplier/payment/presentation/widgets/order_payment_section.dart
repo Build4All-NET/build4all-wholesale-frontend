@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../shared/utils/supplier_formatters.dart';
+import '../../../orders/domain/entities/supplier_order_entity.dart';
 import '../../domain/entities/order_payment_entity.dart';
 
 class OrderPaymentSection extends StatelessWidget {
   final String paymentMethodFromOrder;
+  final SupplierOrderStatus orderStatus;
   final OrderPaymentEntity? payment;
   final bool isLoading;
   final bool isUpdating;
@@ -15,6 +17,7 @@ class OrderPaymentSection extends StatelessWidget {
   const OrderPaymentSection({
     super.key,
     required this.paymentMethodFromOrder,
+    required this.orderStatus,
     required this.payment,
     required this.isLoading,
     required this.isUpdating,
@@ -22,10 +25,15 @@ class OrderPaymentSection extends StatelessWidget {
     required this.onMarkCashAsPaid,
   });
 
+  bool get _isValidMarkPaidStatus =>
+      orderStatus == SupplierOrderStatus.shipped ||
+      orderStatus == SupplierOrderStatus.delivered;
+
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final canMarkPaid = payment?.canMarkCashAsPaid ?? false;
+    final canMarkPaid =
+        (payment?.canMarkCashAsPaid ?? false) && _isValidMarkPaidStatus;
 
     return Container(
       width: double.infinity,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
@@ -5,29 +7,24 @@ import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../injection_container.dart';
-import '../../data/models/retailer_home_model.dart';
 import '../cubit/retailer_home_cubit.dart';
 import '../cubit/retailer_home_state.dart';
 import 'retailer_category_products_screen.dart';
 
 class RetailerFeaturedProductsScreen extends StatelessWidget {
-  final List<HomeProductModel> products;
-
-  const RetailerFeaturedProductsScreen({super.key, required this.products});
+  const RetailerFeaturedProductsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<RetailerHomeCubit>(),
-      child: _RetailerFeaturedProductsView(products: products),
+      create: (_) => sl<RetailerHomeCubit>()..loadFeaturedProducts(),
+      child: const _RetailerFeaturedProductsView(),
     );
   }
 }
 
 class _RetailerFeaturedProductsView extends StatefulWidget {
-  final List<HomeProductModel> products;
-
-  const _RetailerFeaturedProductsView({required this.products});
+  const _RetailerFeaturedProductsView();
 
   @override
   State<_RetailerFeaturedProductsView> createState() =>
@@ -37,36 +34,40 @@ class _RetailerFeaturedProductsView extends StatefulWidget {
 class _RetailerFeaturedProductsViewState
     extends State<_RetailerFeaturedProductsView> {
   late final TextEditingController _searchController;
-
-  String _query = '';
+  late final ScrollController _scrollController;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
-  List<HomeProductModel> _filteredProducts() {
-    final cleanQuery = _query.trim().toLowerCase();
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
 
-    if (cleanQuery.isEmpty) return widget.products;
+    final threshold = _scrollController.position.maxScrollExtent - 300;
+    if (_scrollController.position.pixels >= threshold) {
+      context.read<RetailerHomeCubit>().loadMoreFeaturedProducts();
+    }
+  }
 
-    return widget.products.where((product) {
-      final searchableText = [
-        product.name,
-        product.description,
-        product.categoryName ?? '',
-        product.subCategoryName ?? '',
-      ].join(' ').toLowerCase();
-
-      return searchableText.contains(cleanQuery);
-    }).toList();
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 350), () {
+      context.read<RetailerHomeCubit>().loadFeaturedProducts(
+        search: value.trim().isEmpty ? null : value.trim(),
+      );
+    });
   }
 
   @override
@@ -104,32 +105,37 @@ class _RetailerFeaturedProductsViewState
           }
         },
         builder: (context, state) {
-          final products = _filteredProducts();
+          final products = state.featuredProductsList;
 
           return ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
               _SearchBox(
                 controller: _searchController,
-                onChanged: (value) {
-                  setState(() => _query = value);
-                },
+                onChanged: _onSearchChanged,
               ),
               const SizedBox(height: 14),
-              Text(
-                '${products.length} ${l10n.productsLabel}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppThemeTokens.textSecondary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
+              if (!state.isFeaturedProductsLoading)
+                Text(
+                  '${products.length} ${l10n.productsLabel}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppThemeTokens.textSecondary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
               const SizedBox(height: 14),
-              if (products.isEmpty)
+              if (state.isFeaturedProductsLoading)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 60),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (products.isEmpty)
                 const _EmptyFeaturedProductsState()
-              else
+              else ...[
                 ...products.map(
                   (product) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
@@ -144,6 +150,18 @@ class _RetailerFeaturedProductsViewState
                     ),
                   ),
                 ),
+                if (state.isFeaturedProductsLoadingMore)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2.4),
+                      ),
+                    ),
+                  ),
+              ],
             ],
           );
         },

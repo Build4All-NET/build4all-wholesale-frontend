@@ -146,7 +146,13 @@ class _RetailerSplitCheckoutViewState
     }
 
     if (state.hasMissingSplitShippingMethod) {
-      AppToast.info(context, context.l10n.checkoutNoShippingMethods);
+      final backendMessage = state.splitPreview?.validationMessage?.trim();
+      AppToast.info(
+        context,
+        (backendMessage != null && backendMessage.isNotEmpty)
+            ? backendMessage
+            : context.l10n.checkoutNoShippingMethods,
+      );
       return;
     }
 
@@ -187,8 +193,12 @@ class _RetailerSplitCheckoutViewState
       _selectedRegion = null;
     });
 
-    context.read<RetailerCheckoutCubit>().resetSplitDeliverySelections();
     _loadRegionsForCountry(country);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _refreshSplitPreviewAfterDeliveryChange();
+    });
   }
 
   void _handleDeliveryRegionSelected(RegionModel region) {

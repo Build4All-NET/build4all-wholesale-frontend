@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
+import '../../../../core/network/paged_result.dart';
 import '../models/retailer_home_model.dart';
 
 class RetailerHomeService {
@@ -22,56 +23,111 @@ class RetailerHomeService {
     }
   }
 
-  Future<List<HomeProductModel>> getProductsByCategory({
+  Future<PagedResult<HomeProductModel>> getFeaturedProducts({
+    required int page,
+    required int size,
+    String? search,
+    int? categoryId,
+    int? subCategoryId,
+  }) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerHomeFeaturedProducts,
+        queryParameters: {
+          'page': page,
+          'size': size,
+          if (search != null && search.trim().isNotEmpty)
+            'search': search.trim(),
+          if (categoryId != null) 'categoryId': categoryId,
+          if (subCategoryId != null) 'subCategoryId': subCategoryId,
+        },
+      );
+
+      return PagedResult.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+        (json) => HomeProductModel.fromJson(json),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<PagedResult<HomeProductModel>> getProductsByCategory({
     required int categoryId,
+    int? subCategoryId,
+    String? search,
+    required int page,
+    required int size,
   }) async {
     try {
       final response = await apiClient.dio.get(
         ApiConfig.retailerHomeCategoryProducts(categoryId),
+        queryParameters: {
+          'page': page,
+          'size': size,
+          if (subCategoryId != null) 'subCategoryId': subCategoryId,
+          if (search != null && search.trim().isNotEmpty)
+            'search': search.trim(),
+        },
       );
 
-      return (response.data as List<dynamic>? ?? [])
-          .map(
-            (item) => HomeProductModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
-          )
-          .toList();
+      return PagedResult.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+        (json) => HomeProductModel.fromJson(json),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<List<HomeProductModel>> searchProducts(String query) async {
+  Future<HomeProductModel> getProductById(int productId) async {
+    try {
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerHomeProductById(productId),
+      );
+
+      return HomeProductModel.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+    } on DioException catch (e) {
+      throw AppException(_extractMessage(e));
+    }
+  }
+
+  Future<PagedResult<HomeProductModel>> searchProducts(
+    String query, {
+    required int page,
+    required int size,
+  }) async {
     try {
       final response = await apiClient.dio.get(
         ApiConfig.retailerHomeSearch,
-        queryParameters: {'query': query},
+        queryParameters: {'query': query, 'page': page, 'size': size},
       );
 
-      return (response.data as List<dynamic>? ?? [])
-          .map(
-            (item) => HomeProductModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
-          )
-          .toList();
+      return PagedResult.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+        (json) => HomeProductModel.fromJson(json),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }
   }
 
-  Future<List<HomeProductModel>> getPromotedProducts() async {
+  Future<PagedResult<HomeProductModel>> getPromotedProducts({
+    required int page,
+    required int size,
+  }) async {
     try {
-      final response = await apiClient.dio.get(ApiConfig.retailerPromotions);
+      final response = await apiClient.dio.get(
+        ApiConfig.retailerPromotions,
+        queryParameters: {'page': page, 'size': size},
+      );
 
-      return (response.data as List<dynamic>? ?? [])
-          .map(
-            (item) => HomeProductModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
-          )
-          .toList();
+      return PagedResult.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+        (json) => HomeProductModel.fromJson(json),
+      );
     } on DioException catch (e) {
       throw AppException(_extractMessage(e));
     }

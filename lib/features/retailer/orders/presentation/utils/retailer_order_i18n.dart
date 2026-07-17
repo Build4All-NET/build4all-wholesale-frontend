@@ -230,6 +230,12 @@ class RetailerOrderI18n {
         fr: 'Continuer remplacera votre panier actuel par ces articles.',
       );
 
+  String get reorderCartChoiceHint => _select(
+        en: 'If your cart already has items, you\'ll be asked whether to add these to it or replace it.',
+        ar: 'إذا كانت سلتك تحتوي على عناصر بالفعل، سنسألك إذا كنتِ تريدين إضافة هذه العناصر إليها أو استبدالها.',
+        fr: 'Si votre panier contient déjà des articles, nous vous demanderons si vous voulez les ajouter ou remplacer le panier.',
+      );
+
   String get currentCartNotChanged => _select(
         en: 'Your current cart was not changed.',
         ar: 'لم يتم تغيير سلتك الحالية.',
@@ -241,6 +247,44 @@ class RetailerOrderI18n {
         ar: 'إعادة الطلب',
         fr: 'Commander à nouveau',
       );
+
+  String get reorderCartChoiceTitle => _select(
+        en: 'Your cart already has items',
+        ar: 'سلتك تحتوي على عناصر بالفعل',
+        fr: 'Votre panier contient déjà des articles',
+      );
+
+  String get reorderCartChoiceMessage => _select(
+        en: 'What would you like to do with the items already in your cart?',
+        ar: 'ماذا تريدين أن تفعلي بالعناصر الموجودة حاليًا في سلتك؟',
+        fr: 'Que voulez-vous faire des articles déjà présents dans votre panier ?',
+      );
+
+  String get addToCurrentCart => _select(
+        en: 'Add to current cart',
+        ar: 'إضافة إلى السلة الحالية',
+        fr: 'Ajouter au panier actuel',
+      );
+
+  String get replaceCurrentCart => _select(
+        en: 'Replace current cart',
+        ar: 'استبدال السلة الحالية',
+        fr: 'Remplacer le panier actuel',
+      );
+
+  String get cancel => _select(
+        en: 'Cancel',
+        ar: 'إلغاء',
+        fr: 'Annuler',
+      );
+
+  String get someItemsSkippedTitle => _select(
+        en: 'Some items could not be added',
+        ar: 'تعذّرت إضافة بعض العناصر',
+        fr: 'Certains articles n’ont pas pu être ajoutés',
+      );
+
+  String get ok => _select(en: 'OK', ar: 'حسنًا', fr: 'OK');
 
 
   String filterLabel(RetailerOrderFilter filter) {

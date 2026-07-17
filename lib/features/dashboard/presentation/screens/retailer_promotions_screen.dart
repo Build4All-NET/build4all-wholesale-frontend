@@ -31,18 +31,30 @@ class _RetailerPromotionsView extends StatefulWidget {
 
 class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
   late final TextEditingController _searchController;
+  late final ScrollController _scrollController;
   String _query = '';
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final threshold = _scrollController.position.maxScrollExtent - 300;
+    if (_scrollController.position.pixels >= threshold) {
+      context.read<RetailerHomeCubit>().loadMorePromotedProducts();
+    }
   }
 
   List<HomeProductModel> _filterProducts(List<HomeProductModel> products) {
@@ -111,6 +123,7 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
                 .read<RetailerHomeCubit>()
                 .loadPromotedProducts(),
             child: ListView(
+              controller: _scrollController,
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
               children: [
                 _PromotionsHeader(count: state.promotedProducts.length),
@@ -128,7 +141,7 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
                       setState(() => _query = '');
                     },
                   )
-                else
+                else ...[
                   ...filteredProducts.map(
                     (product) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
@@ -143,6 +156,18 @@ class _RetailerPromotionsViewState extends State<_RetailerPromotionsView> {
                       ),
                     ),
                   ),
+                  if (state.isPromotionsLoadingMore)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2.4),
+                        ),
+                      ),
+                    ),
+                ],
               ],
             ),
           );

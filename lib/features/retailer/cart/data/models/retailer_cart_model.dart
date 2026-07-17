@@ -43,6 +43,7 @@ class RetailerCartItemModel {
   final String moqUnit;
   final int quantity;
   final double lineTotal;
+  final bool unavailable;
 
   const RetailerCartItemModel({
     required this.id,
@@ -55,6 +56,7 @@ class RetailerCartItemModel {
     required this.moqUnit,
     required this.quantity,
     required this.lineTotal,
+    this.unavailable = false,
   });
 
   factory RetailerCartItemModel.fromJson(Map<String, dynamic> json) {
@@ -69,6 +71,7 @@ class RetailerCartItemModel {
       moqUnit: json['moqUnit']?.toString() ?? 'units',
       quantity: _toInt(json['quantity'], fallback: 1),
       lineTotal: _toDouble(json['lineTotal']),
+      unavailable: json['unavailable'] == true,
     );
   }
 }

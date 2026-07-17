@@ -33,12 +33,14 @@ class _RetailerSearchView extends StatefulWidget {
 class _RetailerSearchViewState extends State<_RetailerSearchView> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     // Open the keyboard immediately so the retailer can start typing.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _searchFocusNode.requestFocus();
@@ -50,7 +52,17 @@ class _RetailerSearchViewState extends State<_RetailerSearchView> {
     _searchDebounce?.cancel();
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final threshold = _scrollController.position.maxScrollExtent - 300;
+    if (_scrollController.position.pixels >= threshold) {
+      context.read<RetailerHomeCubit>().loadMoreSearchResults();
+    }
   }
 
   void _onSearchChanged(String value) {
@@ -117,9 +129,24 @@ class _RetailerSearchViewState extends State<_RetailerSearchView> {
           }
 
           return ListView.builder(
+            controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            itemCount: state.searchResults.length,
+            itemCount:
+                state.searchResults.length + (state.isSearchLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index >= state.searchResults.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2.4),
+                    ),
+                  ),
+                );
+              }
+
               final product = state.searchResults[index];
 
               return Padding(

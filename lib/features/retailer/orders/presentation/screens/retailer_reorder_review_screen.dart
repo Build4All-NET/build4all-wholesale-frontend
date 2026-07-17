@@ -6,13 +6,17 @@ import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../injection_container.dart';
 import '../../../../dashboard/presentation/widgets/retailer_product_image.dart';
+import '../../../cart/data/services/retailer_cart_service.dart';
 import '../../domain/entities/retailer_order_entity.dart';
 import '../../domain/entities/retailer_order_item_entity.dart';
+import '../../domain/entities/skipped_reorder_item_entity.dart';
 import '../cubit/retailer_orders_cubit.dart';
 import '../cubit/retailer_orders_state.dart';
 import '../utils/retailer_order_formatters.dart';
 import '../utils/retailer_order_i18n.dart';
 import '../widgets/retailer_order_status_chip.dart';
+
+enum _ReorderCartChoice { add, replace }
 
 class RetailerReorderReviewScreen extends StatelessWidget {
   final int orderId;
@@ -52,7 +56,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
         ),
       ),
       body: BlocConsumer<RetailerOrdersCubit, RetailerOrdersState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
             AppToast.error(context, state.errorMessage!);
             context.read<RetailerOrdersCubit>().clearMessages();
@@ -61,6 +65,12 @@ class _RetailerReorderReviewView extends StatelessWidget {
 
           if (state.successMessage == 'ORDER_REORDERED') {
             AppToast.success(context, i18n.reorderReadyForCheckout);
+
+            if (state.skippedReorderItems.isNotEmpty) {
+              await _showSkippedItemsDialog(context, state.skippedReorderItems);
+            }
+
+            if (!context.mounted) return;
             context.read<RetailerOrdersCubit>().clearMessages();
             context.push('/retailer-checkout');
           }
@@ -115,11 +125,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: state.isDetailsLoading
                       ? null
-                      : () {
-                          context.read<RetailerOrdersCubit>().reorder(
-                                orderId: order.id,
-                              );
-                        },
+                      : () => _handleReorderTap(context, order.id),
                   icon: state.isDetailsLoading
                       ? const SizedBox(
                           height: 18,
@@ -165,7 +171,7 @@ class _RetailerReorderReviewView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                i18n.currentCartWillBeReplaced,
+                i18n.reorderCartChoiceHint,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppThemeTokens.textSecondary,
@@ -179,6 +185,118 @@ class _RetailerReorderReviewView extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _handleReorderTap(BuildContext context, int orderId) async {
+  final cubit = context.read<RetailerOrdersCubit>();
+
+  String mode = 'REPLACE';
+
+  try {
+    final cart = await sl<RetailerCartService>().getCart();
+
+    if (!context.mounted) return;
+
+    if (cart.items.isNotEmpty) {
+      final choice = await _showCartChoiceDialog(context);
+      if (choice == null) return;
+      mode = choice == _ReorderCartChoice.add ? 'ADD' : 'REPLACE';
+    }
+  } catch (_) {
+    // If the current cart can't be checked, fall back to the default
+    // REPLACE behavior rather than blocking the re-order action.
+  }
+
+  if (!context.mounted) return;
+  cubit.reorder(orderId: orderId, mode: mode);
+}
+
+Future<_ReorderCartChoice?> _showCartChoiceDialog(BuildContext context) {
+  final i18n = RetailerOrderI18n(context);
+
+  return showDialog<_ReorderCartChoice>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: Text(
+          i18n.reorderCartChoiceTitle,
+          style: const TextStyle(fontWeight: FontWeight.w900),
+        ),
+        content: Text(i18n.reorderCartChoiceMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(i18n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext)
+                .pop(_ReorderCartChoice.replace),
+            child: Text(i18n.replaceCurrentCart),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(_ReorderCartChoice.add),
+            child: Text(i18n.addToCurrentCart),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _showSkippedItemsDialog(
+  BuildContext context,
+  List<SkippedReorderItemEntity> skippedItems,
+) {
+  final i18n = RetailerOrderI18n(context);
+
+  return showDialog<void>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: Text(
+          i18n.someItemsSkippedTitle,
+          style: const TextStyle(fontWeight: FontWeight.w900),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: skippedItems
+                .map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.productName,
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                        Text(
+                          item.reason,
+                          style: const TextStyle(
+                            color: AppThemeTokens.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(i18n.ok),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class _ReorderInfoCard extends StatelessWidget {

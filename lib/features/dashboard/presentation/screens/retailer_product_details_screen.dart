@@ -702,9 +702,6 @@ class _LockedPromotionExplanation extends StatelessWidget {
   String _tierLabel(BuildContext context, PromotionTierModel tier) {
     final label = tier.promotionLabel?.trim();
     if (label != null && label.isNotEmpty) {
-      if (tier.promotionDiscountType?.toUpperCase() == 'FIXED') {
-        return '$label ${context.l10n.perUnit}';
-      }
       return label;
     }
 
@@ -716,7 +713,7 @@ class _LockedPromotionExplanation extends StatelessWidget {
     }
 
     if (tier.promotionDiscountType?.toUpperCase() == 'FIXED') {
-      return '${_formatMoney(product.currency, value)} OFF ${context.l10n.perUnit}';
+      return '${_formatMoney(product.currency, value)} OFF';
     }
 
     return '';

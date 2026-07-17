@@ -1,3 +1,4 @@
+import '../../../../core/network/paged_result.dart';
 import '../../domain/repositories/retailer_home_repository.dart';
 import '../models/retailer_home_model.dart';
 import '../services/retailer_home_service.dart';
@@ -13,20 +14,59 @@ class RetailerHomeRepositoryImpl implements RetailerHomeRepository {
   }
 
   @override
-  Future<List<HomeProductModel>> getProductsByCategory({
-    required int categoryId,
+  Future<PagedResult<HomeProductModel>> getFeaturedProducts({
+    required int page,
+    required int size,
+    String? search,
+    int? categoryId,
+    int? subCategoryId,
   }) {
-    return retailerHomeService.getProductsByCategory(categoryId: categoryId);
+    return retailerHomeService.getFeaturedProducts(
+      page: page,
+      size: size,
+      search: search,
+      categoryId: categoryId,
+      subCategoryId: subCategoryId,
+    );
   }
 
   @override
-  Future<List<HomeProductModel>> getPromotedProducts() {
-    return retailerHomeService.getPromotedProducts();
+  Future<PagedResult<HomeProductModel>> getProductsByCategory({
+    required int categoryId,
+    int? subCategoryId,
+    String? search,
+    required int page,
+    required int size,
+  }) {
+    return retailerHomeService.getProductsByCategory(
+      categoryId: categoryId,
+      subCategoryId: subCategoryId,
+      search: search,
+      page: page,
+      size: size,
+    );
   }
 
   @override
-  Future<List<HomeProductModel>> searchProducts({required String query}) {
-    return retailerHomeService.searchProducts(query);
+  Future<HomeProductModel> getProductById(int productId) {
+    return retailerHomeService.getProductById(productId);
+  }
+
+  @override
+  Future<PagedResult<HomeProductModel>> getPromotedProducts({
+    required int page,
+    required int size,
+  }) {
+    return retailerHomeService.getPromotedProducts(page: page, size: size);
+  }
+
+  @override
+  Future<PagedResult<HomeProductModel>> searchProducts(
+    String query, {
+    required int page,
+    required int size,
+  }) {
+    return retailerHomeService.searchProducts(query, page: page, size: size);
   }
 
   @override

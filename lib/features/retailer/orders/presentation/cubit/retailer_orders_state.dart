@@ -1,4 +1,5 @@
 import '../../domain/entities/retailer_order_entity.dart';
+import '../../domain/entities/skipped_reorder_item_entity.dart';
 
 class RetailerOrdersState {
   final bool isLoading;
@@ -8,6 +9,7 @@ class RetailerOrdersState {
   final RetailerOrderFilter selectedFilter;
   final String? errorMessage;
   final String? successMessage;
+  final List<SkippedReorderItemEntity> skippedReorderItems;
 
   const RetailerOrdersState({
     required this.isLoading,
@@ -17,6 +19,7 @@ class RetailerOrdersState {
     required this.selectedFilter,
     required this.errorMessage,
     required this.successMessage,
+    required this.skippedReorderItems,
   });
 
   factory RetailerOrdersState.initial() {
@@ -28,6 +31,7 @@ class RetailerOrdersState {
       selectedFilter: RetailerOrderFilter.all,
       errorMessage: null,
       successMessage: null,
+      skippedReorderItems: [],
     );
   }
 
@@ -76,6 +80,7 @@ class RetailerOrdersState {
     bool clearErrorMessage = false,
     String? successMessage,
     bool clearSuccessMessage = false,
+    List<SkippedReorderItemEntity>? skippedReorderItems,
   }) {
     return RetailerOrdersState(
       isLoading: isLoading ?? this.isLoading,
@@ -88,6 +93,7 @@ class RetailerOrdersState {
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       successMessage:
           clearSuccessMessage ? null : successMessage ?? this.successMessage,
+      skippedReorderItems: skippedReorderItems ?? this.skippedReorderItems,
     );
   }
 }

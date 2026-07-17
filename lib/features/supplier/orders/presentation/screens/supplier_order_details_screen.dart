@@ -251,6 +251,7 @@ class _OrderDetailsContent extends StatelessWidget {
                     SizedBox(height: 16),
                     OrderPaymentSection(
                       paymentMethodFromOrder: order.paymentMethod,
+                      orderStatus: order.status,
                       payment: payment,
                       isLoading: isPaymentLoading,
                       isUpdating: isPaymentUpdating,

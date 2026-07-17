@@ -13,6 +13,8 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   final SearchProductsUseCase searchProductsUseCase;
   final DeleteProductUseCase deleteProductUseCase;
 
+  String? _latestSearchQuery;
+
   ProductListBloc({
     required this.getProductsUseCase,
     required this.searchProductsUseCase,
@@ -53,10 +55,16 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
     SearchProducts event,
     Emitter<ProductListState> emit,
   ) async {
+    _latestSearchQuery = event.query;
+
     try {
       final products = event.query.trim().isEmpty
           ? await getProductsUseCase()
           : await searchProductsUseCase(query: event.query);
+
+      // A newer search may have started while this one was in flight.
+      // Discard this response so it can't overwrite fresher results.
+      if (_latestSearchQuery != event.query) return;
 
       emit(
         state.copyWith(
@@ -65,6 +73,8 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
         ),
       );
     } catch (e) {
+      if (_latestSearchQuery != event.query) return;
+
       emit(
         state.copyWith(
           error: AppErrorMapper.toMessage(e),
