@@ -1,3 +1,4 @@
+import '../entities/skipped_reorder_item_entity.dart';
 import '../repositories/retailer_order_repository.dart';
 
 class ReorderRetailerOrderUseCase {
@@ -5,7 +6,10 @@ class ReorderRetailerOrderUseCase {
 
   ReorderRetailerOrderUseCase(this.repository);
 
-  Future<void> call({required int orderId}) {
-    return repository.reorder(orderId: orderId);
+  Future<List<SkippedReorderItemEntity>> call({
+    required int orderId,
+    required String mode,
+  }) {
+    return repository.reorder(orderId: orderId, mode: mode);
   }
 }

@@ -451,11 +451,11 @@ String _localizedStatusLabel(BuildContext context, String label) {
 String _couponDiscountLabel(BuildContext context, CouponEntity coupon) {
   switch (coupon.discountType) {
     case CouponDiscountType.percent:
-      return '${_cleanNumber(coupon.discountValue)}% Off';
+      return context.l10n.discountPercentOff(_cleanNumber(coupon.discountValue));
     case CouponDiscountType.fixed:
-      return '${CurrencyFormatter.formatCompact(context, coupon.discountValue)} Off';
+      return context.l10n.discountAmountOff(CurrencyFormatter.formatCompact(context, coupon.discountValue));
     case CouponDiscountType.freeShipping:
-      return 'Free Shipping';
+      return context.l10n.supplierFreeShipping;
   }
 }
 

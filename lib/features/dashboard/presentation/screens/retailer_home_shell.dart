@@ -30,7 +30,7 @@ class _RetailerHomeShellState extends State<RetailerHomeShell> {
     RetailerDashboardScreen(),
     RetailerCartScreen(),
     RetailerOrdersScreen(),
-    RetailerRfqListScreen(),
+    RetailerRfqListScreen(embedded: true),
     // The shell owns the bottom nav, so the profile tab must not draw its own.
     RetailerProfileScreen(embedded: true),
   ];

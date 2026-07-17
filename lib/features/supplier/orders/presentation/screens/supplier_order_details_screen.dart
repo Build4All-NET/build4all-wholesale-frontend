@@ -66,10 +66,10 @@ String _supplierAwaitingPaymentLabel(BuildContext context) {
 String _supplierAwaitingPaymentActionMessage(BuildContext context) {
   final languageCode = Localizations.localeOf(context).languageCode;
   if (languageCode == 'ar') {
-    return 'بانتظار إكمال الدفع من retailer قبل قبول الطلب.';
+    return 'بانتظار إكمال الدفع من التاجر قبل قبول الطلب.';
   }
   if (languageCode == 'fr') {
-    return 'En attente du paiement du retailer avant acceptation.';
+    return 'En attente du paiement du détaillant avant acceptation.';
   }
   return 'Waiting for retailer payment before accepting this order.';
 }
@@ -251,6 +251,7 @@ class _OrderDetailsContent extends StatelessWidget {
                     SizedBox(height: 16),
                     OrderPaymentSection(
                       paymentMethodFromOrder: order.paymentMethod,
+                      orderStatus: order.status,
                       payment: payment,
                       isLoading: isPaymentLoading,
                       isUpdating: isPaymentUpdating,
@@ -811,6 +812,8 @@ class _InfoRow extends StatelessWidget {
           width: 125,
           child: Text(
             label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppThemeTokens.textSecondary,
               fontWeight: FontWeight.w700,

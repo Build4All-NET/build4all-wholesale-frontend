@@ -154,7 +154,7 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
           actions: [
             IconButton(
               tooltip: context.l10n.supplierCreateTaxRule,
-              onPressed: () => context.go('/supplier-tax-rules/create'),
+              onPressed: () => context.push('/supplier-tax-rules/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
@@ -229,7 +229,7 @@ class _TaxRulesViewState extends State<_TaxRulesView> {
                             return TaxRuleCard(
                               rule: rule,
                               onEdit: () {
-                                context.go(
+                                context.push(
                                   '/supplier-tax-rules/edit',
                                   extra: rule,
                                 );

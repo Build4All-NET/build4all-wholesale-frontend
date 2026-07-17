@@ -13,19 +13,23 @@ import '../widgets/rfq_card.dart';
 import '../widgets/rfq_info_banner.dart';
 
 class RetailerRfqListScreen extends StatelessWidget {
-  const RetailerRfqListScreen({super.key});
+  final bool embedded;
+
+  const RetailerRfqListScreen({super.key, this.embedded = false});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<RetailerRfqCubit>()..loadMyRfqs(),
-      child: const _RetailerRfqListView(),
+      child: _RetailerRfqListView(embedded: embedded),
     );
   }
 }
 
 class _RetailerRfqListView extends StatelessWidget {
-  const _RetailerRfqListView();
+  final bool embedded;
+
+  const _RetailerRfqListView({this.embedded = false});
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +53,7 @@ class _RetailerRfqListView extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: AppThemeTokens.background,
             elevation: 0,
+            automaticallyImplyLeading: false,
             title: Text(
               l10n.rfqMyRfqs,
               style: const TextStyle(
@@ -56,7 +61,9 @@ class _RetailerRfqListView extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            leading: IconButton(
+            leading: embedded
+                ? null
+                : IconButton(
               onPressed: () {
                 if (context.canPop()) {
                   context.pop();

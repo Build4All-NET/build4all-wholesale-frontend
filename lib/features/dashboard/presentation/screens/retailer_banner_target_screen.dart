@@ -12,69 +12,54 @@ import 'retailer_category_products_screen.dart';
 
 class RetailerBannerTargetScreen extends StatelessWidget {
   final HomeBannerModel banner;
-  final List<HomeProductModel> products;
 
-  const RetailerBannerTargetScreen({
-    super.key,
-    required this.banner,
-    required this.products,
-  });
+  const RetailerBannerTargetScreen({super.key, required this.banner});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<RetailerHomeCubit>(),
-      child: _RetailerBannerTargetView(
-        banner: banner,
-        products: _filterProductsByBannerTarget(banner, products),
-      ),
+      create: (_) => sl<RetailerHomeCubit>()..loadBannerTargetProducts(banner),
+      child: _RetailerBannerTargetView(banner: banner),
     );
-  }
-
-  List<HomeProductModel> _filterProductsByBannerTarget(
-    HomeBannerModel banner,
-    List<HomeProductModel> products,
-  ) {
-    final targetType = banner.targetType.trim().toUpperCase();
-
-    if (targetType.isEmpty || targetType == 'NONE') {
-      return const [];
-    }
-
-    final targetValue = int.tryParse(banner.targetValue?.trim() ?? '');
-
-    if (targetValue == null) {
-      return const [];
-    }
-
-    switch (targetType) {
-      case 'PRODUCT':
-        return products.where((product) => product.id == targetValue).toList();
-
-      case 'CATEGORY':
-        return products
-            .where((product) => product.categoryId == targetValue)
-            .toList();
-
-      case 'SUBCATEGORY':
-        return products
-            .where((product) => product.subCategoryId == targetValue)
-            .toList();
-
-      default:
-        return const [];
-    }
   }
 }
 
-class _RetailerBannerTargetView extends StatelessWidget {
+class _RetailerBannerTargetView extends StatefulWidget {
   final HomeBannerModel banner;
-  final List<HomeProductModel> products;
 
-  const _RetailerBannerTargetView({
-    required this.banner,
-    required this.products,
-  });
+  const _RetailerBannerTargetView({required this.banner});
+
+  @override
+  State<_RetailerBannerTargetView> createState() =>
+      _RetailerBannerTargetViewState();
+}
+
+class _RetailerBannerTargetViewState
+    extends State<_RetailerBannerTargetView> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final threshold = _scrollController.position.maxScrollExtent - 300;
+    if (_scrollController.position.pixels >= threshold) {
+      context.read<RetailerHomeCubit>().loadMoreBannerTargetProducts(
+        widget.banner,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +71,7 @@ class _RetailerBannerTargetView extends StatelessWidget {
         backgroundColor: AppThemeTokens.background,
         elevation: 0,
         title: Text(
-          banner.title,
+          widget.banner.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
@@ -110,6 +95,16 @@ class _RetailerBannerTargetView extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          if (state.isBannerTargetLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            );
+          }
+
+          final products = state.bannerTargetProducts;
+
           if (products.isEmpty) {
             return Center(
               child: Padding(
@@ -127,9 +122,23 @@ class _RetailerBannerTargetView extends StatelessWidget {
           }
 
           return ListView.builder(
+            controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            itemCount: products.length,
+            itemCount: products.length + (state.isBannerTargetLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index >= products.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2.4),
+                    ),
+                  ),
+                );
+              }
+
               final product = products[index];
 
               return Padding(

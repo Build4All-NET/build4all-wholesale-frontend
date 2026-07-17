@@ -440,6 +440,8 @@ class _QuantityCard extends StatelessWidget {
                 child: Text(
                   quantity.toString(),
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppThemeTokens.textPrimary,
                     fontSize: 18,
@@ -702,9 +704,6 @@ class _LockedPromotionExplanation extends StatelessWidget {
   String _tierLabel(BuildContext context, PromotionTierModel tier) {
     final label = tier.promotionLabel?.trim();
     if (label != null && label.isNotEmpty) {
-      if (tier.promotionDiscountType?.toUpperCase() == 'FIXED') {
-        return '$label ${context.l10n.perUnit}';
-      }
       return label;
     }
 
@@ -716,7 +715,7 @@ class _LockedPromotionExplanation extends StatelessWidget {
     }
 
     if (tier.promotionDiscountType?.toUpperCase() == 'FIXED') {
-      return '${_formatMoney(product.currency, value)} OFF ${context.l10n.perUnit}';
+      return '${_formatMoney(product.currency, value)} OFF';
     }
 
     return '';

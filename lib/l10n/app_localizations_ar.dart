@@ -2816,6 +2816,16 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String discountPercentOff(Object value) {
+    return 'خصم $value%';
+  }
+
+  @override
+  String discountAmountOff(Object value) {
+    return 'خصم $value';
+  }
+
+  @override
   String get supplierNoFreeShipping => 'لا يوجد شحن مجاني';
 
   @override

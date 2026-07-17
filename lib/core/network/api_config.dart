@@ -44,9 +44,14 @@ class ApiConfig {
   // =========================
   static const String retailerHome = '/retailer-home';
   static const String retailerHomeAddCartItem = '/retailer-home/cart/items';
+  static const String retailerHomeFeaturedProducts =
+      '/retailer-home/featured-products';
 
   static String retailerHomeCategoryProducts(int categoryId) =>
       '/retailer-home/categories/$categoryId/products';
+
+  static String retailerHomeProductById(int productId) =>
+      '/retailer-home/products/$productId';
 
   static const String retailerHomeSearch = '/retailer-home/search';
 

@@ -1,4 +1,5 @@
 import '../../domain/entities/retailer_order_entity.dart';
+import '../../domain/entities/skipped_reorder_item_entity.dart';
 import '../../domain/repositories/retailer_order_repository.dart';
 import '../services/retailer_order_api_service.dart';
 
@@ -23,7 +24,11 @@ class RetailerOrderRepositoryImpl implements RetailerOrderRepository {
   }
 
   @override
-  Future<void> reorder({required int orderId}) {
-    return apiService.reorder(orderId: orderId);
+  Future<List<SkippedReorderItemEntity>> reorder({
+    required int orderId,
+    required String mode,
+  }) async {
+    final result = await apiService.reorder(orderId: orderId, mode: mode);
+    return result.skippedItems;
   }
 }

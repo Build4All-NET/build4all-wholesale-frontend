@@ -600,7 +600,10 @@ class _SupplierCatalogScreenState extends State<SupplierCatalogScreen>
         ),
         Expanded(
           child: subCategories.isEmpty
-              ? EmptyCatalogMessage(message: context.l10n.noSubCategoriesFound)
+              ? EmptyCatalogMessage(
+                  message: context.l10n.noSubCategoriesFound,
+                  icon: Icons.account_tree_outlined,
+                )
               : ListView.builder(
                   padding: EdgeInsets.all(16),
                   itemCount: subCategories.length,

@@ -158,7 +158,7 @@ class _PromotionsViewState extends State<_PromotionsView> {
           actions: [
             IconButton(
               tooltip: context.l10n.supplierCreatePromotion,
-              onPressed: () => context.go('/supplier-promotions/create'),
+              onPressed: () => context.push('/supplier-promotions/create'),
               icon: const Icon(Icons.add_circle_outline),
             ),
             IconButton(
@@ -234,7 +234,7 @@ class _PromotionsViewState extends State<_PromotionsView> {
                             return PromotionCard(
                               promotion: promotion,
                               onEdit: () {
-                                context.go(
+                                context.push(
                                   '/supplier-promotions/edit',
                                   extra: promotion,
                                 );

@@ -54,6 +54,8 @@ class BranchCard extends StatelessWidget {
                   children: [
                     Text(
                       branch.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
@@ -63,6 +65,8 @@ class BranchCard extends StatelessWidget {
                     SizedBox(height: 4),
                     Text(
                       branch.locationLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -72,6 +76,8 @@ class BranchCard extends StatelessWidget {
                     SizedBox(height: 8),
                     Text(
                       branch.address,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -81,6 +87,8 @@ class BranchCard extends StatelessWidget {
                     SizedBox(height: 4),
                     Text(
                       branch.phoneNumber,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -91,19 +99,22 @@ class BranchCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8),
-              OutlinedButton.icon(
-                onPressed: onEdit,
-                icon: Icon(Icons.edit_outlined, size: 18),
-                label: Text(
-                  context.l10n.editButton,
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppThemeTokens.textPrimary,
-                  side: BorderSide(color: AppThemeTokens.border),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppThemeTokens.radiusSmall,
+              Flexible(
+                child: OutlinedButton.icon(
+                  onPressed: onEdit,
+                  icon: Icon(Icons.edit_outlined, size: 18),
+                  label: Text(
+                    context.l10n.editButton,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppThemeTokens.textPrimary,
+                    side: BorderSide(color: AppThemeTokens.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppThemeTokens.radiusSmall,
+                      ),
                     ),
                   ),
                 ),
@@ -259,31 +270,37 @@ class _StatusRow extends StatelessWidget {
 
     return Row(
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-          decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Text(
-            isActive ? context.l10n.activeStatus : context.l10n.inactiveStatus,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w900,
-              color: statusColor,
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: statusColor.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              isActive ? context.l10n.activeStatus : context.l10n.inactiveStatus,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: statusColor,
+              ),
             ),
           ),
         ),
         Spacer(),
-        TextButton.icon(
-          onPressed: onDelete,
-          icon: Icon(Icons.delete_outline, size: 18),
-          label: Text(
-            context.l10n.delete,
-            style: TextStyle(fontWeight: FontWeight.w800),
-          ),
-          style: TextButton.styleFrom(
-            foregroundColor: AppThemeTokens.error,
+        Flexible(
+          child: TextButton.icon(
+            onPressed: onDelete,
+            icon: Icon(Icons.delete_outline, size: 18),
+            label: Text(
+              context.l10n.delete,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            style: TextButton.styleFrom(
+              foregroundColor: AppThemeTokens.error,
+            ),
           ),
         ),
       ],

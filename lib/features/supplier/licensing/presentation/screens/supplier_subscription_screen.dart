@@ -160,12 +160,20 @@ class _CurrentPlanCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(color: AppThemeTokens.textSecondary)),
-          Text(value,
-              style: const TextStyle(
-                  color: AppThemeTokens.textPrimary,
-                  fontWeight: FontWeight.w700)),
+          Flexible(
+            child: Text(label,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: AppThemeTokens.textSecondary)),
+          ),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(value,
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    color: AppThemeTokens.textPrimary,
+                    fontWeight: FontWeight.w700)),
+          ),
         ],
       ),
     );

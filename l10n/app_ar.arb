@@ -1139,6 +1139,18 @@
       "value": {}
     }
   },
+  "discountPercentOff": "خصم {value}%",
+  "@discountPercentOff": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "discountAmountOff": "خصم {value}",
+  "@discountAmountOff": {
+    "placeholders": {
+      "value": {}
+    }
+  },
   "supplierNoFreeShipping": "لا يوجد شحن مجاني",
   "supplierFreeAboveValue": "مجاني فوق {value}",
   "@supplierFreeAboveValue": {

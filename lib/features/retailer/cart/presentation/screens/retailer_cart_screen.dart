@@ -143,6 +143,7 @@ class _CartContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final hasUnavailableItems = cart.items.any((item) => item.unavailable);
 
     return SafeArea(
       child: ListView(
@@ -164,6 +165,18 @@ class _CartContent extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _OrderSummaryCard(cart: cart),
+          if (hasUnavailableItems) ...[
+            const SizedBox(height: 12),
+            Text(
+              _cartText(context, 'removeUnavailableToCheckout'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppThemeTokens.error,
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
+            ),
+          ],
           const SizedBox(height: 18),
           OutlinedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -185,9 +198,11 @@ class _CartContent extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: () {
-              context.push('/retailer-checkout');
-            },
+            onPressed: hasUnavailableItems
+                ? null
+                : () {
+                    context.push('/retailer-checkout');
+                  },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 54),
               backgroundColor: Theme.of(context).colorScheme.primary,
@@ -239,6 +254,40 @@ class _CartItemCard extends StatelessWidget {
       ),
       child: Column(
         children: [
+          if (item.unavailable) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 6,
+              ),
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                color: AppThemeTokens.error.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    color: AppThemeTokens.error,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      _cartText(context, 'productNoLongerAvailable'),
+                      style: const TextStyle(
+                        color: AppThemeTokens.error,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -563,4 +612,33 @@ class _SummaryRow extends StatelessWidget {
       ],
     );
   }
+}
+
+String _cartText(BuildContext context, String key) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+
+  const en = {
+    'productNoLongerAvailable':
+        'This product is no longer available. Remove it to continue.',
+    'removeUnavailableToCheckout':
+        'Remove unavailable items from your cart before checking out.',
+  };
+
+  const ar = {
+    'productNoLongerAvailable':
+        'هذا المنتج لم يعد متوفرًا. يرجى إزالته للمتابعة.',
+    'removeUnavailableToCheckout':
+        'يرجى إزالة العناصر غير المتوفرة من السلة قبل إتمام الشراء.',
+  };
+
+  const fr = {
+    'productNoLongerAvailable':
+        'Ce produit n’est plus disponible. Retirez-le pour continuer.',
+    'removeUnavailableToCheckout':
+        'Retirez les articles indisponibles de votre panier avant de payer.',
+  };
+
+  if (languageCode == 'ar') return ar[key] ?? key;
+  if (languageCode == 'fr') return fr[key] ?? key;
+  return en[key] ?? key;
 }

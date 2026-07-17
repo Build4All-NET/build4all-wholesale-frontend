@@ -1464,7 +1464,11 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
 
     if (!mounted) return;
 
-    context.go('/retailer-profile');
+    if (context.canPop()) {
+      context.pop(true);
+    } else {
+      context.go('/retailer-profile');
+    }
   }
 
   void _showCubitError(RetailerProfileCubit cubit) {

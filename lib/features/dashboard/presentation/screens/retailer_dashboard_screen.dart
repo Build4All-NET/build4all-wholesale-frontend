@@ -55,26 +55,20 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
     context.read<RetailerHomeCubit>().addToCart(product: product);
   }
 
-  void _openBannerTarget(
-    HomeBannerModel banner,
-    List<HomeProductModel> products,
-  ) {
+  void _openBannerTarget(HomeBannerModel banner) {
     final targetType = banner.targetType.trim().toUpperCase();
 
     if (targetType.isEmpty || targetType == 'NONE') {
       return;
     }
 
-    context.push(
-      '/retailer-banner-target',
-      extra: {'banner': banner, 'products': products},
-    );
+    context.push('/retailer-banner-target', extra: banner);
   }
 
-  void _openAllFeaturedProducts(List<HomeProductModel> products) {
+  void _openAllFeaturedProducts() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => RetailerFeaturedProductsScreen(products: products),
+        builder: (_) => const RetailerFeaturedProductsScreen(),
       ),
     );
   }
@@ -168,7 +162,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
             HomeBannerSection(
               banners: home.banners,
               onBannerTap: (banner) {
-                _openBannerTarget(banner, home.featuredProducts);
+                _openBannerTarget(banner);
               },
             ),
             if (home.banners.isNotEmpty) const SizedBox(height: 18),
@@ -178,7 +172,7 @@ class _RetailerDashboardViewState extends State<_RetailerDashboardView> {
               products: home.featuredProducts,
               addingProductId: state.addingProductId,
               onAddToCart: _addToCart,
-              onViewAll: () => _openAllFeaturedProducts(home.featuredProducts),
+              onViewAll: _openAllFeaturedProducts,
             ),
             const SizedBox(height: 24),
             QuickActionsSection(actions: home.quickActions),

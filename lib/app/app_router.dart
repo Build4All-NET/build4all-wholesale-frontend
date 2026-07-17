@@ -143,23 +143,34 @@ class AppRouter {
       GoRoute(
         path: '/signup/verify',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
+          final extra = state.extra;
+          final email = extra is Map ? extra['email']?.toString() : null;
+          final password = extra is Map ? extra['password']?.toString() : null;
 
-          return RetailerVerifyCodeScreen(
-            email: extra['email'] as String,
-            password: extra['password'] as String,
-          );
+          if (email == null || password == null) {
+            return const RetailerSignupScreen();
+          }
+
+          return RetailerVerifyCodeScreen(email: email, password: password);
         },
       ),
       GoRoute(
         path: '/signup/complete-profile',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
+          final extra = state.extra;
+          final map = extra is Map ? extra : null;
+          final pendingId = map == null ? null : int.tryParse('${map['pendingId']}');
+          final email = map?['email']?.toString();
+          final password = map?['password']?.toString();
+
+          if (pendingId == null || email == null || password == null) {
+            return const RetailerSignupScreen();
+          }
 
           return RetailerCompleteProfileScreen(
-            pendingId: extra['pendingId'] as int,
-            email: extra['email'] as String,
-            password: extra['password'] as String,
+            pendingId: pendingId,
+            email: email,
+            password: password,
           );
         },
       ),
@@ -225,17 +236,21 @@ class AppRouter {
       GoRoute(
         path: '/supplier-products/edit',
         builder: (context, state) {
-          final product = state.extra as ProductEntity;
+          final extra = state.extra;
 
-          return AddProductScreen(productToEdit: product);
+          if (extra is! ProductEntity) return ProductManagementScreen();
+
+          return AddProductScreen(productToEdit: extra);
         },
       ),
       GoRoute(
         path: '/supplier-products/branch-stock',
         builder: (context, state) {
-          final product = state.extra as ProductEntity;
+          final extra = state.extra;
 
-          return ProductBranchInventoryScreen(product: product);
+          if (extra is! ProductEntity) return ProductManagementScreen();
+
+          return ProductBranchInventoryScreen(product: extra);
         },
       ),
       GoRoute(
@@ -253,17 +268,21 @@ class AppRouter {
       GoRoute(
         path: '/supplier-branches/edit',
         builder: (context, state) {
-          final branch = state.extra as BranchEntity;
+          final extra = state.extra;
 
-          return AddBranchScreen(branchToEdit: branch);
+          if (extra is! BranchEntity) return BranchManagementScreen();
+
+          return AddBranchScreen(branchToEdit: extra);
         },
       ),
       GoRoute(
         path: '/supplier-branches/inventory',
         builder: (context, state) {
-          final branch = state.extra as BranchEntity;
+          final extra = state.extra;
 
-          return BranchInventoryScreen(branch: branch);
+          if (extra is! BranchEntity) return BranchManagementScreen();
+
+          return BranchInventoryScreen(branch: extra);
         },
       ),
       GoRoute(
@@ -332,9 +351,11 @@ class AppRouter {
       GoRoute(
         path: '/supplier-promotions/edit',
         builder: (context, state) {
-          final promotion = state.extra as PromotionEntity;
+          final extra = state.extra;
 
-          return CreatePromotionScreen(promotion: promotion);
+          if (extra is! PromotionEntity) return const PromotionsScreen();
+
+          return CreatePromotionScreen(promotion: extra);
         },
       ),
       GoRoute(
@@ -348,9 +369,11 @@ class AppRouter {
       GoRoute(
         path: '/supplier-coupons/edit',
         builder: (context, state) {
-          final coupon = state.extra as CouponEntity;
+          final extra = state.extra;
 
-          return CreateCouponScreen(coupon: coupon);
+          if (extra is! CouponEntity) return const CouponsScreen();
+
+          return CreateCouponScreen(coupon: extra);
         },
       ),
       GoRoute(
@@ -364,9 +387,11 @@ class AppRouter {
       GoRoute(
         path: '/supplier-banners/edit',
         builder: (context, state) {
-          final banner = state.extra as BannerEntity;
+          final extra = state.extra;
 
-          return CreateBannerScreen(banner: banner);
+          if (extra is! BannerEntity) return const BannersScreen();
+
+          return CreateBannerScreen(banner: extra);
         },
       ),
       GoRoute(
@@ -380,9 +405,13 @@ class AppRouter {
       GoRoute(
         path: '/supplier-shipping/edit',
         builder: (context, state) {
-          final method = state.extra as ShippingMethodEntity;
+          final extra = state.extra;
 
-          return CreateShippingMethodScreen(method: method);
+          if (extra is! ShippingMethodEntity) {
+            return const ShippingMethodsScreen();
+          }
+
+          return CreateShippingMethodScreen(method: extra);
         },
       ),
 
@@ -402,13 +431,13 @@ class AppRouter {
       GoRoute(
         path: '/supplier-tax-rules/edit',
         builder: (context, state) {
-          final rule = state.extra as TaxRuleEntity?;
+          final extra = state.extra;
 
-          if (rule == null) {
+          if (extra is! TaxRuleEntity) {
             return const TaxRulesScreen();
           }
 
-          return CreateTaxRuleScreen(rule: rule);
+          return CreateTaxRuleScreen(rule: extra);
         },
       ),
 
@@ -440,13 +469,8 @@ class AppRouter {
         builder: (context, state) {
           final extra = state.extra;
 
-          if (extra is Map<String, dynamic> &&
-              extra['banner'] is HomeBannerModel &&
-              extra['products'] is List<HomeProductModel>) {
-            return RetailerBannerTargetScreen(
-              banner: extra['banner'] as HomeBannerModel,
-              products: extra['products'] as List<HomeProductModel>,
-            );
+          if (extra is HomeBannerModel) {
+            return RetailerBannerTargetScreen(banner: extra);
           }
 
           final l10n = AppLocalizations.of(context)!;
@@ -509,12 +533,19 @@ class AppRouter {
       GoRoute(
         path: '/retailer-profile/verify-code',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
+          final extra = state.extra;
+          final map = extra is Map ? extra : null;
+          final mode = map?['mode']?.toString();
+          final email = map?['email']?.toString();
+
+          if (mode == null || email == null) {
+            return const RetailerProfileScreen();
+          }
 
           return ProfileVerificationCodeScreen(
-            mode: extra['mode'] as String,
-            email: extra['email'] as String,
-            newPassword: extra['newPassword'] as String?,
+            mode: mode,
+            email: email,
+            newPassword: map?['newPassword']?.toString(),
           );
         },
       ),

@@ -2896,6 +2896,16 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String discountPercentOff(Object value) {
+    return '$value % de réduction';
+  }
+
+  @override
+  String discountAmountOff(Object value) {
+    return '$value de réduction';
+  }
+
+  @override
   String get supplierNoFreeShipping => 'Pas de livraison gratuite';
 
   @override

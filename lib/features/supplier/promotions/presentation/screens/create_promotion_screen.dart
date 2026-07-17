@@ -423,8 +423,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
   }
 
   void _cancel() {
-    if (_isEditMode) {
-      context.go('/supplier-promotions');
+    if (context.canPop()) {
+      context.pop();
     } else {
       context.go('/supplier-promotions');
     }
@@ -455,8 +455,8 @@ class _CreatePromotionViewState extends State<_CreatePromotionView> {
                 const ClearPromotionMessageRequested(),
               );
 
-          if (_isEditMode) {
-            context.go('/supplier-promotions');
+          if (context.canPop()) {
+            context.pop();
           } else {
             context.go('/supplier-promotions');
           }

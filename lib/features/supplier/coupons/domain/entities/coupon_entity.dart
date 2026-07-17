@@ -146,17 +146,6 @@ class CouponEntity extends Equatable {
     }
   }
 
-  String get discountLabel {
-    switch (discountType) {
-      case CouponDiscountType.percent:
-        return '${_cleanNumber(discountValue)}% Off';
-      case CouponDiscountType.fixed:
-        return '\$${_cleanNumber(discountValue)} Off';
-      case CouponDiscountType.freeShipping:
-        return 'Free Shipping';
-    }
-  }
-
   String get discountTypeLabel {
     return discountType.label;
   }
@@ -244,8 +233,6 @@ class CouponEntity extends Equatable {
 
     return value.toStringAsFixed(2);
   }
-
-  String _cleanNumber(double value) => cleanNumber(value);
 
   String _formatShortDate(DateTime date) {
     const months = [

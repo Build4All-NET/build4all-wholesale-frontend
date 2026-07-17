@@ -244,15 +244,31 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                                     physics: AlwaysScrollableScrollPhysics(),
                                     children: [
                                       SizedBox(
-                                        height: MediaQuery.of(context).size.height * 0.32,
+                                        height: MediaQuery.of(context).size.height * 0.28,
                                       ),
                                       Center(
-                                        child: Text(
-                                          context.l10n.noProductsFound,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            color: AppThemeTokens.textSecondary,
-                                          ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 28,
+                                              backgroundColor: primaryColor.withValues(alpha: 0.12),
+                                              child: Icon(
+                                                Icons.inventory_2_outlined,
+                                                color: primaryColor,
+                                                size: 28,
+                                              ),
+                                            ),
+                                            SizedBox(height: 14),
+                                            Text(
+                                              context.l10n.noProductsFound,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                color: AppThemeTokens.textSecondary,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
