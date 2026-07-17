@@ -24,21 +24,14 @@ class RetailerHomeShell extends StatefulWidget {
 }
 
 class _RetailerHomeShellState extends State<RetailerHomeShell> {
-  late int _currentIndex;
+  static const _tabCount = 5;
 
-  static const _tabs = <Widget>[
-    RetailerDashboardScreen(),
-    RetailerCartScreen(),
-    RetailerOrdersScreen(),
-    RetailerRfqListScreen(embedded: true),
-    // The shell owns the bottom nav, so the profile tab must not draw its own.
-    RetailerProfileScreen(embedded: true),
-  ];
+  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex.clamp(0, _tabs.length - 1);
+    _currentIndex = widget.initialIndex.clamp(0, _tabCount - 1);
   }
 
   void _onTap(int index) {
@@ -50,8 +43,17 @@ class _RetailerHomeShellState extends State<RetailerHomeShell> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
+    final tabs = <Widget>[
+      const RetailerDashboardScreen(),
+      RetailerCartScreen(isActive: _currentIndex == 1),
+      const RetailerOrdersScreen(),
+      const RetailerRfqListScreen(embedded: true),
+      // The shell owns the bottom nav, so the profile tab must not draw its own.
+      const RetailerProfileScreen(embedded: true),
+    ];
+
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _tabs),
+      body: IndexedStack(index: _currentIndex, children: tabs),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTap,

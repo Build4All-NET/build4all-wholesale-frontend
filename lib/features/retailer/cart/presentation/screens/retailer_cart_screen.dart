@@ -15,15 +15,55 @@ import '../cubit/retailer_cart_state.dart';
 import 'package:go_router/go_router.dart';
 
 class RetailerCartScreen extends StatelessWidget {
-  const RetailerCartScreen({super.key});
+  /// Whether this tab is currently the visible one inside the retailer
+  /// shell's IndexedStack. The shell keeps every tab alive, so this screen
+  /// (and its cubit) is only ever built once — without this flag, cart
+  /// changes made elsewhere (e.g. adding an item from a product page) never
+  /// show up here until the whole app is restarted.
+  final bool isActive;
+
+  const RetailerCartScreen({super.key, this.isActive = true});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<RetailerCartCubit>()..loadCart(),
-      child: const _RetailerCartView(),
+      child: _RetailerCartActivationListener(
+        isActive: isActive,
+        child: const _RetailerCartView(),
+      ),
     );
   }
+}
+
+/// Reloads the cart whenever [isActive] flips from false to true, so
+/// switching back into this tab always shows the latest cart.
+class _RetailerCartActivationListener extends StatefulWidget {
+  final bool isActive;
+  final Widget child;
+
+  const _RetailerCartActivationListener({
+    required this.isActive,
+    required this.child,
+  });
+
+  @override
+  State<_RetailerCartActivationListener> createState() =>
+      _RetailerCartActivationListenerState();
+}
+
+class _RetailerCartActivationListenerState
+    extends State<_RetailerCartActivationListener> {
+  @override
+  void didUpdateWidget(covariant _RetailerCartActivationListener oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) {
+      context.read<RetailerCartCubit>().loadCart();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _RetailerCartView extends StatelessWidget {
