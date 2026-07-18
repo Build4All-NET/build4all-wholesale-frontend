@@ -13,6 +13,8 @@ import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../../features/dashboard/presentation/widgets/retailer_product_image.dart';
+import '../../../../../features/retailer_profile/data/models/retailer_profile_model.dart';
+import '../../../../../features/retailer_profile/domain/repositories/retailer_profile_repository.dart';
 import '../../../../../injection_container.dart';
 import '../../data/models/retailer_checkout_model.dart';
 import '../../data/models/retailer_split_checkout_model.dart';
@@ -49,6 +51,7 @@ class _RetailerSplitCheckoutViewState
   final _notesController = TextEditingController();
 
   late final LocationApiService _locationApiService;
+  late final Future<List<CountryModel>> _countriesLoaded;
 
   List<CountryModel> _countries = [];
   List<RegionModel> _regions = [];
@@ -67,7 +70,40 @@ class _RetailerSplitCheckoutViewState
     _locationApiService = LocationApiService(
       sl(instanceName: 'projectApiClient'),
     );
-    _loadCountries();
+    _countriesLoaded = _loadCountries();
+    _prefillDeliveryFromProfile();
+  }
+
+  /// Prefills the delivery address/country from the retailer's saved
+  /// business profile, so returning retailers don't have to retype the same
+  /// delivery details on every checkout. Best-effort only: any failure here
+  /// just leaves the fields blank, exactly as before this existed.
+  Future<void> _prefillDeliveryFromProfile() async {
+    final RetailerBusinessProfileModel business;
+    try {
+      final profile = await sl<RetailerProfileRepository>().getProfile();
+      business = profile.business;
+    } catch (_) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    if (_addressController.text.trim().isEmpty &&
+        business.storeAddress.trim().isNotEmpty) {
+      _addressController.text = business.storeAddress;
+    }
+
+    final countryId = business.countryId;
+    if (countryId == null || _selectedCountry != null) return;
+
+    final countries = await _countriesLoaded;
+    if (!mounted || _selectedCountry != null) return;
+
+    final match = countries.where((c) => c.id == countryId).toList();
+    if (match.isEmpty) return;
+
+    _handleDeliveryCountrySelected(match.first);
   }
 
   @override
@@ -77,21 +113,23 @@ class _RetailerSplitCheckoutViewState
     super.dispose();
   }
 
-  Future<void> _loadCountries() async {
+  Future<List<CountryModel>> _loadCountries() async {
     setState(() => _isLoadingCountries = true);
 
     try {
       final countries = await _locationApiService.getCountries();
-      if (!mounted) return;
+      if (!mounted) return countries;
 
       setState(() {
         _countries = countries;
         _isLoadingCountries = false;
       });
+      return countries;
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted) return [];
       setState(() => _isLoadingCountries = false);
       AppToast.error(context, context.l10n.couldNotLoadCountries);
+      return [];
     }
   }
 

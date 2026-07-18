@@ -274,6 +274,7 @@ import 'features/supplier/tax/presentation/bloc/tax_rules_bloc.dart';
 // SUPPLIER EXCEL IMPORT
 // =========================
 import 'features/supplier/excel_import/data/repositories/supplier_excel_import_repository_impl.dart';
+import 'features/supplier/excel_import/data/services/supplier_excel_import_api_service.dart';
 import 'features/supplier/excel_import/data/services/supplier_excel_reader_service.dart';
 import 'features/supplier/excel_import/domain/repositories/supplier_excel_import_repository.dart';
 import 'features/supplier/excel_import/domain/usecases/clear_supplier_excel_import_usecase.dart';
@@ -468,6 +469,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<SupplierExcelReaderService>(
     () => SupplierExcelReaderService(),
+  );
+
+  sl.registerLazySingleton<SupplierExcelImportApiService>(
+    () => SupplierExcelImportApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
   );
 
   sl.registerLazySingleton<BranchInventoryApiService>(
@@ -869,30 +876,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ImportSupplierExcelProductsUseCase>(
     () => ImportSupplierExcelProductsUseCase(
-      createCategoryUseCase: sl<CreateCategoryUseCase>(),
-      createSubCategoryUseCase: sl<CreateSubCategoryUseCase>(),
-      getCategoriesUseCase: sl<GetCategoriesUseCase>(),
-      getSubCategoriesByCategoryUseCase:
-          sl<GetSubCategoriesByCategoryUseCase>(),
-      createBranchUseCase: sl<CreateBranchUseCase>(),
-      getBranchesUseCase: sl<GetBranchesUseCase>(),
-      createProductUseCase: sl<CreateProductUseCase>(),
-      getProductsUseCase: sl<GetProductsUseCase>(),
-      assignProductToBranchUseCase: sl<AssignProductToBranchUseCase>(),
-      getInventoryByBranchUseCase: sl<GetInventoryByBranchUseCase>(),
-      updateBranchStockUseCase: sl<UpdateBranchStockUseCase>(),
-      createShippingMethodUseCase: sl<CreateShippingMethodUseCase>(),
-      getShippingMethodsUseCase: sl<GetShippingMethodsUseCase>(),
-      createTaxRuleUseCase: sl<CreateTaxRuleUseCase>(),
-      updateTaxRuleUseCase: sl<UpdateTaxRuleUseCase>(),
-      getTaxRulesUseCase: sl<GetTaxRulesUseCase>(),
-      createCouponUseCase: sl<CreateCouponUseCase>(),
-      getCouponsUseCase: sl<GetCouponsUseCase>(),
-      shippingLocationApiService: sl<ShippingLocationApiService>(),
-      createPromotionUseCase: sl<CreatePromotionUseCase>(),
-      getPromotionsUseCase: sl<GetPromotionsUseCase>(),
-      createBannerUseCase: sl<CreateBannerUseCase>(),
-      getBannersUseCase: sl<GetBannersUseCase>(),
+      apiService: sl<SupplierExcelImportApiService>(),
     ),
   );
 
