@@ -188,6 +188,11 @@ class ApiConfig {
   }
 
   // =========================
+  // Supplier Excel Import
+  // =========================
+  static const String supplierExcelImport = '/supplier/excel-import';
+
+  // =========================
   // Supplier Branch Inventory
   // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';
