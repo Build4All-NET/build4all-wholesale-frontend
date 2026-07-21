@@ -217,6 +217,7 @@ class _ProductImage extends StatelessWidget {
 
     final normalized = value.trim();
     if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('/uploads/') ||
         normalized.startsWith('http://') ||
         normalized.startsWith('https://')) {
       return null;
@@ -235,7 +236,8 @@ class _ProductImage extends StatelessWidget {
       return normalized;
     }
 
-    if (normalized.startsWith('/uploadsPublic/')) {
+    if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('/uploads/')) {
       return '${_projectHostWithoutApi()}$normalized';
     }
 

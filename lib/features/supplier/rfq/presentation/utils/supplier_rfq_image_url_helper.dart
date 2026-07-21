@@ -8,13 +8,16 @@ String? buildSupplierRfqPublicImageUrl(String? imageUrl) {
     return Uri.encodeFull(value);
   }
 
-  // The backend stores RFQ images under /uploadsPublic/rfqs/... and serves
-  // them from the wholesale backend root, not from /api.
+  // The backend stores RFQ images under /uploads/wholesale/... (or, for
+  // images uploaded before that layout existed, /uploadsPublic/rfqs/...)
+  // and serves them from the wholesale backend root, not from /api.
   final backendRoot = AppConfig.overrideRootUrl.trim().replaceAll(RegExp(r'/+$'), '');
   final cleanPath = value.startsWith('/') ? value : '/$value';
-  final normalizedPath = cleanPath.startsWith('/api/uploadsPublic/')
-      ? cleanPath.replaceFirst('/api', '')
-      : cleanPath;
+  final normalizedPath =
+      (cleanPath.startsWith('/api/uploadsPublic/') ||
+              cleanPath.startsWith('/api/uploads/'))
+          ? cleanPath.replaceFirst('/api', '')
+          : cleanPath;
 
   return Uri.encodeFull('$backendRoot$normalizedPath');
 }

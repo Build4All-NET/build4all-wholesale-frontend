@@ -2469,6 +2469,7 @@ class _UploadImagesBox extends StatelessWidget {
     final normalized = value.trim();
 
     if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('/uploads/') ||
         normalized.startsWith('http://') ||
         normalized.startsWith('https://')) {
       return null;
@@ -2491,7 +2492,8 @@ class _UploadImagesBox extends StatelessWidget {
       return normalized;
     }
 
-    if (normalized.startsWith('/uploadsPublic/')) {
+    if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('/uploads/')) {
       return '${_projectHostWithoutApi()}$normalized';
     }
 
