@@ -271,7 +271,9 @@ class RetailerRfqApiService {
     if (path == null) return null;
 
     if (path.startsWith('/uploadsPublic/') ||
-        path.contains('/uploadsPublic/')) {
+        path.contains('/uploadsPublic/') ||
+        path.startsWith('/uploads/') ||
+        path.contains('/uploads/')) {
       return _normalizeUploadUrl(path);
     }
 
@@ -317,11 +319,15 @@ class RetailerRfqApiService {
   }
 
   String _normalizeUploadUrl(String value) {
-    if (value.startsWith('/uploadsPublic/')) return value;
-
-    if (value.contains('/uploadsPublic/')) {
-      return value.substring(value.indexOf('/uploadsPublic/'));
+    if (value.startsWith('/uploadsPublic/') || value.startsWith('/uploads/')) {
+      return value;
     }
+
+    final legacyIndex = value.indexOf('/uploadsPublic/');
+    final currentIndex = value.indexOf('/uploads/');
+
+    if (legacyIndex >= 0) return value.substring(legacyIndex);
+    if (currentIndex >= 0) return value.substring(currentIndex);
 
     return value;
   }

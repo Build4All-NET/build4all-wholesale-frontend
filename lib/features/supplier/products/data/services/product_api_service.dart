@@ -168,13 +168,15 @@ class ProductApiService {
 
     final normalized = imagePath.trim();
 
-    if (normalized.startsWith('/uploadsPublic/')) {
+    if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('/uploads/')) {
       return normalized;
     }
 
-    if (normalized.contains('/uploadsPublic/')) {
+    if (normalized.contains('/uploadsPublic/') ||
+        normalized.contains('/uploads/')) {
       return normalized.substring(
-        normalized.indexOf('/uploadsPublic/'),
+        _indexOfUploadPrefix(normalized),
       );
     }
 
@@ -194,17 +196,29 @@ class ProductApiService {
 
     final normalized = existingImageUrl.trim();
 
-    if (normalized.startsWith('/uploadsPublic/')) {
+    if (normalized.startsWith('/uploadsPublic/') ||
+        normalized.startsWith('/uploads/')) {
       return normalized;
     }
 
-    if (normalized.contains('/uploadsPublic/')) {
+    if (normalized.contains('/uploadsPublic/') ||
+        normalized.contains('/uploads/')) {
       return normalized.substring(
-        normalized.indexOf('/uploadsPublic/'),
+        _indexOfUploadPrefix(normalized),
       );
     }
 
     return normalized;
+  }
+
+  int _indexOfUploadPrefix(String value) {
+    final legacyIndex = value.indexOf('/uploadsPublic/');
+    final currentIndex = value.indexOf('/uploads/');
+
+    if (legacyIndex == -1) return currentIndex;
+    if (currentIndex == -1) return legacyIndex;
+
+    return legacyIndex < currentIndex ? legacyIndex : currentIndex;
   }
 
   Future<String> _uploadProductImage(File file) async {
