@@ -1,10 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthStorage {
   static const _storage = FlutterSecureStorage();
 
-  static const _hasLaunchedBeforeKey = 'has_launched_before';
   static const _tokenKey = 'build4all_access_token';
   static const _refreshTokenKey = 'build4all_refresh_token';
   static const _build4allUserIdKey = 'build4all_user_id';
@@ -90,21 +88,6 @@ class AuthStorage {
 
   Future<void> clearSession() async {
     await _storage.deleteAll();
-  }
-
-  /// iOS Keychain entries (unlike the rest of the app's storage) survive an
-  /// uninstall, so a fresh install can silently inherit a session — and
-  /// `profile_completed` flag — from a previous install, skipping straight
-  /// past `/login`. `has_launched_before` lives in SharedPreferences, which
-  /// iOS *does* wipe on uninstall, so it reliably flags a genuinely first
-  /// launch of this install and lets us clear any leftover Keychain session
-  /// before the router ever looks at it.
-  Future<void> clearStaleSessionOnFreshInstall() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool(_hasLaunchedBeforeKey) == true) return;
-
-    await clearSession();
-    await prefs.setBool(_hasLaunchedBeforeKey, true);
   }
 
   String _cleanToken(String token) {

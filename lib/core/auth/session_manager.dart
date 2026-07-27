@@ -1,14 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 import '../storage/auth_storage.dart';
-import '../../features/auth/data/services/auth_service.dart';
 
 /// Lifecycle of the user's session, as seen by the router.
 enum AuthStatus {
-  /// Cold start: we haven't decided yet (still validating stored credentials).
+  /// Cold start: we haven't decided yet (still clearing any old credentials).
   unknown,
 
-  /// A valid session is restored / active.
+  /// A valid session is active (only ever set by an explicit login).
   authenticated,
 
   /// No session — the user must log in.
@@ -19,20 +18,19 @@ enum AuthStatus {
 /// (retailer/user and supplier/admin).
 ///
 /// The router listens to this (via `refreshListenable`) so navigation reacts
-/// to session changes automatically: restoring a saved session on launch,
-/// landing on the right dashboard after login, and bouncing back to `/login`
-/// the moment the session ends — whether the user tapped logout or the refresh
-/// token was rejected mid-session.
+/// to session changes automatically: landing on the right dashboard after
+/// login, and bouncing back to `/login` the moment the session ends —
+/// whether the user tapped logout, the refresh token was rejected
+/// mid-session, or the app was cold-started fresh (every cold start requires
+/// an explicit login; no session is ever auto-restored).
 class SessionManager extends ChangeNotifier {
   SessionManager({
     required this.authStorage,
-    required this.authService,
     this.onAuthenticated,
     this.onSignedOut,
   });
 
   final AuthStorage authStorage;
-  final AuthService authService;
 
   /// Called (best-effort) when a session becomes active, so push notifications
   /// can register the device token. Never blocks or breaks the auth flow.
@@ -73,38 +71,12 @@ class SessionManager extends ChangeNotifier {
     return '/login';
   }
 
-  /// Restores and validates a stored session. Runs once on cold start.
-  ///
-  /// Hitting `/auth/me` here exercises the access token: the refresh
-  /// interceptor transparently rotates an expired one, and clears the session
-  /// if the refresh token is dead too (so the token is gone when we re-check).
-  /// A transient/offline failure keeps the stored session optimistically rather
-  /// than logging the user out for being offline.
+  /// Runs once on cold start. By design, no saved session is ever restored
+  /// here — every app launch requires an explicit login, so any leftover
+  /// credentials are dropped and the router sends the user to `/login`.
   Future<void> bootstrap() async {
-    final token = await authStorage.getToken();
-    if (token == null || token.trim().isEmpty) {
-      _setUnauthenticated();
-      return;
-    }
-
-    _role = (await authStorage.getRole())?.toUpperCase().trim() ?? '';
-    _profileCompleted = await authStorage.getProfileCompleted() ?? false;
-
-    try {
-      final me = await authService.getWholesaleMe();
-      _profileCompleted = me.profileCompleted;
-    } catch (_) {
-      final stillLoggedIn = await authStorage.getToken();
-      if (stillLoggedIn == null || stillLoggedIn.trim().isEmpty) {
-        _setUnauthenticated();
-        return;
-      }
-      // Transient error but the session is still valid — keep it.
-    }
-
-    _status = AuthStatus.authenticated;
-    notifyListeners();
-    _fireAuthenticated();
+    await authStorage.clearSession();
+    _setUnauthenticated();
   }
 
   /// Marks the session active after a successful login.
