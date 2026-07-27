@@ -296,8 +296,15 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       return context.l10n.phoneCountryMustMatchSelectedCountry;
     }
 
-    if (country.iso2Code == 'LB' && localDigits.length != 8) {
-      return context.l10n.lebanesePhoneDigitsError;
+    if (country.iso2Code == 'LB') {
+      // Mobile numbers starting with 3 (the old "03" prefix) are also valid
+      // written without the leading 0, i.e. 7 digits instead of 8.
+      final validLength = localDigits.startsWith('3')
+          ? localDigits.length == 7
+          : localDigits.length == 8;
+      if (!validLength) {
+        return context.l10n.lebanesePhoneDigitsError;
+      }
     }
 
     if (localDigits.length < 6 || localDigits.length > 15) {

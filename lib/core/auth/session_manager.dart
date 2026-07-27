@@ -80,6 +80,13 @@ class SessionManager extends ChangeNotifier {
   /// if the refresh token is dead too (so the token is gone when we re-check).
   /// A transient/offline failure keeps the stored session optimistically rather
   /// than logging the user out for being offline.
+  ///
+  /// A restored session with an incomplete profile is deliberately NOT
+  /// auto-routed to the complete-profile screen — that screen should only
+  /// ever appear right after an explicit login, never silently on cold
+  /// start. In that case we fall back to `/login`; the stored token is left
+  /// alone (not cleared), and the normal login flow re-authenticates and
+  /// lands on complete-profile itself via `onLogin`.
   Future<void> bootstrap() async {
     final token = await authStorage.getToken();
     if (token == null || token.trim().isEmpty) {
@@ -100,6 +107,11 @@ class SessionManager extends ChangeNotifier {
         return;
       }
       // Transient error but the session is still valid — keep it.
+    }
+
+    if (!_profileCompleted) {
+      _setUnauthenticated();
+      return;
     }
 
     _status = AuthStatus.authenticated;
