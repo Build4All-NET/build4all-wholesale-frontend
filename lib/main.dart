@@ -64,9 +64,8 @@ Future<void> main() async {
       await sl<ThemeCubit>().loadSavedTheme();
       await sl<LocaleCubit>().loadSavedLocale();
 
-      // Every cold start requires an explicit login — no saved session is
-      // ever auto-restored. The router shows the splash until this resolves,
-      // then sends the user to /login.
+      // Restore + validate any saved session in the background. The router
+      // shows the splash until this resolves the auth status, then redirects.
       unawaited(sl<SessionManager>().bootstrap());
 
       debugPrint('APP_NAME: ${AppConfig.appName}');

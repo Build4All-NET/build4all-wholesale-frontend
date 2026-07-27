@@ -402,6 +402,7 @@ Future<void> init() async {
   sl.registerLazySingleton<SessionManager>(
     () => SessionManager(
       authStorage: sl<AuthStorage>(),
+      authService: sl<AuthService>(),
       onAuthenticated: () =>
           sl<PushNotificationService>().registerForCurrentUser(),
       onSignedOut: () => sl<PushNotificationService>().unregister(),
