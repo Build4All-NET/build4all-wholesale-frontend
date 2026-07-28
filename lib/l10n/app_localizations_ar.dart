@@ -1009,7 +1009,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get lebanesePhoneDigitsError =>
-      'يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961';
+      'يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961، أو 7 أرقام إذا كان يبدأ بالرقم 3';
 
   @override
   String get validPhoneForSelectedCountryError =>

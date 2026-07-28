@@ -366,7 +366,7 @@
   "phoneRequiredError": "رقم الهاتف مطلوب",
   "phoneSelectCountryFirstError": "يرجى اختيار الدولة أولاً",
   "phoneCountryMismatchError": "يجب أن تتطابق دولة الهاتف مع الدولة المختارة",
-  "lebanesePhoneDigitsError": "يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961",
+  "lebanesePhoneDigitsError": "يجب أن يحتوي رقم الهاتف اللبناني على 8 أرقام بعد ‎+961، أو 7 أرقام إذا كان يبدأ بالرقم 3",
   "validPhoneForSelectedCountryError": "أدخل رقم هاتف صحيحاً مع رمز البلد",
   "deleteBranchTitle": "حذف الفرع",
   "deleteBranchConfirmation": "هل أنت متأكد أنك تريد حذف {branchName}؟",

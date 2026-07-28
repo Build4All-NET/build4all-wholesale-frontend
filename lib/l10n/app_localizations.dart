@@ -1942,7 +1942,7 @@ abstract class AppLocalizations {
   /// No description provided for @lebanesePhoneDigitsError.
   ///
   /// In en, this message translates to:
-  /// **'Lebanese phone numbers must contain 8 digits after +961'**
+  /// **'Lebanese phone numbers must contain 8 digits after +961, or 7 digits when they start with 3'**
   String get lebanesePhoneDigitsError;
 
   /// No description provided for @validPhoneForSelectedCountryError.

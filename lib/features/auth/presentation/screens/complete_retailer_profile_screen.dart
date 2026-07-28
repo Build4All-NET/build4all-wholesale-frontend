@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
 
@@ -15,6 +16,7 @@ import '../../../../core/location/data/models/country_model.dart';
 import '../../../../core/location/data/models/region_model.dart';
 import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/location/phone_countries.dart';
+import '../../../../core/location/phone_validation.dart';
 import '../../../../core/models/select_option.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../injection_container.dart';
@@ -162,16 +164,33 @@ class _CompleteRetailerProfileScreenState
     }
   }
 
-  String? _validatePhone(String? value) {
+  String? _validatePhone(PhoneNumber? phone) {
     final l10n = context.l10n;
 
-    if (value == null || value.trim().isEmpty) {
+    final rawLocalNumber =
+        phone?.number.trim() ?? _phoneNumberController.text.trim();
+
+    if (rawLocalNumber.isEmpty) {
       return '${l10n.phoneNumber} is required';
     }
 
-    final cleaned = value.trim();
+    final iso = (phone?.countryISOCode ?? PhoneValidation.lebanonIso)
+        .trim()
+        .toUpperCase();
 
-    if (cleaned.length < 6) {
+    if (iso == PhoneValidation.lebanonIso) {
+      // Lebanese mobiles on the old "03" prefix are 7 digits long.
+      if (!PhoneValidation.isValidLebaneseNumber(rawLocalNumber)) {
+        return l10n.lebanesePhoneDigitsError;
+      }
+
+      return null;
+    }
+
+    if (!PhoneValidation.isValidNumberForCountry(
+      isoCode: iso,
+      rawLocalNumber: rawLocalNumber,
+    )) {
       return l10n.validPhoneForSelectedCountryError;
     }
 
@@ -335,18 +354,19 @@ class _CompleteRetailerProfileScreenState
                           controller: _phoneNumberController,
                           initialCountryCode: 'LB',
                           countries: allowedPhoneCountries,
-                          disableLengthCheck: false,
+                          // The package length check rejects 7-digit Lebanese
+                          // numbers and overrides the custom validator.
+                          disableLengthCheck: true,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             hintText: l10n.enterPhoneNumber,
                             helperText: l10n.phoneLebanonHint,
                           ),
-                          validator: (phone) =>
-                              _validatePhone(phone?.completeNumber),
+                          validator: _validatePhone,
                           onChanged: (phone) {
-                            _fullPhone = phone.number.trim().isEmpty
-                                ? ''
-                                : phone.completeNumber;
+                            _fullPhone = PhoneValidation.completeNumberFor(
+                              phone,
+                            );
                           },
                         ),
 
