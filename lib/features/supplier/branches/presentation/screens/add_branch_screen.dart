@@ -4,6 +4,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 
 import '../../../../../core/location/phone_countries.dart';
+import '../../../../../core/location/phone_validation.dart';
 import '../../../../../core/utils/app_error_mapper.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../core/extensions/l10n_extension.dart';
@@ -296,18 +297,20 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       return context.l10n.phoneCountryMustMatchSelectedCountry;
     }
 
-    if (country.iso2Code == 'LB') {
+    if (country.iso2Code == PhoneValidation.lebanonIso) {
       // Mobile numbers starting with 3 (the old "03" prefix) are also valid
       // written without the leading 0, i.e. 7 digits instead of 8.
-      final validLength = localDigits.startsWith('3')
-          ? localDigits.length == 7
-          : localDigits.length == 8;
-      if (!validLength) {
+      if (!PhoneValidation.isValidLebaneseNumber(rawLocalNumber)) {
         return context.l10n.lebanesePhoneDigitsError;
       }
+
+      return null;
     }
 
-    if (localDigits.length < 6 || localDigits.length > 15) {
+    if (!PhoneValidation.isValidNumberForCountry(
+      isoCode: country.iso2Code,
+      rawLocalNumber: rawLocalNumber,
+    )) {
       return context.l10n.validPhoneForSelectedCountryError;
     }
 
@@ -523,7 +526,8 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   initialCountryCode: _phoneIso2Code,
                   validator: _validatePhone,
                   onChanged: (phone) {
-                    _completePhoneNumber = phone.completeNumber;
+                    _completePhoneNumber =
+                        PhoneValidation.completeNumberFor(phone);
                   },
                 ),
                 _StatusSelector(
@@ -743,6 +747,9 @@ class _PhoneField extends StatelessWidget {
             controller: controller,
             initialCountryCode: initialCountryCode,
             countries: allowedPhoneCountries,
+            // The package length check rejects 7-digit Lebanese numbers and
+            // overrides [validator], so the rules live in [validator] instead.
+            disableLengthCheck: true,
             keyboardType: TextInputType.phone,
             validator: validator,
             onChanged: onChanged,

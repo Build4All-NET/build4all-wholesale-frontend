@@ -12,6 +12,7 @@ import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/location/data/models/country_model.dart';
 import '../../../../core/location/data/models/region_model.dart';
 import '../../../../core/location/phone_countries.dart';
+import '../../../../core/location/phone_validation.dart';
 import '../../../../core/location/data/services/location_api_service.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
@@ -441,7 +442,8 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
         final parsed = PhoneNumber.fromCompleteNumber(completeNumber: phone);
         _initialCountryCode = parsed.countryISOCode;
         _phoneController.text = parsed.number;
-        _fullPhone = parsed.completeNumber;
+        // `completeNumber` comes back without the leading "+".
+        _fullPhone = PhoneValidation.ensureLeadingPlus(parsed.completeNumber);
       } catch (_) {
         _phoneController.text = phone.replaceAll('+', '');
       }
@@ -491,16 +493,31 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
     return cleaned;
   }
 
-  String? _validateInternationalPhone(String? value) {
-    final phone = _normalizePhone(
-      _fullPhone.isNotEmpty ? _fullPhone : value ?? '',
-    );
+  String? _validateInternationalPhone(PhoneNumber? phone) {
+    final rawLocalNumber =
+        phone?.number.trim() ?? _phoneController.text.trim();
 
-    if (phone.isEmpty) {
+    if (rawLocalNumber.isEmpty) {
       return '${context.l10n.phoneNumber} is required';
     }
 
-    if (!RegExp(r'^\+[1-9]\d{7,14}$').hasMatch(phone)) {
+    final iso = (phone?.countryISOCode ?? _initialCountryCode)
+        .trim()
+        .toUpperCase();
+
+    if (iso == PhoneValidation.lebanonIso) {
+      // Lebanese mobiles on the old "03" prefix are 7 digits long.
+      if (!PhoneValidation.isValidLebaneseNumber(rawLocalNumber)) {
+        return context.l10n.lebanesePhoneDigitsError;
+      }
+
+      return null;
+    }
+
+    if (!PhoneValidation.isValidNumberForCountry(
+      isoCode: iso,
+      rawLocalNumber: rawLocalNumber,
+    )) {
       return context.l10n.validPhoneForSelectedCountryError;
     }
 
@@ -1661,21 +1678,21 @@ class _EditRetailerProfileViewState extends State<_EditRetailerProfileView> {
                             focusNode: _phoneFocusNode,
                             initialCountryCode: _initialCountryCode,
                             countries: allowedPhoneCountries,
-                            disableLengthCheck: false,
+                            // The package length check rejects 7-digit
+                            // Lebanese numbers and overrides the custom
+                            // validator.
+                            disableLengthCheck: true,
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
                               hintText: l10n.phoneNumber,
                               helperText: l10n.phoneLebanonHint,
                               prefixIcon: const Icon(Icons.phone_outlined),
                             ),
-                            validator: (phone) {
-                              final value = phone?.completeNumber ?? _fullPhone;
-                              return _validateInternationalPhone(value);
-                            },
+                            validator: _validateInternationalPhone,
                             onChanged: (phone) {
-                              _fullPhone = phone.number.trim().isEmpty
-                                  ? ''
-                                  : phone.completeNumber;
+                              _fullPhone = PhoneValidation.completeNumberFor(
+                                phone,
+                              );
                             },
                             onCountryChanged: (_) {
                               _fullPhone = '';

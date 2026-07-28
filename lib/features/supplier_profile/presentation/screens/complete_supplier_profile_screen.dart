@@ -24,6 +24,7 @@ import '../../../../core/models/select_option.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
 import '../../../../core/location/phone_countries.dart';
+import '../../../../core/location/phone_validation.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/searchable_selection_field.dart';
 import '../../../../core/utils/validators.dart';
@@ -213,18 +214,20 @@ class _CompleteSupplierProfileScreenState
       return context.l10n.phoneCountryMustMatchSelectedCountry;
     }
 
-    if (country.iso2Code == 'LB') {
+    if (country.iso2Code == PhoneValidation.lebanonIso) {
       // Mobile numbers starting with 3 (the old "03" prefix) are also valid
       // written without the leading 0, i.e. 7 digits instead of 8.
-      final validLength = localDigits.startsWith('3')
-          ? localDigits.length == 7
-          : localDigits.length == 8;
-      if (!validLength) {
+      if (!PhoneValidation.isValidLebaneseNumber(rawLocalNumber)) {
         return context.l10n.lebanesePhoneDigitsError;
       }
+
+      return null;
     }
 
-    if (localDigits.length < 6 || localDigits.length > 15) {
+    if (!PhoneValidation.isValidNumberForCountry(
+      isoCode: country.iso2Code,
+      rawLocalNumber: rawLocalNumber,
+    )) {
       return context.l10n.validPhoneForSelectedCountryError;
     }
 
@@ -458,10 +461,16 @@ class _CompleteSupplierProfileScreenState
                                 controller: _phoneNumberController,
                                 initialCountryCode: _phoneIso2Code,
                                 countries: allowedPhoneCountries,
+                                // The package length check rejects 7-digit
+                                // Lebanese numbers and overrides the custom
+                                // validator, so the rules live in
+                                // [_validatePhone] instead.
+                                disableLengthCheck: true,
                                 keyboardType: TextInputType.phone,
                                 validator: _validatePhone,
                                 onChanged: (phone) {
-                                  _completePhoneNumber = phone.completeNumber;
+                                  _completePhoneNumber =
+                                      PhoneValidation.completeNumberFor(phone);
                                 },
                                 decoration: InputDecoration(
                                   hintText: l10n.enterPhoneNumber,

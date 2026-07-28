@@ -366,7 +366,7 @@
   "phoneRequiredError": "Phone number is required",
   "phoneSelectCountryFirstError": "Please select a country first",
   "phoneCountryMismatchError": "Phone country must match the selected country",
-  "lebanesePhoneDigitsError": "Lebanese phone numbers must contain 8 digits after +961",
+  "lebanesePhoneDigitsError": "Lebanese phone numbers must contain 8 digits after +961, or 7 digits when they start with 3",
   "validPhoneForSelectedCountryError": "Enter a valid phone number with country code",
   "deleteBranchTitle": "Delete Branch",
   "deleteBranchConfirmation": "Are you sure you want to delete {branchName}?",

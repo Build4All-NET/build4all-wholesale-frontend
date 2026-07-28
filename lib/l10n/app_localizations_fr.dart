@@ -1041,7 +1041,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get lebanesePhoneDigitsError =>
-      'Les numéros libanais doivent contenir 8 chiffres après +961';
+      'Les numéros libanais doivent contenir 8 chiffres après +961, ou 7 chiffres s’ils commencent par 3';
 
   @override
   String get validPhoneForSelectedCountryError =>

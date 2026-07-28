@@ -1015,7 +1015,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lebanesePhoneDigitsError =>
-      'Lebanese phone numbers must contain 8 digits after +961';
+      'Lebanese phone numbers must contain 8 digits after +961, or 7 digits when they start with 3';
 
   @override
   String get validPhoneForSelectedCountryError =>
