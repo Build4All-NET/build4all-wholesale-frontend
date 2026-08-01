@@ -1467,6 +1467,7 @@
   "paymentMethodConfigureCard": "Configure Credit / Debit Card",
   "paymentMethodEditCard": "Edit Card Settings",
   "paymentMethodCreditDebitCardTitle": "Credit / Debit Card",
+  "paymentMethodVisaCreditCardTitle": "Visa / Credit Card",
   "paymentMethodCashOnDeliveryTitle": "Cash on Delivery",
   "paymentMethodStripeTitle": "Stripe",
   "paymentMethodPayPalTitle": "PayPal",
