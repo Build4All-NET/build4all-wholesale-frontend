@@ -933,7 +933,9 @@ class _PaymentMethodsCard extends StatelessWidget {
       case 'STRIPE':
         return 'Stripe';
       case 'MPGS':
-        return l10n.paymentMethodCreditDebitCardTitle;
+        // MPGS is the acquiring gateway's technical name; retailers only
+        // need to know it's the card option.
+        return l10n.paymentMethodVisaCreditCardTitle;
       case 'PAYPAL':
         return 'PayPal';
       default:

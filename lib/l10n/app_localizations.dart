@@ -6735,6 +6735,12 @@ abstract class AppLocalizations {
   /// **'Credit / Debit Card'**
   String get paymentMethodCreditDebitCardTitle;
 
+  /// No description provided for @paymentMethodVisaCreditCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visa / Credit Card'**
+  String get paymentMethodVisaCreditCardTitle;
+
   /// No description provided for @paymentMethodCashOnDeliveryTitle.
   ///
   /// In en, this message translates to:

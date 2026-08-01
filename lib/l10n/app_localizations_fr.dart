@@ -3759,6 +3759,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'Carte de crédit / débit';
 
   @override
+  String get paymentMethodVisaCreditCardTitle => 'Visa / Carte de crédit';
+
+  @override
   String get paymentMethodCashOnDeliveryTitle => 'Paiement à la livraison';
 
   @override
