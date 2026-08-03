@@ -3750,16 +3750,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get payPalSaving => 'Enregistrement...';
 
   @override
-  String get paymentMethodConfigureCard => 'Configurer carte crédit / débit';
+  String get paymentMethodConfigureCard => 'Configurer Payer par carte';
 
   @override
   String get paymentMethodEditCard => 'Modifier les paramètres carte';
 
-  @override
-  String get paymentMethodCreditDebitCardTitle => 'Carte de crédit / débit';
 
   @override
-  String get paymentMethodVisaCreditCardTitle => 'Visa / Carte de crédit';
+  String get paymentMethodPayByCardTitle => 'Payer par carte';
 
   @override
   String get paymentMethodCashOnDeliveryTitle => 'Paiement à la livraison';
@@ -3783,19 +3781,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Paiements en ligne via PayPal. Configurez d’abord les identifiants de test, puis activez-le sur la page de paiement.';
 
   @override
-  String get paymentMethodMpgsDescription =>
-      'Paiements par carte via MPGS pour Visa et Mastercard. Configurez d’abord les identifiants de passerelle, puis activez-le sur la page de paiement.';
+  String get paymentMethodMpgsDescription => 'Permettez aux détaillants de payer par carte. Configurez d\'abord les identifiants de la passerelle, puis activez-la pour le paiement.';
 
   @override
-  String get mpgsConfigTitle => 'Configurer carte crédit / débit';
+  String get mpgsConfigTitle => 'Configurer Payer par carte';
 
   @override
-  String get mpgsInfoBanner =>
-      'Configurez MPGS hosted checkout pour les paiements Visa et Mastercard. Les détaillants l’utiliseront au checkout en choisissant Credit / Debit Card.';
+  String get mpgsInfoBanner => 'Configurez le paiement par carte hébergé pour Visa et Mastercard. Les détaillants l’utiliseront au paiement en choisissant Payer par carte.';
 
   @override
-  String get mpgsEnableLabel =>
-      'Activer carte crédit / débit pour les détaillants';
+  String get mpgsEnableLabel => 'Activer Payer par carte pour les détaillants';
 
   @override
   String get mpgsEnableSubtitle =>
@@ -3821,7 +3816,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mpgsMerchantIdLabel => 'Merchant ID';
 
   @override
-  String get mpgsMerchantIdHint => 'MPGS merchant ID';
+  String get mpgsMerchantIdHint => 'Identifiant marchand fourni par votre banque';
 
   @override
   String get mpgsMerchantIdHelper =>
@@ -3834,7 +3829,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mpgsApiPasswordLabel => 'API Password';
 
   @override
-  String get mpgsApiPasswordHint => 'MPGS API password';
+  String get mpgsApiPasswordHint => 'Mot de passe API fourni par votre banque';
 
   @override
   String get mpgsApiPasswordHelper =>
@@ -4012,16 +4007,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'La configuration PayPal est valide et prête pour le démarrage du paiement sandbox.';
 
   @override
-  String get paymentTestMpgsReady =>
-      'La configuration carte crédit / débit est valide et prête pour le paiement hébergé MPGS.';
+  String get paymentTestMpgsReady => 'La configuration Payer par carte est valide et prête pour le paiement hébergé.';
 
   @override
-  String get paymentTestMpgsConnectionCouldNotComplete =>
-      'Le test de connexion carte crédit / débit n’a pas pu être terminé. Les identifiants enregistrés peuvent toujours être utilisés par le checkout pour préparer le paiement hébergé.';
+  String get paymentTestMpgsConnectionCouldNotComplete => 'Le test de connexion Payer par carte n’a pas pu être effectué. Les identifiants enregistrés restent utilisables pour préparer le paiement hébergé.';
 
   @override
-  String get paymentTestMpgsNotEnabled =>
-      'La carte crédit / débit n’est pas activée pour ce fournisseur.';
+  String get paymentTestMpgsNotEnabled => 'Payer par carte n’est pas activé pour ce fournisseur.';
 
   @override
   String get paymentTestStripeNotEnabled =>
@@ -4107,8 +4099,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Votre commande a été créée. Le paiement Stripe est prêt. L’intégration Payment Sheet sera connectée ensuite.';
 
   @override
-  String get checkoutMpgsReadyMessage =>
-      'Votre commande a été créée. Le paiement par carte via la page hébergée est préparé et encore en test.';
+  String get checkoutMpgsReadyMessage => 'Votre commande a été créée. Le paiement hébergé Payer par carte est prêt et encore en test.';
 
   @override
   String get checkoutPaymentPreparedMessage =>

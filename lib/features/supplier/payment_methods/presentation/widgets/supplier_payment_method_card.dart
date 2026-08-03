@@ -259,7 +259,7 @@ class SupplierPaymentMethodCard extends StatelessWidget {
       case 'PAYPAL':
         return context.l10n.paymentMethodPayPalTitle;
       case 'MPGS':
-        return context.l10n.paymentMethodCreditDebitCardTitle;
+        return context.l10n.paymentMethodPayByCardTitle;
       default:
         return method.displayName;
     }

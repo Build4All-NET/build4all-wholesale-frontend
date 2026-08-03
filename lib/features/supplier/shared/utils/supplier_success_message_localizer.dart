@@ -71,17 +71,26 @@ String localizeSupplierPaymentMessage(BuildContext context, String message) {
     return context.l10n.paymentTestPayPalReadySandbox;
   }
 
+  // The card gateway was renamed from "Credit / Debit Card" to "Pay by Card"
+  // backend-side. Both wordings are matched so an app update that lands
+  // before (or after) the backend deploy still localizes these messages
+  // instead of falling through to raw English.
   if (clean ==
-      'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.') {
+          'Pay by Card configuration is valid and ready for hosted checkout.' ||
+      clean ==
+          'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.') {
     return context.l10n.paymentTestMpgsReady;
   }
 
   if (clean ==
-      'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.') {
+          'Pay by Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.' ||
+      clean ==
+          'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.') {
     return context.l10n.paymentTestMpgsConnectionCouldNotComplete;
   }
 
-  if (clean == 'Credit / Debit Card is not enabled for this supplier.') {
+  if (clean == 'Pay by Card is not enabled for this supplier.' ||
+      clean == 'Credit / Debit Card is not enabled for this supplier.') {
     return context.l10n.paymentTestMpgsNotEnabled;
   }
 
@@ -97,8 +106,12 @@ String localizeSupplierPaymentMessage(BuildContext context, String message) {
 }
 
 String _extractPaymentMethodName(String message) {
+  if (message.startsWith('Pay by Card')) {
+    return 'Pay by Card';
+  }
+  // Pre-rename backends still say "Credit / Debit Card".
   if (message.startsWith('Credit / Debit Card')) {
-    return 'Credit / Debit Card';
+    return 'Pay by Card';
   }
   if (message.startsWith('Stripe')) {
     return 'Stripe';

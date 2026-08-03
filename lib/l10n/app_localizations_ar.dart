@@ -3651,16 +3651,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get payPalSaving => 'جارِ الحفظ...';
 
   @override
-  String get paymentMethodConfigureCard => 'إعداد بطاقة ائتمان / خصم';
+  String get paymentMethodConfigureCard => 'إعداد الدفع بالبطاقة';
 
   @override
   String get paymentMethodEditCard => 'تعديل إعدادات البطاقة';
 
-  @override
-  String get paymentMethodCreditDebitCardTitle => 'بطاقة ائتمان / بطاقة مصرفية';
 
   @override
-  String get paymentMethodVisaCreditCardTitle => 'فيزا / بطاقة ائتمان';
+  String get paymentMethodPayByCardTitle => 'الدفع بالبطاقة';
 
   @override
   String get paymentMethodCashOnDeliveryTitle => 'الدفع عند الاستلام';
@@ -3684,18 +3682,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'مدفوعات إلكترونية عبر PayPal. اضبطي بيانات الاختبار أولًا، ثم فعّليه في صفحة الدفع.';
 
   @override
-  String get paymentMethodMpgsDescription =>
-      'دفع بالبطاقة عبر MPGS لبطاقات Visa وMastercard. اضبطي بيانات بوابة الدفع أولًا، ثم فعّليه في صفحة الدفع.';
+  String get paymentMethodMpgsDescription => 'اسمح لتجار التجزئة بالدفع بالبطاقة. اضبط بيانات اعتماد البوابة أولاً ثم فعّلها في الدفع.';
 
   @override
-  String get mpgsConfigTitle => 'إعداد بطاقة ائتمان / خصم';
+  String get mpgsConfigTitle => 'إعداد الدفع بالبطاقة';
 
   @override
-  String get mpgsInfoBanner =>
-      'اضبطي إعدادات MPGS hosted checkout لدفع Visa وMastercard. سيستخدمها المتجر عند اختيار Credit / Debit Card في checkout.';
+  String get mpgsInfoBanner => 'اضبط صفحة الدفع بالبطاقة المستضافة لمدفوعات فيزا وماستركارد. سيستخدمها تجار التجزئة عند اختيار الدفع بالبطاقة.';
 
   @override
-  String get mpgsEnableLabel => 'تفعيل الدفع بالبطاقة للمتاجر';
+  String get mpgsEnableLabel => 'تفعيل الدفع بالبطاقة لتجار التجزئة';
 
   @override
   String get mpgsEnableSubtitle =>
@@ -3721,7 +3717,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mpgsMerchantIdLabel => 'Merchant ID';
 
   @override
-  String get mpgsMerchantIdHint => 'MPGS merchant ID';
+  String get mpgsMerchantIdHint => 'معرّف التاجر من مصرفك';
 
   @override
   String get mpgsMerchantIdHelper =>
@@ -3734,7 +3730,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mpgsApiPasswordLabel => 'API Password';
 
   @override
-  String get mpgsApiPasswordHint => 'MPGS API password';
+  String get mpgsApiPasswordHint => 'كلمة مرور API من مصرفك';
 
   @override
   String get mpgsApiPasswordHelper =>
@@ -3902,16 +3898,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'إعدادات PayPal صالحة وجاهزة لبدء الدفع التجريبي.';
 
   @override
-  String get paymentTestMpgsReady =>
-      'إعدادات بطاقة الائتمان / الخصم صالحة وجاهزة للدفع المستضاف عبر MPGS.';
+  String get paymentTestMpgsReady => 'إعداد الدفع بالبطاقة صالح وجاهز للدفع المستضاف.';
 
   @override
-  String get paymentTestMpgsConnectionCouldNotComplete =>
-      'تعذر إكمال اختبار اتصال بطاقة الائتمان / الخصم. يمكن استخدام بيانات الاعتماد المحفوظة لتحضير الدفع عند checkout.';
+  String get paymentTestMpgsConnectionCouldNotComplete => 'تعذّر إكمال اختبار اتصال الدفع بالبطاقة. لا تزال بيانات الاعتماد المحفوظة صالحة لتحضير الدفع المستضاف.';
 
   @override
-  String get paymentTestMpgsNotEnabled =>
-      'بطاقة الائتمان / الخصم غير مفعّلة لهذا المورد.';
+  String get paymentTestMpgsNotEnabled => 'الدفع بالبطاقة غير مفعّل لهذا المورد.';
 
   @override
   String get paymentTestStripeNotEnabled => 'Stripe غير مفعّل لهذا المورد.';
@@ -3994,8 +3987,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم إنشاء الطلب. دفع Stripe جاهز وسيتم ربط واجهة الدفع لاحقاً.';
 
   @override
-  String get checkoutMpgsReadyMessage =>
-      'تم إنشاء الطلب. دفع البطاقة عبر صفحة الدفع المستضافة جاهز لكنه ما زال قيد الاختبار.';
+  String get checkoutMpgsReadyMessage => 'تم إنشاء طلبك. الدفع بالبطاقة المستضاف جاهز ولا يزال قيد الاختبار.';
 
   @override
   String get checkoutPaymentPreparedMessage => 'تم إنشاء الطلب وتجهيز الدفع.';
