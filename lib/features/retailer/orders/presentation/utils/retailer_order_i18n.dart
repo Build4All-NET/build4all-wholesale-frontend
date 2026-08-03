@@ -333,7 +333,10 @@ class RetailerOrderI18n {
       case 'CARD':
       case 'CREDIT_CARD':
       case 'DEBIT_CARD':
-        return _select(en: 'Card payment', ar: 'الدفع بالبطاقة', fr: 'Paiement par carte');
+      // MPGS is the acquiring gateway's technical code. Without this case it
+      // fell through to default and past orders showed the raw "MPGS".
+      case 'MPGS':
+        return _select(en: 'Pay by Card', ar: 'الدفع بالبطاقة', fr: 'Payer par carte');
       case 'BANK_TRANSFER':
       case 'TRANSFER':
         return _select(en: 'Bank transfer', ar: 'تحويل مصرفي', fr: 'Virement bancaire');

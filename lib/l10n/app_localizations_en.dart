@@ -3683,13 +3683,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get payPalSaving => 'Saving...';
 
   @override
-  String get paymentMethodConfigureCard => 'Configure Credit / Debit Card';
+  String get paymentMethodConfigureCard => 'Configure Pay by Card';
 
   @override
   String get paymentMethodEditCard => 'Edit Card Settings';
 
-  @override
-  String get paymentMethodCreditDebitCardTitle => 'Credit / Debit Card';
 
   @override
   String get paymentMethodPayByCardTitle => 'Pay by Card';
@@ -3716,18 +3714,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Online payments through PayPal. Configure sandbox credentials first, then enable it for checkout.';
 
   @override
-  String get paymentMethodMpgsDescription =>
-      'Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.';
+  String get paymentMethodMpgsDescription => 'Let retailers pay by card. Configure gateway credentials first, then enable it for checkout.';
 
   @override
-  String get mpgsConfigTitle => 'Configure Credit / Debit Card';
+  String get mpgsConfigTitle => 'Configure Pay by Card';
 
   @override
-  String get mpgsInfoBanner =>
-      'Configure MPGS hosted checkout for Visa and Mastercard payments. Retailers will use this through checkout when they select Credit / Debit Card.';
+  String get mpgsInfoBanner => 'Configure hosted card checkout for Visa and Mastercard payments. Retailers will use this at checkout when they select Pay by Card.';
 
   @override
-  String get mpgsEnableLabel => 'Enable Credit / Debit Card for retailers';
+  String get mpgsEnableLabel => 'Enable Pay by Card for retailers';
 
   @override
   String get mpgsEnableSubtitle =>
@@ -3753,7 +3749,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mpgsMerchantIdLabel => 'Merchant ID';
 
   @override
-  String get mpgsMerchantIdHint => 'MPGS merchant ID';
+  String get mpgsMerchantIdHint => 'Merchant ID from your bank';
 
   @override
   String get mpgsMerchantIdHelper =>
@@ -3766,7 +3762,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mpgsApiPasswordLabel => 'API Password';
 
   @override
-  String get mpgsApiPasswordHint => 'MPGS API password';
+  String get mpgsApiPasswordHint => 'API password from your bank';
 
   @override
   String get mpgsApiPasswordHelper =>
@@ -3938,16 +3934,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'PayPal configuration is valid and ready for sandbox payment start.';
 
   @override
-  String get paymentTestMpgsReady =>
-      'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.';
+  String get paymentTestMpgsReady => 'Pay by Card configuration is valid and ready for hosted checkout.';
 
   @override
-  String get paymentTestMpgsConnectionCouldNotComplete =>
-      'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.';
+  String get paymentTestMpgsConnectionCouldNotComplete => 'Pay by Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.';
 
   @override
-  String get paymentTestMpgsNotEnabled =>
-      'Credit / Debit Card is not enabled for this supplier.';
+  String get paymentTestMpgsNotEnabled => 'Pay by Card is not enabled for this supplier.';
 
   @override
   String get paymentTestStripeNotEnabled =>
@@ -4032,8 +4025,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your order was created. Stripe payment is ready. Payment Sheet integration will be connected next.';
 
   @override
-  String get checkoutMpgsReadyMessage =>
-      'Your order was created. Credit / Debit Card hosted checkout is prepared and still under testing.';
+  String get checkoutMpgsReadyMessage => 'Your order was created. Pay by Card hosted checkout is prepared and still under testing.';
 
   @override
   String get checkoutPaymentPreparedMessage =>

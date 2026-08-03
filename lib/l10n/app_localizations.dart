@@ -6720,7 +6720,7 @@ abstract class AppLocalizations {
   /// No description provided for @paymentMethodConfigureCard.
   ///
   /// In en, this message translates to:
-  /// **'Configure Credit / Debit Card'**
+  /// **'Configure Pay by Card'**
   String get paymentMethodConfigureCard;
 
   /// No description provided for @paymentMethodEditCard.
@@ -6729,11 +6729,6 @@ abstract class AppLocalizations {
   /// **'Edit Card Settings'**
   String get paymentMethodEditCard;
 
-  /// No description provided for @paymentMethodCreditDebitCardTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Credit / Debit Card'**
-  String get paymentMethodCreditDebitCardTitle;
 
   /// No description provided for @paymentMethodPayByCardTitle.
   ///
@@ -6780,25 +6775,25 @@ abstract class AppLocalizations {
   /// No description provided for @paymentMethodMpgsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Card payments through MPGS for Visa and Mastercard. Configure gateway credentials first, then enable it for checkout.'**
+  /// **'Let retailers pay by card. Configure gateway credentials first, then enable it for checkout.'**
   String get paymentMethodMpgsDescription;
 
   /// No description provided for @mpgsConfigTitle.
   ///
   /// In en, this message translates to:
-  /// **'Configure Credit / Debit Card'**
+  /// **'Configure Pay by Card'**
   String get mpgsConfigTitle;
 
   /// No description provided for @mpgsInfoBanner.
   ///
   /// In en, this message translates to:
-  /// **'Configure MPGS hosted checkout for Visa and Mastercard payments. Retailers will use this through checkout when they select Credit / Debit Card.'**
+  /// **'Configure hosted card checkout for Visa and Mastercard payments. Retailers will use this at checkout when they select Pay by Card.'**
   String get mpgsInfoBanner;
 
   /// No description provided for @mpgsEnableLabel.
   ///
   /// In en, this message translates to:
-  /// **'Enable Credit / Debit Card for retailers'**
+  /// **'Enable Pay by Card for retailers'**
   String get mpgsEnableLabel;
 
   /// No description provided for @mpgsEnableSubtitle.
@@ -6846,7 +6841,7 @@ abstract class AppLocalizations {
   /// No description provided for @mpgsMerchantIdHint.
   ///
   /// In en, this message translates to:
-  /// **'MPGS merchant ID'**
+  /// **'Merchant ID from your bank'**
   String get mpgsMerchantIdHint;
 
   /// No description provided for @mpgsMerchantIdHelper.
@@ -6870,7 +6865,7 @@ abstract class AppLocalizations {
   /// No description provided for @mpgsApiPasswordHint.
   ///
   /// In en, this message translates to:
-  /// **'MPGS API password'**
+  /// **'API password from your bank'**
   String get mpgsApiPasswordHint;
 
   /// No description provided for @mpgsApiPasswordHelper.
@@ -7164,19 +7159,19 @@ abstract class AppLocalizations {
   /// No description provided for @paymentTestMpgsReady.
   ///
   /// In en, this message translates to:
-  /// **'Credit / Debit Card configuration is valid and ready for MPGS hosted checkout.'**
+  /// **'Pay by Card configuration is valid and ready for hosted checkout.'**
   String get paymentTestMpgsReady;
 
   /// No description provided for @paymentTestMpgsConnectionCouldNotComplete.
   ///
   /// In en, this message translates to:
-  /// **'Credit / Debit Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.'**
+  /// **'Pay by Card connection test could not be completed. The saved credentials can still be used by checkout to prepare hosted payment.'**
   String get paymentTestMpgsConnectionCouldNotComplete;
 
   /// No description provided for @paymentTestMpgsNotEnabled.
   ///
   /// In en, this message translates to:
-  /// **'Credit / Debit Card is not enabled for this supplier.'**
+  /// **'Pay by Card is not enabled for this supplier.'**
   String get paymentTestMpgsNotEnabled;
 
   /// No description provided for @paymentTestStripeNotEnabled.
@@ -7332,7 +7327,7 @@ abstract class AppLocalizations {
   /// No description provided for @checkoutMpgsReadyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your order was created. Credit / Debit Card hosted checkout is prepared and still under testing.'**
+  /// **'Your order was created. Pay by Card hosted checkout is prepared and still under testing.'**
   String get checkoutMpgsReadyMessage;
 
   /// No description provided for @checkoutPaymentPreparedMessage.
