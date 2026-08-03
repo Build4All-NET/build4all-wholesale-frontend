@@ -3759,7 +3759,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'Carte de crédit / débit';
 
   @override
-  String get paymentMethodVisaCreditCardTitle => 'Visa / Carte de crédit';
+  String get paymentMethodPayByCardTitle => 'Payer par carte';
 
   @override
   String get paymentMethodCashOnDeliveryTitle => 'Paiement à la livraison';

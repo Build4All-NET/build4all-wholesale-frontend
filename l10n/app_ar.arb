@@ -1467,7 +1467,7 @@
   "paymentMethodConfigureCard": "إعداد بطاقة ائتمان / خصم",
   "paymentMethodEditCard": "تعديل إعدادات البطاقة",
   "paymentMethodCreditDebitCardTitle": "بطاقة ائتمان / بطاقة مصرفية",
-  "paymentMethodVisaCreditCardTitle": "فيزا / بطاقة ائتمان",
+  "paymentMethodPayByCardTitle": "الدفع بالبطاقة",
   "paymentMethodCashOnDeliveryTitle": "الدفع عند الاستلام",
   "paymentMethodStripeTitle": "Stripe",
   "paymentMethodPayPalTitle": "PayPal",

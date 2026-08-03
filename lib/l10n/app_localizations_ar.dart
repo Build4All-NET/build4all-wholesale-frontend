@@ -3660,7 +3660,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentMethodCreditDebitCardTitle => 'بطاقة ائتمان / بطاقة مصرفية';
 
   @override
-  String get paymentMethodVisaCreditCardTitle => 'فيزا / بطاقة ائتمان';
+  String get paymentMethodPayByCardTitle => 'الدفع بالبطاقة';
 
   @override
   String get paymentMethodCashOnDeliveryTitle => 'الدفع عند الاستلام';
