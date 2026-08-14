@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
+import '../../../../core/utils/picked_file.dart';
 import '../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../models/supplier_profile_request_model.dart';
 import '../models/supplier_profile_response_model.dart';
@@ -14,10 +15,10 @@ class SupplierProfileService {
 
   Future<String> uploadSupplierLogo(String filePath) async {
     try {
-      final fileName = filePath.split('/').last.split('\\').last;
+      final fileName = pickedFileName(filePath);
 
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
+        'file': await multipartFromPickedPath(
           filePath,
           filename: fileName,
         ),

@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
+import '../../../../../core/utils/picked_file.dart';
 import '../../domain/entities/product_entity.dart';
 import '../models/product_model.dart';
 
@@ -180,13 +179,11 @@ class ProductApiService {
       );
     }
 
-    final file = File(normalized);
-
-    if (!file.existsSync()) {
+    if (!pickedFileExists(normalized)) {
       return null;
     }
 
-    return _uploadProductImage(file);
+    return _uploadProductImage(normalized);
   }
 
   String? _normalizeExistingImageUrl(String? existingImageUrl) {
@@ -221,13 +218,13 @@ class ProductApiService {
     return legacyIndex < currentIndex ? legacyIndex : currentIndex;
   }
 
-  Future<String> _uploadProductImage(File file) async {
+  Future<String> _uploadProductImage(String filePath) async {
     try {
-      final filename = _extractFilename(file.path);
+      final filename = _extractFilename(filePath);
 
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
-          file.path,
+        'file': await multipartFromPickedPath(
+          filePath,
           filename: filename,
         ),
       });

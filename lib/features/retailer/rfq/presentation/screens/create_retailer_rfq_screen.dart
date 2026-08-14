@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -754,8 +754,8 @@ class _ImagePickerBox extends StatelessWidget {
         child: hasImage
             ? Stack(
                 children: [
-                  Image.file(
-                    File(pickedImage!.path),
+                  PickedImage(
+                    pickedImage!.path,
                     width: double.infinity,
                     height: 190,
                     fit: BoxFit.cover,

@@ -1,11 +1,12 @@
-import 'dart:io';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:build4all_wholesale_frontend/core/utils/picked_file.dart';
 import 'package:build4all_wholesale_frontend/core/utils/picked_image_normalizer.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 import '../../../../../core/config/app_config.dart';
 import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
@@ -2404,9 +2405,9 @@ class _UploadImagesBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localFile = _resolveLocalFile(imagePath);
+    final localPath = _resolveLocalPath(imagePath);
     final networkImageUrl = _resolveNetworkImageUrl(imagePath);
-    final hasImage = localFile != null || networkImageUrl != null;
+    final hasImage = localPath != null || networkImageUrl != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2439,9 +2440,9 @@ class _UploadImagesBox extends StatelessWidget {
                     borderRadius: BorderRadius.circular(
                       AppThemeTokens.radiusSmall,
                     ),
-                    child: localFile != null
-                        ? Image.file(
-                            localFile,
+                    child: localPath != null
+                        ? PickedImage(
+                            localPath,
                             width: double.infinity,
                             fit: BoxFit.cover,
                           )
@@ -2461,7 +2462,7 @@ class _UploadImagesBox extends StatelessWidget {
     );
   }
 
-  File? _resolveLocalFile(String? value) {
+  String? _resolveLocalPath(String? value) {
     if (value == null || value.trim().isEmpty) {
       return null;
     }
@@ -2475,9 +2476,7 @@ class _UploadImagesBox extends StatelessWidget {
       return null;
     }
 
-    final file = File(normalized);
-
-    return file.existsSync() ? file : null;
+    return pickedFileExists(normalized) ? normalized : null;
   }
 
   String? _resolveNetworkImageUrl(String? value) {
