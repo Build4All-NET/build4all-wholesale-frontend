@@ -13,6 +13,20 @@ import 'core/theme/theme_cubit.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
+/// Turns every `debugPrint` in the app into a no-op outside debug builds.
+///
+/// `debugPrint` is not compiled out of a release build — it keeps printing, and
+/// on the web that means straight into the browser console, where anyone who
+/// opens DevTools on a merchant's site can read request bodies, ids and tokens.
+/// Reassigning it here covers every call site at once, including
+/// `debugPrintStack` and any log added later, instead of relying on each one
+/// remembering to check the build mode.
+void _silenceLogsOutsideDebug() {
+  if (kDebugMode) return;
+
+  debugPrint = (String? message, {int? wrapWidth}) {};
+}
+
 /// Returns true for transient connectivity failures that are expected when the
 /// device hands off between Wi-Fi and mobile data. These must never crash the
 /// app: in-flight requests/sockets are torn down by the OS and surface as
@@ -25,6 +39,8 @@ bool _isTransientNetworkError(Object error) {
 }
 
 Future<void> main() async {
+  _silenceLogsOutsideDebug();
+
   // runZonedGuarded + the framework error hooks ensure that an uncaught async
   // error (most commonly a dropped connection while switching from Wi-Fi to
   // mobile data) is logged instead of terminating the app.
