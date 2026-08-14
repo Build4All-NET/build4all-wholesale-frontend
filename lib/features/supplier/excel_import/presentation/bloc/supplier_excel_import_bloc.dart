@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -119,6 +120,13 @@ class SupplierExcelImportBloc
     required String selectedPath,
     required Uint8List bytes,
   }) async {
+    // A browser has no filesystem to write to: the picker already handed the
+    // bytes to the browser as a download, under the file name we asked for, and
+    // dart:io.File would throw here.
+    if (kIsWeb) {
+      return selectedPath;
+    }
+
     // Some Android/desktop file pickers may return a path without the .xlsx
     // extension even when the suggested file name has it. In that case, Excel
     // and Google Sheets may not recognize the file. We enforce the extension

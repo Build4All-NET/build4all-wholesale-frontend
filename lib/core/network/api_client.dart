@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 
 import '../storage/auth_storage.dart';
 import 'auth_refresh_service.dart';
@@ -126,6 +126,11 @@ class ApiClient {
   }
 
   void _installHttpClientAdapter() {
+    // A browser has no HttpClient — it owns the connection pool itself, so
+    // there is nothing to tune and constructing the IO adapter would throw.
+    // Dio's default browser adapter is the right one there.
+    if (kIsWeb) return;
+
     dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: _buildHttpClient,
     );
@@ -135,6 +140,8 @@ class ApiClient {
   /// network (Wi-Fi <-> mobile data) so the next request opens a fresh socket
   /// on the new interface instead of hanging on a dead one.
   void resetConnections() {
+    if (kIsWeb) return;
+
     final adapter = dio.httpClientAdapter;
     if (adapter is IOHttpClientAdapter) {
       adapter.close(force: true);

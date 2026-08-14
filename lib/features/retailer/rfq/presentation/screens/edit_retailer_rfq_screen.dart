@@ -1,8 +1,8 @@
 // This file is intentionally very similar to CreateRetailerRfqScreen.
 // It is separated to keep edit logic safe and pre-filled from backend.
 
-import 'dart:io';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -833,8 +833,8 @@ class _ImagePickerBox extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: hasNewImage
             ? _ImagePreview(
-                child: Image.file(
-                  File(pickedImage!.path),
+                child: PickedImage(
+                  pickedImage!.path,
                   width: double.infinity,
                   height: 190,
                   fit: BoxFit.cover,

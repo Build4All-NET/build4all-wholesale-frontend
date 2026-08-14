@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -620,8 +619,8 @@ class _LogoUploadBox extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusLarge,
                       ),
-                      child: Image.file(
-                        File(imagePath!),
+                      child: PickedImage(
+                        imagePath!,
                         height: 120,
                         width: 120,
                         fit: BoxFit.cover,

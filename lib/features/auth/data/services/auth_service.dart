@@ -5,6 +5,7 @@ import '../../../../core/exceptions/app_exception.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_config.dart';
 import '../../../../core/utils/app_error_mapper.dart';
+import '../../../../core/utils/picked_file.dart';
 import '../models/admin_login_request_model.dart';
 import '../models/admin_login_response_model.dart';
 import '../models/api_response_model.dart';
@@ -116,7 +117,7 @@ class AuthService {
       };
 
       if (profileImagePath != null && profileImagePath.trim().isNotEmpty) {
-        map['profileImage'] = await MultipartFile.fromFile(profileImagePath);
+        map['profileImage'] = await multipartFromPickedPath(profileImagePath);
       }
 
       final response = await centralApiClient.dio.post(

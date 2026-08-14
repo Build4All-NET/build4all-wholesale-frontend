@@ -1,7 +1,7 @@
-import 'dart:io';
-
 import 'package:build4all_wholesale_frontend/core/currency/currency_formatter.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
+import 'package:build4all_wholesale_frontend/core/utils/picked_file.dart';
+import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/config/app_config.dart';
@@ -171,7 +171,7 @@ class _ProductImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolvedImageUrl = _resolveImageUrl(imagePath);
-    final localFile = _resolveLocalFile(imagePath);
+    final localPath = _resolveLocalPath(imagePath);
 
     return SizedBox(
       height: 108,
@@ -181,9 +181,9 @@ class _ProductImage extends StatelessWidget {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(color: AppThemeTokens.inputFill),
-            child: localFile != null
-                ? Image.file(
-                    localFile,
+            child: localPath != null
+                ? PickedImage(
+                    localPath,
                     width: double.infinity,
                     height: double.infinity,
                     fit: BoxFit.cover,
@@ -212,7 +212,7 @@ class _ProductImage extends StatelessWidget {
     );
   }
 
-  File? _resolveLocalFile(String? value) {
+  String? _resolveLocalPath(String? value) {
     if (value == null || value.trim().isEmpty) return null;
 
     final normalized = value.trim();
@@ -223,8 +223,7 @@ class _ProductImage extends StatelessWidget {
       return null;
     }
 
-    final file = File(normalized);
-    return file.existsSync() ? file : null;
+    return pickedFileExists(normalized) ? normalized : null;
   }
 
   String? _resolveImageUrl(String? value) {

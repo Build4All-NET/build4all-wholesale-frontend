@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 import '../../../../../core/exceptions/app_exception.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/api_config.dart';
+import '../../../../../core/utils/picked_file.dart';
 import '../../domain/repositories/retailer_rfq_repository.dart';
 import '../models/rfq_quotation_model.dart';
 import '../models/rfq_request_model.dart';
@@ -277,19 +276,17 @@ class RetailerRfqApiService {
       return _normalizeUploadUrl(path);
     }
 
-    final file = File(path);
+    if (!pickedFileExists(path)) return null;
 
-    if (!file.existsSync()) return null;
-
-    return _uploadRfqImage(file);
+    return _uploadRfqImage(path);
   }
 
-  Future<String> _uploadRfqImage(File file) async {
+  Future<String> _uploadRfqImage(String filePath) async {
     try {
-      final fileName = file.path.split(RegExp(r'[\\/]')).last;
+      final fileName = pickedFileName(filePath);
 
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(file.path, filename: fileName),
+        'file': await multipartFromPickedPath(filePath, filename: fileName),
       });
 
       final response = await apiClient.dio.post(
