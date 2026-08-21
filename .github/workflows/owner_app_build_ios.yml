@@ -38,6 +38,9 @@ jobs:
       FASTLANE_OPT_OUT_USAGE: "true"
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
+      # The gems live in ios/Gemfile, but fastlane runs from the repo root, so
+      # bundler needs to be told where the Gemfile is for every step.
+      BUNDLE_GEMFILE: ${{ github.workspace }}/ios/Gemfile
 
     steps:
       - name: Checkout
