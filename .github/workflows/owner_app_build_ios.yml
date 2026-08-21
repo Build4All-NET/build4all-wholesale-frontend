@@ -637,6 +637,8 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2"
+          bundler-cache: true
+          working-directory: ios
 
       # Cache the CocoaPods download + specs caches (NOT ios/Pods, which is
       # cleaned below for a correct install). This is what makes repeat iOS
@@ -656,16 +658,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gem install multi_json -N
-          gem install fastlane -N --force
-          gem install cocoapods -N
-          gem install xcodeproj -N
           rm -rf ios/Pods
           rm -f ios/Podfile.lock
           cd ios
-          # --repo-update refreshes specs in one pass; the cached specs make it
-          # incremental instead of a full clone.
-          pod install --repo-update
+          # The gems come from ios/Gemfile, resolved and cached by setup-ruby
+          # above, so every run uses one consistent, conflict-free gem set.
+          bundle exec pod install || { bundle exec pod repo update; bundle exec pod install; }
 
       - name: Create App Store Connect api_key.json
         shell: bash
@@ -869,7 +867,7 @@ jobs:
         run: |
           set -euo pipefail
           BUNDLE_ID="$(tr -d '\r\n' < ci_ios_bundle_id.txt)"
-          fastlane run produce \
+          bundle exec fastlane run produce \
             app_identifier:"$BUNDLE_ID" \
             team_id:"${IOS_TEAM_ID}" \
             api_key_path:"$GITHUB_WORKSPACE/.private/api_key.json" \
@@ -934,7 +932,7 @@ jobs:
           BUNDLE_ID="$(tr -d '\r\n' < ci_ios_bundle_id.txt)"
           PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
           mkdir -p "$PROFILE_DIR"
-          fastlane run sigh \
+          bundle exec fastlane run sigh \
             app_identifier:"$BUNDLE_ID" \
             team_id:"${IOS_TEAM_ID}" \
             api_key_path:"$GITHUB_WORKSPACE/.private/api_key.json" \
@@ -1118,7 +1116,7 @@ jobs:
           API_KEY_JSON="$GITHUB_WORKSPACE/.private/api_key.json"
           BUNDLE_ID="$(tr -d '\r\n' < ci_ios_bundle_id.txt)"
           IPA_PATH="$(find "$GITHUB_WORKSPACE/build/ios/ipa" -type f -name "*.ipa" | head -n 1)"
-          fastlane pilot upload \
+          bundle exec fastlane pilot upload \
             --ipa "$IPA_PATH" \
             --api_key_path "$API_KEY_JSON" \
             --app_identifier "$BUNDLE_ID" \
