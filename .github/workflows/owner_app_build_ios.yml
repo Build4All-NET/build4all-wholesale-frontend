@@ -1035,7 +1035,7 @@ jobs:
           end
           project.save
           RUBY
-          BUNDLE_ID="$BUNDLE_ID" PROFILE_NAME="$PROFILE_NAME" TEAM_ID="$TEAM_ID" ruby patch_runner_signing.rb
+          BUNDLE_ID="$BUNDLE_ID" PROFILE_NAME="$PROFILE_NAME" TEAM_ID="$TEAM_ID" bundle exec ruby patch_runner_signing.rb
 
       - name: Build iOS
         shell: bash
