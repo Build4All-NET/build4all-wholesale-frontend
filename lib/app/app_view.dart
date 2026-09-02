@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,6 +8,7 @@ import '../core/branding/branding_state.dart';
 import '../core/currency/presentation/app_currency_cubit.dart';
 import '../core/storage/branding_storage.dart';
 import '../core/theme/app_theme_builder.dart';
+import '../core/theme/app_theme_tokens.dart';
 import '../core/theme/locale_cubit.dart';
 import '../core/theme/locale_state.dart';
 import '../core/theme/runtime_theme_bootstrapper.dart';
@@ -57,7 +59,7 @@ class AppView extends StatelessWidget {
                           behavior: HitTestBehavior.translucent,
                           onTap: () =>
                               FocusManager.instance.primaryFocus?.unfocus(),
-                          child: child,
+                          child: _WebContentWidth(child: child),
                         );
                       },
                       theme: AppThemeBuilder.buildTheme(themeState.config),
@@ -82,6 +84,56 @@ class AppView extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+/// Caps the app's content to a phone-like column on wide desktop browsers.
+///
+/// Every screen here is designed mobile-first — rows, grids and card aspect
+/// ratios are all tuned for a ~400px-wide phone. Left to fill a real desktop
+/// browser window, a two-column grid whose cards were sized for that width
+/// stretches to hundreds of pixels wide, and their fixed aspect ratio then
+/// makes them absurdly tall (exactly what turns the dashboard's quick-action
+/// cards into mostly empty boxes). Centering the whole app in a fixed-width
+/// column, the same way a phone frame would, sidesteps every one of those
+/// layouts without having to fix each screen's grid individually.
+///
+/// Native builds are completely unaffected — this only applies on web.
+class _WebContentWidth extends StatelessWidget {
+  static const double _maxContentWidth = 480;
+
+  final Widget? child;
+
+  const _WebContentWidth({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final content = child ?? const SizedBox.shrink();
+
+    if (!kIsWeb) return content;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedWidth ||
+            constraints.maxWidth <= _maxContentWidth) {
+          return content;
+        }
+
+        return ColoredBox(
+          color: AppThemeTokens.background,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: _maxContentWidth,
+              height: constraints.hasBoundedHeight
+                  ? constraints.maxHeight
+                  : null,
+              child: content,
+            ),
+          ),
+        );
+      },
     );
   }
 }
