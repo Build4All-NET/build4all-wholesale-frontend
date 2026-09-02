@@ -324,6 +324,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get galleryTitle => 'Gallery';
+
+  @override
+  String get addFromGalleryLabel => 'Add from gallery';
+
+  @override
   String get cart => 'Cart';
 
   @override

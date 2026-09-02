@@ -102,6 +102,8 @@
   "couldNotLoadRetailerHome": "تعذر تحميل الصفحة الرئيسية للتاجر",
   "checkConnectionTryAgain": "يرجى التحقق من الاتصال والمحاولة مرة أخرى.",
   "retry": "إعادة المحاولة",
+  "galleryTitle": "معرض الصور",
+  "addFromGalleryLabel": "إضافة من المعرض",
   "cart": "السلة",
   "cartComingSoon": "صفحة السلة ستكون متاحة قريباً",
   "notifications": "الإشعارات",

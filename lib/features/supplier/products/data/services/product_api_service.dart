@@ -179,6 +179,14 @@ class ProductApiService {
       );
     }
 
+    // Already a full URL — either an R2 object (once uploaded, backend
+    // paths stop being local /uploads/... and become absolute https://
+    // links) or a picture the supplier picked straight from the gallery.
+    // Neither is a local device file, so there is nothing to upload.
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
+      return normalized;
+    }
+
     if (!pickedFileExists(normalized)) {
       return null;
     }

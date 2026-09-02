@@ -330,6 +330,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get retry => 'Réessayer';
 
   @override
+  String get galleryTitle => 'Galerie';
+
+  @override
+  String get addFromGalleryLabel => 'Ajouter depuis la galerie';
+
+  @override
   String get cart => 'Panier';
 
   @override
