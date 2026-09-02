@@ -22,7 +22,18 @@ class RetailerCartScreen extends StatelessWidget {
   /// show up here until the whole app is restarted.
   final bool isActive;
 
-  const RetailerCartScreen({super.key, this.isActive = true});
+  /// When shown as a tab inside [RetailerHomeShell] the cart is switched to
+  /// via [IndexedStack], never pushed — so it has nothing of its own to pop
+  /// back to. "Continue Shopping" must instead go to the dashboard route
+  /// explicitly; calling [Navigator.pop] there pops the shell itself off the
+  /// app's navigator, leaving a blank screen behind it.
+  final bool embedded;
+
+  const RetailerCartScreen({
+    super.key,
+    this.isActive = true,
+    this.embedded = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +41,7 @@ class RetailerCartScreen extends StatelessWidget {
       create: (_) => sl<RetailerCartCubit>()..loadCart(),
       child: _RetailerCartActivationListener(
         isActive: isActive,
-        child: const _RetailerCartView(),
+        child: _RetailerCartView(embedded: embedded),
       ),
     );
   }
@@ -67,7 +78,9 @@ class _RetailerCartActivationListenerState
 }
 
 class _RetailerCartView extends StatelessWidget {
-  const _RetailerCartView();
+  final bool embedded;
+
+  const _RetailerCartView({required this.embedded});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +138,11 @@ class _RetailerCartView extends StatelessWidget {
                 )
               : cart == null || cart.items.isEmpty
               ? const _EmptyCartView()
-              : _CartContent(cart: cart, updatingItemId: state.updatingItemId),
+              : _CartContent(
+                  cart: cart,
+                  updatingItemId: state.updatingItemId,
+                  embedded: embedded,
+                ),
         );
       },
     );
@@ -177,8 +194,13 @@ class _EmptyCartView extends StatelessWidget {
 class _CartContent extends StatelessWidget {
   final RetailerCartModel cart;
   final int? updatingItemId;
+  final bool embedded;
 
-  const _CartContent({required this.cart, required this.updatingItemId});
+  const _CartContent({
+    required this.cart,
+    required this.updatingItemId,
+    required this.embedded,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +241,13 @@ class _CartContent extends StatelessWidget {
           ],
           const SizedBox(height: 18),
           OutlinedButton(
-            onPressed: () => Navigator.of(context).pop(),
+            // Embedded as a shell tab, this screen was switched to via
+            // IndexedStack rather than pushed, so it has nothing of its own
+            // to pop back to — go() lands cleanly on the dashboard instead
+            // of popping the shell itself off the navigator.
+            onPressed: embedded
+                ? () => context.go('/retailer-dashboard')
+                : () => Navigator.of(context).pop(),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 52),
               side: const BorderSide(color: AppThemeTokens.border),

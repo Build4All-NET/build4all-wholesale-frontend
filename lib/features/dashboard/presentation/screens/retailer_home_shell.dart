@@ -45,7 +45,7 @@ class _RetailerHomeShellState extends State<RetailerHomeShell> {
 
     final tabs = <Widget>[
       const RetailerDashboardScreen(),
-      RetailerCartScreen(isActive: _currentIndex == 1),
+      RetailerCartScreen(isActive: _currentIndex == 1, embedded: true),
       const RetailerOrdersScreen(),
       const RetailerRfqListScreen(embedded: true),
       // The shell owns the bottom nav, so the profile tab must not draw its own.
