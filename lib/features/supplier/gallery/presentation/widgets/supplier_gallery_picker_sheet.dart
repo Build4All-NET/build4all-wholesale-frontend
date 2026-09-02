@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/app_error_mapper.dart';
 import '../../../../../core/utils/picked_image_normalizer.dart';
 import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../../core/widgets/app_toast.dart';
@@ -66,7 +67,7 @@ class _SupplierGalleryPickerSheetState
       if (!mounted) return;
 
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = AppErrorMapper.toMessage(e);
         _isLoading = false;
       });
     }
@@ -97,7 +98,7 @@ class _SupplierGalleryPickerSheetState
       if (!mounted) return;
 
       setState(() => _isUploading = false);
-      AppToast.error(context, e.toString());
+      AppToast.error(context, e);
     }
   }
 
