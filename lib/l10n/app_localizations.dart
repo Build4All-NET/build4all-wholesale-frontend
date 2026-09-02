@@ -712,6 +712,18 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
+  /// No description provided for @galleryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get galleryTitle;
+
+  /// No description provided for @addFromGalleryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from gallery'**
+  String get addFromGalleryLabel;
+
   /// No description provided for @cart.
   ///
   /// In en, this message translates to:

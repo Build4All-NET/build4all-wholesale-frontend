@@ -8,6 +8,7 @@ import 'package:build4all_wholesale_frontend/core/utils/picked_file.dart';
 import 'package:build4all_wholesale_frontend/core/utils/picked_image_normalizer.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 import '../../../../../core/config/app_config.dart';
+import '../../../gallery/presentation/widgets/supplier_gallery_picker_sheet.dart';
 import '../../../../../core/currency/currency_formatter.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
@@ -412,6 +413,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     setState(() {
       _selectedImagePath = normalizedPath;
+    });
+  }
+
+  Future<void> _pickFromGallery() async {
+    final pickedUrl = await showSupplierGalleryPickerSheet(context);
+    if (pickedUrl == null || !mounted) return;
+
+    setState(() {
+      _selectedImagePath = pickedUrl;
     });
   }
 
@@ -1052,6 +1062,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       _UploadImagesBox(
                         imagePath: _selectedImagePath,
                         onTap: _pickImage,
+                        onPickFromGallery: _pickFromGallery,
                       ),
                     ],
                   ),
@@ -2397,10 +2408,12 @@ class _AppTextField extends StatelessWidget {
 class _UploadImagesBox extends StatelessWidget {
   final String? imagePath;
   final VoidCallback onTap;
+  final VoidCallback onPickFromGallery;
 
   _UploadImagesBox({
     required this.imagePath,
     required this.onTap,
+    required this.onPickFromGallery,
   });
 
   @override
@@ -2456,6 +2469,16 @@ class _UploadImagesBox extends StatelessWidget {
                           ),
                   )
                 : _UploadImagePlaceholder(),
+          ),
+        ),
+        SizedBox(height: 8),
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton.icon(
+            onPressed: onPickFromGallery,
+            icon: Icon(Icons.photo_library_outlined, size: 18),
+            label: Text(context.l10n.addFromGalleryLabel),
+            style: TextButton.styleFrom(padding: EdgeInsets.zero),
           ),
         ),
       ],

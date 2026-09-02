@@ -102,6 +102,8 @@
   "couldNotLoadRetailerHome": "Could not load retailer home",
   "checkConnectionTryAgain": "Please check your connection and try again.",
   "retry": "Retry",
+  "galleryTitle": "Gallery",
+  "addFromGalleryLabel": "Add from gallery",
   "cart": "Cart",
   "cartComingSoon": "Cart page will be available soon",
   "notifications": "Notifications",

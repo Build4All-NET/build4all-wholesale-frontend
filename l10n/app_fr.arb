@@ -102,6 +102,8 @@
   "couldNotLoadRetailerHome": "Impossible de charger l’accueil détaillant",
   "checkConnectionTryAgain": "Veuillez vérifier votre connexion et réessayer.",
   "retry": "Réessayer",
+  "galleryTitle": "Galerie",
+  "addFromGalleryLabel": "Ajouter depuis la galerie",
   "cart": "Panier",
   "cartComingSoon": "La page panier sera bientôt disponible",
   "notifications": "Notifications",

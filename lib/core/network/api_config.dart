@@ -188,6 +188,15 @@ class ApiConfig {
   }
 
   // =========================
+  // Supplier Gallery
+  // =========================
+  static const String supplierGallery = '/supplier/gallery';
+
+  static String supplierGalleryById(String id) {
+    return '/supplier/gallery/$id';
+  }
+
+  // =========================
   // Supplier Excel Import
   // =========================
   static const String supplierExcelImport = '/supplier/excel-import';

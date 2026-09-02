@@ -319,6 +319,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'إعادة المحاولة';
 
   @override
+  String get galleryTitle => 'معرض الصور';
+
+  @override
+  String get addFromGalleryLabel => 'إضافة من المعرض';
+
+  @override
   String get cart => 'السلة';
 
   @override

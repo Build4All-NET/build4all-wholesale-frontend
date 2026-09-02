@@ -194,6 +194,7 @@ import 'features/supplier/branches/domain/usecases/delete_inventory_item_usecase
 // =========================
 import 'features/supplier/products/data/repositories/product_repository_impl.dart';
 import 'features/supplier/products/data/services/product_api_service.dart';
+import 'features/supplier/gallery/data/services/supplier_gallery_api_service.dart';
 import 'features/supplier/products/domain/repositories/product_repository.dart';
 
 import 'features/supplier/products/domain/usecases/get_products_usecase.dart';
@@ -465,6 +466,11 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ProductApiService>(
     () => ProductApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<SupplierGalleryApiService>(
+    () =>
+        SupplierGalleryApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
   );
 
   sl.registerLazySingleton<SupplierExcelReaderService>(
