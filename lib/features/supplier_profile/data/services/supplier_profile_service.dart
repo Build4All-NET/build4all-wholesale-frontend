@@ -14,6 +14,14 @@ class SupplierProfileService {
   SupplierProfileService(this.apiClient);
 
   Future<String> uploadSupplierLogo(String filePath) async {
+    // Already a full URL — a gallery-picked logo, or an R2 link if this ever
+    // gets re-submitted unchanged. Neither is a local device file, and
+    // there is nothing to upload.
+    final trimmed = filePath.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return UploadedImageUrlResolver.normalizeForBackend(trimmed);
+    }
+
     try {
       final fileName = pickedFileName(filePath);
 

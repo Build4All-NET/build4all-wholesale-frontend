@@ -26,8 +26,10 @@ import '../../../../core/location/phone_countries.dart';
 import '../../../../core/location/phone_validation.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/searchable_selection_field.dart';
+import '../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../injection_container.dart';
+import '../../../supplier/gallery/presentation/widgets/supplier_gallery_picker_sheet.dart';
 import '../bloc/supplier_profile_cubit.dart';
 import '../bloc/supplier_profile_state.dart';
 
@@ -192,6 +194,15 @@ class _CompleteSupplierProfileScreenState
   void _removeLogoImage() {
     setState(() {
       _selectedLogoImagePath = null;
+    });
+  }
+
+  Future<void> _pickLogoFromGallery() async {
+    final pickedUrl = await showSupplierGalleryPickerSheet(context);
+    if (pickedUrl == null || !mounted) return;
+
+    setState(() {
+      _selectedLogoImagePath = pickedUrl;
     });
   }
 
@@ -557,6 +568,7 @@ class _CompleteSupplierProfileScreenState
                                 imagePath: _selectedLogoImagePath,
                                 onPick: _pickLogoImage,
                                 onRemove: _removeLogoImage,
+                                onPickFromGallery: _pickLogoFromGallery,
                               ),
 
                               const SizedBox(height: 28),
@@ -587,17 +599,28 @@ class _LogoUploadBox extends StatelessWidget {
   final String? imagePath;
   final VoidCallback onPick;
   final VoidCallback onRemove;
+  final VoidCallback onPickFromGallery;
 
   const _LogoUploadBox({
     required this.imagePath,
     required this.onPick,
     required this.onRemove,
+    required this.onPickFromGallery,
   });
 
   @override
   Widget build(BuildContext context) {
     final hasImage = imagePath != null && imagePath!.trim().isNotEmpty;
     final primaryColor = Theme.of(context).colorScheme.primary;
+
+    // A gallery pick (or, once submitted and re-opened, an already-uploaded
+    // logo) is a full URL rather than a local device file — PickedImage
+    // only knows how to render the latter.
+    final isRemoteUrl =
+        hasImage &&
+        (imagePath!.startsWith('http://') || imagePath!.startsWith('https://'));
+    final resolvedRemoteUrl =
+        isRemoteUrl ? UploadedImageUrlResolver.resolve(imagePath) : null;
 
     return InkWell(
       onTap: onPick,
@@ -619,12 +642,19 @@ class _LogoUploadBox extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                         AppThemeTokens.radiusLarge,
                       ),
-                      child: PickedImage(
-                        imagePath!,
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
+                      child: resolvedRemoteUrl != null
+                          ? Image.network(
+                              resolvedRemoteUrl,
+                              height: 120,
+                              width: 120,
+                              fit: BoxFit.cover,
+                            )
+                          : PickedImage(
+                              imagePath!,
+                              height: 120,
+                              width: 120,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -645,6 +675,13 @@ class _LogoUploadBox extends StatelessWidget {
                         tooltip: context.l10n.removeLogo,
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: onPickFromGallery,
+                    icon: const Icon(Icons.photo_library_outlined, size: 18),
+                    label: Text(context.l10n.addFromGalleryLabel),
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   ),
                 ],
               )
@@ -675,6 +712,12 @@ class _LogoUploadBox extends StatelessWidget {
                       color: AppThemeTokens.textSecondary,
                       fontSize: 13,
                     ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: onPickFromGallery,
+                    icon: const Icon(Icons.photo_library_outlined, size: 18),
+                    label: Text(context.l10n.addFromGalleryLabel),
                   ),
                 ],
               ),

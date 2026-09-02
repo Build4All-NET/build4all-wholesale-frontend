@@ -16,6 +16,7 @@ import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../../injection_container.dart';
 import '../../data/services/banner_image_upload_service.dart';
 import '../../domain/entities/banner_entity.dart';
+import '../../../gallery/presentation/widgets/supplier_gallery_picker_sheet.dart';
 import '../bloc/banners_bloc.dart';
 import '../bloc/banners_event.dart';
 import '../bloc/banners_state.dart';
@@ -181,6 +182,17 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
 
       AppToast.error(context, e);
     }
+  }
+
+  Future<void> _pickFromGallery() async {
+    final pickedUrl = await showSupplierGalleryPickerSheet(context);
+    if (pickedUrl == null || !mounted) return;
+
+    setState(() {
+      _imageUrlController.text = UploadedImageUrlResolver.normalizeForBackend(
+        pickedUrl,
+      );
+    });
   }
 
   Future<void> _loadTargetOptions() async {
@@ -643,6 +655,7 @@ class _CreateBannerViewState extends State<_CreateBannerView> {
                             uploading: _uploadingImage,
                             primary: primary,
                             onUpload: _pickAndUploadImage,
+                            onPickFromGallery: _pickFromGallery,
                           ),
                           const SizedBox(height: 10),
                           _InputField(
@@ -896,12 +909,14 @@ class _ImageUploadBox extends StatelessWidget {
   final bool uploading;
   final Color primary;
   final VoidCallback onUpload;
+  final VoidCallback onPickFromGallery;
 
   const _ImageUploadBox({
     required this.imageUrl,
     required this.uploading,
     required this.primary,
     required this.onUpload,
+    required this.onPickFromGallery,
   });
 
   @override
@@ -972,6 +987,19 @@ class _ImageUploadBox extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: uploading ? null : onPickFromGallery,
+              icon: const Icon(Icons.photo_library_outlined, size: 18),
+              label: Text(context.l10n.addFromGalleryLabel),
+              style: TextButton.styleFrom(
+                foregroundColor: primary,
+                padding: EdgeInsets.zero,
               ),
             ),
           ),
