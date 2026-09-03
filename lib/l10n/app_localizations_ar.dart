@@ -830,6 +830,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supplierDrawerHomeBanners => 'بنرات الصفحة الرئيسية';
 
   @override
+  String get supplierDrawerGallery => 'معرض الصور';
+
+  @override
   String get supplierDrawerShippingMethods => 'طرق الشحن';
 
   @override

@@ -55,6 +55,7 @@ import '../features/supplier/coupons/presentation/screens/create_coupon_screen.d
 
 import '../features/supplier/banners/domain/entities/banner_entity.dart';
 import '../features/supplier/banners/presentation/screens/banners_screen.dart';
+import '../features/supplier/gallery/presentation/screens/supplier_gallery_screen.dart';
 import '../features/supplier/banners/presentation/screens/create_banner_screen.dart';
 
 import '../features/supplier/shipping/domain/entities/shipping_method_entity.dart';
@@ -393,6 +394,10 @@ class AppRouter {
 
           return CreateBannerScreen(banner: extra);
         },
+      ),
+      GoRoute(
+        path: '/supplier-gallery',
+        builder: (context, state) => const SupplierGalleryScreen(),
       ),
       GoRoute(
         path: '/supplier-shipping',

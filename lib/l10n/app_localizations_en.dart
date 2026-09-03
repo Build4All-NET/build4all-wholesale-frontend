@@ -837,6 +837,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get supplierDrawerHomeBanners => 'Home Banners';
 
   @override
+  String get supplierDrawerGallery => 'Gallery';
+
+  @override
   String get supplierDrawerShippingMethods => 'Shipping Methods';
 
   @override
