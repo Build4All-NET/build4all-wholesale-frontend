@@ -88,20 +88,20 @@ class AppView extends StatelessWidget {
   }
 }
 
-/// Caps the app's content to a phone-like column on wide desktop browsers.
+/// Caps the app's content to a sane desktop container width on very wide
+/// browser windows, instead of letting it stretch edge-to-edge.
 ///
-/// Every screen here is designed mobile-first — rows, grids and card aspect
-/// ratios are all tuned for a ~400px-wide phone. Left to fill a real desktop
-/// browser window, a two-column grid whose cards were sized for that width
-/// stretches to hundreds of pixels wide, and their fixed aspect ratio then
-/// makes them absurdly tall (exactly what turns the dashboard's quick-action
-/// cards into mostly empty boxes). Centering the whole app in a fixed-width
-/// column, the same way a phone frame would, sidesteps every one of those
-/// layouts without having to fix each screen's grid individually.
+/// Grids are made responsive in place (see [responsiveGridColumns]) so they
+/// pick up more columns on a wider window rather than a couple of cards
+/// stretching to fill it. This cap exists for everything else — forms, lists,
+/// single-column detail screens — which have no such logic and would
+/// otherwise stretch into unreadably long rows on a wide monitor. 1200px is a
+/// typical desktop web app container width: comfortably wider than a phone,
+/// short of full-bleed on a large display.
 ///
 /// Native builds are completely unaffected — this only applies on web.
 class _WebContentWidth extends StatelessWidget {
-  static const double _maxContentWidth = 480;
+  static const double _maxContentWidth = 1200;
 
   final Widget? child;
 

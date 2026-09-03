@@ -5,6 +5,7 @@ import '../../../../../core/extensions/l10n_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/utils/app_error_mapper.dart';
 import '../../../../../core/utils/picked_image_normalizer.dart';
+import '../../../../../core/utils/responsive_grid.dart';
 import '../../../../../core/utils/uploaded_image_url_resolver.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../injection_container.dart';
@@ -186,11 +187,16 @@ class _SupplierGalleryPickerSheetState
       );
     }
 
-    return GridView.builder(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GridView.builder(
       controller: scrollController,
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: responsiveGridColumns(
+          constraints.maxWidth,
+          targetCardWidth: 110,
+        ),
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
@@ -221,6 +227,8 @@ class _SupplierGalleryPickerSheetState
                     ),
                   ),
           ),
+        );
+      },
         );
       },
     );

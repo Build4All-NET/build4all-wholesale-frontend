@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:build4all_wholesale_frontend/core/extensions/l10n_extension.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/responsive_grid.dart';
 import '../../../shared/utils/supplier_formatters.dart';
 import '../../../../../injection_container.dart';
 import '../../../../notifications/presentation/cubit/notifications_cubit.dart';
@@ -292,17 +293,26 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
       ),
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: cards.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 2.05,
-      ),
-      itemBuilder: (context, index) => cards[index],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: cards.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: responsiveGridColumns(
+              constraints.maxWidth,
+              targetCardWidth: 200,
+            ),
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            // Fixed height instead of childAspectRatio: a card's height must
+            // not depend on how many columns fit at the current width.
+            mainAxisExtent: 88,
+          ),
+          itemBuilder: (context, index) => cards[index],
+        );
+      },
     );
   }
 
@@ -500,17 +510,24 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
       ),
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: actions.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 2.75,
-      ),
-      itemBuilder: (context, index) => actions[index],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: actions.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: responsiveGridColumns(
+              constraints.maxWidth,
+              targetCardWidth: 220,
+            ),
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            mainAxisExtent: 66,
+          ),
+          itemBuilder: (context, index) => actions[index],
+        );
+      },
     );
   }
 }
