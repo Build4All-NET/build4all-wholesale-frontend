@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
+import '../../../../../core/utils/responsive_grid.dart';
 import '../utils/supplier_excel_import_i18n.dart';
 
 class SupplierExcelValidationSummaryCard extends StatelessWidget {
@@ -46,15 +47,20 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
       ),
     ];
 
-    return GridView.builder(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: tiles.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: responsiveGridColumns(
+          constraints.maxWidth,
+          targetCardWidth: 200,
+        ),
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        childAspectRatio: 2.35,
+        mainAxisExtent: 77,
       ),
       itemBuilder: (context, index) {
         final tile = tiles[index];
@@ -97,6 +103,8 @@ class SupplierExcelValidationSummaryCard extends StatelessWidget {
               ),
             ],
           ),
+        );
+      },
         );
       },
     );

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/utils/responsive_grid.dart';
 import '../../data/models/retailer_home_model.dart';
 import '../widgets/retailer_promotion_badge.dart';
 
@@ -47,14 +48,19 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
                 ),
               ),
             )
-          : GridView.builder(
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return GridView.builder(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
               itemCount: activeCategories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: responsiveGridColumns(
+                  constraints.maxWidth,
+                  targetCardWidth: 185,
+                ),
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 1.25,
+                mainAxisExtent: 140,
               ),
               itemBuilder: (context, index) {
                 final category = activeCategories[index];
@@ -144,6 +150,8 @@ class RetailerAllCategoriesScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                );
+              },
                 );
               },
             ),

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
 import '../../../../core/theme/app_theme_tokens.dart';
+import '../../../../core/utils/responsive_grid.dart';
 import '../../data/models/retailer_home_model.dart';
 
 class CategoriesGridSection extends StatelessWidget {
@@ -43,18 +44,25 @@ class CategoriesGridSection extends StatelessWidget {
               : null,
         ),
         const SizedBox(height: 12),
-        GridView.builder(
-          itemCount: visibleCategories.length,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.55,
-          ),
-          itemBuilder: (context, index) {
-            return _CategoryTile(category: visibleCategories[index]);
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return GridView.builder(
+              itemCount: visibleCategories.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: responsiveGridColumns(
+                  constraints.maxWidth,
+                  targetCardWidth: 190,
+                ),
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                mainAxisExtent: 122,
+              ),
+              itemBuilder: (context, index) {
+                return _CategoryTile(category: visibleCategories[index]);
+              },
+            );
           },
         ),
       ],
