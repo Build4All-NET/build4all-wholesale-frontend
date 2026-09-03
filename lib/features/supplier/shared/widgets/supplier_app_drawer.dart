@@ -230,6 +230,11 @@ class SupplierAppDrawer extends StatelessWidget {
                     route: '/supplier-banners',
                   ),
                   _DrawerItem(
+                    icon: Icons.photo_library_outlined,
+                    title: l10n.supplierDrawerGallery,
+                    route: '/supplier-gallery',
+                  ),
+                  _DrawerItem(
                     icon: Icons.local_shipping_outlined,
                     title: l10n.supplierDrawerShippingMethods,
                     route: '/supplier-shipping',

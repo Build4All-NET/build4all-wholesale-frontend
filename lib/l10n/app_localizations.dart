@@ -1591,6 +1591,12 @@ abstract class AppLocalizations {
   /// **'Home Banners'**
   String get supplierDrawerHomeBanners;
 
+  /// No description provided for @supplierDrawerGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get supplierDrawerGallery;
+
   /// No description provided for @supplierDrawerShippingMethods.
   ///
   /// In en, this message translates to:
