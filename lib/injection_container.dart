@@ -277,11 +277,15 @@ import 'features/supplier/tax/presentation/bloc/tax_rules_bloc.dart';
 import 'features/supplier/excel_import/data/repositories/supplier_excel_import_repository_impl.dart';
 import 'features/supplier/excel_import/data/services/supplier_excel_import_api_service.dart';
 import 'features/supplier/excel_import/data/services/supplier_excel_reader_service.dart';
+import 'features/supplier/excel_import/data/services/supplier_product_ai_api_service.dart';
 import 'features/supplier/excel_import/domain/repositories/supplier_excel_import_repository.dart';
 import 'features/supplier/excel_import/domain/usecases/clear_supplier_excel_import_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/create_supplier_photo_products_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/draft_supplier_product_descriptions_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/import_supplier_excel_products_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/parse_supplier_excel_file_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/pick_supplier_excel_file_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/read_supplier_product_photos_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/validate_supplier_excel_rows_usecase.dart';
 import 'features/supplier/excel_import/presentation/bloc/supplier_excel_import_bloc.dart';
 
@@ -480,6 +484,30 @@ Future<void> init() async {
   sl.registerLazySingleton<SupplierExcelImportApiService>(
     () => SupplierExcelImportApiService(
       sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierProductAiApiService>(
+    () => SupplierProductAiApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
+  sl.registerLazySingleton<ReadSupplierProductPhotosUseCase>(
+    () => ReadSupplierProductPhotosUseCase(
+      apiService: sl<SupplierProductAiApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<CreateSupplierPhotoProductsUseCase>(
+    () => CreateSupplierPhotoProductsUseCase(
+      apiService: sl<SupplierProductAiApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<DraftSupplierProductDescriptionsUseCase>(
+    () => DraftSupplierProductDescriptionsUseCase(
+      apiService: sl<SupplierProductAiApiService>(),
     ),
   );
 
@@ -1210,6 +1238,11 @@ Future<void> init() async {
           sl<GetSubCategoriesByCategoryUseCase>(),
       getProductsUseCase: sl<GetProductsUseCase>(),
       getBranchesUseCase: sl<GetBranchesUseCase>(),
+      readSupplierProductPhotosUseCase: sl<ReadSupplierProductPhotosUseCase>(),
+      createSupplierPhotoProductsUseCase:
+          sl<CreateSupplierPhotoProductsUseCase>(),
+      draftSupplierProductDescriptionsUseCase:
+          sl<DraftSupplierProductDescriptionsUseCase>(),
     ),
   );
 

@@ -202,6 +202,21 @@ class ApiConfig {
   static const String supplierExcelImport = '/supplier/excel-import';
 
   // =========================
+  // Supplier Product Photo AI
+  // =========================
+  static const String supplierProductPhotos = '/supplier-ai/product-photos';
+  static const String supplierProductPhotosCreate =
+      '/supplier-ai/product-photos/products';
+
+  // =========================
+  // Supplier Product Description AI
+  // =========================
+  static const String supplierProductDescriptions =
+      '/supplier-ai/products/description';
+  static const String supplierProductDescriptionsDraft =
+      '/supplier-ai/products/description/draft';
+
+  // =========================
   // Supplier Branch Inventory
   // =========================
   static const String supplierBranchInventory = '/supplier/branch-inventory';

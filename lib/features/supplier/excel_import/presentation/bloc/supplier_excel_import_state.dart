@@ -1,8 +1,16 @@
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/photographed_supplier_product_entity.dart';
 import '../../domain/entities/supplier_excel_import_result_entity.dart';
 import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
 import '../../domain/entities/supplier_excel_section.dart';
+
+/// Where the supplier's products are coming from.
+///
+/// Two genuinely different jobs: filling in a workbook, and photographing a
+/// catalogue that has nothing written down at all. Asking once, up front,
+/// keeps a supplier who has a file from reading steps that are not theirs.
+enum SupplierExcelSource { file, photos }
 
 class SupplierExcelImportState extends Equatable {
   final bool isDownloadingTemplate;
@@ -14,6 +22,22 @@ class SupplierExcelImportState extends Equatable {
   final String? templateSavePath;
   final SupplierExcelImportResultEntity? importResult;
 
+  /// Null until the supplier picks one. Nothing is preselected: a default
+  /// would have them reading the steps of a way in they never chose.
+  final SupplierExcelSource? source;
+
+  /// True while photographs are being stored and read.
+  final bool readingPhotos;
+
+  /// The products photographed so far, in the order they were taken.
+  final List<PhotographedSupplierProductEntity> photos;
+
+  /// True while the assistant is describing the photographed products.
+  final bool draftingPhotoDescriptions;
+
+  /// True while the photographed products are being created.
+  final bool creatingPhotoProducts;
+
   const SupplierExcelImportState({
     required this.isDownloadingTemplate,
     required this.isPickingOrParsing,
@@ -23,6 +47,11 @@ class SupplierExcelImportState extends Equatable {
     this.successMessage,
     this.templateSavePath,
     this.importResult,
+    this.source,
+    this.readingPhotos = false,
+    this.photos = const [],
+    this.draftingPhotoDescriptions = false,
+    this.creatingPhotoProducts = false,
   });
 
   factory SupplierExcelImportState.initial() {
@@ -50,6 +79,25 @@ class SupplierExcelImportState extends Equatable {
     return parsedFile?.rowsFor(section).length ?? 0;
   }
 
+  /// Photographed products still waiting to be named. Nothing can be
+  /// created with a blank name, so this is what stands between the
+  /// supplier and the button.
+  List<PhotographedSupplierProductEntity> get photosNeedingName =>
+      photos.where((photo) => photo.needsName).toList();
+
+  /// Named products with nothing written about them -- what the assistant
+  /// would be asked to describe. One with no name is not a product yet, so
+  /// it is not this list's to describe.
+  List<PhotographedSupplierProductEntity> get photosNeedingDescription =>
+      photos.where((p) => !p.needsName && p.needsDescription).toList();
+
+  bool get canImportPhotos =>
+      photos.isNotEmpty &&
+      photosNeedingName.isEmpty &&
+      photosNeedingDescription.isEmpty &&
+      !creatingPhotoProducts &&
+      !readingPhotos;
+
   SupplierExcelImportState copyWith({
     bool? isDownloadingTemplate,
     bool? isPickingOrParsing,
@@ -59,10 +107,16 @@ class SupplierExcelImportState extends Equatable {
     String? successMessage,
     String? templateSavePath,
     SupplierExcelImportResultEntity? importResult,
+    SupplierExcelSource? source,
+    bool? readingPhotos,
+    List<PhotographedSupplierProductEntity>? photos,
+    bool? draftingPhotoDescriptions,
+    bool? creatingPhotoProducts,
     bool clearMessages = false,
     bool clearTemplatePath = false,
     bool clearParsedFile = false,
     bool clearImportResult = false,
+    bool clearPhotos = false,
   }) {
     return SupplierExcelImportState(
       isDownloadingTemplate:
@@ -75,6 +129,13 @@ class SupplierExcelImportState extends Equatable {
       templateSavePath:
           clearTemplatePath ? null : templateSavePath ?? this.templateSavePath,
       importResult: clearImportResult ? null : importResult ?? this.importResult,
+      source: source ?? this.source,
+      readingPhotos: readingPhotos ?? this.readingPhotos,
+      photos: clearPhotos ? const [] : (photos ?? this.photos),
+      draftingPhotoDescriptions:
+          draftingPhotoDescriptions ?? this.draftingPhotoDescriptions,
+      creatingPhotoProducts:
+          creatingPhotoProducts ?? this.creatingPhotoProducts,
     );
   }
 
@@ -88,5 +149,10 @@ class SupplierExcelImportState extends Equatable {
         successMessage,
         templateSavePath,
         importResult,
+        source,
+        readingPhotos,
+        photos,
+        draftingPhotoDescriptions,
+        creatingPhotoProducts,
       ];
 }

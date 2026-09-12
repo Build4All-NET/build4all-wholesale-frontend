@@ -13,7 +13,9 @@ import '../utils/supplier_excel_import_i18n.dart';
 import '../widgets/supplier_excel_expected_columns_card.dart';
 import '../widgets/supplier_excel_import_result_card.dart';
 import '../widgets/supplier_excel_instruction_card.dart';
+import '../widgets/supplier_excel_photo_capture_card.dart';
 import '../widgets/supplier_excel_preview_list.dart';
+import '../widgets/supplier_excel_source_card.dart';
 import '../widgets/supplier_excel_template_card.dart';
 import '../widgets/supplier_excel_upload_card.dart';
 import '../widgets/supplier_excel_validation_summary_card.dart';
@@ -71,49 +73,103 @@ class _SupplierExcelImportView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SupplierExcelInstructionCard(),
-                  const SizedBox(height: 16),
-                  SupplierExcelTemplateCard(
-                    isDownloading: state.isDownloadingTemplate,
-                    savedPath: state.templateSavePath,
-                    onDownload: () {
-                      context
-                          .read<SupplierExcelImportBloc>()
-                          .add(const SupplierExcelDownloadTemplateRequested());
-                    },
+                  SupplierExcelSourceCard(
+                    source: state.source,
+                    onChanged: (source) => context
+                        .read<SupplierExcelImportBloc>()
+                        .add(SupplierExcelSourceChanged(source)),
                   ),
                   const SizedBox(height: 16),
-                  SupplierExcelUploadCard(
-                    fileName: state.fileName,
-                    isLoading: state.isPickingOrParsing,
-                    onPickFile: () {
-                      context
+
+                  // ===== Bringing a file the supplier already keeps =====
+                  if (state.source == SupplierExcelSource.file) ...[
+                    const SupplierExcelInstructionCard(),
+                    const SizedBox(height: 16),
+                    SupplierExcelTemplateCard(
+                      isDownloading: state.isDownloadingTemplate,
+                      savedPath: state.templateSavePath,
+                      onDownload: () {
+                        context
+                            .read<SupplierExcelImportBloc>()
+                            .add(const SupplierExcelDownloadTemplateRequested());
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    SupplierExcelUploadCard(
+                      fileName: state.fileName,
+                      isLoading: state.isPickingOrParsing,
+                      onPickFile: () {
+                        context
+                            .read<SupplierExcelImportBloc>()
+                            .add(const SupplierExcelPickFileRequested());
+                      },
+                      onClear: () {
+                        context
+                            .read<SupplierExcelImportBloc>()
+                            .add(const SupplierExcelClearRequested());
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    const SupplierExcelExpectedColumnsCard(),
+                    const SizedBox(height: 16),
+                    SupplierExcelValidationSummaryCard(
+                      totalRows: state.totalRows,
+                      validRows: state.validRowsCount,
+                      errorRows: state.errorRowsCount,
+                      warningRows: state.warningRowsCount,
+                    ),
+                    const SizedBox(height: 16),
+                    if (state.parsedFile != null)
+                      SupplierExcelPreviewList(parsedFile: state.parsedFile!)
+                    else
+                      _EmptyPreviewCard(message: l.noRows),
+                    const SizedBox(height: 16),
+                    if (state.importResult != null)
+                      SupplierExcelImportResultCard(result: state.importResult!),
+                  ],
+
+                  // ===== Photographing a catalogue with nothing written down =====
+                  if (state.source == SupplierExcelSource.photos)
+                    SupplierExcelPhotoCaptureCard(
+                      photos: state.photos,
+                      needingName: state.photosNeedingName,
+                      needingDescription: state.photosNeedingDescription,
+                      reading: state.readingPhotos,
+                      draftingDescriptions: state.draftingPhotoDescriptions,
+                      onTakePhoto: () => context
                           .read<SupplierExcelImportBloc>()
-                          .add(const SupplierExcelPickFileRequested());
-                    },
-                    onClear: () {
-                      context
+                          .add(const SupplierPhotoCaptured(fromCamera: true)),
+                      onPickFromGallery: () => context
                           .read<SupplierExcelImportBloc>()
-                          .add(const SupplierExcelClearRequested());
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  const SupplierExcelExpectedColumnsCard(),
-                  const SizedBox(height: 16),
-                  SupplierExcelValidationSummaryCard(
-                    totalRows: state.totalRows,
-                    validRows: state.validRowsCount,
-                    errorRows: state.errorRowsCount,
-                    warningRows: state.warningRowsCount,
-                  ),
-                  const SizedBox(height: 16),
-                  if (state.parsedFile != null)
-                    SupplierExcelPreviewList(parsedFile: state.parsedFile!)
-                  else
-                    _EmptyPreviewCard(message: l.noRows),
-                  const SizedBox(height: 16),
-                  if (state.importResult != null)
-                    SupplierExcelImportResultCard(result: state.importResult!),
+                          .add(const SupplierPhotoCaptured(fromCamera: false)),
+                      onDraftDescriptions: () => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(const SupplierPhotoDraftDescriptionsPressed()),
+                      onNameChanged: (index, name) => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierPhotoNameChanged(
+                              photoIndex: index, name: name)),
+                      onCategoryChanged: (index, category) => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierPhotoCategoryChanged(
+                              photoIndex: index, category: category)),
+                      onPriceChanged: (index, price) => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierPhotoPriceChanged(
+                              photoIndex: index, price: price)),
+                      onMoqChanged: (index, moq) => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierPhotoMinimumOrderQuantityChanged(
+                              photoIndex: index, minimumOrderQuantity: moq)),
+                      onDescriptionChanged: (index, description) => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierPhotoDescriptionChanged(
+                              photoIndex: index, description: description)),
+                      onRemove: (index) => context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierPhotoRemoved(index)),
+                    ),
+
                   const SizedBox(height: 80),
                 ],
               ),
@@ -135,6 +191,12 @@ class _ImportBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = SupplierExcelImportI18n(context);
+    final isPhotos = state.source == SupplierExcelSource.photos;
+
+    final busy = isPhotos ? state.creatingPhotoProducts : state.isImporting;
+    final canConfirm = isPhotos ? state.canImportPhotos : state.canImport;
+
+    if (state.source == null) return const SizedBox.shrink();
 
     return SafeArea(
       child: Container(
@@ -154,7 +216,7 @@ class _ImportBottomBar extends StatelessWidget {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: state.isImporting
+                onPressed: busy
                     ? null
                     : () {
                         context
@@ -176,14 +238,16 @@ class _ImportBottomBar extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: state.canImport
+                onPressed: canConfirm
                     ? () {
-                        context
-                            .read<SupplierExcelImportBloc>()
-                            .add(const SupplierExcelImportRequested());
+                        context.read<SupplierExcelImportBloc>().add(
+                              isPhotos
+                                  ? const SupplierPhotosImportPressed()
+                                  : const SupplierExcelImportRequested(),
+                            );
                       }
                     : null,
-                icon: state.isImporting
+                icon: busy
                     ? const SizedBox(
                         height: 18,
                         width: 18,
@@ -194,7 +258,9 @@ class _ImportBottomBar extends StatelessWidget {
                       )
                     : const Icon(Icons.upload_file_rounded),
                 label: Text(
-                  state.isImporting ? l.importing : l.import,
+                  busy
+                      ? (isPhotos ? l.photosAddingProducts : l.importing)
+                      : (isPhotos ? l.photosAddProductsBtn : l.import),
                   style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: ElevatedButton.styleFrom(

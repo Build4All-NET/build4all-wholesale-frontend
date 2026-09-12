@@ -5,18 +5,24 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../branches/domain/usecases/get_branches_usecase.dart';
 import '../../../categories/domain/entities/supplier_sub_category_entity.dart';
 import '../../../categories/domain/usecases/get_categories_usecase.dart';
 import '../../../categories/domain/usecases/get_subcategories_by_category_usecase.dart';
 import '../../../products/domain/usecases/get_products_usecase.dart';
+import '../../domain/entities/photographed_supplier_product_entity.dart';
 import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
 import '../../domain/usecases/clear_supplier_excel_import_usecase.dart';
+import '../../domain/usecases/create_supplier_photo_products_usecase.dart';
+import '../../domain/usecases/draft_supplier_product_descriptions_usecase.dart';
 import '../../domain/usecases/import_supplier_excel_products_usecase.dart';
 import '../../domain/usecases/parse_supplier_excel_file_usecase.dart';
 import '../../domain/usecases/pick_supplier_excel_file_usecase.dart';
+import '../../domain/usecases/read_supplier_product_photos_usecase.dart';
 import '../../domain/usecases/validate_supplier_excel_rows_usecase.dart';
+import '../../../../../core/utils/picked_image_normalizer.dart';
 import 'supplier_excel_import_event.dart';
 import 'supplier_excel_import_state.dart';
 import 'package:build4all_wholesale_frontend/core/utils/app_error_mapper.dart';
@@ -35,6 +41,10 @@ class SupplierExcelImportBloc
   final GetSubCategoriesByCategoryUseCase getSubCategoriesByCategoryUseCase;
   final GetProductsUseCase getProductsUseCase;
   final GetBranchesUseCase getBranchesUseCase;
+  final ReadSupplierProductPhotosUseCase readSupplierProductPhotosUseCase;
+  final CreateSupplierPhotoProductsUseCase createSupplierPhotoProductsUseCase;
+  final DraftSupplierProductDescriptionsUseCase
+      draftSupplierProductDescriptionsUseCase;
 
   SupplierExcelImportBloc({
     required this.pickSupplierExcelFileUseCase,
@@ -46,12 +56,25 @@ class SupplierExcelImportBloc
     required this.getSubCategoriesByCategoryUseCase,
     required this.getProductsUseCase,
     required this.getBranchesUseCase,
+    required this.readSupplierProductPhotosUseCase,
+    required this.createSupplierPhotoProductsUseCase,
+    required this.draftSupplierProductDescriptionsUseCase,
   }) : super(SupplierExcelImportState.initial()) {
     on<SupplierExcelDownloadTemplateRequested>(_onDownloadTemplateRequested);
     on<SupplierExcelPickFileRequested>(_onPickFileRequested);
     on<SupplierExcelRowUpdated>(_onRowUpdated);
     on<SupplierExcelImportRequested>(_onImportRequested);
     on<SupplierExcelClearRequested>(_onClearRequested);
+    on<SupplierExcelSourceChanged>(_onSourceChanged);
+    on<SupplierPhotoCaptured>(_onPhotoCaptured);
+    on<SupplierPhotoNameChanged>(_onPhotoNameChanged);
+    on<SupplierPhotoCategoryChanged>(_onPhotoCategoryChanged);
+    on<SupplierPhotoPriceChanged>(_onPhotoPriceChanged);
+    on<SupplierPhotoMinimumOrderQuantityChanged>(_onPhotoMoqChanged);
+    on<SupplierPhotoDescriptionChanged>(_onPhotoDescriptionChanged);
+    on<SupplierPhotoRemoved>(_onPhotoRemoved);
+    on<SupplierPhotoDraftDescriptionsPressed>(_onPhotoDraftDescriptions);
+    on<SupplierPhotosImportPressed>(_onPhotosImportPressed);
   }
 
   Future<void> _onDownloadTemplateRequested(
@@ -306,6 +329,257 @@ class SupplierExcelImportBloc
     clearSupplierExcelImportUseCase();
 
     emit(SupplierExcelImportState.initial());
+  }
+
+  void _onSourceChanged(
+    SupplierExcelSourceChanged event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    if (event.source == state.source) return;
+
+    // Everything read so far belongs to the other way of working; keeping it
+    // would leave the supplier looking at a review of a file, or a batch of
+    // photographs, they are no longer bringing in.
+    emit(
+      state.copyWith(
+        source: event.source,
+        clearParsedFile: true,
+        clearImportResult: true,
+        clearPhotos: true,
+        clearMessages: true,
+      ),
+    );
+  }
+
+  /// How much a photograph is scaled down before it is sent. Big enough for
+  /// the assistant to tell one product from another, small enough that a
+  /// dozen of them go up over a supplier's connection rather than timing out
+  /// on it.
+  static const double _photoMaxWidth = 1280;
+  static const int _photoQuality = 80;
+
+  Future<void> _onPhotoCaptured(
+    SupplierPhotoCaptured event,
+    Emitter<SupplierExcelImportState> emit,
+  ) async {
+    if (state.readingPhotos) return;
+
+    final picker = ImagePicker();
+
+    try {
+      final taken = <XFile>[];
+
+      if (event.fromCamera) {
+        // One shot per press: the camera hands back a single picture, and a
+        // supplier walking a shelf presses again rather than choosing a
+        // count first.
+        final shot = await picker.pickImage(
+          source: ImageSource.camera,
+          maxWidth: _photoMaxWidth,
+          imageQuality: _photoQuality,
+        );
+        if (shot != null) taken.add(shot);
+      } else {
+        taken.addAll(await picker.pickMultiImage(
+          maxWidth: _photoMaxWidth,
+          imageQuality: _photoQuality,
+        ));
+      }
+
+      if (taken.isEmpty) return;
+
+      final normalizedPaths = <String>[];
+      for (final shot in taken) {
+        normalizedPaths.add(await PickedImageNormalizer.toSrgb(shot.path));
+      }
+
+      emit(state.copyWith(readingPhotos: true, clearMessages: true));
+
+      final read = await readSupplierProductPhotosUseCase(normalizedPaths);
+
+      // Appended, not replaced: a supplier photographs a shelf at a time and
+      // the batch before it is still theirs.
+      final existing = state.photos;
+      emit(
+        state.copyWith(
+          readingPhotos: false,
+          photos: [
+            ...existing,
+            for (final product in read)
+              PhotographedSupplierProductEntity(
+                // Renumbered onto the end of what they already have, so a
+                // correction lands on the product they are looking at.
+                photoIndex: existing.length + product.photoIndex,
+                galleryImageId: product.galleryImageId,
+                imageUrl: product.imageUrl,
+                name: product.name,
+                category: product.category,
+                price: '',
+                minimumOrderQuantity: '5',
+                description: '',
+              ),
+          ],
+        ),
+      );
+    } catch (error) {
+      emit(state.copyWith(readingPhotos: false, error: _message(error)));
+    }
+  }
+
+  void _onPhotoNameChanged(
+    SupplierPhotoNameChanged event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    emit(state.copyWith(photos: _mapPhoto(
+      event.photoIndex,
+      (photo) => photo.copyWith(name: event.name),
+    )));
+  }
+
+  void _onPhotoCategoryChanged(
+    SupplierPhotoCategoryChanged event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    emit(state.copyWith(photos: _mapPhoto(
+      event.photoIndex,
+      (photo) => photo.copyWith(category: event.category),
+    )));
+  }
+
+  void _onPhotoPriceChanged(
+    SupplierPhotoPriceChanged event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    emit(state.copyWith(photos: _mapPhoto(
+      event.photoIndex,
+      (photo) => photo.copyWith(price: event.price),
+    )));
+  }
+
+  void _onPhotoMoqChanged(
+    SupplierPhotoMinimumOrderQuantityChanged event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    emit(state.copyWith(photos: _mapPhoto(
+      event.photoIndex,
+      (photo) => photo.copyWith(
+        minimumOrderQuantity: event.minimumOrderQuantity,
+      ),
+    )));
+  }
+
+  void _onPhotoDescriptionChanged(
+    SupplierPhotoDescriptionChanged event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    emit(state.copyWith(photos: _mapPhoto(
+      event.photoIndex,
+      (photo) => photo.copyWith(description: event.description),
+    )));
+  }
+
+  List<PhotographedSupplierProductEntity> _mapPhoto(
+    int photoIndex,
+    PhotographedSupplierProductEntity Function(PhotographedSupplierProductEntity)
+        update,
+  ) {
+    return [
+      for (final photo in state.photos)
+        if (photo.photoIndex == photoIndex) update(photo) else photo,
+    ];
+  }
+
+  void _onPhotoRemoved(
+    SupplierPhotoRemoved event,
+    Emitter<SupplierExcelImportState> emit,
+  ) {
+    emit(state.copyWith(
+      photos: state.photos
+          .where((photo) => photo.photoIndex != event.photoIndex)
+          .toList(),
+    ));
+  }
+
+  Future<void> _onPhotoDraftDescriptions(
+    SupplierPhotoDraftDescriptionsPressed event,
+    Emitter<SupplierExcelImportState> emit,
+  ) async {
+    if (state.draftingPhotoDescriptions) return;
+
+    // Only the ones with a name and nothing said about them: one with no
+    // name is not a product yet, and one the supplier already described is
+    // not ours to replace.
+    final photos = state.photosNeedingDescription;
+    if (photos.isEmpty) return;
+
+    emit(state.copyWith(draftingPhotoDescriptions: true, clearMessages: true));
+
+    try {
+      final written = await draftSupplierProductDescriptionsUseCase([
+        for (final photo in photos)
+          {
+            'row': photo.photoIndex,
+            'name': photo.name,
+            'category': photo.category.trim().isEmpty ? null : photo.category,
+          },
+      ]);
+
+      var updated = state.photos;
+      written.forEach((photoIndex, description) {
+        updated = [
+          for (final photo in updated)
+            if (photo.photoIndex == photoIndex)
+              photo.copyWith(description: description)
+            else
+              photo,
+        ];
+      });
+
+      emit(state.copyWith(
+        draftingPhotoDescriptions: false,
+        photos: updated,
+      ));
+    } catch (error) {
+      emit(state.copyWith(
+        draftingPhotoDescriptions: false,
+        error: _message(error),
+      ));
+    }
+  }
+
+  Future<void> _onPhotosImportPressed(
+    SupplierPhotosImportPressed event,
+    Emitter<SupplierExcelImportState> emit,
+  ) async {
+    if (!state.canImportPhotos) return;
+
+    emit(state.copyWith(creatingPhotoProducts: true, clearMessages: true));
+
+    try {
+      await createSupplierPhotoProductsUseCase([
+        for (final photo in state.photos)
+          {
+            'name': photo.name.trim(),
+            'description': photo.description.trim(),
+            'categoryName': photo.category.trim(),
+            'price': photo.price.trim(),
+            'minimumOrderQuantity':
+                int.tryParse(photo.minimumOrderQuantity.trim()),
+            'imageUrl': photo.imageUrl,
+          },
+      ]);
+
+      emit(state.copyWith(
+        creatingPhotoProducts: false,
+        clearPhotos: true,
+        successMessage: 'supplierExcelImportSuccess',
+      ));
+    } catch (error) {
+      emit(state.copyWith(
+        creatingPhotoProducts: false,
+        error: _message(error),
+      ));
+    }
   }
 
   String _message(Object error) {

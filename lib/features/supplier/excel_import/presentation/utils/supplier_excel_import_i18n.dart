@@ -287,6 +287,62 @@ class SupplierExcelImportI18n {
     return message;
   }
 
+  // ===== Photographing a catalogue =====
+
+  String get sourceQuestion => _t(
+        'Where are your products now?',
+        'وين منتجاتك حاليًا؟',
+        'Où sont vos produits actuellement ?',
+      );
+  String get sourceFileTitle => _t('I have a file', 'عندي ملف', "J'ai un fichier");
+  String get sourceFileSubtitle => _t(
+        'Upload it as it is. We will read it for you.',
+        'ارفعيه كما هو، وسنقرأه لك.',
+        'Téléversez-le tel quel, nous le lirons pour vous.',
+      );
+  String get sourcePhotosTitle =>
+      _t("I'll photograph them", 'رح صوّر منتجاتي', 'Je vais les photographier');
+  String get sourcePhotosSubtitle => _t(
+        'Take a picture of each thing. We will say what it is.',
+        'صوّري كل قطعة، ورح نقول شو هي.',
+        'Prenez une photo de chaque article. Nous dirons ce que c’est.',
+      );
+
+  String get photosTakeBtn => _t('Take photos', 'التقاط صور', 'Prendre des photos');
+  String get photosAddMoreBtn => _t('Add more photos', 'إضافة المزيد من الصور', "Ajouter d'autres photos");
+  String get photosPickBtn => _t('Choose from gallery', 'اختيار من المعرض', 'Choisir depuis la galerie');
+  String get photosReading => _t('Reading the photos…', 'جارٍ قراءة الصور…', 'Lecture des photos…');
+  String get photosEmpty => _t(
+        'No photos yet. Take a picture of the first item.',
+        'لا صور بعد. صوّري أول قطعة.',
+        'Aucune photo pour le moment. Photographiez le premier article.',
+      );
+  String photosNeedNames(int count) => _t(
+        '$count still need a name',
+        'لسا $count بحاجة لاسم',
+        '$count nécessitent encore un nom',
+      );
+  String get photoNameLabel => _t('Product name', 'اسم المنتج', 'Nom du produit');
+  String get photoNameMissing => _t(
+        "The assistant couldn't name this one",
+        'لم يتمكن المساعد من تسمية هذه القطعة',
+        "L'assistant n'a pas pu nommer cet article",
+      );
+  String get photoCategoryLabel => _t('Category', 'الفئة', 'Catégorie');
+  String get photoPriceLabel => _t('Price', 'السعر', 'Prix');
+  String get photoMoqLabel => _t('Minimum order qty', 'الحد الأدنى للطلب', 'Qté min. de commande');
+  String get photoRemove => _t('Remove', 'إزالة', 'Retirer');
+  String photosMissingDescriptions(int count) => _t(
+        '$count have nothing written about them',
+        '$count لم يُكتب عنها شيء بعد',
+        "$count n'ont encore aucune description",
+      );
+  String get photosWriteDescriptions =>
+      _t('Let the assistant write these', 'خلي المساعد يكتبها', "Laisser l'assistant les rédiger");
+  String get photosWriting => _t('Writing…', 'جارٍ الكتابة…', 'Rédaction…');
+  String get photosAddProductsBtn => _t('Add these products', 'إضافة هذه المنتجات', 'Ajouter ces produits');
+  String get photosAddingProducts => _t('Adding…', 'جارٍ الإضافة…', 'Ajout…');
+
   String _prettyKey(String key) {
     final spaced = key
         .replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (m) => '${m[1]} ${m[2]}')
