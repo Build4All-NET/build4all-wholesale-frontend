@@ -4020,4 +4020,89 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get paymentCredentialAlreadyConfiguredHelper =>
       'تم حفظها سابقًا. اتركي الحقل فارغًا للإبقاء على القيمة الحالية، أو أدخلي قيمة جديدة لاستبدالها.';
+
+  @override
+  String get supplierStatisticsTitle => 'إحصائيات';
+
+  @override
+  String get supplierStatisticsRefresh => 'تحديث';
+
+  @override
+  String get supplierStatisticsClose => 'إغلاق';
+
+  @override
+  String get supplierStatisticsRetry => 'جرّب كمان مرة';
+
+  @override
+  String get supplierStatisticsLoadFailed => 'ما قدرنا نجيب الإحصائيات.';
+
+  @override
+  String get supplierStatisticsTotalRetailers => 'كل المحلات';
+
+  @override
+  String get supplierStatisticsNewLast7Days => 'جداد هالأسبوع';
+
+  @override
+  String get supplierStatisticsNewLast30Days => 'جداد هالشهر';
+
+  @override
+  String get supplierStatisticsActiveLast30Days => 'فاتوا هالشهر';
+
+  @override
+  String get supplierStatisticsCompleteProfiles => 'ملفات كاملة';
+
+  @override
+  String get supplierStatisticsReachableTitle => 'محلات فيك تتواصل معها';
+
+  @override
+  String supplierStatisticsWithEmail(int count) {
+    return '$count عندها إيميل';
+  }
+
+  @override
+  String supplierStatisticsWithPhone(int count) {
+    return '$count عندها رقم';
+  }
+
+  @override
+  String get supplierStatisticsRetailersSectionTitle => 'المحلات';
+
+  @override
+  String get supplierStatisticsSearchHint => 'دوّر بالاسم أو المحل أو الإيميل أو الرقم';
+
+  @override
+  String get supplierStatisticsEmpty => 'لسا ما في محل سجّل بتطبيقك.';
+
+  @override
+  String get supplierStatisticsNoSearchResults => 'ما في محل مطابق للبحث.';
+
+  @override
+  String get supplierStatisticsNoContactDetails => 'ما في معلومات تواصل';
+
+  @override
+  String supplierStatisticsJoinedOn(String date) {
+    return 'سجّل بـ $date';
+  }
+
+  @override
+  String supplierStatisticsContactTitle(String name) {
+    return 'تواصل مع $name';
+  }
+
+  @override
+  String get supplierStatisticsContactEmail => 'إيميل';
+
+  @override
+  String get supplierStatisticsContactWhatsApp => 'واتساب';
+
+  @override
+  String get supplierStatisticsContactCall => 'اتصال';
+
+  @override
+  String get supplierStatisticsContactFailed => 'ما قدرنا نفتح التطبيق.';
+
+  @override
+  String supplierStatisticsWhatsAppMessage(String name) {
+    return 'مرحبا $name، ';
+  }
 }

@@ -454,6 +454,14 @@ class _SupplierDashboardViewState extends State<_SupplierDashboardView> {
     }
 
     final actions = [
+      // First card: the supplier looks at who is in the app before what they
+      // ordered, the same order the ecommerce dashboard puts these in.
+      SupplierQuickActionCard(
+        title: context.l10n.supplierStatisticsTitle,
+        icon: Icons.insights_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
+        onTap: guarded(() => context.push('/supplier-statistics')),
+      ),
       SupplierQuickActionCard(
         title: context.l10n.supplierAddProduct,
         icon: Icons.add_rounded,

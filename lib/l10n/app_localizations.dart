@@ -7389,6 +7389,155 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Already configured. Leave this field empty to keep the saved value, or enter a new value to replace it.'**
   String get paymentCredentialAlreadyConfiguredHelper;
+  /// No description provided for @supplierStatisticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get supplierStatisticsTitle;
+
+  /// No description provided for @supplierStatisticsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get supplierStatisticsRefresh;
+
+  /// No description provided for @supplierStatisticsClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get supplierStatisticsClose;
+
+  /// No description provided for @supplierStatisticsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get supplierStatisticsRetry;
+
+  /// No description provided for @supplierStatisticsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your statistics.'**
+  String get supplierStatisticsLoadFailed;
+
+  /// No description provided for @supplierStatisticsTotalRetailers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total shops'**
+  String get supplierStatisticsTotalRetailers;
+
+  /// No description provided for @supplierStatisticsNewLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'New this week'**
+  String get supplierStatisticsNewLast7Days;
+
+  /// No description provided for @supplierStatisticsNewLast30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'New this month'**
+  String get supplierStatisticsNewLast30Days;
+
+  /// No description provided for @supplierStatisticsActiveLast30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in this month'**
+  String get supplierStatisticsActiveLast30Days;
+
+  /// No description provided for @supplierStatisticsCompleteProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete profiles'**
+  String get supplierStatisticsCompleteProfiles;
+
+  /// No description provided for @supplierStatisticsReachableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shops you can contact'**
+  String get supplierStatisticsReachableTitle;
+
+  /// No description provided for @supplierStatisticsWithEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} with email'**
+  String supplierStatisticsWithEmail(int count);
+
+  /// No description provided for @supplierStatisticsWithPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} with phone'**
+  String supplierStatisticsWithPhone(int count);
+
+  /// No description provided for @supplierStatisticsRetailersSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shops'**
+  String get supplierStatisticsRetailersSectionTitle;
+
+  /// No description provided for @supplierStatisticsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, shop, email or phone'**
+  String get supplierStatisticsSearchHint;
+
+  /// No description provided for @supplierStatisticsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No shop has signed up in your app yet.'**
+  String get supplierStatisticsEmpty;
+
+  /// No description provided for @supplierStatisticsNoSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No shop matches your search.'**
+  String get supplierStatisticsNoSearchResults;
+
+  /// No description provided for @supplierStatisticsNoContactDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'No contact details'**
+  String get supplierStatisticsNoContactDetails;
+
+  /// No description provided for @supplierStatisticsJoinedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String supplierStatisticsJoinedOn(String date);
+
+  /// No description provided for @supplierStatisticsContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact {name}'**
+  String supplierStatisticsContactTitle(String name);
+
+  /// No description provided for @supplierStatisticsContactEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get supplierStatisticsContactEmail;
+
+  /// No description provided for @supplierStatisticsContactWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get supplierStatisticsContactWhatsApp;
+
+  /// No description provided for @supplierStatisticsContactCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get supplierStatisticsContactCall;
+
+  /// No description provided for @supplierStatisticsContactFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open that app on your phone.'**
+  String get supplierStatisticsContactFailed;
+
+  /// No description provided for @supplierStatisticsWhatsAppMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}, '**
+  String supplierStatisticsWhatsAppMessage(String name);
 }
 
 class _AppLocalizationsDelegate

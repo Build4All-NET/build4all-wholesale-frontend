@@ -1662,5 +1662,65 @@
   "statusAccepted": "ACCEPTED",
   "statusRejected": "REJECTED",
   "statusWithdrawn": "WITHDRAWN",
-  "statusPending": "PENDING"
+  "statusPending": "PENDING",
+  "supplierStatisticsTitle": "Statistics",
+  "supplierStatisticsRefresh": "Refresh",
+  "supplierStatisticsClose": "Close",
+  "supplierStatisticsRetry": "Try again",
+  "supplierStatisticsLoadFailed": "Couldn't load your statistics.",
+  "supplierStatisticsTotalRetailers": "Total shops",
+  "supplierStatisticsNewLast7Days": "New this week",
+  "supplierStatisticsNewLast30Days": "New this month",
+  "supplierStatisticsActiveLast30Days": "Signed in this month",
+  "supplierStatisticsCompleteProfiles": "Complete profiles",
+  "supplierStatisticsReachableTitle": "Shops you can contact",
+  "supplierStatisticsWithEmail": "{count} with email",
+  "@supplierStatisticsWithEmail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierStatisticsWithPhone": "{count} with phone",
+  "@supplierStatisticsWithPhone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierStatisticsRetailersSectionTitle": "Shops",
+  "supplierStatisticsSearchHint": "Search by name, shop, email or phone",
+  "supplierStatisticsEmpty": "No shop has signed up in your app yet.",
+  "supplierStatisticsNoSearchResults": "No shop matches your search.",
+  "supplierStatisticsNoContactDetails": "No contact details",
+  "supplierStatisticsJoinedOn": "Joined {date}",
+  "@supplierStatisticsJoinedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierStatisticsContactTitle": "Contact {name}",
+  "@supplierStatisticsContactTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierStatisticsContactEmail": "Email",
+  "supplierStatisticsContactWhatsApp": "WhatsApp",
+  "supplierStatisticsContactCall": "Call",
+  "supplierStatisticsContactFailed": "Couldn't open that app on your phone.",
+  "supplierStatisticsWhatsAppMessage": "Hello {name}, ",
+  "@supplierStatisticsWhatsAppMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

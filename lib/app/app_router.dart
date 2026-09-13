@@ -88,6 +88,7 @@ import '../features/retailer/orders/presentation/screens/retailer_reorder_review
 import '../features/retailer/orders/presentation/screens/retailer_orders_screen.dart';
 import '../features/retailer/checkout/presentation/screens/retailer_checkout_screen.dart';
 import '../features/retailer/cart/presentation/screens/retailer_cart_screen.dart';
+import '../features/supplier/statistics/presentation/screens/supplier_statistics_screen.dart';
 
 class AppRouter {
   /// Routes reachable without a session (login + account recovery + signup).
@@ -456,6 +457,11 @@ class AppRouter {
       GoRoute(
         path: '/supplier-excel-import',
         builder: (context, state) => SupplierExcelImportScreen(),
+      ),
+
+      GoRoute(
+        path: '/supplier-statistics',
+        builder: (context, state) => const SupplierStatisticsScreen(),
       ),
 
       // =========================

@@ -4133,4 +4133,89 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get paymentCredentialAlreadyConfiguredHelper =>
       'Déjà configuré. Laissez ce champ vide pour conserver la valeur enregistrée, ou saisissez une nouvelle valeur pour la remplacer.';
+
+  @override
+  String get supplierStatisticsTitle => 'Statistiques';
+
+  @override
+  String get supplierStatisticsRefresh => 'Actualiser';
+
+  @override
+  String get supplierStatisticsClose => 'Fermer';
+
+  @override
+  String get supplierStatisticsRetry => 'Réessayer';
+
+  @override
+  String get supplierStatisticsLoadFailed => 'Impossible de charger vos statistiques.';
+
+  @override
+  String get supplierStatisticsTotalRetailers => 'Total boutiques';
+
+  @override
+  String get supplierStatisticsNewLast7Days => 'Nouveaux cette semaine';
+
+  @override
+  String get supplierStatisticsNewLast30Days => 'Nouveaux ce mois-ci';
+
+  @override
+  String get supplierStatisticsActiveLast30Days => 'Connectés ce mois-ci';
+
+  @override
+  String get supplierStatisticsCompleteProfiles => 'Profils complets';
+
+  @override
+  String get supplierStatisticsReachableTitle => 'Boutiques joignables';
+
+  @override
+  String supplierStatisticsWithEmail(int count) {
+    return '$count avec e-mail';
+  }
+
+  @override
+  String supplierStatisticsWithPhone(int count) {
+    return '$count avec téléphone';
+  }
+
+  @override
+  String get supplierStatisticsRetailersSectionTitle => 'Boutiques';
+
+  @override
+  String get supplierStatisticsSearchHint => 'Rechercher par nom, boutique, e-mail ou téléphone';
+
+  @override
+  String get supplierStatisticsEmpty => 'Aucune boutique ne s\'est encore inscrite dans votre app.';
+
+  @override
+  String get supplierStatisticsNoSearchResults => 'Aucune boutique ne correspond.';
+
+  @override
+  String get supplierStatisticsNoContactDetails => 'Aucun contact';
+
+  @override
+  String supplierStatisticsJoinedOn(String date) {
+    return 'Inscrit le $date';
+  }
+
+  @override
+  String supplierStatisticsContactTitle(String name) {
+    return 'Contacter $name';
+  }
+
+  @override
+  String get supplierStatisticsContactEmail => 'E-mail';
+
+  @override
+  String get supplierStatisticsContactWhatsApp => 'WhatsApp';
+
+  @override
+  String get supplierStatisticsContactCall => 'Appeler';
+
+  @override
+  String get supplierStatisticsContactFailed => 'Impossible d\'ouvrir cette application.';
+
+  @override
+  String supplierStatisticsWhatsAppMessage(String name) {
+    return 'Bonjour $name, ';
+  }
 }

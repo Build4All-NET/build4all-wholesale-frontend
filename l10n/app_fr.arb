@@ -1655,5 +1655,65 @@
   "statusAccepted": "ACCEPTÉ",
   "statusRejected": "REJETÉ",
   "statusWithdrawn": "RETIRÉ",
-  "statusPending": "EN ATTENTE"
+  "statusPending": "EN ATTENTE",
+  "supplierStatisticsTitle": "Statistiques",
+  "supplierStatisticsRefresh": "Actualiser",
+  "supplierStatisticsClose": "Fermer",
+  "supplierStatisticsRetry": "Réessayer",
+  "supplierStatisticsLoadFailed": "Impossible de charger vos statistiques.",
+  "supplierStatisticsTotalRetailers": "Total boutiques",
+  "supplierStatisticsNewLast7Days": "Nouveaux cette semaine",
+  "supplierStatisticsNewLast30Days": "Nouveaux ce mois-ci",
+  "supplierStatisticsActiveLast30Days": "Connectés ce mois-ci",
+  "supplierStatisticsCompleteProfiles": "Profils complets",
+  "supplierStatisticsReachableTitle": "Boutiques joignables",
+  "supplierStatisticsWithEmail": "{count} avec e-mail",
+  "@supplierStatisticsWithEmail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierStatisticsWithPhone": "{count} avec téléphone",
+  "@supplierStatisticsWithPhone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierStatisticsRetailersSectionTitle": "Boutiques",
+  "supplierStatisticsSearchHint": "Rechercher par nom, boutique, e-mail ou téléphone",
+  "supplierStatisticsEmpty": "Aucune boutique ne s'est encore inscrite dans votre app.",
+  "supplierStatisticsNoSearchResults": "Aucune boutique ne correspond.",
+  "supplierStatisticsNoContactDetails": "Aucun contact",
+  "supplierStatisticsJoinedOn": "Inscrit le {date}",
+  "@supplierStatisticsJoinedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierStatisticsContactTitle": "Contacter {name}",
+  "@supplierStatisticsContactTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierStatisticsContactEmail": "E-mail",
+  "supplierStatisticsContactWhatsApp": "WhatsApp",
+  "supplierStatisticsContactCall": "Appeler",
+  "supplierStatisticsContactFailed": "Impossible d'ouvrir cette application.",
+  "supplierStatisticsWhatsAppMessage": "Bonjour {name}, ",
+  "@supplierStatisticsWhatsAppMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

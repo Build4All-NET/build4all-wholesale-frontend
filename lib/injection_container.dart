@@ -314,6 +314,11 @@ import 'features/supplier/dashboard/data/services/supplier_dashboard_api_service
 import 'features/supplier/dashboard/domain/repositories/supplier_dashboard_repository.dart';
 import 'features/supplier/dashboard/domain/usecases/get_supplier_low_stock_alerts_usecase.dart';
 import 'features/supplier/dashboard/presentation/bloc/supplier_dashboard/supplier_dashboard_bloc.dart';
+import 'features/supplier/statistics/data/repositories/supplier_statistics_repository_impl.dart';
+import 'features/supplier/statistics/data/services/supplier_statistics_api_service.dart';
+import 'features/supplier/statistics/domain/repositories/supplier_statistics_repository.dart';
+import 'features/supplier/statistics/domain/usecases/get_supplier_statistics_usecase.dart';
+import 'features/supplier/statistics/presentation/cubit/supplier_statistics_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -569,6 +574,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierStatisticsApiService>(
+    () => SupplierStatisticsApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<RetailerProductAiService>(
     () => RetailerProductAiService(
       projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
@@ -703,6 +714,12 @@ Future<void> init() async {
   sl.registerLazySingleton<SupplierDashboardRepository>(
     () => SupplierDashboardRepositoryImpl(
       apiService: sl<SupplierDashboardApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierStatisticsRepository>(
+    () => SupplierStatisticsRepositoryImpl(
+      apiService: sl<SupplierStatisticsApiService>(),
     ),
   );
 
@@ -1093,6 +1110,10 @@ Future<void> init() async {
     () => GetSupplierLowStockAlertsUseCase(sl<SupplierDashboardRepository>()),
   );
 
+  sl.registerLazySingleton<GetSupplierStatisticsUseCase>(
+    () => GetSupplierStatisticsUseCase(sl<SupplierStatisticsRepository>()),
+  );
+
   // =========================
   // CUBITS / BLOCS
   // =========================
@@ -1267,6 +1288,12 @@ Future<void> init() async {
       getSupplierOrdersUseCase: sl<GetSupplierOrdersUseCase>(),
       getSupplierLowStockAlertsUseCase: sl<GetSupplierLowStockAlertsUseCase>(),
       getSupplierProfileDisplayUseCase: sl<GetSupplierProfileDisplayUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierStatisticsCubit>(
+    () => SupplierStatisticsCubit(
+      getStatistics: sl<GetSupplierStatisticsUseCase>(),
     ),
   );
 

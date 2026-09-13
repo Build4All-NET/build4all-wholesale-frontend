@@ -1655,5 +1655,65 @@
   "statusAccepted": "مقبول",
   "statusRejected": "مرفوض",
   "statusWithdrawn": "مسحوب",
-  "statusPending": "قيد الانتظار"
+  "statusPending": "قيد الانتظار",
+  "supplierStatisticsTitle": "إحصائيات",
+  "supplierStatisticsRefresh": "تحديث",
+  "supplierStatisticsClose": "إغلاق",
+  "supplierStatisticsRetry": "جرّب كمان مرة",
+  "supplierStatisticsLoadFailed": "ما قدرنا نجيب الإحصائيات.",
+  "supplierStatisticsTotalRetailers": "كل المحلات",
+  "supplierStatisticsNewLast7Days": "جداد هالأسبوع",
+  "supplierStatisticsNewLast30Days": "جداد هالشهر",
+  "supplierStatisticsActiveLast30Days": "فاتوا هالشهر",
+  "supplierStatisticsCompleteProfiles": "ملفات كاملة",
+  "supplierStatisticsReachableTitle": "محلات فيك تتواصل معها",
+  "supplierStatisticsWithEmail": "{count} عندها إيميل",
+  "@supplierStatisticsWithEmail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierStatisticsWithPhone": "{count} عندها رقم",
+  "@supplierStatisticsWithPhone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierStatisticsRetailersSectionTitle": "المحلات",
+  "supplierStatisticsSearchHint": "دوّر بالاسم أو المحل أو الإيميل أو الرقم",
+  "supplierStatisticsEmpty": "لسا ما في محل سجّل بتطبيقك.",
+  "supplierStatisticsNoSearchResults": "ما في محل مطابق للبحث.",
+  "supplierStatisticsNoContactDetails": "ما في معلومات تواصل",
+  "supplierStatisticsJoinedOn": "سجّل بـ {date}",
+  "@supplierStatisticsJoinedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierStatisticsContactTitle": "تواصل مع {name}",
+  "@supplierStatisticsContactTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierStatisticsContactEmail": "إيميل",
+  "supplierStatisticsContactWhatsApp": "واتساب",
+  "supplierStatisticsContactCall": "اتصال",
+  "supplierStatisticsContactFailed": "ما قدرنا نفتح التطبيق.",
+  "supplierStatisticsWhatsAppMessage": "مرحبا {name}، ",
+  "@supplierStatisticsWhatsAppMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

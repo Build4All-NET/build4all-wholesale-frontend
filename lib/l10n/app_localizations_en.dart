@@ -4059,4 +4059,89 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get paymentCredentialAlreadyConfiguredHelper =>
       'Already configured. Leave this field empty to keep the saved value, or enter a new value to replace it.';
+
+  @override
+  String get supplierStatisticsTitle => 'Statistics';
+
+  @override
+  String get supplierStatisticsRefresh => 'Refresh';
+
+  @override
+  String get supplierStatisticsClose => 'Close';
+
+  @override
+  String get supplierStatisticsRetry => 'Try again';
+
+  @override
+  String get supplierStatisticsLoadFailed => 'Couldn\'t load your statistics.';
+
+  @override
+  String get supplierStatisticsTotalRetailers => 'Total shops';
+
+  @override
+  String get supplierStatisticsNewLast7Days => 'New this week';
+
+  @override
+  String get supplierStatisticsNewLast30Days => 'New this month';
+
+  @override
+  String get supplierStatisticsActiveLast30Days => 'Signed in this month';
+
+  @override
+  String get supplierStatisticsCompleteProfiles => 'Complete profiles';
+
+  @override
+  String get supplierStatisticsReachableTitle => 'Shops you can contact';
+
+  @override
+  String supplierStatisticsWithEmail(int count) {
+    return '$count with email';
+  }
+
+  @override
+  String supplierStatisticsWithPhone(int count) {
+    return '$count with phone';
+  }
+
+  @override
+  String get supplierStatisticsRetailersSectionTitle => 'Shops';
+
+  @override
+  String get supplierStatisticsSearchHint => 'Search by name, shop, email or phone';
+
+  @override
+  String get supplierStatisticsEmpty => 'No shop has signed up in your app yet.';
+
+  @override
+  String get supplierStatisticsNoSearchResults => 'No shop matches your search.';
+
+  @override
+  String get supplierStatisticsNoContactDetails => 'No contact details';
+
+  @override
+  String supplierStatisticsJoinedOn(String date) {
+    return 'Joined $date';
+  }
+
+  @override
+  String supplierStatisticsContactTitle(String name) {
+    return 'Contact $name';
+  }
+
+  @override
+  String get supplierStatisticsContactEmail => 'Email';
+
+  @override
+  String get supplierStatisticsContactWhatsApp => 'WhatsApp';
+
+  @override
+  String get supplierStatisticsContactCall => 'Call';
+
+  @override
+  String get supplierStatisticsContactFailed => 'Couldn\'t open that app on your phone.';
+
+  @override
+  String supplierStatisticsWhatsAppMessage(String name) {
+    return 'Hello $name, ';
+  }
 }
