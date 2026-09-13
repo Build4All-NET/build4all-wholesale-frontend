@@ -294,11 +294,22 @@ class SupplierExcelImportI18n {
         'وين منتجاتك حاليًا؟',
         'Où sont vos produits actuellement ?',
       );
-  String get sourceFileTitle => _t('I have a file', 'عندي ملف', "J'ai un fichier");
+  String get sourceFileTitle =>
+      _t('I filled in your template', 'عبّيت القالب تبعكن', "J'ai rempli votre modèle");
   String get sourceFileSubtitle => _t(
-        'Upload it as it is. We will read it for you.',
-        'ارفعيه كما هو، وسنقرأه لك.',
-        'Téléversez-le tel quel, nous le lirons pour vous.',
+        'The workbook you downloaded from here, with your products in it.',
+        'ملف Excel يلي نزّلتيه من هون، وفيه منتجاتك.',
+        'Le classeur téléchargé ici, avec vos produits dedans.',
+      );
+  String get sourceForeignTitle => _t(
+        'I have a file from another system',
+        'عندي ملف من نظام تاني',
+        "J'ai un fichier d'un autre système",
+      );
+  String get sourceForeignSubtitle => _t(
+        'Upload it as it is. We will work out what each column holds.',
+        'ارفعيه متل ما هو، ونحنا منفهم شو يعني كل عمود.',
+        'Téléversez-le tel quel. Nous déterminerons ce que contient chaque colonne.',
       );
   String get sourcePhotosTitle =>
       _t("I'll photograph them", 'رح صوّر منتجاتي', 'Je vais les photographier');
@@ -349,4 +360,155 @@ class SupplierExcelImportI18n {
         .replaceAll(RegExp(r'[_\-]+'), ' ');
     return spaced.isEmpty ? key : '${spaced[0].toUpperCase()}${spaced.substring(1)}';
   }
+
+  /* ---------------- a file another system wrote ---------------- */
+
+  String get foreignTitle => _t(
+        'Import from another system',
+        'استيراد من نظام تاني',
+        "Importer depuis un autre système",
+      );
+  String get foreignPickFile =>
+      _t('Choose your file', 'اختاري ملفك', 'Choisissez votre fichier');
+  String get foreignReadingFile =>
+      _t('Reading your file…', 'عم نقرا ملفك…', 'Lecture de votre fichier…');
+  String get foreignNoSheets => _t(
+        'Nothing in this file looks like a product list.',
+        'ما في شي بهالملف بيشبه لستة منتجات.',
+        "Rien dans ce fichier ne ressemble à une liste de produits.",
+      );
+  String get foreignSheetPickerTitle =>
+      _t('Which sheet holds your products?', 'أي ورقة فيها منتجاتك؟',
+          'Quelle feuille contient vos produits ?');
+  String foreignSheetRows(int count) => _t(
+        '$count rows',
+        '$count صف',
+        '$count lignes',
+      );
+  String get foreignColumnsTitle =>
+      _t('What each column holds', 'شو فيه كل عمود', 'Ce que contient chaque colonne');
+  String get foreignColumnsSubtitle => _t(
+        'We read your file and guessed. Change anything we got wrong.',
+        'قرينا ملفك وحزرنا. غيّري أي شي غلطنا فيه.',
+        "Nous avons lu votre fichier et deviné. Corrigez ce qui est faux.",
+      );
+  String get foreignAiUsed => _t(
+        'The assistant helped read this sheet.',
+        'المساعد ساعد بقراءة هالورقة.',
+        "L'assistant a aidé à lire cette feuille.",
+      );
+  String get foreignAiNotUsed => _t(
+        'Read from the values in your file.',
+        'انقرأت من القيم يلي بملفك.',
+        'Lu à partir des valeurs de votre fichier.',
+      );
+  String get foreignNoHeading => _t('(no heading)', '(بدون عنوان)', '(sans titre)');
+
+  String foreignField(String wireName) {
+    switch (wireName) {
+      case 'NAME':
+        return _t('Product name', 'اسم المنتج', 'Nom du produit');
+      case 'PRICE':
+        return _t('Price', 'السعر', 'Prix');
+      case 'STOCK':
+        return _t('Quantity', 'الكمية', 'Quantité');
+      case 'MOQ':
+        return _t('Minimum order', 'أقل كمية للطلب', 'Commande minimum');
+      case 'DESCRIPTION':
+        return _t('Description', 'الوصف', 'Description');
+      case 'CATEGORY':
+        return _t('Category', 'الفئة', 'Catégorie');
+      case 'IMAGE_URL':
+        return _t('Image link', 'رابط الصورة', "Lien de l'image");
+      default:
+        return _t("Don't import", 'ما تستوردو', 'Ne pas importer');
+    }
+  }
+
+  String get foreignReasonAgreed => _t(
+        'The heading and the values agree.',
+        'العنوان والقيم متفقين.',
+        "Le titre et les valeurs concordent.",
+      );
+  String get foreignReasonFromValues => _t(
+        'Read from the values.',
+        'انقرأ من القيم.',
+        'Lu à partir des valeurs.',
+      );
+  String get foreignReasonFromHeading => _t(
+        'Read from the heading only.',
+        'انقرأ من العنوان بس.',
+        'Lu à partir du titre seulement.',
+      );
+  String get foreignReasonFromAssistant => _t(
+        'The assistant recognised this one.',
+        'المساعد عرف هيدا.',
+        "L'assistant a reconnu celle-ci.",
+      );
+  String foreignReasonDisputed(String other) => _t(
+        'The values look more like $other. Please check.',
+        'القيم بتشبه أكتر $other. تأكدي منها.',
+        'Les valeurs ressemblent plutôt à $other. Vérifiez.',
+      );
+  String get foreignReasonNoMatch => _t(
+        'Nothing in the catalogue matches this.',
+        'ما في شي بالكاتالوغ بيطابق هيدا.',
+        'Rien dans le catalogue ne correspond.',
+      );
+
+  String get foreignNeedsName => _t(
+        'Choose which column holds the product name before continuing.',
+        'اختاري أي عمود فيه اسم المنتج قبل ما تكملي.',
+        'Choisissez la colonne du nom du produit avant de continuer.',
+      );
+  String get foreignCategoryTitle =>
+      _t('File these under', 'حطيهن تحت', 'Classer sous');
+  String get foreignCategoryHint => _t(
+        'Used when a row has no category of its own.',
+        'بينستعمل لما الصف ما عندو فئة خاصة فيه.',
+        "Utilisé lorsqu'une ligne n'a pas de catégorie.",
+      );
+  String get foreignBranchTitle =>
+      _t('Count quantities at', 'احسب الكميات بـ', 'Compter les quantités à');
+  String get foreignBranchHint => _t(
+        'Stock belongs to a branch here. Name one, or quantities are skipped.',
+        'الكمية بتتبع لفرع هون. سمّي واحد، وإلا الكميات بتنشال.',
+        "Le stock appartient à une succursale. Nommez-en une, sinon les quantités sont ignorées.",
+      );
+
+  String get foreignContinue => _t('Continue', 'كمّل', 'Continuer');
+  String get foreignBackToColumns =>
+      _t('Back to columns', 'ارجع للأعمدة', 'Retour aux colonnes');
+  String get foreignPreviewTitle =>
+      _t('What will be created', 'شو رح ينتعمل', 'Ce qui sera créé');
+  String foreignPreviewCount(int count) => _t(
+        '$count products',
+        '$count منتج',
+        '$count produits',
+      );
+  String foreignSkippedRows(int count) => _t(
+        '$count rows had no name and were skipped.',
+        '$count صف ما عندن اسم وانشالوا.',
+        "$count lignes sans nom ont été ignorées.",
+      );
+  String foreignNeedingAttention(int count) => _t(
+        '$count need a look.',
+        '$count بدهن نظرة.',
+        '$count à vérifier.',
+      );
+  String get foreignIssueNoPrice => _t('No price', 'ما في سعر', 'Pas de prix');
+  String get foreignNoteNoQuantity =>
+      _t('No quantity', 'ما في كمية', 'Pas de quantité');
+  String get foreignNoteStockNeedsBranch => _t(
+        'Quantity needs a branch',
+        'الكمية بدها فرع',
+        'La quantité nécessite une succursale',
+      );
+  String get foreignImport => _t('Import these', 'استوردهن', 'Importer');
+  String get foreignImporting => _t('Importing…', 'عم نستورد…', 'Importation…');
+  String get foreignNothingToImport => _t(
+        'There is nothing to import from this sheet.',
+        'ما في شي لنستوردو من هالورقة.',
+        'Il n\'y a rien à importer depuis cette feuille.',
+      );
 }

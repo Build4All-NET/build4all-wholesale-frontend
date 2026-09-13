@@ -10,7 +10,12 @@ import '../../domain/entities/supplier_excel_section.dart';
 /// Two genuinely different jobs: filling in a workbook, and photographing a
 /// catalogue that has nothing written down at all. Asking once, up front,
 /// keeps a supplier who has a file from reading steps that are not theirs.
-enum SupplierExcelSource { file, photos }
+/// How the supplier's products are getting into the catalogue.
+///
+/// [foreignFile] is a file their own system wrote, which nothing here can read
+/// against the template -- it opens its own screen, where the columns are worked
+/// out and confirmed before anything is created.
+enum SupplierExcelSource { file, foreignFile, photos }
 
 class SupplierExcelImportState extends Equatable {
   final bool isDownloadingTemplate;

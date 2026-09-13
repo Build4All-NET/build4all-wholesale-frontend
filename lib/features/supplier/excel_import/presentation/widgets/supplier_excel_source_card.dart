@@ -42,6 +42,13 @@ class SupplierExcelSourceCard extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         _SourceOption(
+          selected: source == SupplierExcelSource.foreignFile,
+          title: l.sourceForeignTitle,
+          subtitle: l.sourceForeignSubtitle,
+          onTap: () => onChanged(SupplierExcelSource.foreignFile),
+        ),
+        const SizedBox(height: 10),
+        _SourceOption(
           selected: source == SupplierExcelSource.photos,
           title: l.sourcePhotosTitle,
           subtitle: l.sourcePhotosSubtitle,

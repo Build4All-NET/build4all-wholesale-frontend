@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
@@ -75,9 +76,22 @@ class _SupplierExcelImportView extends StatelessWidget {
                 children: [
                   SupplierExcelSourceCard(
                     source: state.source,
-                    onChanged: (source) => context
-                        .read<SupplierExcelImportBloc>()
-                        .add(SupplierExcelSourceChanged(source)),
+                    onChanged: (source) {
+                      // A file another system wrote has its own three steps --
+                      // read the columns, agree to them, look at the products --
+                      // so it gets its own screen rather than a fourth state of
+                      // this one. The choice is not kept: coming back here
+                      // should ask the question again, not sit on an answer
+                      // whose steps are somewhere else.
+                      if (source == SupplierExcelSource.foreignFile) {
+                        context.push('/supplier-excel-import/foreign');
+                        return;
+                      }
+
+                      context
+                          .read<SupplierExcelImportBloc>()
+                          .add(SupplierExcelSourceChanged(source));
+                    },
                   ),
                   const SizedBox(height: 16),
 
@@ -196,7 +210,10 @@ class _ImportBottomBar extends StatelessWidget {
     final busy = isPhotos ? state.creatingPhotoProducts : state.isImporting;
     final canConfirm = isPhotos ? state.canImportPhotos : state.canImport;
 
-    if (state.source == null) return const SizedBox.shrink();
+    if (state.source == null ||
+        state.source == SupplierExcelSource.foreignFile) {
+      return const SizedBox.shrink();
+    }
 
     return SafeArea(
       child: Container(

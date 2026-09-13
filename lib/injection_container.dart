@@ -319,6 +319,11 @@ import 'features/supplier/statistics/data/services/supplier_statistics_api_servi
 import 'features/supplier/statistics/domain/repositories/supplier_statistics_repository.dart';
 import 'features/supplier/statistics/domain/usecases/get_supplier_statistics_usecase.dart';
 import 'features/supplier/statistics/presentation/cubit/supplier_statistics_cubit.dart';
+import 'features/supplier/excel_import/data/repositories/supplier_foreign_import_repository_impl.dart';
+import 'features/supplier/excel_import/data/services/supplier_foreign_import_api_service.dart';
+import 'features/supplier/excel_import/domain/repositories/supplier_foreign_import_repository.dart';
+import 'features/supplier/excel_import/domain/usecases/supplier_foreign_import_usecases.dart';
+import 'features/supplier/excel_import/presentation/cubit/supplier_foreign_import_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -580,6 +585,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<SupplierForeignImportApiService>(
+    () => SupplierForeignImportApiService(
+      sl<ApiClient>(instanceName: 'projectApiClient'),
+    ),
+  );
+
   sl.registerLazySingleton<RetailerProductAiService>(
     () => RetailerProductAiService(
       projectApiClient: sl<ApiClient>(instanceName: 'projectApiClient'),
@@ -720,6 +731,12 @@ Future<void> init() async {
   sl.registerLazySingleton<SupplierStatisticsRepository>(
     () => SupplierStatisticsRepositoryImpl(
       apiService: sl<SupplierStatisticsApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<SupplierForeignImportRepository>(
+    () => SupplierForeignImportRepositoryImpl(
+      apiService: sl<SupplierForeignImportApiService>(),
     ),
   );
 
@@ -1114,6 +1131,24 @@ Future<void> init() async {
     () => GetSupplierStatisticsUseCase(sl<SupplierStatisticsRepository>()),
   );
 
+  sl.registerLazySingleton<SuggestSupplierColumnMappingUseCase>(
+    () => SuggestSupplierColumnMappingUseCase(
+      sl<SupplierForeignImportRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton<PreviewSupplierForeignFileUseCase>(
+    () => PreviewSupplierForeignFileUseCase(
+      sl<SupplierForeignImportRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton<ImportSupplierForeignFileUseCase>(
+    () => ImportSupplierForeignFileUseCase(
+      sl<SupplierForeignImportRepository>(),
+    ),
+  );
+
   // =========================
   // CUBITS / BLOCS
   // =========================
@@ -1294,6 +1329,15 @@ Future<void> init() async {
   sl.registerFactory<SupplierStatisticsCubit>(
     () => SupplierStatisticsCubit(
       getStatistics: sl<GetSupplierStatisticsUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<SupplierForeignImportCubit>(
+    () => SupplierForeignImportCubit(
+      pickFile: sl<PickSupplierExcelFileUseCase>(),
+      suggestMapping: sl<SuggestSupplierColumnMappingUseCase>(),
+      previewFile: sl<PreviewSupplierForeignFileUseCase>(),
+      importFile: sl<ImportSupplierForeignFileUseCase>(),
     ),
   );
 

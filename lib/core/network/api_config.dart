@@ -203,6 +203,14 @@ class ApiConfig {
 
   static const String supplierStatistics = '/supplier/statistics';
 
+  // Importing a catalogue from a file this platform did not produce: read the
+  // columns, show what would be created, then create it.
+  static const String supplierForeignSuggestMapping =
+      '/supplier/excel-import/foreign/suggest-mapping';
+  static const String supplierForeignPreview =
+      '/supplier/excel-import/foreign/preview';
+  static const String supplierForeignImport = '/supplier/excel-import/foreign';
+
   // =========================
   // Supplier Product Photo AI
   // =========================
