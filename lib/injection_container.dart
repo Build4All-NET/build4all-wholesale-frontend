@@ -1339,6 +1339,7 @@ Future<void> init() async {
       previewFile: sl<PreviewSupplierForeignFileUseCase>(),
       importFile: sl<ImportSupplierForeignFileUseCase>(),
       assistant: sl<SupplierProductAiApiService>(),
+      getBranches: sl<GetBranchesUseCase>(),
     ),
   );
 

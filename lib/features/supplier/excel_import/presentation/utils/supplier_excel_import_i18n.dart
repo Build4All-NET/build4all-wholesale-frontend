@@ -471,9 +471,16 @@ class SupplierExcelImportI18n {
   String get foreignBranchTitle =>
       _t('Count quantities at', 'احسب الكميات بـ', 'Compter les quantités à');
   String get foreignBranchHint => _t(
-        'Stock belongs to a branch here. Name one, or quantities are skipped.',
-        'الكمية بتتبع لفرع هون. سمّي واحد، وإلا الكميات بتنشال.',
-        "Le stock appartient à une succursale. Nommez-en une, sinon les quantités sont ignorées.",
+        'Stock belongs to a branch here. Choose one, or quantities are skipped.',
+        'الكمية بتتبع لفرع هون. اختاري واحد، وإلا الكميات بتنشال.',
+        "Le stock appartient à une succursale. Choisissez-en une, sinon les quantités sont ignorées.",
+      );
+  String get foreignBranchPick =>
+      _t('Choose a branch', 'اختاري فرع', 'Choisir une succursale');
+  String get foreignNoBranches => _t(
+        'You have no branches yet. Add one first, or the quantities in this file are skipped.',
+        'لسا ما عندك فروع. اعملي فرع أول، وإلا الكميات يلي بهالملف بتنشال.',
+        "Vous n'avez pas encore de succursale. Créez-en une, sinon les quantités de ce fichier sont ignorées.",
       );
 
   String get foreignContinue => _t('Continue', 'كمّل', 'Continuer');

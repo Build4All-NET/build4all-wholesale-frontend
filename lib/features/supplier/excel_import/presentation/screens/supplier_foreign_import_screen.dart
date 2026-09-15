@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../injection_container.dart';
+import '../../../branches/domain/entities/branch_entity.dart';
 import '../../../gallery/presentation/widgets/supplier_gallery_picker_sheet.dart';
 import '../../domain/entities/supplier_foreign_preview.dart';
 import '../../domain/entities/supplier_foreign_sheet_mapping.dart';
@@ -93,11 +94,11 @@ class _SupplierForeignImportView extends StatelessWidget {
                     ),
                     if (state.sheet!.hasStock) ...[
                       const SizedBox(height: 16),
-                      _TextFieldCard(
-                        title: l.foreignBranchTitle,
-                        hint: l.foreignBranchHint,
-                        value: state.branchName,
-                        warn: state.stockNeedsBranch,
+                      _BranchPickerCard(
+                        branches: state.branches,
+                        selected: state.branchName,
+                        loading: state.loadingBranches,
+                        noBranchesAtAll: state.hasNoBranchesAtAll,
                         onChanged: cubit.setBranchName,
                       ),
                     ],
@@ -328,6 +329,126 @@ class _SheetPicker extends StatelessWidget {
               );
             }),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Which branch the file's quantities are counted at.
+///
+/// A list rather than a box to type in. The importer matches a branch by name
+/// exactly, so a name that is close but not equal loses every quantity in the
+/// file -- and says so once per product, which on a real catalogue is hundreds
+/// of identical failures for one typo.
+class _BranchPickerCard extends StatelessWidget {
+  final List<BranchEntity> branches;
+  final String selected;
+  final bool loading;
+  final bool noBranchesAtAll;
+  final ValueChanged<String> onChanged;
+
+  const _BranchPickerCard({
+    required this.branches,
+    required this.selected,
+    required this.loading,
+    required this.noBranchesAtAll,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = SupplierExcelImportI18n(context);
+    final warn = noBranchesAtAll || selected.trim().isEmpty;
+
+    // A name that is no longer among the branches must not sit in the box
+    // looking chosen.
+    final value = branches.any((b) => b.name == selected) ? selected : null;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppThemeTokens.surface,
+        borderRadius: BorderRadius.circular(AppThemeTokens.radiusLarge),
+        border: Border.all(
+          color: warn
+              ? AppThemeTokens.error.withOpacity(0.4)
+              : AppThemeTokens.border,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.foreignBranchTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 14,
+              color: AppThemeTokens.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            noBranchesAtAll ? l.foreignNoBranches : l.foreignBranchHint,
+            style: TextStyle(
+              fontSize: 11,
+              color: warn
+                  ? AppThemeTokens.error
+                  : AppThemeTokens.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          if (loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: SizedBox(
+                height: 18,
+                width: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else if (branches.isNotEmpty)
+            DropdownButtonFormField<String>(
+              value: value,
+              isDense: true,
+              hint: Text(
+                l.foreignBranchPick,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppThemeTokens.textSecondary,
+                ),
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                filled: true,
+                fillColor: AppThemeTokens.inputFill,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: AppThemeTokens.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: AppThemeTokens.border),
+                ),
+              ),
+              items: branches
+                  .map(
+                    (branch) => DropdownMenuItem(
+                      value: branch.name,
+                      child: Text(
+                        branch.name,
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (picked) {
+                if (picked != null) onChanged(picked);
+              },
+            ),
         ],
       ),
     );

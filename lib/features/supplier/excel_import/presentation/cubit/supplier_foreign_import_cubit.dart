@@ -6,6 +6,8 @@ import '../../../../../core/exceptions/app_exception.dart';
 import '../../data/services/supplier_foreign_import_api_service.dart';
 import '../../domain/entities/supplier_excel_import_result_entity.dart';
 import '../../domain/entities/supplier_foreign_field.dart';
+import '../../../branches/domain/entities/branch_entity.dart';
+import '../../../branches/domain/usecases/get_branches_usecase.dart';
 import '../../data/services/supplier_product_ai_api_service.dart';
 import '../../domain/entities/supplier_foreign_preview.dart';
 import '../../domain/entities/supplier_foreign_sheet_mapping.dart';
@@ -26,7 +28,19 @@ class SupplierForeignImportState {
   final int selectedSheet;
 
   final String categoryName;
+
+  /// Which branch a mapped quantity column is counted at. Chosen from the
+  /// supplier's own branches rather than typed: the importer matches the name
+  /// exactly, so a typed one that is close but not equal loses every quantity
+  /// in the file and says so once per product.
   final String branchName;
+
+  /// The supplier's branches, for that choice. Empty until they are loaded,
+  /// and legitimately empty for a supplier who has none yet.
+  final List<BranchEntity> branches;
+
+  /// True while they are being fetched.
+  final bool loadingBranches;
 
   final SupplierForeignPreview? preview;
 
@@ -57,6 +71,8 @@ class SupplierForeignImportState {
     required this.selectedSheet,
     required this.categoryName,
     required this.branchName,
+    required this.branches,
+    required this.loadingBranches,
     required this.preview,
     required this.edits,
     required this.result,
@@ -74,6 +90,8 @@ class SupplierForeignImportState {
         selectedSheet = 0,
         categoryName = '',
         branchName = '',
+        branches = const [],
+        loadingBranches = false,
         preview = null,
         edits = const {},
         result = null,
@@ -101,6 +119,12 @@ class SupplierForeignImportState {
   bool get stockNeedsBranch =>
       sheet?.hasStock == true && branchName.trim().isEmpty;
 
+  /// The file has quantities and there is no branch in the whole account to
+  /// put them in. Worth saying plainly here, rather than as one failure per
+  /// product after the import has run.
+  bool get hasNoBranchesAtAll =>
+      sheet?.hasStock == true && !loadingBranches && branches.isEmpty;
+
   SupplierForeignImportState copyWith({
     SupplierForeignStep? step,
     String? fileName,
@@ -109,6 +133,8 @@ class SupplierForeignImportState {
     int? selectedSheet,
     String? categoryName,
     String? branchName,
+    List<BranchEntity>? branches,
+    bool? loadingBranches,
     SupplierForeignPreview? preview,
     Map<int, SupplierForeignRowEdit>? edits,
     SupplierExcelImportResultEntity? result,
@@ -126,6 +152,8 @@ class SupplierForeignImportState {
       selectedSheet: selectedSheet ?? this.selectedSheet,
       categoryName: categoryName ?? this.categoryName,
       branchName: branchName ?? this.branchName,
+      branches: branches ?? this.branches,
+      loadingBranches: loadingBranches ?? this.loadingBranches,
       preview: preview ?? this.preview,
       edits: edits ?? this.edits,
       result: result ?? this.result,
@@ -143,6 +171,7 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
   final PreviewSupplierForeignFileUseCase previewFile;
   final ImportSupplierForeignFileUseCase importFile;
   final SupplierProductAiApiService assistant;
+  final GetBranchesUseCase getBranches;
 
   SupplierForeignImportCubit({
     required this.pickFile,
@@ -150,6 +179,7 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
     required this.previewFile,
     required this.importFile,
     required this.assistant,
+    required this.getBranches,
   }) : super(const SupplierForeignImportState.initial());
 
   Future<void> chooseFile() async {
@@ -184,8 +214,33 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
         busy: false,
         clearError: true,
       ));
+
+      await _loadBranches();
     } catch (e) {
       emit(state.copyWith(busy: false, error: _messageOf(e)));
+    }
+  }
+
+  /// The supplier's branches, for the quantity question.
+  ///
+  /// A failure here costs the list, never the import: the file has already been
+  /// read by this point, and the columns are the supplier's to confirm either
+  /// way.
+  Future<void> _loadBranches() async {
+    emit(state.copyWith(loadingBranches: true));
+
+    try {
+      final branches = await getBranches();
+
+      emit(state.copyWith(
+        branches: branches,
+        loadingBranches: false,
+        // One branch is not a choice. Filing the quantities there is what the
+        // supplier was going to pick anyway.
+        branchName: branches.length == 1 ? branches.first.name : state.branchName,
+      ));
+    } catch (_) {
+      emit(state.copyWith(branches: const [], loadingBranches: false));
     }
   }
 
