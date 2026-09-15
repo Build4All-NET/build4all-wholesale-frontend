@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../injection_container.dart';
+import '../../../gallery/presentation/widgets/supplier_gallery_picker_sheet.dart';
+import '../../domain/entities/supplier_foreign_preview.dart';
 import '../../domain/entities/supplier_foreign_sheet_mapping.dart';
 import '../cubit/supplier_foreign_import_cubit.dart';
 import '../utils/supplier_excel_import_i18n.dart';
@@ -107,6 +109,13 @@ class _SupplierForeignImportView extends StatelessWidget {
                       preview: state.preview!,
                       onPriceChanged: (row, price) =>
                           cubit.editRow(row, price: price),
+                      onDescriptionChanged: (row, description) =>
+                          cubit.editRow(row, description: description),
+                      onPickImage: (product) => _pickImage(context, product),
+                      onWriteDescriptions: cubit.writeMissingDescriptions,
+                      assistantAvailable: state.assistantAvailable,
+                      writingDescriptions: state.writingDescriptions,
+                      needingDescription: state.needingDescription.length,
                     ),
 
                   if (state.step == SupplierForeignStep.done &&
@@ -128,6 +137,21 @@ class _SupplierForeignImportView extends StatelessWidget {
       ),
       bottomNavigationBar: const _ForeignBottomBar(),
     );
+  }
+
+  /// Picks a picture for one row out of the supplier's own gallery.
+  ///
+  /// The same sheet the product and banner screens use, so a picture they
+  /// uploaded once is reachable everywhere they need one.
+  static Future<void> _pickImage(
+    BuildContext context,
+    SupplierForeignProductPreview product,
+  ) async {
+    final cubit = context.read<SupplierForeignImportCubit>();
+    final url = await showSupplierGalleryPickerSheet(context);
+
+    if (url == null || url.trim().isEmpty) return;
+    await cubit.editRow(product.row, imageUrl: url.trim());
   }
 
   /// The server sends codes for the things it refuses, so they read here in the

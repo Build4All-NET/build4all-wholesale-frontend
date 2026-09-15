@@ -1338,6 +1338,7 @@ Future<void> init() async {
       suggestMapping: sl<SuggestSupplierColumnMappingUseCase>(),
       previewFile: sl<PreviewSupplierForeignFileUseCase>(),
       importFile: sl<ImportSupplierForeignFileUseCase>(),
+      assistant: sl<SupplierProductAiApiService>(),
     ),
   );
 

@@ -6,6 +6,7 @@ import '../../../../../core/exceptions/app_exception.dart';
 import '../../data/services/supplier_foreign_import_api_service.dart';
 import '../../domain/entities/supplier_excel_import_result_entity.dart';
 import '../../domain/entities/supplier_foreign_field.dart';
+import '../../data/services/supplier_product_ai_api_service.dart';
 import '../../domain/entities/supplier_foreign_preview.dart';
 import '../../domain/entities/supplier_foreign_sheet_mapping.dart';
 import '../../domain/usecases/pick_supplier_excel_file_usecase.dart';
@@ -37,6 +38,15 @@ class SupplierForeignImportState {
   final SupplierExcelImportResultEntity? result;
 
   final bool busy;
+
+  /// True while the assistant is writing the missing descriptions. Kept apart
+  /// from [busy] so the rows stay readable and editable while it works.
+  final bool writingDescriptions;
+
+  /// Whether the assistant is offered at all. Asked before the button is shown,
+  /// rather than showing it and then explaining.
+  final bool assistantAvailable;
+
   final String? error;
 
   const SupplierForeignImportState({
@@ -51,6 +61,8 @@ class SupplierForeignImportState {
     required this.edits,
     required this.result,
     required this.busy,
+    required this.writingDescriptions,
+    required this.assistantAvailable,
     required this.error,
   });
 
@@ -66,6 +78,8 @@ class SupplierForeignImportState {
         edits = const {},
         result = null,
         busy = false,
+        writingDescriptions = false,
+        assistantAvailable = false,
         error = null;
 
   SupplierForeignSheetMapping? get sheet =>
@@ -74,6 +88,14 @@ class SupplierForeignImportState {
           : null;
 
   bool get canContinue => sheet?.hasName == true && !busy;
+
+  /// Products the file left without a description. What the assistant is for.
+  List<SupplierForeignProductPreview> get needingDescription {
+    final products = preview?.products ?? const <SupplierForeignProductPreview>[];
+    return products
+        .where((p) => (p.description ?? '').trim().isEmpty)
+        .toList();
+  }
 
   /// Quantities were found but have nowhere to be counted yet.
   bool get stockNeedsBranch =>
@@ -91,6 +113,8 @@ class SupplierForeignImportState {
     Map<int, SupplierForeignRowEdit>? edits,
     SupplierExcelImportResultEntity? result,
     bool? busy,
+    bool? writingDescriptions,
+    bool? assistantAvailable,
     String? error,
     bool clearError = false,
   }) {
@@ -106,6 +130,8 @@ class SupplierForeignImportState {
       edits: edits ?? this.edits,
       result: result ?? this.result,
       busy: busy ?? this.busy,
+      writingDescriptions: writingDescriptions ?? this.writingDescriptions,
+      assistantAvailable: assistantAvailable ?? this.assistantAvailable,
       error: clearError ? null : (error ?? this.error),
     );
   }
@@ -116,12 +142,14 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
   final SuggestSupplierColumnMappingUseCase suggestMapping;
   final PreviewSupplierForeignFileUseCase previewFile;
   final ImportSupplierForeignFileUseCase importFile;
+  final SupplierProductAiApiService assistant;
 
   SupplierForeignImportCubit({
     required this.pickFile,
     required this.suggestMapping,
     required this.previewFile,
     required this.importFile,
+    required this.assistant,
   }) : super(const SupplierForeignImportState.initial());
 
   Future<void> chooseFile() async {
@@ -218,13 +246,28 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
         busy: false,
         clearError: true,
       ));
+
+      // Whether to offer the assistant at all. A failure here only costs the
+      // button, so it is never allowed to cost the preview.
+      try {
+        final available = await assistant.descriptionsAvailable();
+        emit(state.copyWith(assistantAvailable: available));
+      } catch (_) {
+        emit(state.copyWith(assistantAvailable: false));
+      }
     } catch (e) {
       emit(state.copyWith(busy: false, error: _messageOf(e)));
     }
   }
 
   /// Records a correction and re-reads the preview so the row shows it.
-  Future<void> editRow(int row, {double? price, int? stock, String? description}) async {
+  Future<void> editRow(
+    int row, {
+    double? price,
+    int? stock,
+    String? description,
+    String? imageUrl,
+  }) async {
     final existing = state.edits[row] ?? const SupplierForeignRowEdit();
 
     final edits = Map<int, SupplierForeignRowEdit>.from(state.edits);
@@ -232,6 +275,7 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
       price: price,
       stock: stock,
       description: description,
+      imageUrl: imageUrl,
     );
 
     emit(state.copyWith(edits: edits, clearError: true));
@@ -259,6 +303,43 @@ class SupplierForeignImportCubit extends Cubit<SupplierForeignImportState> {
       emit(state.copyWith(preview: preview, busy: false, clearError: true));
     } catch (e) {
       emit(state.copyWith(busy: false, error: _messageOf(e)));
+    }
+  }
+
+  /// Has the assistant describe the products the file left blank.
+  ///
+  /// What comes back is kept as the supplier's own correction, exactly as if
+  /// they had typed it -- so they can still change any of it, and it travels
+  /// with the import the same way.
+  Future<void> writeMissingDescriptions() async {
+    final rows = state.needingDescription;
+    if (rows.isEmpty || state.writingDescriptions) return;
+
+    emit(state.copyWith(writingDescriptions: true, clearError: true));
+
+    try {
+      final written = await assistant.draftDescriptions([
+        for (final p in rows)
+          {'row': p.row, 'name': p.name, 'category': p.categoryName},
+      ]);
+
+      if (written.isEmpty) {
+        emit(state.copyWith(writingDescriptions: false));
+        return;
+      }
+
+      final edits = Map<int, SupplierForeignRowEdit>.from(state.edits);
+      written.forEach((row, description) {
+        if (description.trim().isEmpty) return;
+        final existing = edits[row] ?? const SupplierForeignRowEdit();
+        edits[row] = existing.copyWith(description: description.trim());
+      });
+
+      emit(state.copyWith(edits: edits, clearError: true));
+      await _refreshPreview();
+      emit(state.copyWith(writingDescriptions: false));
+    } catch (e) {
+      emit(state.copyWith(writingDescriptions: false, error: _messageOf(e)));
     }
   }
 

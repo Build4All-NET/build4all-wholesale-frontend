@@ -127,6 +127,7 @@ class SupplierForeignImportApiService {
           if (entry.value.stock != null) 'stock': entry.value.stock,
           if (entry.value.description != null)
             'description': entry.value.description,
+          if (entry.value.imageUrl != null) 'imageUrl': entry.value.imageUrl,
         },
     });
   }
@@ -164,19 +165,31 @@ class SupplierForeignRowEdit {
   final int? stock;
   final String? description;
 
-  const SupplierForeignRowEdit({this.price, this.stock, this.description});
+  /// A picture chosen from the supplier's gallery. The one thing on the review
+  /// screen that cannot come from the file: a spreadsheet carries no images.
+  final String? imageUrl;
 
-  bool get isEmpty => price == null && stock == null && description == null;
+  const SupplierForeignRowEdit({
+    this.price,
+    this.stock,
+    this.description,
+    this.imageUrl,
+  });
+
+  bool get isEmpty =>
+      price == null && stock == null && description == null && imageUrl == null;
 
   SupplierForeignRowEdit copyWith({
     double? price,
     int? stock,
     String? description,
+    String? imageUrl,
   }) {
     return SupplierForeignRowEdit(
       price: price ?? this.price,
       stock: stock ?? this.stock,
       description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 }

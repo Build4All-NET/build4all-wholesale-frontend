@@ -504,6 +504,20 @@ class SupplierExcelImportI18n {
         'الكمية بدها فرع',
         'La quantité nécessite une succursale',
       );
+  String get foreignDescriptionHint => _t(
+        'What this product says about itself.',
+        'شو بيقول هالمنتج عن حالو.',
+        'Ce que ce produit dit de lui-même.',
+      );
+  String foreignMissingDescriptions(int count) => _t(
+        '$count products have nothing written about them.',
+        '$count منتج ما مكتوب عنن شي.',
+        '$count produits sans description.',
+      );
+  String get foreignWriteDescriptions =>
+      _t('Write them', 'اكتبهن', 'Les rédiger');
+  String get foreignWritingDescriptions =>
+      _t('Writing…', 'عم نكتب…', 'Rédaction…');
   String get foreignImport => _t('Import these', 'استوردهن', 'Importer');
   String get foreignImporting => _t('Importing…', 'عم نستورد…', 'Importation…');
   String get foreignNothingToImport => _t(
