@@ -12,10 +12,16 @@ class SupplierExcelSourceCard extends StatelessWidget {
   final SupplierExcelSource? source;
   final ValueChanged<SupplierExcelSource> onChanged;
 
+  /// Whether photographing products is available on this server. The option
+  /// is hidden when false so a supplier is never offered something that needs
+  /// a model that is not there.
+  final bool photosAvailable;
+
   const SupplierExcelSourceCard({
     super.key,
     required this.source,
     required this.onChanged,
+    this.photosAvailable = false,
   });
 
   @override
@@ -47,13 +53,18 @@ class SupplierExcelSourceCard extends StatelessWidget {
           subtitle: l.sourceForeignSubtitle,
           onTap: () => onChanged(SupplierExcelSource.foreignFile),
         ),
-        const SizedBox(height: 10),
-        _SourceOption(
-          selected: source == SupplierExcelSource.photos,
-          title: l.sourcePhotosTitle,
-          subtitle: l.sourcePhotosSubtitle,
-          onTap: () => onChanged(SupplierExcelSource.photos),
-        ),
+        // For the supplier that has nothing written down anywhere.
+        // Only offered when AI is available -- naming products from photographs
+        // requires a model and cannot work without one.
+        if (photosAvailable) ...[
+          const SizedBox(height: 10),
+          _SourceOption(
+            selected: source == SupplierExcelSource.photos,
+            title: l.sourcePhotosTitle,
+            subtitle: l.sourcePhotosSubtitle,
+            onTap: () => onChanged(SupplierExcelSource.photos),
+          ),
+        ],
       ],
     );
   }

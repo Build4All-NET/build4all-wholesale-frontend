@@ -14,6 +14,7 @@ import '../../../categories/domain/usecases/get_subcategories_by_category_usecas
 import '../../../products/domain/usecases/get_products_usecase.dart';
 import '../../domain/entities/photographed_supplier_product_entity.dart';
 import '../../domain/entities/supplier_excel_parsed_file_entity.dart';
+import '../../domain/usecases/check_supplier_ai_availability_usecase.dart';
 import '../../domain/usecases/clear_supplier_excel_import_usecase.dart';
 import '../../domain/usecases/create_supplier_photo_products_usecase.dart';
 import '../../domain/usecases/draft_supplier_product_descriptions_usecase.dart';
@@ -45,6 +46,7 @@ class SupplierExcelImportBloc
   final CreateSupplierPhotoProductsUseCase createSupplierPhotoProductsUseCase;
   final DraftSupplierProductDescriptionsUseCase
       draftSupplierProductDescriptionsUseCase;
+  final CheckSupplierAiAvailabilityUseCase checkSupplierAiAvailabilityUseCase;
 
   SupplierExcelImportBloc({
     required this.pickSupplierExcelFileUseCase,
@@ -59,7 +61,9 @@ class SupplierExcelImportBloc
     required this.readSupplierProductPhotosUseCase,
     required this.createSupplierPhotoProductsUseCase,
     required this.draftSupplierProductDescriptionsUseCase,
+    required this.checkSupplierAiAvailabilityUseCase,
   }) : super(SupplierExcelImportState.initial()) {
+    on<SupplierAiStatusRequested>(_onAiStatusRequested);
     on<SupplierExcelDownloadTemplateRequested>(_onDownloadTemplateRequested);
     on<SupplierExcelPickFileRequested>(_onPickFileRequested);
     on<SupplierExcelRowUpdated>(_onRowUpdated);
@@ -75,6 +79,17 @@ class SupplierExcelImportBloc
     on<SupplierPhotoRemoved>(_onPhotoRemoved);
     on<SupplierPhotoDraftDescriptionsPressed>(_onPhotoDraftDescriptions);
     on<SupplierPhotosImportPressed>(_onPhotosImportPressed);
+  }
+
+  Future<void> _onAiStatusRequested(
+    SupplierAiStatusRequested event,
+    Emitter<SupplierExcelImportState> emit,
+  ) async {
+    final status = await checkSupplierAiAvailabilityUseCase();
+    emit(state.copyWith(
+      photosAvailable: status.photosAvailable,
+      descriptionsAvailable: status.descriptionsAvailable,
+    ));
   }
 
   Future<void> _onDownloadTemplateRequested(

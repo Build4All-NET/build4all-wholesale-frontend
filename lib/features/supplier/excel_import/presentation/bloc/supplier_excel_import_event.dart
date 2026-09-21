@@ -10,6 +10,13 @@ abstract class SupplierExcelImportEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Checks whether AI features (photo import, description drafting) are
+/// available on this server. Dispatched when the screen opens so AI options
+/// are hidden until the server confirms they work.
+class SupplierAiStatusRequested extends SupplierExcelImportEvent {
+  const SupplierAiStatusRequested();
+}
+
 class SupplierExcelDownloadTemplateRequested extends SupplierExcelImportEvent {
   const SupplierExcelDownloadTemplateRequested();
 }

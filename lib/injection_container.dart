@@ -280,6 +280,7 @@ import 'features/supplier/excel_import/data/services/supplier_excel_reader_servi
 import 'features/supplier/excel_import/data/services/supplier_product_ai_api_service.dart';
 import 'features/supplier/excel_import/domain/repositories/supplier_excel_import_repository.dart';
 import 'features/supplier/excel_import/domain/usecases/clear_supplier_excel_import_usecase.dart';
+import 'features/supplier/excel_import/domain/usecases/check_supplier_ai_availability_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/create_supplier_photo_products_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/draft_supplier_product_descriptions_usecase.dart';
 import 'features/supplier/excel_import/domain/usecases/import_supplier_excel_products_usecase.dart';
@@ -517,6 +518,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<DraftSupplierProductDescriptionsUseCase>(
     () => DraftSupplierProductDescriptionsUseCase(
+      apiService: sl<SupplierProductAiApiService>(),
+    ),
+  );
+
+  sl.registerLazySingleton<CheckSupplierAiAvailabilityUseCase>(
+    () => CheckSupplierAiAvailabilityUseCase(
       apiService: sl<SupplierProductAiApiService>(),
     ),
   );
@@ -1299,6 +1306,8 @@ Future<void> init() async {
           sl<CreateSupplierPhotoProductsUseCase>(),
       draftSupplierProductDescriptionsUseCase:
           sl<DraftSupplierProductDescriptionsUseCase>(),
+      checkSupplierAiAvailabilityUseCase:
+          sl<CheckSupplierAiAvailabilityUseCase>(),
     ),
   );
 

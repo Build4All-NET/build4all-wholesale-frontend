@@ -27,7 +27,8 @@ class SupplierExcelImportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SupplierExcelImportBloc>(),
+      create: (_) => sl<SupplierExcelImportBloc>()
+        ..add(const SupplierAiStatusRequested()),
       child: const _SupplierExcelImportView(),
     );
   }
@@ -76,6 +77,7 @@ class _SupplierExcelImportView extends StatelessWidget {
                 children: [
                   SupplierExcelSourceCard(
                     source: state.source,
+                    photosAvailable: state.photosAvailable,
                     onChanged: (source) {
                       // A file another system wrote has its own three steps --
                       // read the columns, agree to them, look at the products --
@@ -143,7 +145,8 @@ class _SupplierExcelImportView extends StatelessWidget {
                   ],
 
                   // ===== Photographing a catalogue with nothing written down =====
-                  if (state.source == SupplierExcelSource.photos)
+                  // Only reachable when AI is on — naming from photographs needs a model.
+                  if (state.photosAvailable && state.source == SupplierExcelSource.photos)
                     SupplierExcelPhotoCaptureCard(
                       photos: state.photos,
                       needingName: state.photosNeedingName,
