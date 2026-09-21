@@ -31,6 +31,13 @@ class SupplierExcelImportState extends Equatable {
   /// would have them reading the steps of a way in they never chose.
   final SupplierExcelSource? source;
 
+  /// Whether photo import is available on this server. False until the status
+  /// check completes: the option is hidden rather than shown and then broken.
+  final bool photosAvailable;
+
+  /// Whether description drafting is available on this server.
+  final bool descriptionsAvailable;
+
   /// True while photographs are being stored and read.
   final bool readingPhotos;
 
@@ -53,6 +60,8 @@ class SupplierExcelImportState extends Equatable {
     this.templateSavePath,
     this.importResult,
     this.source,
+    this.photosAvailable = false,
+    this.descriptionsAvailable = false,
     this.readingPhotos = false,
     this.photos = const [],
     this.draftingPhotoDescriptions = false,
@@ -113,6 +122,8 @@ class SupplierExcelImportState extends Equatable {
     String? templateSavePath,
     SupplierExcelImportResultEntity? importResult,
     SupplierExcelSource? source,
+    bool? photosAvailable,
+    bool? descriptionsAvailable,
     bool? readingPhotos,
     List<PhotographedSupplierProductEntity>? photos,
     bool? draftingPhotoDescriptions,
@@ -135,6 +146,9 @@ class SupplierExcelImportState extends Equatable {
           clearTemplatePath ? null : templateSavePath ?? this.templateSavePath,
       importResult: clearImportResult ? null : importResult ?? this.importResult,
       source: source ?? this.source,
+      photosAvailable: photosAvailable ?? this.photosAvailable,
+      descriptionsAvailable:
+          descriptionsAvailable ?? this.descriptionsAvailable,
       readingPhotos: readingPhotos ?? this.readingPhotos,
       photos: clearPhotos ? const [] : (photos ?? this.photos),
       draftingPhotoDescriptions:
@@ -155,6 +169,8 @@ class SupplierExcelImportState extends Equatable {
         templateSavePath,
         importResult,
         source,
+        photosAvailable,
+        descriptionsAvailable,
         readingPhotos,
         photos,
         draftingPhotoDescriptions,
