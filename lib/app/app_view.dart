@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../core/ai/ai_availability_cubit.dart';
 import '../core/branding/branding_cubit.dart';
 import '../core/branding/branding_state.dart';
 import '../core/currency/presentation/app_currency_cubit.dart';
@@ -28,6 +29,7 @@ class AppView extends StatelessWidget {
       providers: [
         BlocProvider.value(value: sl<ThemeCubit>()),
         BlocProvider.value(value: sl<LocaleCubit>()),
+        BlocProvider.value(value: sl<AiAvailabilityCubit>()),
         BlocProvider.value(
           value: sl<AppCurrencyCubit>()..loadConfiguredCurrency(),
         ),

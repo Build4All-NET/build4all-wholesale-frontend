@@ -1,4 +1,5 @@
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
+import '../../../../../core/ai/ai_availability_extension.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/picked_image.dart';
 
 import 'package:flutter/material.dart';
@@ -434,31 +435,34 @@ class _CreateRetailerRfqViewState extends State<_CreateRetailerRfqView> {
                         );
                       },
                     ),
-                    const SizedBox(height: 10),
-                    OutlinedButton.icon(
-                      onPressed: state.isAiWriting ? null : _writeWithAiHelper,
-                      icon: state.isAiWriting
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.auto_awesome),
-                      label: Text(
-                        state.isAiWriting
-                            ? l10n.rfqWritingWithAi
-                            : l10n.rfqWriteWithAi,
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Theme.of(context).colorScheme.primary,
-                        side: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
+                    // The AI writing helper only exists for stores with AI.
+                    if (context.isAiEnabled) ...[
+                      const SizedBox(height: 10),
+                      OutlinedButton.icon(
+                        onPressed: state.isAiWriting ? null : _writeWithAiHelper,
+                        icon: state.isAiWriting
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.auto_awesome),
+                        label: Text(
+                          state.isAiWriting
+                              ? l10n.rfqWritingWithAi
+                              : l10n.rfqWriteWithAi,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.primary,
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 16),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/ai/ai_availability_cubit.dart';
+import '../../../../../core/ai/ai_availability_extension.dart';
 import '../../../../../core/theme/app_theme_tokens.dart';
 import '../../../../../core/widgets/app_toast.dart';
 import '../../../../../injection_container.dart';
@@ -27,8 +29,14 @@ class SupplierExcelImportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SupplierExcelImportBloc>()
-        ..add(const SupplierAiStatusRequested()),
+      create: (_) {
+        // The plan can change while the app is open, so the answer that decides
+        // which ways of importing are offered is asked again here.
+        context.read<AiAvailabilityCubit>().refresh();
+
+        return sl<SupplierExcelImportBloc>()
+          ..add(const SupplierAiStatusRequested());
+      },
       child: const _SupplierExcelImportView(),
     );
   }
@@ -77,6 +85,7 @@ class _SupplierExcelImportView extends StatelessWidget {
                 children: [
                   SupplierExcelSourceCard(
                     source: state.source,
+                    aiEnabled: context.isAiEnabled,
                     photosAvailable: state.photosAvailable,
                     onChanged: (source) {
                       // A file another system wrote has its own three steps --
@@ -146,7 +155,9 @@ class _SupplierExcelImportView extends StatelessWidget {
 
                   // ===== Photographing a catalogue with nothing written down =====
                   // Only reachable when AI is on — naming from photographs needs a model.
-                  if (state.photosAvailable && state.source == SupplierExcelSource.photos)
+                  if (context.isAiEnabled &&
+                      state.photosAvailable &&
+                      state.source == SupplierExcelSource.photos)
                     SupplierExcelPhotoCaptureCard(
                       photos: state.photos,
                       needingName: state.photosNeedingName,

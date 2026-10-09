@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/ai/ai_availability_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:build4all_wholesale_frontend/core/widgets/app_toast.dart';
 
@@ -129,13 +130,15 @@ class _RetailerProductDetailsViewState
                 onEdit: isOutOfStock ? null : _editQuantity,
               ),
               _LockedPromotionExplanation(product: product),
-              const SizedBox(height: 14),
-              RetailerProductAiButton(
-                productId: product.id,
-                productName: product.name,
-                imageUrl: product.imageUrl,
-                expanded: true,
-              ),
+              if (context.isAiEnabled) ...[
+                const SizedBox(height: 14),
+                RetailerProductAiButton(
+                  productId: product.id,
+                  productName: product.name,
+                  imageUrl: product.imageUrl,
+                  expanded: true,
+                ),
+              ],
             ],
           ),
           bottomNavigationBar: SafeArea(

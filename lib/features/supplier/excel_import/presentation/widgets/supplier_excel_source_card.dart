@@ -12,6 +12,11 @@ class SupplierExcelSourceCard extends StatelessWidget {
   final SupplierExcelSource? source;
   final ValueChanged<SupplierExcelSource> onChanged;
 
+  /// Whether this store has AI. Without it only the Build4All template is
+  /// offered: importing a file from another system and photographing products
+  /// are both AI features and are not shown at all.
+  final bool aiEnabled;
+
   /// Whether photographing products is available on this server. The option
   /// is hidden when false so a supplier is never offered something that needs
   /// a model that is not there.
@@ -21,6 +26,7 @@ class SupplierExcelSourceCard extends StatelessWidget {
     super.key,
     required this.source,
     required this.onChanged,
+    this.aiEnabled = false,
     this.photosAvailable = false,
   });
 
@@ -46,17 +52,20 @@ class SupplierExcelSourceCard extends StatelessWidget {
           subtitle: l.sourceFileSubtitle,
           onTap: () => onChanged(SupplierExcelSource.file),
         ),
-        const SizedBox(height: 10),
-        _SourceOption(
-          selected: source == SupplierExcelSource.foreignFile,
-          title: l.sourceForeignTitle,
-          subtitle: l.sourceForeignSubtitle,
-          onTap: () => onChanged(SupplierExcelSource.foreignFile),
-        ),
+        // Reading a file another system wrote is an AI feature.
+        if (aiEnabled) ...[
+          const SizedBox(height: 10),
+          _SourceOption(
+            selected: source == SupplierExcelSource.foreignFile,
+            title: l.sourceForeignTitle,
+            subtitle: l.sourceForeignSubtitle,
+            onTap: () => onChanged(SupplierExcelSource.foreignFile),
+          ),
+        ],
         // For the supplier that has nothing written down anywhere.
         // Only offered when AI is available -- naming products from photographs
         // requires a model and cannot work without one.
-        if (photosAvailable) ...[
+        if (aiEnabled && photosAvailable) ...[
           const SizedBox(height: 10),
           _SourceOption(
             selected: source == SupplierExcelSource.photos,

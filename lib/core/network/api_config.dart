@@ -212,6 +212,13 @@ class ApiConfig {
   static const String supplierForeignImport = '/supplier/excel-import/foreign';
 
   // =========================
+  // AI availability (supplier and retailer)
+  // =========================
+  // Whether this store's plan includes AI at all. Asked once a session is
+  // active, before any screen offers something that needs a model.
+  static const String aiStatus = '/ai/status';
+
+  // =========================
   // Supplier Product Photo AI
   // =========================
   static const String supplierProductPhotos = '/supplier-ai/product-photos';

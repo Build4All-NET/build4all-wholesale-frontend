@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/ai/ai_availability_extension.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/l10n_extension.dart';
@@ -197,13 +198,15 @@ class _ProductCard extends StatelessWidget {
                         text: '${l10n.moq}: ${product.moq} ${product.moqUnit}',
                       ),
                       const Spacer(),
-                      RetailerProductAiButton(
-                        productId: product.id,
-                        productName: product.name,
-                        imageUrl: product.imageUrl,
-                        expanded: true,
-                      ),
-                      const SizedBox(height: 8),
+                      if (context.isAiEnabled) ...[
+                        RetailerProductAiButton(
+                          productId: product.id,
+                          productName: product.name,
+                          imageUrl: product.imageUrl,
+                          expanded: true,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
                       SizedBox(
                         width: double.infinity,
                         height: 40,

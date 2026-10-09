@@ -2,6 +2,8 @@ import 'package:get_it/get_it.dart';
 
 import 'core/config/app_config.dart';
 import 'core/auth/session_manager.dart';
+import 'core/ai/ai_availability_cubit.dart';
+import 'core/ai/ai_status_api_service.dart';
 import 'core/notifications/push_notification_service.dart';
 import 'core/network/api_client.dart';
 import 'core/network/auth_refresh_service.dart';
@@ -422,6 +424,18 @@ Future<void> init() async {
       onAuthenticated: () =>
           sl<PushNotificationService>().registerForCurrentUser(),
       onSignedOut: () => sl<PushNotificationService>().unregister(),
+    ),
+  );
+
+  // Whether the store has AI: both apps hide every AI option unless it does.
+  sl.registerLazySingleton<AiStatusApiService>(
+    () => AiStatusApiService(sl<ApiClient>(instanceName: 'projectApiClient')),
+  );
+
+  sl.registerLazySingleton<AiAvailabilityCubit>(
+    () => AiAvailabilityCubit(
+      apiService: sl<AiStatusApiService>(),
+      session: sl<SessionManager>(),
     ),
   );
 
