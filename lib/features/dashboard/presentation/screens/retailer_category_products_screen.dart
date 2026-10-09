@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../../../core/ai/ai_availability_extension.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -483,15 +484,19 @@ class RetailerProductListCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        Expanded(
-                          child: RetailerProductAiButton(
-                            productId: product.id,
-                            productName: product.name,
-                            imageUrl: product.imageUrl,
-                            expanded: true,
+                        // Without AI the add button keeps its place on the right.
+                        if (context.isAiEnabled) ...[
+                          Expanded(
+                            child: RetailerProductAiButton(
+                              productId: product.id,
+                              productName: product.name,
+                              imageUrl: product.imageUrl,
+                              expanded: true,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
+                          const SizedBox(width: 8),
+                        ] else
+                          const Spacer(),
                         _AddButton(
                           isAdding: isAdding,
                           disabled: isOutOfStock,

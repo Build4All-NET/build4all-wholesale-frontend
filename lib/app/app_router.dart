@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'splash_gate.dart';
+import '../core/ai/ai_availability_cubit.dart';
 import '../core/auth/session_manager.dart';
 import '../injection_container.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
@@ -467,6 +468,12 @@ class AppRouter {
 
       GoRoute(
         path: '/supplier-excel-import/foreign',
+        // An AI feature: a store without AI is sent back to the import screen
+        // rather than shown steps the server would refuse.
+        redirect: (context, state) =>
+            sl<AiAvailabilityCubit>().state.enabled
+                ? null
+                : '/supplier-excel-import',
         builder: (context, state) => const SupplierForeignImportScreen(),
       ),
 
