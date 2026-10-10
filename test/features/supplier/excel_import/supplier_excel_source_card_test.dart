@@ -14,6 +14,7 @@ void main() {
     WidgetTester tester, {
     required bool aiEnabled,
     required bool photosAvailable,
+    SupplierExcelSource? source,
     ValueChanged<SupplierExcelSource>? onChanged,
   }) async {
     await tester.pumpWidget(
@@ -23,7 +24,7 @@ void main() {
             builder: (context) {
               l = SupplierExcelImportI18n(context);
               return SupplierExcelSourceCard(
-                source: null,
+                source: source,
                 aiEnabled: aiEnabled,
                 photosAvailable: photosAvailable,
                 onChanged: onChanged ?? (_) {},
@@ -99,5 +100,17 @@ void main() {
 
     expect(find.text(l.sourceForeignTitle), findsNothing);
     expect(find.text(l.sourcePhotosTitle), findsNothing);
+  });
+
+  testWidgets('shows the template as chosen when it is the selected source', (tester) async {
+    await pump(
+      tester,
+      aiEnabled: false,
+      photosAvailable: false,
+      source: SupplierExcelSource.file,
+    );
+
+    expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
+    expect(find.byIcon(Icons.radio_button_off), findsNothing);
   });
 }

@@ -67,6 +67,8 @@ class _SupplierExcelImportView extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final source = state.effectiveSource(aiEnabled: context.isAiEnabled);
+
         return Scaffold(
           backgroundColor: AppThemeTokens.background,
           drawer: const SupplierAppDrawer(),
@@ -76,7 +78,7 @@ class _SupplierExcelImportView extends StatelessWidget {
             foregroundColor: AppThemeTokens.textPrimary,
             elevation: 0,
           ),
-          bottomNavigationBar: _ImportBottomBar(state: state),
+          bottomNavigationBar: _ImportBottomBar(state: state, source: source),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(AppThemeTokens.screenHorizontalPadding),
@@ -84,7 +86,7 @@ class _SupplierExcelImportView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SupplierExcelSourceCard(
-                    source: state.source,
+                    source: source,
                     aiEnabled: context.isAiEnabled,
                     photosAvailable: state.photosAvailable,
                     onChanged: (source) {
@@ -107,7 +109,7 @@ class _SupplierExcelImportView extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // ===== Bringing a file the supplier already keeps =====
-                  if (state.source == SupplierExcelSource.file) ...[
+                  if (source == SupplierExcelSource.file) ...[
                     const SupplierExcelInstructionCard(),
                     const SizedBox(height: 16),
                     SupplierExcelTemplateCard(
@@ -157,7 +159,7 @@ class _SupplierExcelImportView extends StatelessWidget {
                   // Only reachable when AI is on — naming from photographs needs a model.
                   if (context.isAiEnabled &&
                       state.photosAvailable &&
-                      state.source == SupplierExcelSource.photos)
+                      source == SupplierExcelSource.photos)
                     SupplierExcelPhotoCaptureCard(
                       photos: state.photos,
                       needingName: state.photosNeedingName,
@@ -212,20 +214,23 @@ class _SupplierExcelImportView extends StatelessWidget {
 class _ImportBottomBar extends StatelessWidget {
   final SupplierExcelImportState state;
 
+  /// The source shown as chosen, which can be the default for a store without AI.
+  final SupplierExcelSource? source;
+
   const _ImportBottomBar({
     required this.state,
+    required this.source,
   });
 
   @override
   Widget build(BuildContext context) {
     final l = SupplierExcelImportI18n(context);
-    final isPhotos = state.source == SupplierExcelSource.photos;
+    final isPhotos = source == SupplierExcelSource.photos;
 
     final busy = isPhotos ? state.creatingPhotoProducts : state.isImporting;
     final canConfirm = isPhotos ? state.canImportPhotos : state.canImport;
 
-    if (state.source == null ||
-        state.source == SupplierExcelSource.foreignFile) {
+    if (source == null || source == SupplierExcelSource.foreignFile) {
       return const SizedBox.shrink();
     }
 

@@ -112,6 +112,11 @@ class SupplierExcelImportState extends Equatable {
       !creatingPhotoProducts &&
       !readingPhotos;
 
+  /// The source shown as chosen. A store without AI has only the template to
+  /// choose from, so it is chosen for them instead of asking about one option.
+  SupplierExcelSource? effectiveSource({required bool aiEnabled}) =>
+      source ?? (aiEnabled ? null : SupplierExcelSource.file);
+
   SupplierExcelImportState copyWith({
     bool? isDownloadingTemplate,
     bool? isPickingOrParsing,
